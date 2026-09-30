@@ -813,6 +813,9 @@ footer {
   letter-spacing: 0.08em;
 }
 
+.share-toggle { border: 1px solid #46595d; border-radius: 999px; background: #17262a; color: #ecf4f3; padding: 0.6rem 0.85rem; cursor: pointer; font: inherit; font-size: 0.8rem; }
+.share-toggle:hover { background: #243b3f; }
+.tour-hint { margin: 0 0 1.5rem; padding: 1rem; border-left: 3px solid #76c6b1; background: #183029; color: #d3ece4; font-size: 0.85rem; line-height: 1.65; }
 .language-toggle:hover {
   border-color: #ff8a7d;
   background: var(--accent-soft);

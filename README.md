@@ -55,8 +55,14 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
 - lista sísmica accesible mediante teclado como alternativa al mapa;
 - enlace al mapa oficial de sismicidad del IG-EPN;
 - contenido y navegación bilingües en español e inglés;
-- guía visual con imágenes WebP responsivas sobre fallas, escarpes, facetas triangulares y drenajes desplazados;
-- laboratorio bilingüe con tres casos interactivos y retroalimentación sobre tipos de falla;
+- biblioteca bilingüe de Historias con tres recorridos independientes: Tierra, Agua y Cielo;
+- lectura progresiva de geometría de fallas, paleosismología y evidencias de campo, con figuras
+  publicadas, citas y ampliación accesible;
+- historias sobre cuencas, escorrentía, observación satelital y diferencia entre tiempo y clima,
+  fundamentadas en USGS y NASA, con ejercicios y límites de interpretación;
+- laboratorio con tres figuras publicadas y retroalimentación sobre movimiento e insuficiencia de evidencia;
+- enlaces educativos que abren capas pertinentes en el atlas, conservan el idioma y ocultan
+  capas ajenas al recorrido de Agua o Cielo;
 - simbología y fichas emergentes generadas desde GeoJSON;
 - modo de demostración con geometrías sintéticas, separado del catálogo científico;
 - documentación separada para las fuentes cartográficas.

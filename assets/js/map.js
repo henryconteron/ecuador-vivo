@@ -82,6 +82,8 @@ function initializeAtlas() {
   const ecuadorBounds = L.latLngBounds(ECUADOR_CONTINENTAL_BOUNDS);
   const urlParameters = new URLSearchParams(window.location.search);
   const demoMode = urlParameters.get("demo") === "1";
+  const requestedTour = urlParameters.get("tour");
+  const guidedTour = ["earth", "water", "sky"].includes(requestedTour) ? requestedTour : null;
   document.body.classList.toggle("is-demo", demoMode);
   const catalogUrl = demoMode ? DATASETS.faults.demo : DATASETS.faults.production;
   const evidenceUrl = demoMode ? DATASETS.evidence.demo : DATASETS.evidence.production;
@@ -1286,7 +1288,7 @@ function initializeAtlas() {
 
     if (evidenceResult.status === "fulfilled") {
       evidenceCatalog = evidenceResult.value;
-      elements.evidenceToggle.checked = evidenceCatalog.length > 0;
+      elements.evidenceToggle.checked = evidenceCatalog.length > 0 && !["water", "sky"].includes(guidedTour);
       renderEvidence();
     } else {
       console.error(evidenceResult.reason);
@@ -1740,6 +1742,33 @@ function initializeAtlas() {
     }
   });
 
+  if (guidedTour) {
+    activeSystem = guidedTour;
+    const applyToggle = (control, checked) => {
+      control.checked = checked;
+      control.dispatchEvent(new Event("change"));
+    };
+    if (guidedTour === "water" || guidedTour === "sky") {
+      applyToggle(elements.faultToggle, false);
+      applyToggle(elements.evidenceToggle, false);
+      applyToggle(elements.earthquakeToggle, false);
+    }
+    if (guidedTour === "water") {
+      applyToggle(elements.basinToggle, true);
+      applyToggle(elements.precipitationToggle, true);
+    } else if (guidedTour === "sky") {
+      applyToggle(elements.hillshadeToggle, false);
+      applyToggle(elements.cloudFractionToggle, true);
+    } else {
+      map.setView([-1.7, -78.6], 8);
+    }
+    const hint = document.createElement("p");
+    hint.className = "tour-hint";
+    hint.dataset.i18n = "tour." + guidedTour;
+    hint.textContent = t("tour." + guidedTour);
+    hint.setAttribute("role", "status");
+    elements.sidebar.prepend(hint);
+  }
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

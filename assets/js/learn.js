@@ -1,8 +1,153 @@
 (() => {
+
+  const i18n = window.atlasI18n;
+  const choices = [...document.querySelectorAll("[data-story-choice]")];
+  const panels = [...document.querySelectorAll("[data-story-panel]")];
+  const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const scrollTo = (element) => element?.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+
+  function storyFromLocation() {
+    const hash = window.location.hash.slice(1);
+    const targetPanel = document.getElementById(hash)?.closest("[data-story-panel]");
+    const requested = targetPanel?.dataset.storyPanel ?? new URLSearchParams(window.location.search).get("story");
+    return panels.some((panel) => panel.dataset.storyPanel === requested) ? requested : "earth";
+  }
+
+  function selectStory(story, { navigate = false, reveal = true } = {}) {
+    choices.forEach((choice) => {
+      const active = choice.dataset.storyChoice === story;
+      choice.setAttribute("aria-selected", String(active));
+      choice.tabIndex = active ? 0 : -1;
+    });
+    panels.forEach((panel) => { panel.hidden = panel.dataset.storyPanel !== story; });
+    if (navigate) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("story", story);
+      url.hash = "story-" + story;
+      window.history.pushState({ ...window.history.state, story }, "", url);
+      const panel = panels.find((item) => item.dataset.storyPanel === story);
+      if (reveal) {
+        panel?.focus({ preventScroll: true });
+        scrollTo(panel);
+      }
+    }
+  }
+
+  choices.forEach((choice, index) => {
+    choice.addEventListener("click", (event) => {
+      event.preventDefault();
+      selectStory(choice.dataset.storyChoice, { navigate: true });
+    });
+    choice.addEventListener("keydown", (event) => {
+      const keys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? choices.length - 1
+        : (index + (event.key === "ArrowRight" ? 1 : -1) + choices.length) % choices.length;
+      choices[nextIndex].focus();
+      selectStory(choices[nextIndex].dataset.storyChoice, { navigate: true, reveal: false });
+      choices[nextIndex].focus({ preventScroll: true });
+    });
+  });
+  if (panels.length) {
+    selectStory(storyFromLocation());
+    window.addEventListener("popstate", () => {
+      selectStory(storyFromLocation());
+      const target = document.getElementById(window.location.hash.slice(1));
+      if (target) scrollTo(target);
+    });
+    window.addEventListener("hashchange", () => selectStory(storyFromLocation()));
+  }
+
+  const checks = [...document.querySelectorAll("[data-learning-check]")];
+  function renderCheck(check) {
+    const selected = check.dataset.selectedAnswer;
+    const feedback = check.querySelector("[data-check-feedback]");
+    if (!selected) return;
+    const correct = selected === check.dataset.correctAnswer;
+    feedback.hidden = false;
+    feedback.dataset.state = correct ? "correct" : "incorrect";
+    check.querySelector("[data-check-heading]").textContent = i18n.t(correct ? "check.correct" : "check.retry");
+    check.querySelectorAll("[data-check-choice]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.checkChoice === selected));
+    });
+  }
+  checks.forEach((check) => {
+    check.querySelectorAll("[data-check-choice]").forEach((button) => {
+      button.addEventListener("click", () => {
+        check.dataset.selectedAnswer = button.dataset.checkChoice;
+        renderCheck(check);
+        check.querySelector("[data-check-feedback]").focus({ preventScroll: true });
+      });
+    });
+  });
+
+  function updateStoryLinks() {
+    document.querySelectorAll("[data-story-map], [data-story-choice]").forEach((link) => {
+      const url = new URL(link.href);
+      url.searchParams.set("lang", i18n.language);
+      link.href = url.href;
+    });
+    checks.forEach(renderCheck);
+  }
+  updateStoryLinks();
+  window.addEventListener("atlas:languagechange", updateStoryLinks);
+
+  // Keep original scientific images intact; show an enlarged, attributed copy in a dialog.
+  const viewer = document.createElement("dialog");
+  viewer.className = "figure-viewer";
+  const close = document.createElement("button");
+  close.type = "button";
+  const enlarged = document.createElement("img");
+  const caption = document.createElement("div");
+  caption.className = "figure-viewer-caption";
+  let activeFigure = null;
+  viewer.append(close, enlarged, caption);
+  document.body.append(viewer);
+  const updateViewerLabels = () => {
+    viewer.setAttribute("aria-label", i18n.t("figure.dialog"));
+    close.textContent = i18n.t("figure.close") + " ×";
+    document.querySelectorAll("[data-enlarge-figure]").forEach((button) => {
+      button.textContent = i18n.t("figure.expand") + " ↗";
+    });
+  };
+  close.addEventListener("click", () => viewer.close());
+  viewer.addEventListener("click", (event) => { if (event.target === viewer) viewer.close(); });
+  caption.addEventListener("click", (event) => { if (event.target.closest("a")) viewer.close(); });
+  document.querySelectorAll("[data-story-panel] figure").forEach((figure) => {
+    const image = figure.querySelector("img");
+    if (!image) return;
+    const expand = document.createElement("button");
+    expand.type = "button";
+    expand.className = "figure-expand";
+    expand.dataset.enlargeFigure = "";
+    expand.addEventListener("click", () => {
+      activeFigure = figure;
+      enlarged.src = image.src;
+      enlarged.alt = image.alt;
+      const source = figure.querySelector("figcaption") ?? figure.closest(".clue-card")?.querySelector("small");
+      caption.replaceChildren();
+      if (source) caption.append(source.cloneNode(true));
+      viewer.showModal();
+    });
+    figure.append(expand);
+  });
+  updateViewerLabels();
+  window.addEventListener("atlas:languagechange", () => {
+    updateViewerLabels();
+    if (viewer.open && activeFigure) {
+      enlarged.alt = activeFigure.querySelector("img").alt;
+      const source = activeFigure.querySelector("figcaption") ?? activeFigure.closest(".clue-card")?.querySelector("small");
+      caption.replaceChildren();
+      if (source) caption.append(source.cloneNode(true));
+    }
+  });
+
   const storyNav = document.querySelector("[data-story-nav]");
 
   if (storyNav) {
     const links = [...storyNav.querySelectorAll("[data-story-link]")];
+    const track = storyNav.querySelector(".story-nav-track");
     const sections = links
       .map((link) => document.querySelector(`[data-story-section="${link.dataset.storyLink}"]`))
       .filter(Boolean);
@@ -15,7 +160,9 @@
         link.classList.toggle("is-active", isActive);
         if (isActive) {
           link.setAttribute("aria-current", "location");
-          link.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          // Scroll only the chapter strip, never the page while the reader scrolls.
+          if (track) track.scrollTo({ left: link.offsetLeft - (track.clientWidth - link.clientWidth) / 2,
+            behavior: reducedMotion() ? "auto" : "smooth" });
         } else {
           link.removeAttribute("aria-current");
         }
@@ -24,7 +171,7 @@
 
     const updateProgress = () => {
       frameRequested = false;
-      if (!progress || sections.length === 0) return;
+      if (!progress || sections.length === 0 || storyNav.closest("[data-story-panel]")?.hidden) return;
       const start = sections[0].offsetTop;
       const end = sections.at(-1).offsetTop + sections.at(-1).offsetHeight - window.innerHeight;
       const ratio = end <= start ? 1 : Math.min(1, Math.max(0, (window.scrollY - start) / (end - start)));
@@ -75,18 +222,19 @@
   if (!lab || !window.atlasI18n) return;
 
   const scenarios = [
-    { id: "normal", answer: "normal" },
-    { id: "reverse", answer: "reverse" },
-    { id: "strike", answer: "strike" },
+    { id: "normal", answer: "normal", image: "papers/tarbuck-normal-fault.webp", source: "figure.sourceTarbuckNormal", ref: "ref-tarbuck" },
+    { id: "reverse", answer: "unknown", image: "papers/pallatanga-riobamba-scarp.webp", source: "figure.sourceBaize2015C", ref: "ref-baize-2015" },
+    { id: "strike", answer: "strike", image: "papers/pallatanga-yacupamba-offset.webp", source: "figure.sourceBaize2015B", ref: "ref-baize-2015" },
   ];
   const answerButtons = [...lab.querySelectorAll("[data-lab-answer]")];
-  const scenes = [...lab.querySelectorAll("[data-lab-scene]")];
+
   const elements = {
     answers: lab.querySelector("[data-lab-answers]"),
     caseNumber: lab.querySelector("[data-lab-case]"),
     clue: lab.querySelector("[data-lab-clue]"),
     feedback: lab.querySelector("[data-lab-feedback]"),
     image: lab.querySelector("[data-lab-image]"),
+    source: lab.querySelector("[data-lab-source]"),
     kicker: lab.querySelector("[data-lab-kicker]"),
     next: lab.querySelector("[data-lab-next]"),
     nextLabel: lab.querySelector("[data-lab-next] span"),
@@ -145,14 +293,14 @@
     elements.kicker.textContent = t(scenarioKey("kicker"));
     elements.question.textContent = t(scenarioKey("question"));
     elements.clue.textContent = t(scenarioKey("clue"));
-    elements.image.setAttribute("aria-label", t(scenarioKey("imageAlt")));
+    elements.image.alt = t(scenarioKey("imageAlt"));
+    elements.image.src = "assets/images/education/" + scenario.image;
+    elements.source.textContent = t(scenario.source);
+    elements.source.href = "#" + scenario.ref;
     elements.nextLabel.textContent = t(
       currentIndex === scenarios.length - 1 ? "lab.results" : "lab.next",
     );
 
-    scenes.forEach((scene) => {
-      scene.classList.toggle("is-active", scene.dataset.labScene === scenario.id);
-    });
     answerButtons.forEach((button) => {
       const answer = button.dataset.labAnswer;
       const isSelected = answer === selectedAnswer;

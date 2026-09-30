@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Guía visual para aprender a reconocer, investigar e interpretar la expresión de las fallas y la deformación tectónica en el paisaje de Ecuador." />
-    <title>Ecuador Vivo | Aprende a leer una falla</title>
+    <meta name="description" content="Historias interactivas para entender la Tierra, el agua y la atmósfera de Ecuador, con figuras científicas, ejercicios y fuentes verificables." />
+    <title>Historias de una Tierra viva | Ecuador Vivo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260911-4" />
-    <link rel="stylesheet" href="assets/css/learn.css?v=20260913" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260929" />
+    <link rel="stylesheet" href="assets/css/learn.css?v=20260929" />
   </head>
   <body class="learn-page" data-page="learn">
     <a class="skip-link" href="#learn-content" data-i18n="skip.content">Ir al contenido</a>
@@ -26,33 +26,78 @@
       <div class="header-actions"><button class="language-toggle" type="button" data-language-toggle aria-label="Switch to English">EN</button></div>
     </header>
 
-    <nav class="story-nav" data-story-nav data-i18n-aria="storyNav.aria" aria-label="Capítulos de la historia">
+    <main id="learn-content">
+      <header class="stories-cover content-width" id="biblioteca">
+        <div>
+          <p class="eyebrow" data-i18n="library.eyebrow">Cuaderno de exploración · Ecuador</p>
+          <h1 data-i18n="library.title">Sigue las pistas.</h1>
+          <p class="stories-cover-lead" data-i18n="library.lead">Un río, una montaña, una nube. Lo cotidiano se vuelve extraordinario cuando preguntas cómo llegó a ser así.</p>
+        </div>
+        <div class="stories-method">
+          <p data-i18n="library.methodTitle">Una forma de descubrir</p>
+          <ol>
+            <li><span>01</span><b data-i18n="library.observe">Observa una señal</b></li>
+            <li><span>02</span><b data-i18n="library.connect">Explora el proceso</b></li>
+            <li><span>03</span><b data-i18n="library.test">Pon tu idea a prueba</b></li>
+          </ol>
+        </div>
+      </header>
+      <section class="story-library content-width" aria-labelledby="library-title">
+        <div class="library-heading">
+          <h2 id="library-title" data-i18n="library.choose">¿Qué historia quieres descubrir?</h2>
+          <p data-i18n="library.level">De lo básico a la interpretación · elige tu recorrido</p>
+        </div>
+        <div class="story-choices" data-story-choices role="tablist" data-i18n-aria="library.aria" aria-label="Elegir una historia">
+          <a class="story-choice earth-choice" id="choice-earth" href="?story=earth#story-earth" role="tab" aria-controls="story-earth" aria-selected="true" data-story-choice="earth">
+            <span class="choice-number">01 / <span data-i18n="systems.earth">Tierra</span></span>
+            <strong data-i18n="library.earthTitle">La memoria del paisaje</strong>
+            <span class="choice-question" data-i18n="library.earthQuestion">¿Cómo reconocemos una falla si no la vimos moverse?</span>
+            <span class="choice-meta"><span data-i18n="library.earthMeta">Fundamentos → campo · 12 min aprox.</span><b aria-hidden="true">↗</b></span>
+          </a>
+          <a class="story-choice water-choice" id="choice-water" href="?story=water#story-water" role="tab" aria-controls="story-water" aria-selected="false" tabindex="-1" data-story-choice="water">
+            <span class="choice-number">02 / <span data-i18n="systems.water">Agua</span></span>
+            <strong data-i18n="library.waterTitle">La lluvia es solo el comienzo</strong>
+            <span class="choice-question" data-i18n="library.waterQuestion">¿Por qué dos cuencas responden distinto al mismo aguacero?</span>
+            <span class="choice-meta"><span data-i18n="library.waterMeta">Cuencas → evidencia · 6 min aprox.</span><b aria-hidden="true">↗</b></span>
+          </a>
+          <a class="story-choice sky-choice" id="choice-sky" href="?story=sky#story-sky" role="tab" aria-controls="story-sky" aria-selected="false" tabindex="-1" data-story-choice="sky">
+            <span class="choice-number">03 / <span data-i18n="systems.sky">Cielo</span></span>
+            <strong data-i18n="library.skyTitle">Un cielo, varias señales</strong>
+            <span class="choice-question" data-i18n="library.skyQuestion">¿Puede una nube contarnos qué ocurre en el suelo?</span>
+            <span class="choice-meta"><span data-i18n="library.skyMeta">Observación → clima · 5 min aprox.</span><b aria-hidden="true">↗</b></span>
+          </a>
+        </div>
+      </section>
+      <article id="story-earth" role="tabpanel" aria-labelledby="choice-earth" tabindex="-1" data-story-panel="earth">
+        <nav class="story-nav" data-story-nav data-i18n-aria="storyNav.aria" aria-label="Capítulos de la historia">
       <div class="story-nav-track">
         <a href="#observar" data-story-link="observar"><span>01</span><b data-i18n="storyNav.observe">Observar</b></a>
         <a href="#fundamentos" data-story-link="fundamentos"><span>02</span><b data-i18n="storyNav.basics">Fundamentos</b></a>
-        <a href="#sismo" data-story-link="sismo"><span>03</span><b data-i18n="storyNav.quake">Sismo</b></a>
-        <a href="#paleosismologia" data-story-link="paleosismologia"><span>04</span><b data-i18n="storyNav.archive">Archivo</b></a>
+        <a href="#sismo" data-story-link="sismo"><span>03</span><b data-i18n="storyNav.quake">Sismos</b></a>
+        <a href="#paleosismologia" data-story-link="paleosismologia"><span>04</span><b data-i18n="storyNav.archive">Tiempo profundo</b></a>
         <a href="#caso-ecuador" data-story-link="caso-ecuador"><span>05</span><b data-i18n="storyNav.case">Ecuador</b></a>
         <a href="#laboratorio" data-story-link="laboratorio"><span>06</span><b data-i18n="storyNav.lab">Tu turno</b></a>
       </div>
       <span class="story-nav-progress" aria-hidden="true"><i data-story-progress></i></span>
     </nav>
 
-    <main id="learn-content">
+
+
       <!-- 01 — La pregunta -->
       <section class="learn-hero">
         <div class="hero-copy">
-          <p class="eyebrow" data-i18n="hero.eyebrow">Guía visual de campo</p>
-          <h1 data-i18n="hero.title">Un terremoto dura segundos. Su huella puede durar milenios.</h1>
-          <p class="hero-lead" data-i18n="hero.copy">Si nadie vio aquel terremoto y ningún instrumento lo registró, ¿cómo sabemos que ocurrió? La respuesta está escrita en pendientes, ríos y capas de roca. Esta historia te enseña a leerlas.</p>
-          <a class="primary-action" href="./"><span data-i18n="hero.cta">Explorar el mapa</span><span aria-hidden="true">↗</span></a>
+          <a class="story-back" href="#biblioteca" data-i18n="library.back">Volver a las historias</a>
+          <p class="eyebrow" data-i18n="earthStory.eyebrow">Historia 01 · Tierra · observar antes de interpretar</p>
+          <h2 data-i18n="earthStory.title">La memoria del paisaje</h2>
+          <p class="hero-lead" data-i18n="earthStory.lead">Una pendiente cambia. Un río parece desplazado. ¿Es tectónica o hay otra explicación? Aprende a mirar las formas, entender el movimiento y contrastar las pistas con estudios de Ecuador.</p>
+          <a class="primary-action" href="#observar"><span data-i18n="library.begin">Empezar a leer</span><span aria-hidden="true">↓</span></a>
         </div>
         <figure class="hero-visual">
           <picture>
             <source type="image/webp" srcset="assets/images/education/riobamba-lican-scarp-768.webp 768w, assets/images/education/riobamba-lican-scarp-1287.webp 1283w" sizes="(max-width: 58rem) 92vw, 48vw" />
             <img src="assets/images/education/riobamba-lican-scarp.jpg" width="1283" height="435" alt="Vista del escarpe acumulado del segmento Riobamba-Licán y croquis interpretativo" data-i18n-alt="alt.hero" fetchpriority="high" decoding="async" />
           </picture>
-          <figcaption><span><span data-i18n="hero.caption">Escarpe acumulado de Riobamba-Licán.</span> <a href="#ref-baize-2015" data-i18n="figure.sourceBaize">Baize et al. (2015), fig. 6C</a></span><span aria-hidden="true">01 / 06</span></figcaption>
+          <figcaption><span><span data-i18n="hero.caption">Escarpe acumulado de Riobamba-Licán.</span> <a href="#ref-baize-2015" data-i18n="figure.sourceBaize">Baize et al. (2015), fig. 6C</a></span><span data-i18n="earthStory.evidence">Evidencia de campo</span></figcaption>
         </figure>
         <span class="hero-coordinate" data-i18n="hero.place">Riobamba · Chimborazo</span>
       </section>
@@ -70,6 +115,22 @@
           <figcaption><span data-i18n="figure.papanikolaou">Formas del relieve, sedimentos y evidencias sísmicas a escalas de escarpe y frente montañoso.</span> <a href="#ref-papanikolaou-2015" data-i18n="figure.sourcePapanikolaou">Papanikolaou et al. (2015), fig. 2</a></figcaption>
         </figure>
       </section>
+
+      <!-- 04 — Qué es una falla -->
+      <section class="definition-section content-width" id="fundamentos" data-story-section="fundamentos">
+        <div class="section-index" data-i18n="fundamentals.number">02 — Fundamentos</div>
+        <div class="definition-copy">
+          <h2 data-i18n="fundamentals.title">Entonces, ¿qué es una falla geológica?</h2>
+          <p class="section-lead" data-i18n="fundamentals.lead">Es una fractura —o una zona de fracturas— en la corteza donde existe desplazamiento relativo entre bloques de roca.</p>
+          <p data-i18n="fundamentals.copy">En superficie observamos la traza: la intersección aproximada entre la falla y el terreno. En profundidad, la estructura puede inclinarse, ramificarse y formar una zona compleja de deformación.</p>
+          <p data-i18n="fundamentals.model">Mapear una falla es reconstruir una estructura tridimensional a partir de señales incompletas en la superficie y el subsuelo.</p>
+        </div>
+        <figure class="definition-diagram">
+          <img src="assets/images/education/papers/tarbuck-fault-anatomy.webp" width="580" height="850" alt="Bloque diagrama publicado que identifica el techo, muro, traza y plano de una falla" data-i18n-alt="alt.anatomy" loading="lazy" decoding="async" />
+          <figcaption><span data-i18n="figure.tarbuckAnatomy">La geometría básica de una falla: plano, traza, techo y muro.</span> <a href="#ref-tarbuck" data-i18n="figure.sourceTarbuckAnatomy">Tarbuck et al., fig. 10.17</a></figcaption>
+        </figure>
+      </section>
+
 
       <!-- 03 — Evidencia convergente -->
       <section class="types-section" id="movimientos">
@@ -111,21 +172,6 @@
           </div>
           <p class="section-note" data-i18n="types.note">La forma del relieve sugiere una historia; la geometría de la falla, la geología de campo y otras mediciones permiten ponerla a prueba. No confundas una hipótesis razonable con una demostración.</p>
         </div>
-      </section>
-
-      <!-- 04 — Qué es una falla -->
-      <section class="definition-section content-width" id="fundamentos" data-story-section="fundamentos">
-        <div class="section-index" data-i18n="fundamentals.number">02 — Fundamentos</div>
-        <div class="definition-copy">
-          <h2 data-i18n="fundamentals.title">Entonces, ¿qué es una falla geológica?</h2>
-          <p class="section-lead" data-i18n="fundamentals.lead">Es una fractura —o una zona de fracturas— en la corteza donde existe desplazamiento relativo entre bloques de roca.</p>
-          <p data-i18n="fundamentals.copy">En superficie observamos la traza: la intersección aproximada entre la falla y el terreno. En profundidad, la estructura puede inclinarse, ramificarse y formar una zona compleja de deformación.</p>
-          <p data-i18n="fundamentals.model">Mapear una falla es reconstruir una estructura tridimensional a partir de señales incompletas en la superficie y el subsuelo.</p>
-        </div>
-        <figure class="definition-diagram">
-          <img src="assets/images/education/papers/tarbuck-fault-anatomy.webp" width="580" height="850" alt="Bloque diagrama publicado que identifica el techo, muro, traza y plano de una falla" data-i18n-alt="alt.anatomy" loading="lazy" decoding="async" />
-          <figcaption><span data-i18n="figure.tarbuckAnatomy">La geometría básica de una falla: plano, traza, techo y muro.</span> <a href="#ref-tarbuck" data-i18n="figure.sourceTarbuckAnatomy">Tarbuck et al., fig. 10.17</a></figcaption>
-        </figure>
       </section>
 
       <!-- 05 — Qué es un sismo -->
@@ -321,38 +367,10 @@
           <div class="field-lab-shell" data-field-lab>
             <div class="lab-visual">
               <div class="lab-visual-topline"><span data-i18n="lab.caseLabel">Caso de campo</span><strong data-lab-case>01</strong></div>
-              <svg class="lab-diagram" viewBox="0 0 720 420" role="img" data-lab-image aria-label="Bloques separados por una falla normal">
-                <defs>
-                  <linearGradient id="lab-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#163a43"/><stop offset="1" stop-color="#0c2024"/></linearGradient>
-                  <linearGradient id="lab-rock" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8a870"/><stop offset="1" stop-color="#7e573c"/></linearGradient>
-                  <linearGradient id="lab-rock-light" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e7c18f"/><stop offset="1" stop-color="#9d704a"/></linearGradient>
-                  <filter id="lab-shadow"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#020b0d" flood-opacity=".42"/></filter>
-                </defs>
-                <rect width="720" height="420" rx="20" fill="url(#lab-sky)"/>
-                <g opacity=".25" fill="none" stroke="#9bd1c8" stroke-width="2"><path d="M20 85c90-55 180-55 270 0s180 55 270 0 120-35 150-18"/><path d="M8 112c100-48 195-46 282 7s177 52 264 0 119-42 160-20"/><path d="M0 145c95-40 185-35 270 14s180 46 270 0 125-47 180-22"/></g>
-
-                <g class="lab-scene is-active" data-lab-scene="normal" filter="url(#lab-shadow)">
-                  <path d="M52 174L302 126L350 205L350 382L52 382Z" fill="url(#lab-rock-light)"/><path d="M350 246L666 205L666 382L350 382Z" fill="url(#lab-rock)"/>
-                  <path d="M52 218L315 170M52 266L331 214M52 316L346 258M350 289L666 248M350 333L666 292" fill="none" stroke="#f0d5ad" stroke-width="7" opacity=".75"/>
-                  <path d="M320 137L383 382" stroke="#ff765f" stroke-width="8" stroke-linecap="round"/>
-                  <path d="M220 96v75m0 0-19-25m19 25 19-25M520 139v75m0 0-19-25m19 25 19-25" fill="none" stroke="#ffd05c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-                </g>
-
-                <g class="lab-scene" data-lab-scene="reverse" filter="url(#lab-shadow)">
-                  <path d="M52 218L325 165L370 382L52 382Z" fill="url(#lab-rock)"/><path d="M325 112L666 173L666 382L370 382Z" fill="url(#lab-rock-light)"/>
-                  <path d="M52 261L336 208M52 309L346 253M52 351L356 300M338 157L666 216M348 204L666 260M358 252L666 306" fill="none" stroke="#f0d5ad" stroke-width="7" opacity=".75"/>
-                  <path d="M325 124L398 382" stroke="#ff765f" stroke-width="8" stroke-linecap="round"/>
-                  <path d="M190 198h88m0 0-27-18m27 18-27 18M548 198h-88m0 0 27-18m-27 18 27 18" fill="none" stroke="#ffd05c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-                </g>
-
-                <g class="lab-scene" data-lab-scene="strike" filter="url(#lab-shadow)">
-                  <path d="M52 76H342V382H52Z" fill="#8aa06b"/><path d="M378 76H666V382H378Z" fill="#789360"/>
-                  <path d="M342 70L378 388" stroke="#ff765f" stroke-width="8" stroke-linecap="round"/>
-                  <path d="M72 95c92 42 190 35 270 95M378 230c84 62 177 47 268 104" fill="none" stroke="#58c6de" stroke-width="19" stroke-linecap="round"/>
-                  <path d="M150 330V174m0 0-19 28m19-28 19 28M565 142v158m0 0-19-28m19 28 19-28" fill="none" stroke="#ffd05c" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-                  <g fill="none" stroke="#b9c99c" stroke-width="3" opacity=".55"><path d="M75 120c70 46 150 57 238 35"/><path d="M83 295c85-45 158-48 229-12"/><path d="M412 118c75 38 148 40 220 4"/><path d="M420 331c70-34 137-29 205 15"/></g>
-                </g>
-              </svg>
+              <figure class="lab-published-figure">
+                <img class="lab-diagram" data-lab-image src="assets/images/education/papers/tarbuck-normal-fault.webp" alt="Secuencia publicada de bloques y estratos desplazados" loading="lazy" decoding="async" />
+                <figcaption><a data-lab-source href="#ref-tarbuck">Tarbuck et al., fig. 10.18</a></figcaption>
+              </figure>
               <p class="lab-visual-note" data-i18n="lab.visualNote">Esquema conceptual · no está a escala</p>
             </div>
 
@@ -367,6 +385,7 @@
                 <button type="button" data-lab-answer="normal"><span>A</span><strong data-i18n="types.normal">Falla normal</strong></button>
                 <button type="button" data-lab-answer="reverse"><span>B</span><strong data-i18n="types.reverse">Falla inversa</strong></button>
                 <button type="button" data-lab-answer="strike"><span>C</span><strong data-i18n="types.strike">Falla de rumbo</strong></button>
+                <button type="button" data-lab-answer="unknown"><span>D</span><strong data-i18n="lab.unknown">La imagen no basta</strong></button>
               </fieldset>
 
               <div class="lab-feedback" data-lab-feedback role="status" aria-live="polite" hidden></div>
@@ -402,6 +421,7 @@
         </ol>
       </section>
 
+      <div class="earth-map-mission content-width"><a class="primary-action" data-story-map href="./?system=earth&amp;tour=earth"><span data-i18n="earthStory.map">Explorar los Andes centrales</span><span aria-hidden="true">↗</span></a></div>
       <!-- 13 — Fuentes -->
       <section class="sources-section content-width">
         <div>
@@ -451,6 +471,69 @@
         </nav>
       </section>
 
+
+      </article>
+      <article id="story-water" class="short-story water-story" role="tabpanel" aria-labelledby="choice-water" tabindex="-1" data-story-panel="water">
+        <div class="content-width">
+          <a class="story-back" href="#biblioteca" data-i18n="library.back">Volver a las historias ↑</a>
+          <header class="short-story-head"><p class="eyebrow" data-i18n="waterStory.eyebrow">Historia 02 · Agua, relieve y riesgo</p><h2 data-i18n="waterStory.title">La lluvia es solo el comienzo</h2><p class="section-lead" data-i18n="waterStory.lead">Imagina el mismo aguacero sobre dos cuencas. ¿Llegaría la misma cantidad de agua al río, al mismo tiempo? La lluvia pone en marcha la historia; el territorio decide parte de su recorrido.</p></header>
+          <section><p class="section-index" data-i18n="waterStory.first">01 — Sigue el recorrido</p><h3 data-i18n="waterStory.basinTitle">El río comienza mucho antes de su orilla</h3><p data-i18n="waterStory.basinCopy">Una cuenca reúne el terreno que drena hacia una salida común. Sus divisorias siguen zonas altas del relieve. Para entender lo que pasa aguas abajo, también hay que mirar el área que aporta agua aguas arriba.</p>
+            <ol class="water-path"><li><span>01</span><div><h4 data-i18n="waterStory.route1">Cae sobre una cuenca</h4><p data-i18n="waterStory.route1Copy">Importan la cantidad, la intensidad, la duración y dónde cae la lluvia.</p></div></li>
+<li><span>02</span><div><h4 data-i18n="waterStory.route2">Se reparte en el territorio</h4><p data-i18n="waterStory.route2Copy">Parte se infiltra o queda almacenada; parte escurre. El suelo, la cobertura y la humedad previa influyen en esa distribución.</p></div></li>
+<li><span>03</span><div><h4 data-i18n="waterStory.route3">Converge hacia los cauces</h4><p data-i18n="waterStory.route3Copy">La forma de la cuenca, las pendientes y los canales influyen en la llegada del agua al río.</p></div></li></ol>
+            <p class="story-citation"><a href="https://www.usgs.gov/water-science-school/science/watersheds-and-drainage-basins" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refBasins">USGS · Cuencas y áreas de drenaje</a> · <a href="https://www.usgs.gov/water-science-school/science/surface-runoff-and-water-cycle" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refRunoff">USGS · Escorrentía superficial</a></p>
+          </section>
+          <section><p class="section-index" data-i18n="waterStory.second">02 — La pregunta cambia</p><h3 data-i18n="waterStory.responseTitle">La misma lluvia no garantiza la misma respuesta</h3><p data-i18n="waterStory.responseCopy">El pavimento puede reducir la infiltración y acelerar la escorrentía. Un suelo ya húmedo también puede almacenar menos agua adicional. Comparar solo los colores de la lluvia deja fuera esas condiciones y la capacidad de los cauces.</p><p class="story-citation"><a href="https://pubs.usgs.gov/fs/fs07603/" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refUrban">USGS · Efectos del desarrollo urbano sobre las inundaciones</a></p></section>
+          <section class="story-check" data-learning-check data-correct-answer="B" aria-labelledby="waterStory-check-title">
+<h3 id="waterStory-check-title" data-i18n="waterStory.checkTitle">Pon a prueba tu interpretación</h3>
+<p data-i18n="waterStory.checkQuestion">Dos cuencas muestran una señal satelital de lluvia parecida. ¿Qué necesitamos para comparar su respuesta?</p>
+<div class="check-options"><button type="button" data-check-choice="A" aria-pressed="false"><span>A</span><b data-i18n="waterStory.answerA">Solo el color más intenso del mapa</b></button>
+<button type="button" data-check-choice="B" aria-pressed="false"><span>B</span><b data-i18n="waterStory.answerB">Suelo, humedad previa, cobertura y red de drenaje</b></button>
+<button type="button" data-check-choice="C" aria-pressed="false"><span>C</span><b data-i18n="waterStory.answerC">Solo la distancia al río más cercano</b></button></div>
+<div data-check-feedback role="status" aria-live="polite" tabindex="-1" hidden><strong data-check-heading></strong><p data-i18n="waterStory.feedback">La opción B reúne condiciones que afectan la respuesta. También necesitamos mediciones y tiempos comparables; este ejercicio no calcula caudal ni predice inundaciones.</p></div>
+</section>
+          <section><p class="section-index" data-i18n="waterStory.third">03 — Del proceso a la evidencia</p><h3 data-i18n="waterStory.readTitle">Tres capas, tres preguntas distintas</h3>
+            <div class="signal-cards"><article><span>01</span><h4 data-i18n="waterStory.rainTitle">Lluvia satelital</h4><p data-i18n="waterStory.rainCopy">IMERG estima precipitación. Revisa fecha, unidades y resolución; una tasa no equivale a un acumulado ni describe por sí sola el caudal.</p></article>
+<article><span>02</span><h4 data-i18n="waterStory.stationTitle">Estaciones en tierra</h4><p data-i18n="waterStory.stationCopy">La instantánea de INAMHI muestra ubicaciones y metadatos. «Transmitiendo» describe su estado al recuperarla; aquí no hay una serie de lluvia o caudal.</p></article>
+<article><span>03</span><h4 data-i18n="waterStory.floodTitle">Agua observada</h4><p data-i18n="waterStory.floodCopy">VIIRS aporta una señal de agua superficial o inundación. Contrasta nubes, fecha y contexto; su ausencia no demuestra que un lugar esté seco.</p></article></div>
+            <p class="story-citation"><a href="https://gpm.nasa.gov/data/imerg" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refImerg">NASA GPM · IMERG</a> · <a href="documentation/data-sources.md" data-i18n="waterStory.refAtlas">Metadatos y condiciones de las capas del atlas</a></p>
+          </section>
+          <details class="story-advanced"><summary data-i18n="waterStory.advancedTitle">Un paso más: amenaza, exposición y riesgo</summary><p data-i18n="waterStory.advancedCopy">Para estimar consecuencias se necesita saber dónde puede llegar el agua, qué personas o bienes están expuestos y cuán vulnerables son. Estas capas aportan contexto; un estudio de riesgo requiere datos y métodos adicionales.</p></details>
+          <section class="story-mission"><h3 data-i18n="waterStory.missionTitle">Tu recorrido en el atlas</h3><p data-i18n="waterStory.missionCopy">Abre Agua, compara las divisorias de cuenca con el relieve y examina la lluvia de una fecha. Después busca una estación: ¿tienes una medición o solo su ubicación? Anota qué puedes afirmar y qué dato falta.</p><a class="primary-action" data-story-map href="./?system=water&amp;tour=water"><span data-i18n="waterStory.map">Explorar cuencas y lluvia</span><span aria-hidden="true">↗</span></a></section>
+          <p class="story-source-note" data-i18n="waterStory.sourcesCopy">Síntesis educativa de USGS; productos y límites de lectura documentados por NASA y por el atlas. No describe un evento específico en Ecuador.</p>
+          <aside class="story-sources" aria-labelledby="waterStory-sources"><h3 id="waterStory-sources" data-i18n="waterStory.sources">Fuentes de esta historia</h3><ul><li><a href="https://www.usgs.gov/water-science-school/science/watersheds-and-drainage-basins" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refBasins">USGS · Cuencas y áreas de drenaje</a></li>
+<li><a href="https://www.usgs.gov/water-science-school/science/surface-runoff-and-water-cycle" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refRunoff">USGS · Escorrentía superficial</a></li>
+<li><a href="https://pubs.usgs.gov/fs/fs07603/" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refUrban">USGS · Efectos del desarrollo urbano sobre las inundaciones</a></li>
+<li><a href="https://gpm.nasa.gov/data/imerg" target="_blank" rel="noopener noreferrer" data-i18n="waterStory.refImerg">NASA GPM · IMERG</a></li></ul></aside>
+        </div>
+      </article>
+      <article id="story-sky" class="short-story sky-story" role="tabpanel" aria-labelledby="choice-sky" tabindex="-1" data-story-panel="sky">
+        <div class="content-width">
+          <a class="story-back" href="#biblioteca" data-i18n="library.back">Volver a las historias ↑</a>
+          <header class="short-story-head"><p class="eyebrow" data-i18n="skyStory.eyebrow">Historia 03 · Atmósfera y observación</p><h2 data-i18n="skyStory.title">Un cielo, varias señales</h2><p class="section-lead" data-i18n="skyStory.lead">Ves una nube en el mapa. ¿Está lloviendo debajo? La respuesta exige otra observación. Aprender a separar señales es el primer paso para entender la atmósfera.</p></header>
+          <section><p class="section-index" data-i18n="skyStory.first">01 — Cada capa responde algo distinto</p>
+            <div class="signal-cards"><article><span>01</span><h3 data-i18n="skyStory.cloudTitle">Nubosidad</h3><p data-i18n="skyStory.cloudCopy">La fracción de nube describe cobertura observada. No es una probabilidad de lluvia: saber que hay nubes no demuestra que estén precipitando.</p></article>
+<article><span>02</span><h3 data-i18n="skyStory.rainTitle">Precipitación</h3><p data-i18n="skyStory.rainCopy">IMERG estima lluvia combinando observaciones. Compara su fecha con la de las nubes antes de relacionar ambos patrones.</p></article>
+<article><span>03</span><h3 data-i18n="skyStory.tempTitle">Temperatura del aire</h3><p data-i18n="skyStory.tempCopy">AIRS muestra un patrón térmico regional en una cuadrícula de 1°. Ese valor no describe una calle ni es la temperatura máxima o la sensación térmica.</p></article></div>
+            <p class="story-citation"><a href="https://modis.gsfc.nasa.gov/data/dataprod/pdf/MOD_06.pdf" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refCloud">NASA MODIS · Producto de nubes</a> · <a href="https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/AIRS_L3_Surface_Air_Temperature_Daily_Day.json" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refTemperature">NASA GIBS · Metadatos de temperatura AIRS</a></p>
+          </section>
+          <section><p class="section-index" data-i18n="skyStory.second">02 — El tiempo importa</p><h3 data-i18n="skyStory.climateTitle">Un día es una escena. El clima necesita una secuencia.</h3><p data-i18n="skyStory.climateCopy">El tiempo atmosférico describe condiciones de corta duración. El clima se estudia con registros de largo plazo. Un día frío, una nube o un mosaico aislado no permiten demostrar una tendencia climática.</p><p class="story-citation"><a href="https://science.nasa.gov/climate-change/faq/whats-the-difference-between-weather-and-climate/" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refClimate">NASA · Diferencia entre tiempo y clima</a></p></section>
+          <section class="story-check" data-learning-check data-correct-answer="C" aria-labelledby="skyStory-check-title">
+<h3 id="skyStory-check-title" data-i18n="skyStory.checkTitle">Una nube sobre tu ciudad</h3>
+<p data-i18n="skyStory.checkQuestion">La capa MODIS muestra nubosidad. ¿Qué puedes concluir con esa señal sola?</p>
+<div class="check-options"><button type="button" data-check-choice="A" aria-pressed="false"><span>A</span><b data-i18n="skyStory.answerA">Que necesariamente está lloviendo</b></button>
+<button type="button" data-check-choice="B" aria-pressed="false"><span>B</span><b data-i18n="skyStory.answerB">Que mañana habrá una tormenta</b></button>
+<button type="button" data-check-choice="C" aria-pressed="false"><span>C</span><b data-i18n="skyStory.answerC">Que hubo cobertura de nube en la observación</b></button></div>
+<div data-check-feedback role="status" aria-live="polite" tabindex="-1" hidden><strong data-check-heading></strong><p data-i18n="skyStory.feedback">La opción C se mantiene dentro de lo observado. Para hablar de lluvia necesitas otra evidencia; para un pronóstico, un análisis meteorológico. Comprueba siempre la fecha y la cobertura.</p></div>
+</section>
+          <details class="story-advanced"><summary data-i18n="skyStory.advancedTitle">Un paso más: comparar sin confundir</summary><p data-i18n="skyStory.advancedCopy">Dos productos pueden tener horas de paso, resoluciones y áreas sin datos distintas aunque compartan una fecha. Una coincidencia visual sugiere una pregunta; atribuir una causa exige observaciones comparables y un análisis adicional.</p></details>
+          <section class="story-mission"><h3 data-i18n="skyStory.missionTitle">Tu recorrido en el atlas</h3><p data-i18n="skyStory.missionCopy">Abre Cielo y comienza con nubosidad. Activa después lluvia o temperatura, una capa a la vez. Lee sus fechas y escalas: ¿qué comparación es razonable y cuál exige datos más detallados?</p><a class="primary-action" data-story-map href="./?system=sky&amp;tour=sky"><span data-i18n="skyStory.map">Explorar la atmósfera</span><span aria-hidden="true">↗</span></a></section>
+          <aside class="story-sources" aria-labelledby="skyStory-sources"><h3 id="skyStory-sources" data-i18n="skyStory.sources">Fuentes de esta historia</h3><ul><li><a href="https://modis.gsfc.nasa.gov/data/dataprod/pdf/MOD_06.pdf" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refCloud">NASA MODIS · Producto de nubes</a></li>
+<li><a href="https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/AIRS_L3_Surface_Air_Temperature_Daily_Day.json" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refTemperature">NASA GIBS · Metadatos de temperatura AIRS</a></li>
+<li><a href="https://science.nasa.gov/climate-change/faq/whats-the-difference-between-weather-and-climate/" target="_blank" rel="noopener noreferrer" data-i18n="skyStory.refClimate">NASA · Diferencia entre tiempo y clima</a></li></ul></aside>
+        </div>
+      </article>
+
       <section class="learn-cta">
         <div>
           <p class="eyebrow" data-i18n="cta.eyebrow">Ahora mira el territorio</p>
@@ -464,7 +547,7 @@
 
     <footer class="learn-footer"><span data-i18n="footer.credit">Desarrollado por Henry P. Conteron Moreta</span><span data-i18n="footer.disciplines">Geociencias · SIG · Ecuador</span></footer>
 
-    <script src="assets/js/i18n.js?v=20260911-4"></script>
-    <script src="assets/js/learn.js?v=20260911"></script>
+    <script src="assets/js/i18n.js?v=20260929"></script>
+    <script src="assets/js/learn.js?v=20260929"></script>
   </body>
 </html>

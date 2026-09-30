@@ -1,0 +1,17 @@
+{
+  "source_ground_raster": "MDT_ground_observado_1m.tif",
+  "footprint_reference": "MDS_todas_clases_sin_ruido_1m.tif",
+  "cell_size_m": 1,
+  "all_class_footprint_buffer_m": 10,
+  "method": "2D linear interpolation of observed Ground medians; nearest Ground outside their convex hull; Gaussian sigma 1 m only on estimates; direct Ground cells restored unchanged",
+  "ground_observed_cells": 152920,
+  "all_class_observed_cells": 368902,
+  "context_footprint_cells": 405975,
+  "context_cells_over_60m_from_ground": 28568,
+  "context_cells_over_100m_from_ground": 8025,
+  "nearest_extrapolated_cells_outside_ground_convex_hull": 19619,
+  "minimum_context_m": 594.3699951171875,
+  "maximum_context_m": 632.7950439453125,
+  "direct_ground_preserved_exactly": true,
+  "limitation": "Visualization only. Interpolated/extrapolated cells are not measured terrain or valid for scarp-height estimates."
+}

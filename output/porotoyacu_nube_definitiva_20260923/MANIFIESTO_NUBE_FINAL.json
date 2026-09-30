@@ -1,0 +1,38 @@
+{
+  "source_laz": "C:\\Users\\JHONY CONTERON\\Downloads\\Perimetral 1-20260831T211605Z-1-001\\ENTREGA_FINAL_MICRORELIEVE_PERFILES_20260923\\NUBE_COMPLETA_FINAL_TERRENO_MICRORELIEVE_DEPURADO_UTM18S.laz",
+  "source_sha256": "69106c3d56a8819a4603118a7042b082b6331894de0489e7cda7f2e31d5439b2",
+  "source_bytes": 168076035,
+  "header_points": 13619241,
+  "ground_points": 2810862,
+  "class_counts": {
+    "0": 108571,
+    "1": 16516,
+    "2": 2810862,
+    "3": 6239,
+    "4": 165533,
+    "5": 9345777,
+    "6": 707255,
+    "7": 120,
+    "11": 458368
+  },
+  "crs": "EPSG:32718",
+  "cell_m": 1.0,
+  "geometry_csv": "C:\\Users\\JHONY CONTERON\\Downloads\\Perimetral 1-20260831T211605Z-1-001\\Porotoyacu_analisis_reproducible\\porotoyacu_analysis\\resultados_perfiles\\perfiles_DTM_DSM_05m.csv",
+  "geometry_sha256": "0a6bec5dda08c49d5ca3529c389156ea197ef22201f7b840757c9c9c74faed49",
+  "ground_cells_1m": 152920,
+  "profile_swath_halfwidths_m": [
+    2.5,
+    5.0,
+    7.5
+  ],
+  "valid_swath_bin": "At least three Ground points in a 1 m bin; no gap filling",
+  "figure_profile_aspect": "1:1 physical metric axis scaling (180 m x 50 m)",
+  "representative_profiles": [
+    "P32",
+    "P21",
+    "P18",
+    "P11",
+    "P4"
+  ],
+  "caveat": "Context rasters are interpolated visualization aids, not direct observations."
+}
