@@ -25,3 +25,4 @@ jobs:
       - run: python scripts/fetch_catalog_inputs.py --help
       - run: python scripts/build_fault_catalog.py --help
       - run: python scripts/build_napo_landcover.py --help
+      - run: python scripts/build_napo_imagery.py --help

@@ -82,6 +82,8 @@
 .story-advanced { margin-top: 2rem; border-block: 1px solid #a6b7ab; padding-block: 1rem; }
 .story-advanced summary { cursor: pointer; font-weight: 700; }
 .story-mission { border-left: 4px solid var(--soil); padding-left: 1.5rem; }
+.stories-lab-link { font-size: 0.9rem; line-height: 1.7; padding-bottom: 1rem; }
+.stories-lab-link a { color: var(--soil); font-weight: 700; text-underline-offset: 0.2em; }
 .story-source-note { margin-top: 3rem; font-size: 0.85rem; color: #57665d; }
 .story-sources { border-top: 1px solid #b4b7a9; padding-top: 1rem; margin-top: 2rem; }
 .story-sources h3 { font-size: 1.4rem; }

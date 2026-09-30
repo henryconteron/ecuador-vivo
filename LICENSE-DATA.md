@@ -68,6 +68,26 @@ El manifiesto `data/landcover/napo-manifest.json` conserva parámetros y SHA-256
 [método y limitaciones](documentation/napo-landcover.md). No se interpretan los
 porcentajes como áreas cantonales ni como prueba automática de deforestación.
 
+## Imagen óptica de Napo
+
+`assets/images/imagery/napo-sentinel2-2024.webp` es una composición modificada de
+**Copernicus Sentinel-2 L2A SR Harmonized**, bandas B4/B3/B2, adquisiciones de 2024.
+Se rige por las [condiciones de los datos Sentinel](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED),
+no por la licencia MIT del código. Atribución: **Contains modified Copernicus
+Sentinel data (2024)**. Modificaciones: filtro de calidad, mediana por banda,
+recorte Tena–Archidona, muestreo a 30 m, reproyección y ajuste visual RGB/WebP.
+
+La máscara utiliza **Google Cloud Score+ S2_HARMONIZED V1** bajo
+[CC BY 4.0, según su ficha oficial](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_CLOUD_SCORE_PLUS_V1_S2_HARMONIZED).
+Cita del método: Pasquarella, Brown, Czerwinski y Rucklidge (2023),
+[doi:10.1109/CVPRW59228.2023.00206](https://doi.org/10.1109/CVPRW59228.2023.00206).
+
+`assets/images/imagery/napo-mapbiomas-2024.png` conserva la atribución y licencia
+CC BY 4.0 de MapBiomas Ecuador V1; es la vista 2024 anterior con una máscara óptica
+común adicional. No se interpola su clasificación ni se cambia su leyenda.
+El manifiesto `data/imagery/napo-manifest.json` conserva escenas, fechas,
+parámetros y SHA-256; [método y límites](documentation/napo-imagery.md).
+
 ## Datos demostrativos
 
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor

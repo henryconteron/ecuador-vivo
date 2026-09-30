@@ -154,6 +154,14 @@ export const SOURCE_CATALOG = Object.freeze([
     url: "https://chc.ucsb.edu/data/chirps3",
   },
   {
+    id: "sentinel2-napo", systems: ["life"], status: "connected",
+    access: {es: "Composición local · Earth Engine", en: "Local composite · Earth Engine"},
+    institution: "Copernicus / ESA · Google Earth Engine",
+    name: {es: "Sentinel-2 y Cloud Score+ · Napo", en: "Sentinel-2 and Cloud Score+ · Napo"},
+    purpose: {es: "Mediana óptica 2024, entradas de 10 m muestreadas a 30 m; contexto visual, no validación independiente de MapBiomas", en: "2024 optical median, 10 m inputs sampled at 30 m; visual context, not independent MapBiomas validation"},
+    url: "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+  },
+  {
     id: "copernicus-era5-land", systems: ["sky"], status: "candidate",
     access: { es: "CDS · recorte procesado", en: "CDS · processed subset" }, institution: "ECMWF / Copernicus",
     name: { es: "Temperatura a 2 m ERA5-Land", en: "ERA5-Land 2 m temperature" },

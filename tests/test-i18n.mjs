@@ -27,7 +27,7 @@ vm.runInContext(fs.readFileSync("assets/js/i18n.js", "utf8"), context);
 const markup = ["index.html", "learn.html"]
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
-const runtimeSource = ["assets/js/learn.js", "assets/js/map.js", "assets/js/map/landcover.js"]
+const runtimeSource = ["assets/js/learn.js", "assets/js/map.js", "assets/js/map/landcover.js", "assets/js/map/imagery.js"]
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
 const keys = [
@@ -36,6 +36,7 @@ const keys = [
     "popup.referenceScope.individual",
     "popup.referenceScope.catalogOnly",
     ...["loading", "pending", "error", "ready", "imageLoading", "visible", "imageError"].map(state => `landcover.${state}`),
+    ...["loading", "pending", "error", "ready", "imageLoading", "imageReady", "imageError"].map(state => `imagery.${state}`),
     ...[...markup.matchAll(/data-i18n(?:-[a-z-]+)?="([^"]+)"/g)].map(
       (match) => match[1],
     ),

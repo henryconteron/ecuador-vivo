@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "source": {
+    "asset": "COPERNICUS/S2_SR_HARMONIZED",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+    "quality_asset": "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED",
+    "quality_url": "https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_CLOUD_SCORE_PLUS_V1_S2_HARMONIZED",
+    "attribution": "Contains modified Copernicus Sentinel data (2024); Cloud Score+ by Google Earth Engine",
+    "license": "Copernicus Sentinel Data Terms and Conditions; Cloud Score+ CC-BY-4.0",
+    "nominal_resolution_m": 10
+  },
+  "period": ["2024-01-01", "2025-01-01"],
+  "bbox": [-78.04, -1.12, -77.55, -0.72],
+  "scope": "editorial-window-not-administrative",
+  "bands": ["B4", "B3", "B2", "clear_count"],
+  "quality_band": "cs_cdf",
+  "clear_threshold": 0.65,
+  "min_observations": 3,
+  "excluded_scl": [0, 1, 3, 8, 9, 10, 11],
+  "composite": "per-band-median",
+  "export_crs": "EPSG:32718",
+  "export_scale_m": 30,
+  "display": {"reflectance_min": 0, "reflectance_max": 0.3, "gamma": 1.2}
+}

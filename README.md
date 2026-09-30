@@ -47,6 +47,10 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
   con exportación reproducible, recibo de procedencia y estadísticas sobre la cuadrícula
   nativa común; [método y límites](documentation/napo-landcover.md). Es una ventana
   editorial, no límites cantonales ni una estimación automática de deforestación;
+- laboratorio **Imagen frente a interpretación**: composición Sentinel-2 de 2024 y
+  clasificación MapBiomas sobre una misma vista Tena–Archidona, con deslizador,
+  filtro de nubes, cobertura útil, fuentes y controles de teclado; no es una
+  validación independiente del clasificador. [Método reproducible](documentation/napo-imagery.md);
 - mapa web adaptable a computadoras y teléfonos;
 - mapa topográfico principal y mapa de calles alternativo;
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;

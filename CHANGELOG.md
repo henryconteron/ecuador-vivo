@@ -2,6 +2,10 @@
 
 ## Sin publicar — 2026-09-30
 
+- Laboratorio visual bilingüe Sentinel-2/MapBiomas 2024: comparación deslizable de
+  Tena–Archidona, 296 escenas enlazadas a QA, máscara común explícita, calidad y fuentes.
+- Procesador Python de imagen óptica con recibo, SHA-256, rejilla compartida y
+  pruebas de procedencia, máscara y conservación de píxeles oscuros válidos.
 - Comparación real MapBiomas Ecuador V1 2000/2024 en la ventana Tena–Archidona,
   con cuadrícula nativa común, recibo, SHA-256, leyenda dinámica y atribución CC BY 4.0.
 - Exportador Earth Engine asíncrono: no crea tareas cuando falla la consulta o la
