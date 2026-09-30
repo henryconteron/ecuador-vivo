@@ -21,7 +21,7 @@ import {
   createFaultPopup as buildFaultPopup,
 } from "./map/popups.js";
 import { nearestFeature } from "./map/place.js";
-import { mountNapoLandcover } from "./map/landcover.js?v=20260930";
+import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -41,7 +41,7 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930-3";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930-4";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,

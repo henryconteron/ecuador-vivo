@@ -37,6 +37,13 @@ export function classShares(manifest, yearIndex) {
   return manifest.statistics.classes.map(row => ({id: row.id, percent: 100 * row.pixels[yearIndex] / manifest.statistics.common_observed_pixels}));
 }
 
+export function formatClassShare(value, locale) {
+  if (!Number.isFinite(value) || value < 0 || value > 100) throw new Error("Invalid class percentage");
+  const number = new Intl.NumberFormat(locale, {maximumFractionDigits: 1});
+  // A rare mapped class must not be presented as absent after rounding.
+  return value > 0 && value < 0.1 ? `<${number.format(0.1)}%` : `${number.format(value)}%`;
+}
+
 /** Modular UI; no remote account, API keys, or synthetic production fallback. */
 export function mountNapoLandcover({ L, map, t, language, onChange, focus }) {
   const toggle = document.querySelector("#landcover-toggle");
@@ -67,7 +74,7 @@ export function mountNapoLandcover({ L, map, t, language, onChange, focus }) {
     manifest.statistics.classes.forEach((row, index) => {
       const item = config.legend.find(entry => entry.id === row.id);
       const tr = document.createElement("tr");
-      [item[language() === "en" ? "en" : "es"], `${number(before[index].percent)}%`, `${number(after[index].percent)}%`].forEach(text => {
+      [item[language() === "en" ? "en" : "es"], formatClassShare(before[index].percent, language()), formatClassShare(after[index].percent, language())].forEach(text => {
         const cell = document.createElement("td"); cell.textContent = text; tr.append(cell);
       });
       table.append(tr);

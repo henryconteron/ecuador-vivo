@@ -1,8 +1,11 @@
 # Cobertura del suelo: Tena–Archidona, 2000 y 2024
 
-Estado al 30 de septiembre de 2026: **exportación real pendiente**. Hay exportador,
-procesador y comparación web preparados; no se ha ejecutado Earth Engine ni se han
-publicado mapas sintéticos. El botón permanece deshabilitado hasta validar el recorte.
+Estado al 30 de septiembre de 2026: **recorte real exportado y validado**. Earth Engine
+aceptó el proyecto individual no comercial en el nivel Comunidad. Se descargaron el
+GeoTIFF y el recibo de la misma ejecución y se procesaron conservando la cuadrícula
+nativa. La comparación tiene 2.697.912 píxeles observados en ambos años; los dos PNG
+y el manifiesto `ready` están preparados para publicar. No se publican mapas sintéticos.
+La validación técnica no implica una evaluación independiente de exactitud en campo.
 
 ## Fuente fijada y comprobaciones
 
@@ -23,10 +26,13 @@ ofrece colección 4, mientras la de [mapas](https://ecuador.mapbiomas.org/descar
 todavía anuncia colección 3. No mezclamos esos recursos para construir esta comparación.
 Una copia indexada por un buscador no prueba que un enlace siga funcionando.
 
-## Lo más fácil que debes hacer tú
+## Cómo reproducir la exportación
 
-Necesitamos tu cuenta de Google Earth Engine habilitada. No he creado cuentas,
-aceptado condiciones ni conectado Google Drive en tu nombre.
+El proyecto del autor ya está registrado para uso individual no comercial en el
+nivel **Comunidad**, sin activar facturación. Para reproducir el proceso con otra
+cuenta, usa un proyecto propio y declara tu situación real. Comunidad no requiere
+cuenta de facturación; otros servicios de Cloud pueden generar cargos si se les
+habilita facturación. Véanse los [niveles no comerciales oficiales](https://developers.google.com/earth-engine/guides/noncommercial_tiers).
 
 1. Abre [Earth Engine Code Editor](https://code.earthengine.google.com/).
    Inicia sesión y, si lo solicita, configura un proyecto habilitado siguiendo sus
@@ -34,6 +40,9 @@ aceptado condiciones ni conectado Google Drive en tu nombre.
    no se garantiza que una cuenta nueva tenga acceso inmediato.
 2. Abre `scripts/export_napo_landcover_gee.js` en tu editor de texto. Copia **todo**
    su contenido, pégalo en un script nuevo del Code Editor y pulsa **Run**.
+   El script consulta el servidor de forma asíncrona: espera a que termine antes
+   de abrir Tasks. Solo crea tareas tras validar una imagen por año y ambas grillas.
+   Si falla una consulta, imprime el error y no crea exportaciones.
 3. Si no hay errores, entra en **Tasks** y ejecuta las dos tareas:
    `napo_mapbiomas_v1_2000_2024` y `napo_mapbiomas_v1_receipt`.
    No cambies escala, proyección, bandas, años ni recorte en las ventanas de exportación.

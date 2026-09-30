@@ -51,6 +51,23 @@ Los eventos del USGS se consultan en tiempo real y no forman parte del catálogo
 almacenado en el repositorio. La interfaz mantiene la atribución y el enlace al
 evento original.
 
+## Cobertura del suelo de Tena–Archidona
+
+`assets/images/landcover/napo-v1-2000.png` y `napo-v1-2024.png` son adaptaciones de
+**MapBiomas Ecuador LULC V1.0 — Publisher Catalog**, años 2000 y 2024, asset
+`projects/mapbiomas-public/assets/ecuador/lulc/v1`. La ficha de esta versión declara
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+[fuente, leyenda y licencia](https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1).
+Estos mapas derivados conservan esa atribución y se distribuyen bajo CC BY 4.0,
+no bajo la licencia MIT del código ni la CC BY-SA del catálogo de fallas.
+
+Modificaciones: recorte rectangular editorial Tena–Archidona, coloreado con la
+leyenda publicada y reproyección a EPSG:3857 mediante vecino más cercano solo para
+visualización. Las estadísticas se calcularon sobre la cuadrícula nativa común.
+El manifiesto `data/landcover/napo-manifest.json` conserva parámetros y SHA-256;
+[método y limitaciones](documentation/napo-landcover.md). No se interpretan los
+porcentajes como áreas cantonales ni como prueba automática de deforestación.
+
 ## Datos demostrativos
 
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor

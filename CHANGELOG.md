@@ -1,5 +1,14 @@
 # Registro de cambios
 
+## Sin publicar — 2026-09-30
+
+- Comparación real MapBiomas Ecuador V1 2000/2024 en la ventana Tena–Archidona,
+  con cuadrícula nativa común, recibo, SHA-256, leyenda dinámica y atribución CC BY 4.0.
+- Exportador Earth Engine asíncrono: no crea tareas cuando falla la consulta o la
+  validación de años, resolución y alineación; pruebas de regresión de ese flujo.
+- Porcentajes de clases raras expresados como «<0,1%», sin redondear su presencia a cero.
+- Leyenda desplazable y separada de la atribución cuando se activan muchas clases.
+
 ## [0.1.0] — 2026-09-21
 
 Primera versión pública del atlas Ecuador Vivo.

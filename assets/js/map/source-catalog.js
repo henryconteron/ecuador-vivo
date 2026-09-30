@@ -139,11 +139,11 @@ export const SOURCE_CATALOG = Object.freeze([
   {
     id: "mapbiomas-ecuador",
     systems: ["life"],
-    status: "candidate",
-    access: { es: "Plataforma / descargas", en: "Platform / downloads" },
+    status: "connected",
+    access: { es: "Recorte local · Earth Engine", en: "Local subset · Earth Engine" },
     institution: "MapBiomas Ecuador",
     name: { es: "Cobertura y uso del suelo", en: "Land cover and land use" },
-    purpose: { es: "Publisher Catalog V1: 30 m, 1985–2024; recorte Tena–Archidona pendiente de exportación", en: "Publisher Catalog V1: 30 m, 1985–2024; Tena–Archidona subset awaiting export" },
+    purpose: { es: "Publisher Catalog V1: comparación 2000/2024 a 30 m en la ventana Tena–Archidona, no límites cantonales", en: "Publisher Catalog V1: 2000/2024 comparison at 30 m in the Tena–Archidona window, not canton boundaries" },
     url: "https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1",
   },
   {

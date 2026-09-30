@@ -16,7 +16,8 @@ assert.equal(nearestFeature([-78, 0], [far, near]).feature, near);
 assert.ok(SOURCE_CATALOG.some((source) => source.id === "inamhi-services"));
 assert.ok(SOURCE_CATALOG.every((source) => source.url.startsWith("https://")));
 assert.equal(new Set(SOURCE_CATALOG.map(source => source.id)).size, SOURCE_CATALOG.length);
-for (const id of ["chc-chirps3", "copernicus-era5-land", "copernicus-dem", "jrc-surface-water", "mapbiomas-ecuador"]) {
+assert.equal(SOURCE_CATALOG.find(source => source.id === "mapbiomas-ecuador")?.status, "connected");
+for (const id of ["chc-chirps3", "copernicus-era5-land", "copernicus-dem", "jrc-surface-water"]) {
   assert.equal(SOURCE_CATALOG.find(source => source.id === id)?.status, "candidate");
 }
 assert.equal(normalizeRegionFocus("napo"), "napo");

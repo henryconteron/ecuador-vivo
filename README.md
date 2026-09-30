@@ -43,6 +43,10 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
 - módulo **Ecuador Ahora** con anomalías térmicas VIIRS NOAA-20 por fecha, servido mediante
   NASA GIBS sin publicar claves privadas;
 - explicación interactiva de por qué una anomalía térmica no equivale automáticamente a un incendio;
+- comparación local **Tena–Archidona 2000/2024** de MapBiomas Ecuador V1 a 30 m,
+  con exportación reproducible, recibo de procedencia y estadísticas sobre la cuadrícula
+  nativa común; [método y límites](documentation/napo-landcover.md). Es una ventana
+  editorial, no límites cantonales ni una estimación automática de deforestación;
 - mapa web adaptable a computadoras y teléfonos;
 - mapa topográfico principal y mapa de calles alternativo;
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;

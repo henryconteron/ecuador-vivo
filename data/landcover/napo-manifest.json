@@ -1,5 +1,245 @@
 {
   "schema_version": 1,
-  "status": "pending",
-  "reason": "Real Earth Engine exports have not been obtained or validated. No synthetic maps are published."
+  "status": "ready",
+  "source": {
+    "name": "MapBiomas Ecuador LULC V1.0 · Publisher Catalog",
+    "asset": "projects/mapbiomas-public/assets/ecuador/lulc/v1",
+    "version": "V1.0",
+    "url": "https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1",
+    "license": "CC-BY-4.0",
+    "nominal_resolution_m": 30,
+    "reviewed": "2026-09-30"
+  },
+  "years": [
+    2000,
+    2024
+  ],
+  "bbox": [
+    -78.04,
+    -1.12,
+    -77.55,
+    -0.72
+  ],
+  "scope": "editorial-window-not-administrative",
+  "display_bounds": [
+    [
+      -1.1202365473918807,
+      -78.0402419925993
+    ],
+    [
+      -0.7198200371649791,
+      -77.54949235288481
+    ]
+  ],
+  "display_crs": "EPSG:3857",
+  "display_resampling": "nearest",
+  "built_at": "2026-09-30T06:26:47.441253+00:00",
+  "input_sha256": "aab4d450ba38e7cbefeb512a11da80021b580607f7728b4fba70e6b2636651d1",
+  "receipt_sha256": "789ac46ce650a2962248d57a8eb12e592cab6be10d1e43b8b7f06ac80429254e",
+  "receipt": {
+    "schema_version": 1,
+    "asset": "projects/mapbiomas-public/assets/ecuador/lulc/v1",
+    "version": "V1.0",
+    "years": [
+      2000,
+      2024
+    ],
+    "bbox": [
+      -78.04,
+      -1.12,
+      -77.55,
+      -0.72
+    ],
+    "band_order": [
+      "classification_2000",
+      "classification_2024"
+    ],
+    "crs": "EPSG:4326",
+    "crs_transform": [
+      0.0002694945852358564,
+      0,
+      -81.15559939792583,
+      0,
+      -0.0002694945852358564,
+      2.4548261769134165
+    ],
+    "nominal_resolution_m": 30,
+    "native_scale_m": 29.999999999999996,
+    "license": "CC-BY-4.0",
+    "source_url": "https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1",
+    "export_requested_at": "2026-09-30T06:21:38.725Z"
+  },
+  "native_grid": {
+    "crs": "EPSG:4326",
+    "transform": [
+      0.0002694945852358564,
+      0.0,
+      -78.04024199259932,
+      0.0,
+      -0.0002694945852358564,
+      -0.7198200371649719
+    ],
+    "width": 1820,
+    "height": 1485,
+    "band_order_verification": "geotiff-descriptions"
+  },
+  "statistics": {
+    "common_observed_pixels": 2697912,
+    "observed_pixels": [
+      2697912,
+      2697912
+    ],
+    "classes": [
+      {
+        "id": 3,
+        "pixels": [
+          1921073,
+          1993647
+        ]
+      },
+      {
+        "id": 6,
+        "pixels": [
+          42,
+          29
+        ]
+      },
+      {
+        "id": 11,
+        "pixels": [
+          6,
+          0
+        ]
+      },
+      {
+        "id": 13,
+        "pixels": [
+          42,
+          0
+        ]
+      },
+      {
+        "id": 21,
+        "pixels": [
+          725918,
+          636979
+        ]
+      },
+      {
+        "id": 23,
+        "pixels": [
+          1509,
+          2597
+        ]
+      },
+      {
+        "id": 24,
+        "pixels": [
+          8159,
+          15391
+        ]
+      },
+      {
+        "id": 25,
+        "pixels": [
+          7139,
+          6801
+        ]
+      },
+      {
+        "id": 30,
+        "pixels": [
+          88,
+          11711
+        ]
+      },
+      {
+        "id": 31,
+        "pixels": [
+          24,
+          178
+        ]
+      },
+      {
+        "id": 33,
+        "pixels": [
+          33906,
+          30551
+        ]
+      },
+      {
+        "id": 68,
+        "pixels": [
+          6,
+          28
+        ]
+      }
+    ],
+    "changed_class_pixels": 382228,
+    "top_transitions": [
+      {
+        "from": 21,
+        "to": 3,
+        "pixels": 204266
+      },
+      {
+        "from": 3,
+        "to": 21,
+        "pixels": 129564
+      },
+      {
+        "from": 21,
+        "to": 24,
+        "pixels": 6993
+      },
+      {
+        "from": 21,
+        "to": 30,
+        "pixels": 5649
+      },
+      {
+        "from": 21,
+        "to": 25,
+        "pixels": 5543
+      },
+      {
+        "from": 33,
+        "to": 21,
+        "pixels": 4403
+      },
+      {
+        "from": 3,
+        "to": 30,
+        "pixels": 4197
+      },
+      {
+        "from": 21,
+        "to": 33,
+        "pixels": 3796
+      },
+      {
+        "from": 25,
+        "to": 21,
+        "pixels": 3778
+      },
+      {
+        "from": 33,
+        "to": 3,
+        "pixels": 3084
+      }
+    ],
+    "window_pixels": 2697912
+  },
+  "images": [
+    {
+      "year": 2000,
+      "url": "assets/images/landcover/napo-v1-2000.png",
+      "sha256": "16bd96a961c2835c1a19bc6356e6c57cf9726b531817ed93f6a28f43281dcbef"
+    },
+    {
+      "year": 2024,
+      "url": "assets/images/landcover/napo-v1-2024.png",
+      "sha256": "cfcff4eacc6e0a1b72c65d534bbca706b63d630f5c44dbfb44fa89db5ab242eb"
+    }
+  ]
 }

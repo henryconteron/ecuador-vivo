@@ -8,18 +8,38 @@ var years = [2000, 2024];
 var bbox = [-78.04, -1.12, -77.55, -0.72];
 var region = ee.Geometry.Rectangle(bbox, 'EPSG:4326', false);
 var collection = ee.ImageCollection(asset);
-var images = years.map(function (year) {
-  var subset = collection.filter(ee.Filter.eq('year', year));
-  if (subset.size().getInfo() !== 1) throw new Error('Expected one image for year ' + year);
-  return ee.Image(subset.first()).select('classification').rename('classification_' + year);
+var subsets = years.map(function (year) {
+  return collection.filter(ee.Filter.eq('year', year));
 });
-var projection = images[0].projection().getInfo();
-var nominalScale = images[0].projection().nominalScale().getInfo();
-if (nominalScale < 25 || nominalScale > 35) throw new Error('Unexpected native sampling: ' + nominalScale);
-var secondProjection = images[1].projection().getInfo();
-if (JSON.stringify(projection) !== JSON.stringify(secondProjection)) {
-  throw new Error('Native year grids differ. Stop; do not silently resample for statistics.');
-}
+// Asynchronous requests avoid blocking the browser (and synchronous-XHR failures).
+// No task is created until the year counts and both native grids are validated.
+ee.List(subsets.map(function (subset) { return subset.size(); })).evaluate(function (counts, failure) {
+  if (failure) { print('Source lookup failed; no exports created.', failure); return; }
+  if (!counts || counts.length !== years.length || counts.some(function (count) { return count !== 1; })) {
+    print('Expected exactly one source image per year; no exports created.', counts); return;
+  }
+  var images = subsets.map(function (subset, index) {
+    return ee.Image(subset.first()).select('classification').rename('classification_' + years[index]);
+  });
+  ee.Dictionary({
+    projection: images[0].projection(), secondProjection: images[1].projection(),
+    nominalScale: images[0].projection().nominalScale()
+  }).evaluate(function (metadata, metadataFailure) {
+    if (metadataFailure) { print('Native grid lookup failed; no exports created.', metadataFailure); return; }
+    var projection = metadata.projection;
+    var nominalScale = metadata.nominalScale;
+    if (!isFinite(nominalScale) || nominalScale < 25 || nominalScale > 35) {
+      print('Unexpected native sampling; no exports created.', nominalScale); return;
+    }
+    if (!projection || !projection.crs || !projection.transform ||
+        JSON.stringify(projection) !== JSON.stringify(metadata.secondProjection)) {
+      print('Native year grids differ or are missing; no exports created.', metadata); return;
+    }
+    createExports(images, projection, nominalScale);
+  });
+});
+
+function createExports(images, projection, nominalScale) {
 var receipt = {
   schema_version: 1, asset: asset, version: 'V1.0', years: years, bbox: bbox,
   band_order: years.map(function (year) { return 'classification_' + year; }),
@@ -44,3 +64,4 @@ Export.table.toDrive({
 });
 Map.centerObject(region, 10);
 Map.addLayer(region, {color: 'ffffff'}, 'Editorial window, not canton boundaries');
+}
