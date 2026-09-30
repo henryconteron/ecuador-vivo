@@ -1,5 +1,5 @@
 /** Georeferenced explorer. Display colours are not a pixel-measurement API. */
-import {loadSpectralPair, validateSpectralManifest} from "./spectral.js?v=20260930-7";
+import {loadSpectralPair, validateSpectralManifest} from "./spectral.js?v=20260930-8";
 import {comparisonPosition} from "./imagery.js?v=20260930-6";
 
 export const SPECTRAL_MODES = Object.freeze(["rgb", "ndvi", "mndwi", "ndmi", "change", "quality"]);
@@ -41,7 +41,7 @@ export function screenClip(imageRect, mapRect, position, side) {
   return side === "earlier" ? `inset(0 ${100 - cut}% 0 0)` : `inset(0 0 0 ${cut}%)`;
 }
 
-export function mountNapoSpectralMap({L, map, t, language, onChange, focus}) {
+export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate = () => {}, focus}) {
   const find = id => document.getElementById(id);
   const toggle = find("spectral-map-toggle"), controls = find("spectral-map-settings"), toolbar = find("spectral-map-toolbar");
   const modeSelect = find("spectral-map-mode"), quickSelect = find("spectral-map-quick-mode");
@@ -158,10 +158,10 @@ export function mountNapoSpectralMap({L, map, t, language, onChange, focus}) {
     if (!manifest) return false;
     view.mode = SPECTRAL_MODES.includes(mode) ? mode : "rgb";
     if (view.mode === "change") view.compare = false;
-    toggle.checked = true; goToArea(river); syncUrl(); void draw();
+    onActivate(); toggle.checked = true; goToArea(river); syncUrl(); void draw();
     return true;
   }
-  toggle.addEventListener("change", () => { if (toggle.checked) goToArea(view.river); syncUrl(); void draw(); });
+  toggle.addEventListener("change", () => { if (toggle.checked) { onActivate(); goToArea(view.river); } syncUrl(); void draw(); });
   find("spectral-map-hide").addEventListener("click", () => { toggle.checked = false; syncUrl(); void draw(); });
   for (const select of [modeSelect, quickSelect]) select.addEventListener("change", () => {
     view.mode = select.value; if (view.mode === "change") view.compare = false; syncUrl(); void draw();
@@ -201,6 +201,6 @@ export function mountNapoSpectralMap({L, map, t, language, onChange, focus}) {
     if (manifest && view.enabled) activate();
   }
   render(); void load();
-  return {render, activate, isReady: () => Boolean(manifest), isActive: () => state === "visible" && overlays.some(layer => map.hasLayer(layer)),
+  return {render, activate, deactivate: () => { toggle.checked = false; syncUrl(); void draw(); }, isReady: () => Boolean(manifest), isActive: () => state === "visible" && overlays.some(layer => map.hasLayer(layer)),
     context: () => ({id: "spectral-map", name: t("spectralMap.title"), resolution: `Sentinel-2 · 10 / 20 m → 30 m · ${view.compare || view.mode === "change" ? "2019 / 2024" : view.year}`, limit: t("spectralMap.zoomLimit")})};
 }

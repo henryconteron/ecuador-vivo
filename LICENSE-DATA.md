@@ -104,6 +104,17 @@ no se incorporan a estas vistas. Recibo y SHA-256:
 MAAP #230/EcoCiencia se enlaza y atribuye como contexto independiente. No se
 redistribuyen sus imágenes ni se afirma disponer de permiso sobre esas figuras web.
 
+## Napo provincial a 10 m
+
+Cuando `data/rivers/napo-manifest.json` esté `ready`, las teselas
+`assets/images/rivers/` son **Modified Copernicus Sentinel data (2019, 2024)**:
+QA Cloud Score+ por Google (CC BY 4.0), mediana anual por banda, RGB con
+contraste fijo y WebP sin pérdida. Bandas visibles a 10 m, sin superresolución.
+Límite provincial: geoBoundaries ADM1 v6, CC BY 4.0. Los candidatos NDWI son
+un cribado sin revisar, no cartografía validada de cauces, minería o contaminación.
+Los derivados conservan condiciones y atribución de sus fuentes, no MIT.
+[Método y bibliografía](documentation/napo-rivers.md).
+
 ## Datos demostrativos
 
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor

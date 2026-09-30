@@ -1,0 +1,2696 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "config": {
+    "schema_version": 1,
+    "boundary_asset": "WM/geoLab/geoBoundaries/600/ADM1",
+    "boundary_filter": {
+      "shapeGroup": "ECU",
+      "shapeName": "Napo"
+    },
+    "asset": "COPERNICUS/S2_SR_HARMONIZED",
+    "quality_asset": "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED",
+    "years": [
+      2019,
+      2024
+    ],
+    "periods": [
+      [
+        "2019-01-01",
+        "2020-01-01"
+      ],
+      [
+        "2024-01-01",
+        "2025-01-01"
+      ]
+    ],
+    "bands": [
+      "B4",
+      "B3",
+      "B2",
+      "B8"
+    ],
+    "clear_threshold": 0.65,
+    "min_observations": 10,
+    "rgb_min_observations": 3,
+    "scene_selection": {
+      "mode": "quarter-cloud-ranked-per-block",
+      "max_per_quarter": 8
+    },
+    "processing_grid": {
+      "bbox": [
+        -78.42535,
+        -1.24118,
+        -77.04568,
+        0.03164
+      ],
+      "columns": 3,
+      "rows": 3
+    },
+    "excluded_scl": [
+      0,
+      1,
+      3,
+      8,
+      9,
+      10,
+      11
+    ],
+    "water_formula": "(B3-B8)/(B3+B8)",
+    "water_threshold": 0.2,
+    "change_threshold": 0.5,
+    "water_frequency_min": 0.5,
+    "min_connected_pixels": 100,
+    "screening_cell_m": 1000,
+    "min_cell_change_ha": 1,
+    "export_crs": "EPSG:3857",
+    "export_transform": [
+      10,
+      0,
+      0,
+      0,
+      -10,
+      0
+    ],
+    "export_bands": [
+      "y2019_R",
+      "y2019_G",
+      "y2019_B",
+      "y2019_A",
+      "y2024_R",
+      "y2024_G",
+      "y2024_B",
+      "y2024_A"
+    ],
+    "display": {
+      "min": 0,
+      "max": 0.3,
+      "gamma": 1.2
+    },
+    "file_dimensions": 4096,
+    "max_pixels": 50000000,
+    "scope": "province-napo-incremental-blocks-not-entire-river-basin",
+    "method": "joint-four-band-qa-annual-median-rgb-scene-level-ndwi-frequency",
+    "attribution": "Modified Copernicus Sentinel data (2019, 2024); Cloud Score+ by Google; province boundary: geoBoundaries v6, CC BY 4.0."
+  },
+  "receipt": {
+    "schema_version": 1,
+    "asset": "COPERNICUS/S2_SR_HARMONIZED",
+    "quality_asset": "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED",
+    "boundary_asset": "WM/geoLab/geoBoundaries/600/ADM1",
+    "boundary_filter": {
+      "shapeGroup": "ECU",
+      "shapeName": "Napo"
+    },
+    "boundary": {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -77.07005023370188,
+              -1.0117655709645517
+            ],
+            [
+              -77.04568572155252,
+              -0.9128448803826174
+            ],
+            [
+              -77.14488288092357,
+              -0.8918023506981467
+            ],
+            [
+              -77.20600821971271,
+              -0.8109722563448816
+            ],
+            [
+              -77.11262125520068,
+              -0.7163278375300924
+            ],
+            [
+              -77.15109885142854,
+              -0.6966632098980674
+            ],
+            [
+              -77.2684534626377,
+              -0.8313325176850682
+            ],
+            [
+              -77.33279830749008,
+              -0.8497173816111725
+            ],
+            [
+              -77.38324862200723,
+              -0.8866967220367552
+            ],
+            [
+              -77.45100909167634,
+              -0.9042254149671213
+            ],
+            [
+              -77.51813195093278,
+              -0.946551208204098
+            ],
+            [
+              -77.54528786676816,
+              -0.8910443054833208
+            ],
+            [
+              -77.51364163157464,
+              -0.8131616538330966
+            ],
+            [
+              -77.53630280774235,
+              -0.7945672500941219
+            ],
+            [
+              -77.49440504223456,
+              -0.6966632112550496
+            ],
+            [
+              -77.5367308420985,
+              -0.6158598014642461
+            ],
+            [
+              -77.57349614554275,
+              -0.6049573401847348
+            ],
+            [
+              -77.61424339973239,
+              -0.5380708310184148
+            ],
+            [
+              -77.51505512874637,
+              -0.48526615578906124
+            ],
+            [
+              -77.43843886698278,
+              -0.517960238978011
+            ],
+            [
+              -77.38602660326035,
+              -0.4899481536008503
+            ],
+            [
+              -77.35916944053845,
+              -0.42701242990671323
+            ],
+            [
+              -77.31873432325919,
+              -0.40919835588213954
+            ],
+            [
+              -77.3222614335062,
+              -0.3613521775513325
+            ],
+            [
+              -77.2534932430759,
+              -0.30739260165902077
+            ],
+            [
+              -77.26759733150557,
+              -0.22231736795518195
+            ],
+            [
+              -77.29175678749874,
+              -0.18447748049090987
+            ],
+            [
+              -77.27593583918794,
+              -0.1355254607935475
+            ],
+            [
+              -77.29577886162183,
+              -0.0526263250132461
+            ],
+            [
+              -77.36309789956923,
+              -0.14150509647063272
+            ],
+            [
+              -77.45067467158448,
+              -0.12975985836201806
+            ],
+            [
+              -77.43805984521232,
+              -0.06595904844996765
+            ],
+            [
+              -77.47479839211572,
+              -0.015892256082353316
+            ],
+            [
+              -77.58433178167219,
+              -0.09603117631507747
+            ],
+            [
+              -77.63952209330078,
+              -0.07347704917496502
+            ],
+            [
+              -77.77451684130185,
+              -0.06578509548960489
+            ],
+            [
+              -77.78049208537927,
+              0.027115790314367897
+            ],
+            [
+              -77.84331187278981,
+              0.03163734171901898
+            ],
+            [
+              -77.85781733403057,
+              -0.004601804129225696
+            ],
+            [
+              -77.94130506188407,
+              -0.049397927095191876
+            ],
+            [
+              -77.92960889452102,
+              -0.09058219805593462
+            ],
+            [
+              -78.00999311838638,
+              -0.13745180478748695
+            ],
+            [
+              -78.04284775851136,
+              -0.1393959877470918
+            ],
+            [
+              -78.10408904114725,
+              -0.19383709986967276
+            ],
+            [
+              -78.1427806529147,
+              -0.16350629198357367
+            ],
+            [
+              -78.19177279203548,
+              -0.21949924869089213
+            ],
+            [
+              -78.18555679555116,
+              -0.28257770947377414
+            ],
+            [
+              -78.21393449893773,
+              -0.35870345346890525
+            ],
+            [
+              -78.2489295618582,
+              -0.3991430874522986
+            ],
+            [
+              -78.23940494400549,
+              -0.4638803072280969
+            ],
+            [
+              -78.28378191048554,
+              -0.5686735880528648
+            ],
+            [
+              -78.33758538236118,
+              -0.6586894690601919
+            ],
+            [
+              -78.41349264818676,
+              -0.7109501598633303
+            ],
+            [
+              -78.39253492708768,
+              -0.7463821699233842
+            ],
+            [
+              -78.39474663052157,
+              -0.8474700159384083
+            ],
+            [
+              -78.42534048140443,
+              -0.8961455283926647
+            ],
+            [
+              -78.4105675503407,
+              -0.9940138948030548
+            ],
+            [
+              -78.33311293390919,
+              -1.035470119720845
+            ],
+            [
+              -78.34322620667734,
+              -1.1044925504730725
+            ],
+            [
+              -78.2989116607764,
+              -1.1417483727427535
+            ],
+            [
+              -78.22443573914127,
+              -1.1412355817834325
+            ],
+            [
+              -78.12174259248044,
+              -1.220406875514752
+            ],
+            [
+              -78.0644074914387,
+              -1.2411729212557687
+            ],
+            [
+              -77.95100811214007,
+              -1.2062759940512282
+            ],
+            [
+              -77.89115356846263,
+              -1.2411194236985668
+            ],
+            [
+              -77.68978503160363,
+              -1.1436434869564835
+            ],
+            [
+              -77.59479277467422,
+              -1.1336238981358806
+            ],
+            [
+              -77.56516207725899,
+              -1.1528381735909348
+            ],
+            [
+              -77.40911138216725,
+              -1.0801547885397533
+            ],
+            [
+              -77.35977590326767,
+              -1.0999487377158785
+            ],
+            [
+              -77.33473806749805,
+              -1.0677986216175606
+            ],
+            [
+              -77.23767231683837,
+              -1.0532218115511753
+            ],
+            [
+              -77.21543927659123,
+              -1.0279878014053614
+            ],
+            [
+              -77.07005023370188,
+              -1.0117655709645517
+            ]
+          ]
+        ]
+      },
+      "id": "0001000000000000024e",
+      "properties": {
+        "shapeGroup": "ECU",
+        "shapeID": "780006B95371609522575",
+        "shapeName": "Napo",
+        "shapeType": "ADM1"
+      }
+    },
+    "area_m2": 12750626696.80329,
+    "bounds": {
+      "geodesic": false,
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -77.96546,
+            -1.24118
+          ],
+          [
+            -77.50556999999999,
+            -1.24118
+          ],
+          [
+            -77.50556999999999,
+            -0.8169066666666666
+          ],
+          [
+            -77.96546,
+            -0.8169066666666666
+          ],
+          [
+            -77.96546,
+            -1.24118
+          ]
+        ]
+      ]
+    },
+    "scenes": [
+      {
+        "acquired_ms": [
+          1546875806000,
+          1546875791000,
+          1548603808000,
+          1550331809000,
+          1550331795000,
+          1550331807000,
+          1551627811000,
+          1551627809000,
+          1558107815000,
+          1558539805000,
+          1558971816000,
+          1558971802000,
+          1558971814000,
+          1559403819000,
+          1561131816000,
+          1561131823000,
+          1562859822348,
+          1562859820232,
+          1567179817274,
+          1567179803012,
+          1567179815155,
+          1567179800430,
+          1569771813930,
+          1569771811810,
+          1570203798840,
+          1570635797762,
+          1571931814725,
+          1573659815642,
+          1573659813525,
+          1573659798823,
+          1575819807730,
+          1575819805607
+        ],
+        "joined_count": 32,
+        "period": [
+          "2019-01-01",
+          "2020-01-01"
+        ],
+        "scene_ids": [
+          "20190107T153611_20190107T153741_T18MTD",
+          "20190107T153611_20190107T153741_T18MTE",
+          "20190127T153621_20190127T153743_T18MTD",
+          "20190216T153621_20190216T153615_T17MRU",
+          "20190216T153621_20190216T153615_T17MRV",
+          "20190216T153621_20190216T153615_T18MTD",
+          "20190303T153619_20190303T153700_T17MRU",
+          "20190303T153619_20190303T153700_T18MTD",
+          "20190517T153621_20190517T153622_T18MTD",
+          "20190522T153629_20190522T153627_T18MTE",
+          "20190527T153621_20190527T153622_T17MRU",
+          "20190527T153621_20190527T153622_T17MRV",
+          "20190527T153621_20190527T153622_T18MTD",
+          "20190601T153629_20190601T153627_T18MTD",
+          "20190621T153629_20190621T153627_T17MRU",
+          "20190621T153629_20190621T154333_T17MRU",
+          "20190711T153629_20190711T153627_T17MRU",
+          "20190711T153629_20190711T153627_T18MTD",
+          "20190830T153619_20190830T153912_T17MRU",
+          "20190830T153619_20190830T153912_T17MRV",
+          "20190830T153619_20190830T153912_T18MTD",
+          "20190830T153619_20190830T153912_T18MTE",
+          "20190929T153619_20190929T154216_T17MRU",
+          "20190929T153619_20190929T154216_T18MTD",
+          "20191004T153621_20191004T153621_T18MTE",
+          "20191009T153619_20191009T154232_T18MTE",
+          "20191024T153621_20191024T153622_T18MTD",
+          "20191113T153621_20191113T153740_T17MRU",
+          "20191113T153621_20191113T153740_T18MTD",
+          "20191113T153621_20191113T153740_T18MTE",
+          "20191208T153619_20191208T154047_T17MRU",
+          "20191208T153619_20191208T154047_T18MTD"
+        ],
+        "year": 2019
+      },
+      {
+        "acquired_ms": [
+          1706283812191,
+          1706283797935,
+          1706283810072,
+          1706283795353,
+          1711035814668,
+          1711035801514,
+          1711035812550,
+          1711035800107,
+          1713195814546,
+          1713195812432,
+          1713195797737,
+          1713627800075,
+          1719243816721,
+          1719243802472,
+          1719243799901,
+          1719675799811,
+          1723131814210,
+          1723131799954,
+          1723131812084,
+          1723131797364,
+          1725291814322,
+          1725291799619,
+          1726155812635,
+          1726155811349,
+          1727883812595,
+          1727883797898,
+          1728747812105,
+          1728747809988,
+          1728747795269,
+          1731339806445,
+          1733067814835,
+          1733067812721
+        ],
+        "joined_count": 32,
+        "period": [
+          "2024-01-01",
+          "2025-01-01"
+        ],
+        "scene_ids": [
+          "20240126T153629_20240126T153623_T17MRU",
+          "20240126T153629_20240126T153623_T17MRV",
+          "20240126T153629_20240126T153623_T18MTD",
+          "20240126T153629_20240126T153623_T18MTE",
+          "20240321T153631_20240321T154310_T17MRU",
+          "20240321T153631_20240321T154310_T17MRV",
+          "20240321T153631_20240321T154310_T18MTD",
+          "20240321T153631_20240321T154310_T18MTE",
+          "20240415T153629_20240415T153626_T17MRU",
+          "20240415T153629_20240415T153626_T18MTD",
+          "20240415T153629_20240415T153626_T18MTE",
+          "20240420T153631_20240420T154258_T18MTE",
+          "20240624T153629_20240624T153744_T17MRU",
+          "20240624T153629_20240624T153744_T17MRV",
+          "20240624T153629_20240624T153744_T18MTE",
+          "20240629T153631_20240629T153628_T18MTE",
+          "20240808T153631_20240808T153803_T17MRU",
+          "20240808T153631_20240808T153803_T17MRV",
+          "20240808T153631_20240808T153803_T18MTD",
+          "20240808T153631_20240808T153803_T18MTE",
+          "20240902T153629_20240902T153628_T18MTD",
+          "20240902T153629_20240902T153628_T18MTE",
+          "20240912T153629_20240912T153626_T17MRU",
+          "20240912T153629_20240912T153626_T18MTD",
+          "20241002T153629_20241002T153644_T18MTD",
+          "20241002T153629_20241002T153644_T18MTE",
+          "20241012T153629_20241012T154017_T17MRU",
+          "20241012T153629_20241012T154017_T18MTD",
+          "20241012T153629_20241012T154017_T18MTE",
+          "20241111T153619_20241111T153851_T18MTD",
+          "20241201T153629_20241201T153626_T17MRU",
+          "20241201T153629_20241201T153626_T18MTD"
+        ],
+        "year": 2024
+      }
+    ],
+    "years": [
+      2019,
+      2024
+    ],
+    "periods": [
+      [
+        "2019-01-01",
+        "2020-01-01"
+      ],
+      [
+        "2024-01-01",
+        "2025-01-01"
+      ]
+    ],
+    "bands": [
+      "B4",
+      "B3",
+      "B2",
+      "B8"
+    ],
+    "clear_threshold": 0.65,
+    "min_observations": 10,
+    "rgb_min_observations": 3,
+    "scene_selection": {
+      "mode": "quarter-cloud-ranked-per-block",
+      "max_per_quarter": 8
+    },
+    "processing_grid": {
+      "bbox": [
+        -78.42535,
+        -1.24118,
+        -77.04568,
+        0.03164
+      ],
+      "columns": 3,
+      "rows": 3
+    },
+    "processing_block": {
+      "id": 7,
+      "bbox": [
+        -77.96546,
+        -1.24118,
+        -77.50556999999999,
+        -0.8169066666666666
+      ]
+    },
+    "excluded_scl": [
+      0,
+      1,
+      3,
+      8,
+      9,
+      10,
+      11
+    ],
+    "water_formula": "(B3-B8)/(B3+B8)",
+    "water_threshold": 0.2,
+    "change_threshold": 0.5,
+    "water_frequency_min": 0.5,
+    "min_connected_pixels": 100,
+    "screening_cell_m": 1000,
+    "min_cell_change_ha": 1,
+    "export_crs": "EPSG:3857",
+    "export_transform": [
+      10,
+      0,
+      0,
+      0,
+      -10,
+      0
+    ],
+    "export_bands": [
+      "y2019_R",
+      "y2019_G",
+      "y2019_B",
+      "y2019_A",
+      "y2024_R",
+      "y2024_G",
+      "y2024_B",
+      "y2024_A"
+    ],
+    "display": {
+      "min": 0,
+      "max": 0.3,
+      "gamma": 1.2
+    },
+    "method": "joint-four-band-qa-annual-median-rgb-scene-level-ndwi-frequency",
+    "scope": "province-napo-incremental-blocks-not-entire-river-basin",
+    "export_requested_at": "2026-09-30T19:14:02.711Z"
+  },
+  "input_chunks": [
+    {
+      "name": "napo_block7_rgb10_2019_2024-0000000000-0000000000.tif",
+      "sha256": "b790dbdadff19a9d731c10c87e5691916c3d5d3db938ea81f2ff646cf1aa5ff0"
+    },
+    {
+      "name": "napo_block7_rgb10_2019_2024-0000000000-0000004096.tif",
+      "sha256": "c20776eee10f6cfaee51ddbc7bb382516f54b3a75ef3a15cab3b601b27e97e29"
+    },
+    {
+      "name": "napo_block7_rgb10_2019_2024-0000004096-0000000000.tif",
+      "sha256": "28c4bf93de1cf9ed4839c45e741b122e732c7fcf897ac6ec44a9c42f3683d14f"
+    }
+  ],
+  "receipt_sha256": "8188ea646af4594c224283f6ce8ef4491864f51c8c15e7fe24557be2500ebb3c",
+  "candidates_sha256": null,
+  "display_bounds": [
+    [
+      -1.24118,
+      -77.96546
+    ],
+    [
+      -0.8169066666666666,
+      -77.50556999999999
+    ]
+  ],
+  "tile_size": 512,
+  "zoom_offset": -1,
+  "min_native_zoom": 9,
+  "max_native_zoom": 14,
+  "tile_format": "lossless-webp",
+  "resampling": "nearest",
+  "sampling_m": 10,
+  "candidate_status": "pending",
+  "candidate_count": null,
+  "tiles": [
+    {
+      "url": "assets/images/rivers/2019/8/72/128.webp",
+      "sha256": "c95455467f27d01d9b101816d24f60035f16bb5b4b011fadbd6b9c4cc93133dc",
+      "size_bytes": 35340
+    },
+    {
+      "url": "assets/images/rivers/2024/8/72/128.webp",
+      "sha256": "5cb4b1679a60a3f74dc40c53c502aa9df049aa7a714a2cc0ae63c00976375e09",
+      "size_bytes": 34480
+    },
+    {
+      "url": "assets/images/rivers/2019/9/145/257.webp",
+      "sha256": "e66e4bdad6ca2bbd290de133c82c62fddf0c72c7da277e8cf4f10231cba1894a",
+      "size_bytes": 134912
+    },
+    {
+      "url": "assets/images/rivers/2024/9/145/257.webp",
+      "sha256": "586ef1d978d29bd388c32693b870abb1c38cecd5e846c58953298100a20e8a96",
+      "size_bytes": 133416
+    },
+    {
+      "url": "assets/images/rivers/2019/10/290/514.webp",
+      "sha256": "bd613822782228957b1341ffb8fa0d152973bb3d1e66f4c8de090f6c2069d7b6",
+      "size_bytes": 180016
+    },
+    {
+      "url": "assets/images/rivers/2024/10/290/514.webp",
+      "sha256": "2ea787972612beb8dff1b8a0f5824c428894d402ebd8be87cd3a38e43b14d6bd",
+      "size_bytes": 173378
+    },
+    {
+      "url": "assets/images/rivers/2019/10/290/515.webp",
+      "sha256": "e30ad54c03efd4a47943ef02fbe218027d857c66a9a59aee70c0f79b0c69cbef",
+      "size_bytes": 143538
+    },
+    {
+      "url": "assets/images/rivers/2024/10/290/515.webp",
+      "sha256": "6188a91921462b5368c17c087336a16f69c6579468d099ee78282ae08ae872ff",
+      "size_bytes": 141786
+    },
+    {
+      "url": "assets/images/rivers/2019/10/291/514.webp",
+      "sha256": "53a3f026ce7730f54f73a3519cf42d8bddaa52eaf497d517943eef032dce27ee",
+      "size_bytes": 146388
+    },
+    {
+      "url": "assets/images/rivers/2024/10/291/514.webp",
+      "sha256": "8aab0041e53e0aa03b5e6bb0ef2d31bdfe257883d15d7b9086f5d5120805f998",
+      "size_bytes": 144708
+    },
+    {
+      "url": "assets/images/rivers/2019/10/291/515.webp",
+      "sha256": "490b597cb0f141b80d52a3f32cba7025213594c940eb8dfd10506d1f0554f6e9",
+      "size_bytes": 56786
+    },
+    {
+      "url": "assets/images/rivers/2024/10/291/515.webp",
+      "sha256": "ec14d79f0ff1fd0256b552f60c4853ef58135bb4cd136bdd23f6cca4ad561534",
+      "size_bytes": 55930
+    },
+    {
+      "url": "assets/images/rivers/2019/11/580/1028.webp",
+      "sha256": "3d8bbe29f0b4ce5d753e278251587563d97dae79c92e2c6123a6680ebe0f8832",
+      "size_bytes": 1968
+    },
+    {
+      "url": "assets/images/rivers/2024/11/580/1028.webp",
+      "sha256": "815e30482dc5a94b44b3f92304a242b106f8147286f040da0168469dbf0390cb",
+      "size_bytes": 1958
+    },
+    {
+      "url": "assets/images/rivers/2019/11/580/1029.webp",
+      "sha256": "d83a80b1fc0a8d461d94529061bf9209f389b6cd7b944aa67b88cfbcde8d92af",
+      "size_bytes": 158938
+    },
+    {
+      "url": "assets/images/rivers/2024/11/580/1029.webp",
+      "sha256": "438997cbceecb1fe35880542d3d9bbe0d6be7f3cb24ac3e2e0773690a1fa7e48",
+      "size_bytes": 155522
+    },
+    {
+      "url": "assets/images/rivers/2019/11/580/1030.webp",
+      "sha256": "8941f123485fc8f9bd0113d0ce853dc1dbd323e7f5ac0c8251e2f0e75410fa9a",
+      "size_bytes": 220050
+    },
+    {
+      "url": "assets/images/rivers/2024/11/580/1030.webp",
+      "sha256": "8218168f6148cf6675f9e5b72be07c9c8a40ea8a58bdfb8d0204c78f704855fa",
+      "size_bytes": 215530
+    },
+    {
+      "url": "assets/images/rivers/2019/11/580/1031.webp",
+      "sha256": "d04b4f7416124263080fd53e7fa45d3ae8b3c05cbdf19e6305b219a7abe6df8c",
+      "size_bytes": 3872
+    },
+    {
+      "url": "assets/images/rivers/2024/11/580/1031.webp",
+      "sha256": "a2226dbb2effea0e73cedc7144047efe235c48db3ac50a6fdaded18a48a45abe",
+      "size_bytes": 4004
+    },
+    {
+      "url": "assets/images/rivers/2019/11/581/1028.webp",
+      "sha256": "136413b785974007c896fd487065cde1aba76e4d96c7b21314fd7ecb5feb0e5d",
+      "size_bytes": 84164
+    },
+    {
+      "url": "assets/images/rivers/2024/11/581/1028.webp",
+      "sha256": "71088992fd96cce416983845ab7c200f95001ba63b9a76f7084758a0c97416bd",
+      "size_bytes": 80262
+    },
+    {
+      "url": "assets/images/rivers/2019/11/581/1029.webp",
+      "sha256": "e35cc0bd996c5585ad9822267a1191c8633f563ad69bed581c3e2c9d0a0cc3b8",
+      "size_bytes": 456162
+    },
+    {
+      "url": "assets/images/rivers/2024/11/581/1029.webp",
+      "sha256": "d00e629e7100c642dd9527d8e851cc2ba4a790ee8f25877e8559a7632f7c65f7",
+      "size_bytes": 437028
+    },
+    {
+      "url": "assets/images/rivers/2019/11/581/1030.webp",
+      "sha256": "afc822bfd4a824bf102fccc286d15f87680e84ad79f87877dab665c2f173582d",
+      "size_bytes": 339108
+    },
+    {
+      "url": "assets/images/rivers/2024/11/581/1030.webp",
+      "sha256": "f2d7aeaafdbbcc0b38a3013c30bc29ac309d0a338d1540ce37fe6a0527b6d43f",
+      "size_bytes": 337054
+    },
+    {
+      "url": "assets/images/rivers/2019/11/581/1031.webp",
+      "sha256": "defb80c7349d7eda08964f166b401d0850264aa1721ef6890d012ae90a4935ee",
+      "size_bytes": 132
+    },
+    {
+      "url": "assets/images/rivers/2024/11/581/1031.webp",
+      "sha256": "11145809bad5d446976866d6e24bdeb33a11dea75c9762d70f4ba5ad5856a150",
+      "size_bytes": 138
+    },
+    {
+      "url": "assets/images/rivers/2019/11/582/1028.webp",
+      "sha256": "9b31abae238eed498f8afe43e787d65e6b166df950e5f3554793ababb2bafa9d",
+      "size_bytes": 119748
+    },
+    {
+      "url": "assets/images/rivers/2024/11/582/1028.webp",
+      "sha256": "e32e071a608390c50f2306bff562164172a60857f2af7ddce7bfe64ea5fa6d27",
+      "size_bytes": 121694
+    },
+    {
+      "url": "assets/images/rivers/2019/11/582/1029.webp",
+      "sha256": "807c1c24c3a0a3aba46416baa60a4f13dc0abf6ff2cbcfa4b612d1b930c0f74a",
+      "size_bytes": 388984
+    },
+    {
+      "url": "assets/images/rivers/2024/11/582/1029.webp",
+      "sha256": "61b7120cfd1f6dc940d60ed0c84bd284b1eaabdd56de57607ccf1b5c8ff7ccc0",
+      "size_bytes": 377970
+    },
+    {
+      "url": "assets/images/rivers/2019/11/582/1030.webp",
+      "sha256": "b8dac7be44948d9b462aff2fa2b98b1a6cf1f2401d796676452416c845f9022d",
+      "size_bytes": 187982
+    },
+    {
+      "url": "assets/images/rivers/2024/11/582/1030.webp",
+      "sha256": "add7cfdbae4a5384a9cfb51b9c51d31e957c30e24844cd38f96c1a0af2f5634b",
+      "size_bytes": 203224
+    },
+    {
+      "url": "assets/images/rivers/2019/11/582/1031.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/11/582/1031.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/11/583/1028.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/11/583/1028.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/11/583/1029.webp",
+      "sha256": "950ad83f91ec04c46e32643f3c4ae17c9688d7113552a03e5bacceba09f71d79",
+      "size_bytes": 23768
+    },
+    {
+      "url": "assets/images/rivers/2024/11/583/1029.webp",
+      "sha256": "8c0e57a99b0ee31649b8d1e849aa396929bc58bf4cf7530e8812d07d00a3cade",
+      "size_bytes": 23526
+    },
+    {
+      "url": "assets/images/rivers/2019/11/583/1030.webp",
+      "sha256": "ad596c124383a281fa852ca417c38447af9564e6202fbf032a22811fab63d755",
+      "size_bytes": 14148
+    },
+    {
+      "url": "assets/images/rivers/2024/11/583/1030.webp",
+      "sha256": "d52150224a595134b897c6dbef305957317c3a928b3492fbe34bf51f423cdea9",
+      "size_bytes": 14050
+    },
+    {
+      "url": "assets/images/rivers/2019/11/583/1031.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/11/583/1031.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2057.webp",
+      "sha256": "3783405c969692e437582e923b7d9a2d94c911ab952daac5f94aaea310a04b75",
+      "size_bytes": 1432
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2057.webp",
+      "sha256": "b405142fd817e6794fb568717b05fdd413e45dc296ac6f772a1330a1db2b528f",
+      "size_bytes": 1414
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2058.webp",
+      "sha256": "2c532ab5405ffedfcc49bf12a411eafee83e8f08d60e0c7eac2bb81547ab7bbe",
+      "size_bytes": 2390
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2058.webp",
+      "sha256": "d017820a153d9b2c4b7895977c56d03db598d4ec4cbeed1749bdb42ee6d2d751",
+      "size_bytes": 2314
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2059.webp",
+      "sha256": "e3cd61c8a8d8e3c9f2aaf26534c79d67ed5afe14630d48289a0387abbdb29386",
+      "size_bytes": 14170
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2059.webp",
+      "sha256": "14efd74d49e4a3215fa53c4f0ea08f582e461cf2cd421da3b3224c79c041d466",
+      "size_bytes": 13442
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2060.webp",
+      "sha256": "f384d5edd88c5923f4b1614309155b982b9522720a714e7c45d731a6c7fdfff6",
+      "size_bytes": 32194
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2060.webp",
+      "sha256": "0f406e1c712948ef780e147ca0bf991acd63c2df1a6e40fc6c0174672070d9c1",
+      "size_bytes": 31284
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2061.webp",
+      "sha256": "54700bc288d5de7d9b1719a95f0cea3c389fc63e4facbf6cd2f6b7567851daf6",
+      "size_bytes": 23548
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2061.webp",
+      "sha256": "41f5dda6b7fae2c674da73620ee1bd46fdfebf10a2dc341841f1273765048265",
+      "size_bytes": 23294
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1160/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1160/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2057.webp",
+      "sha256": "7a91a5a73bdb188ef39d25385364803c6819428780d2317fb3d7433b13aa8648",
+      "size_bytes": 5356
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2057.webp",
+      "sha256": "d22b693d721fd4caedc2d50731fe4d58e50d3ac984d5c36796efecf1d88edcca",
+      "size_bytes": 5236
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2058.webp",
+      "sha256": "3f21d52de54b60cd08c968dceff167c2c342299af42bbb8c5663d6020e38dc33",
+      "size_bytes": 244196
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2058.webp",
+      "sha256": "3d9fa14c0adc21be8db30bc6d821d0db1b5cea5801d22fa7dea555a7ec80c54d",
+      "size_bytes": 236944
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2059.webp",
+      "sha256": "0e5ba39fc673d01bcd63afb7cd253de77cc50893a1e7e9eb451c0e1f36a6faa5",
+      "size_bytes": 359020
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2059.webp",
+      "sha256": "66ef5c45fa594b42e67c46e53f1e82ea9790192a7bf6964c1067281948e62bee",
+      "size_bytes": 351164
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2060.webp",
+      "sha256": "d95c2ef34758438e510419227bd53379175bd804a34b7212d4458e1e3d9c25e9",
+      "size_bytes": 372334
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2060.webp",
+      "sha256": "9b74c7d6745c37315e1bd39d855c4326ce82dbe21216879f1f6fc8a5960cd28d",
+      "size_bytes": 368404
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2061.webp",
+      "sha256": "97351352b1135d3c88d1cd75bfe4a409f944db8a25d5abea37b482a746764d59",
+      "size_bytes": 333240
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2061.webp",
+      "sha256": "e1eb7fbc6085e2ff9c96d14014193ac656a875ca978bcead1d4b3cbab3ea39a8",
+      "size_bytes": 329740
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1161/2062.webp",
+      "sha256": "efa81397188a8e6844bd75accfd57d1c590219c0e5022857638c16ca7ecffa13",
+      "size_bytes": 12514
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1161/2062.webp",
+      "sha256": "e7fc708d4a405dd6d618b26f2e373c77149c5071d231d87ae5134736b2b36304",
+      "size_bytes": 12722
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2057.webp",
+      "sha256": "6330a8101bdf247be320835f6d41803f604e1a16476f094c8b7bf1c9da9ee9e0",
+      "size_bytes": 112350
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2057.webp",
+      "sha256": "c02ea72826c017d83f18a32f152b05da6a6bd713f33743a941801df2e16fd87d",
+      "size_bytes": 108132
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2058.webp",
+      "sha256": "527aafe76208b4718a1a502bff1990f9d9ca129447d7a4010c996dca68774501",
+      "size_bytes": 409816
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2058.webp",
+      "sha256": "5b84012e2aa5ab02dda6e88c2bc699ee8bc8bedd8808264542b09df24e019d8d",
+      "size_bytes": 392036
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2059.webp",
+      "sha256": "ba3c0a1b9c5a6fb9c74827d7aa017d59c16837a94daf878d05e3e7cc66dbc7b5",
+      "size_bytes": 418608
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2059.webp",
+      "sha256": "41d9f490a7021416d3f85eeca5339cc15ce89a8b5ff01bd8b4d3afe259a4e8cb",
+      "size_bytes": 416128
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2060.webp",
+      "sha256": "4cb97190a3fa55b63c39854d23fccf19b6152cc43c92ead8b55ebd9780231ae3",
+      "size_bytes": 399156
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2060.webp",
+      "sha256": "bf389edbd9d6b6933244fe13b41c3f3d61bd5695b3449a6b3887b92a4c1a2ca0",
+      "size_bytes": 404098
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2061.webp",
+      "sha256": "72286f32d85944b89ec1acbc3abdc811903ff718d7d02b74e5da46617c849c43",
+      "size_bytes": 286148
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2061.webp",
+      "sha256": "259f51f2bb80e9e036927a7300c3e395471955c6c4013be1cbd05c9b7e24b56a",
+      "size_bytes": 279530
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1162/2062.webp",
+      "sha256": "6c672e39ec77d2383eff40f67549c647ccb65775d90fdb67823ebd282da7d3f3",
+      "size_bytes": 226
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1162/2062.webp",
+      "sha256": "e308ebfbf332db0d1154507bdffd8657585cd3dd29c06cd215b0f29eec60a679",
+      "size_bytes": 218
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2057.webp",
+      "sha256": "c4d677f9c3cdaf63669ad2a8bc3d3bfb930b5d6b990ef1e90aa026cd2f89f11a",
+      "size_bytes": 209744
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2057.webp",
+      "sha256": "2518172618ac84cf7b63a5bb0aee63fb66a5a51ee43faff903edb19f9af20886",
+      "size_bytes": 196940
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2058.webp",
+      "sha256": "f37c9f03efe265c7e545af26773773954ef07763fa530395f7c0f33d9e352684",
+      "size_bytes": 343716
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2058.webp",
+      "sha256": "a8200feb4802d80085562eba2a500050004315279fc4f410103b948241a67eab",
+      "size_bytes": 377024
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2059.webp",
+      "sha256": "f60d76e008c4cf3f55d166a5554557271b008a2d2d7bb0ebb18445fdfc037937",
+      "size_bytes": 389322
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2059.webp",
+      "sha256": "ad9e7d5f25257d84705bfbefa7af3df7a17d75ef60305b300a59810d126471ca",
+      "size_bytes": 378452
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2060.webp",
+      "sha256": "cb0167588028a21a8e34955388f4160ca9d731da66a6a26f55a6f4b8881362ea",
+      "size_bytes": 403404
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2060.webp",
+      "sha256": "801b31be8deb06a5a6c8fa371f5b336e8f1b2257d47d10b470a2630590303133",
+      "size_bytes": 395784
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2061.webp",
+      "sha256": "1f26b25064acc087af7caad78dfb29849d4263118d7f7ca79d9a5770c8882695",
+      "size_bytes": 109532
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2061.webp",
+      "sha256": "835a8de046bef46404504b60594a16acaa003185a80cc676c9d7ff9e5e752dcd",
+      "size_bytes": 109008
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1163/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1163/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2057.webp",
+      "sha256": "086214a3ba606cfd46411789ecb0cd29f78ac05d92bc67fb7da56805801f417d",
+      "size_bytes": 259098
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2057.webp",
+      "sha256": "7857da7f84c459e8161a3f1222c82fee32f60d92491c524a1180eff2cefe0bab",
+      "size_bytes": 254132
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2058.webp",
+      "sha256": "d24bf8479fe8f4c5b46794665a422ae0a9328eb6f6545db273114b653b02301e",
+      "size_bytes": 355240
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2058.webp",
+      "sha256": "e130c033d43c69ed14f7fb2391766397182d86552c120f51330b6b755663754f",
+      "size_bytes": 353678
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2059.webp",
+      "sha256": "0a9042d91b2953ff4f45683a487fbd2b974958a27de4416345fd08779a1b852e",
+      "size_bytes": 380352
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2059.webp",
+      "sha256": "298bd3353bc51f82a865a5a2f7acf692773431e29409ad8a469aac7e4b1e3a36",
+      "size_bytes": 368996
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2060.webp",
+      "sha256": "c4af83bde5fda11c50fa661a3fa60b9b76c9930592600e338ded8751f68caa22",
+      "size_bytes": 340102
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2060.webp",
+      "sha256": "b7b4ab583c001a62645f429d80fdd60c39737954a300f7b8051b04e756131965",
+      "size_bytes": 335868
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2061.webp",
+      "sha256": "8872d6a6fa59f76eacfd9f6ccfb5fe4b12bb5bee447234c879050779cb0fec3a",
+      "size_bytes": 1298
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2061.webp",
+      "sha256": "5857fdeace69aa14870eb8da303fb9692437b6124c1259c4a67b6774df74d459",
+      "size_bytes": 1236
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1164/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1164/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2057.webp",
+      "sha256": "02d0d0a227cf123994e682510ad68c32ac5c367d6307379dea81ba12bda4927a",
+      "size_bytes": 203932
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2057.webp",
+      "sha256": "82ba0cd2f21c20080dfc4ced90cca0fa7874296152a0e15122530c95a8e924b3",
+      "size_bytes": 214348
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2058.webp",
+      "sha256": "3655da30d0d8db8b48b26c59025a712f06efa787ff6a473681ccc74481356e1b",
+      "size_bytes": 296406
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2058.webp",
+      "sha256": "b36fdafd1761e12ae78f66166491cc7438a4902d2cafe8c68a50089fba9563e6",
+      "size_bytes": 283078
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2059.webp",
+      "sha256": "4817fbf9d398b3bbd8375bceab101fde3cc92edf126b7e5887a4d9e8eaf84279",
+      "size_bytes": 367076
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2059.webp",
+      "sha256": "20b61f1f3d9504b553b17024997003a5e047ef8bb8f5ceca41efdd10e0ec868d",
+      "size_bytes": 366372
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2060.webp",
+      "sha256": "28002d804aa13a5a8ef5bb6b3c465b0734c57692cbe5b33aeda90346aacc9bb1",
+      "size_bytes": 338778
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2060.webp",
+      "sha256": "b55ed599f1316a02d1a8aa11d07c41b7736a518e1bbadf56d3182567128919e7",
+      "size_bytes": 328068
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2061.webp",
+      "sha256": "a77ac4c0a47d3b27ad39ae4932887a1e233ebb77a94681be2411b9d106bb749b",
+      "size_bytes": 10670
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2061.webp",
+      "sha256": "995d40d9dc43fb19695ec5be1c9411d6026e650f44b1d6c04fdd3000b0110421",
+      "size_bytes": 10582
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1165/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1165/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2057.webp",
+      "sha256": "83f08f128a88d24d9f6d21a34ce7e1257978e88b4bae339e2d7ea02bc3635176",
+      "size_bytes": 94
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2057.webp",
+      "sha256": "9cfa2ccda9101dc079acd38489309b19ec2508622290dd14d9f796f2c043fc6f",
+      "size_bytes": 94
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2058.webp",
+      "sha256": "b6a03234694d88078cac5c935397a73d792eccc0b3960a080ba39522c2d7fb49",
+      "size_bytes": 19408
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2058.webp",
+      "sha256": "9c910544958a5176be7ec159a142077282cd4c0b61b92f02731611615576b9d4",
+      "size_bytes": 19388
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2059.webp",
+      "sha256": "977fbbb9eda5126bdf091168b8904c0033e6dae13e0825f79d5c126a92a5277e",
+      "size_bytes": 58556
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2059.webp",
+      "sha256": "edc93ff15604b957ca01b7c575331b3b7aeae249ec6dcc28ef2ea8078d1ad01c",
+      "size_bytes": 57986
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2060.webp",
+      "sha256": "af41ce7c7ed3007582619211542124cb1247ddb157f5a5bc06f73cf8482041ea",
+      "size_bytes": 52926
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2060.webp",
+      "sha256": "17ac3903e1c34a994f3faa612aa206549862bade017c1c246b513c4f2b9b24e5",
+      "size_bytes": 52606
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2061.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2061.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/12/1166/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/12/1166/2062.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4114.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4114.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4115.webp",
+      "sha256": "82db5ae54bf4ad32b2dd6772471155b34bfa3a7ef53064e689274151ebd8a71d",
+      "size_bytes": 4512
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4115.webp",
+      "sha256": "76ff63a9bf00e3c9aa2e6ea37e9684cb3ff909a498eec59966e54dda27b90ada",
+      "size_bytes": 4414
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4116.webp",
+      "sha256": "674908367149235e2b6b304c6a7622eb0f379bf63f7717557094f498c5c04668",
+      "size_bytes": 5222
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4116.webp",
+      "sha256": "0478893a05710703a9285dfdc3067d3aff6a7664a8f8d7a3c2da6a11bc3f7cea",
+      "size_bytes": 5236
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4117.webp",
+      "sha256": "031ccc21ebfb0ece1f9825934620c8cec0f302edf74bf44a3b6028d3f5370ec7",
+      "size_bytes": 2528
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4117.webp",
+      "sha256": "d65a3de3d7ef5dfc63a8b6ae3e6ae9d37c90b46b5d4dd4813089effd9b04f686",
+      "size_bytes": 2440
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4118.webp",
+      "sha256": "252b5b907702e29df003d1916dfd7280499a2b4c5ddc7cbc8a7f4a8dd3bf2fe5",
+      "size_bytes": 6936
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4118.webp",
+      "sha256": "5c4298516a1c62d8573983e96cdcfa666c594d236df4750abf4d9a8f2e7c9ec2",
+      "size_bytes": 6828
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4119.webp",
+      "sha256": "db24caa2370f3da2148cc67d9e54dd5168ca50f191ffae64883b5ecb008e3c2b",
+      "size_bytes": 37848
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4119.webp",
+      "sha256": "3e1fe8cd9157bf0b9e3c775a0bfb413d94ca9ff94bff0472fba6b0928872cd1d",
+      "size_bytes": 40948
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4120.webp",
+      "sha256": "13e1530b6ea7f4d443f8ed892402240eef8db6e4639c84f51ba0366622296901",
+      "size_bytes": 59502
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4120.webp",
+      "sha256": "7f1ebb01beae8f4a5958e7c92cf144c6c436bbfa8f9e3dd37f55edf3e064599b",
+      "size_bytes": 57852
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4121.webp",
+      "sha256": "c64a54fc146ab83bd61ea6612a0ce8a62b00452a55497d918ba10a68fb52f787",
+      "size_bytes": 57746
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4121.webp",
+      "sha256": "420653634117861817675e2aaa4a1e1ea0a09635230060289ccc291dbfd5d2f8",
+      "size_bytes": 55464
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4122.webp",
+      "sha256": "93be42a2422c1851864b457fa81b9cabeb65a10ab70bf39be6d47315d5d6a64e",
+      "size_bytes": 48786
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4122.webp",
+      "sha256": "7cbb6d7c1204c56193132300d58d8d648181284d8c90f21e4d2acfdac300980c",
+      "size_bytes": 48618
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4123.webp",
+      "sha256": "e05f37b67c9e17a465c6704571dd3f1453fc1c46eb0d36157ecc90571aba2e68",
+      "size_bytes": 29268
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4123.webp",
+      "sha256": "d89b66348692223bb70b8834921e51d35ad1d850ffbd59e299aed22df0acae2c",
+      "size_bytes": 24264
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2321/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2321/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4114.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4114.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4115.webp",
+      "sha256": "82a86e752504c273380c090b3e941d84bbeaf86c1ccc103da45e275790679595",
+      "size_bytes": 352
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4115.webp",
+      "sha256": "a3ee1960d7c947ff61d7e6f47852cd8bb15ad72a26ee6542fe78988dc65c8686",
+      "size_bytes": 352
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4116.webp",
+      "sha256": "36f981901635810dbd425589b82486a10c0710e9fe5eae9f151fdc1271493d76",
+      "size_bytes": 116648
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4116.webp",
+      "sha256": "553abab8f5012fbfaa545cb12d0c35b40873502eb2f73e7c837eb18760ab5a42",
+      "size_bytes": 118006
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4117.webp",
+      "sha256": "b773f7b4ccc3b994d327aed077ccd7674301577472ad6f438aea566ae5aa3859",
+      "size_bytes": 98360
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4117.webp",
+      "sha256": "d6f8d5ae98bd5e477c3e053bcfe24b38b7763167b36d48b3610fe2756dd6df7a",
+      "size_bytes": 98654
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4118.webp",
+      "sha256": "fce05fd4e84c838e38e3cdc46e2221ece9d3302d019ebb437e8d793d03bf3336",
+      "size_bytes": 216196
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4118.webp",
+      "sha256": "0c1244535ccb23a4bd05c4badac3d7ef7c3be214527c99e74b2250b8135ed444",
+      "size_bytes": 219766
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4119.webp",
+      "sha256": "956b73ca354aca4d5dd909bbe03b57e62d09404defa70d5e86a3c7e852276ff6",
+      "size_bytes": 239752
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4119.webp",
+      "sha256": "5f962c31344d7ca9b00ae678b48caebeafdbff893ce8fce4ab1baa942184966e",
+      "size_bytes": 237524
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4120.webp",
+      "sha256": "ae629b746f211a90ca240e623f5cd5da852cea01f1ba1c3ee69dc346cf735dcc",
+      "size_bytes": 341902
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4120.webp",
+      "sha256": "aa1880b489cb1968495bdc895d5742deb6c33820b1feace9b229b5f07b68b259",
+      "size_bytes": 328168
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4121.webp",
+      "sha256": "bd09230d356419b856f1b65d30d13168d916b933f260fae85ac79587d2d0a5ba",
+      "size_bytes": 307238
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4121.webp",
+      "sha256": "a80c9514497cf647d52546379bd00781ea53224fa7aa017bbe271a10258a530b",
+      "size_bytes": 308276
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4122.webp",
+      "sha256": "ca97bfc6b3c2c4ec12d6f604a45a888336815c636fe9fca4164461b359ec254b",
+      "size_bytes": 305778
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4122.webp",
+      "sha256": "bce8e8d90e9807a4375fca11a8afacf2466f51544a27902a77eb4883c6482ad5",
+      "size_bytes": 298230
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4123.webp",
+      "sha256": "048de6fac7e5d381b1b5cdb423c8bb8f4427839dc53cc71e8f0f7ae48b669484",
+      "size_bytes": 193482
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4123.webp",
+      "sha256": "8f001173c4049273f84c36519feb5acd5f060cbada7d8acd53ecc8a7a20d156b",
+      "size_bytes": 192768
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2322/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2322/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4114.webp",
+      "sha256": "dcd5b3b8b9bea58f415957eefefde0d2b8504e5e752e92b6764493db82818896",
+      "size_bytes": 8674
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4114.webp",
+      "sha256": "db0ec358e220c4978bf81fbdf58b80e6283c74723502730a507ded359f0eada8",
+      "size_bytes": 8648
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4115.webp",
+      "sha256": "9c958035281969cbf2b60579ac392d9272023596ec0e47f1e89bbf3b7738743a",
+      "size_bytes": 9668
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4115.webp",
+      "sha256": "b66879628d6b92cbc086bd741f9b56962724e5a78357cfa0257c926e68308f51",
+      "size_bytes": 9142
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4116.webp",
+      "sha256": "e84336db60db617ef2ab6995fa8e138a9f59da357e069b22ff8ae0aa1c27d641",
+      "size_bytes": 201828
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4116.webp",
+      "sha256": "567c152066ee63c5f45c05579ae29a955e50783192c997322a705bf8fe00205d",
+      "size_bytes": 192612
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4117.webp",
+      "sha256": "7f194477acad1ac96f6bf7b018b8f8f099cb1dbbde0a1091a13c535827b77e84",
+      "size_bytes": 319776
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4117.webp",
+      "sha256": "ac2d812966a1afec4b79d64d8c00049537b2a6c15fd467467156bb9a71ac15ca",
+      "size_bytes": 308772
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4118.webp",
+      "sha256": "72aa7c7ccf004db4bcd395c654e0cfcff0081589491f16b1180b0572c8838563",
+      "size_bytes": 323546
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4118.webp",
+      "sha256": "53e946521391fe8231abdc85a0c6283783365c9ea0b14a7de50b08dcb2b23e5e",
+      "size_bytes": 319308
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4119.webp",
+      "sha256": "e60e311952836ea4aaabe545b9107753d71b02807eafea59fdb5b41119f2cf8a",
+      "size_bytes": 315114
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4119.webp",
+      "sha256": "2e90c5c15e02b02fd92222e9561836fa279e894b9965ac1301a4aaf2d170f84c",
+      "size_bytes": 303552
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4120.webp",
+      "sha256": "30d6ae43d209d035847ad7c00e92b9444a6aeda2a00672a5ccb9b171df9f72d4",
+      "size_bytes": 342992
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4120.webp",
+      "sha256": "db5898eaef5b9e2d7c6bd98119b7f7379cf6d6da0d2e02704135df3fbd20675c",
+      "size_bytes": 342862
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4121.webp",
+      "sha256": "c863a3cb5285a516aec1642960099a906ee5f734dbbe5fd0de1f85c078d08393",
+      "size_bytes": 316738
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4121.webp",
+      "sha256": "141067ec9bab853ce2cf248d6699720e53e1239894710be0e58fdc339b68bed7",
+      "size_bytes": 318750
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4122.webp",
+      "sha256": "cc3217e34460e959704a52a948f3906b71bc978ea0a086b4f1a1540ae32ad4cf",
+      "size_bytes": 325146
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4122.webp",
+      "sha256": "567839101fac2100079168863b8573c23fa6af33a604f81119e7ecab9bc99bac",
+      "size_bytes": 323528
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4123.webp",
+      "sha256": "f4692c2ebea572f35c3bd288a92263cdeae9502bbfe109e6ea29c60c29b12d42",
+      "size_bytes": 330436
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4123.webp",
+      "sha256": "2294081597b99ab9d874877fe87a7828ed4cc354dab85e326c410b1cd2e6e036",
+      "size_bytes": 321012
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2323/4124.webp",
+      "sha256": "a305e68ebdcd9c5d2ad5799ffa5e90cca99b96d8ae10aaf40aa17c667af24918",
+      "size_bytes": 39898
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2323/4124.webp",
+      "sha256": "9fc2727014456199df149253e49ce838bd3036cd2b768ceeb286107747a7ca10",
+      "size_bytes": 40568
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4114.webp",
+      "sha256": "ae4b48a9eaafa0ade28514b32ab094a41e745f2eba8c6f90af1eb93f34c61002",
+      "size_bytes": 24126
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4114.webp",
+      "sha256": "721b27b28e98e602e86c7a7ce5ec90e42143acc9cc83a28f4a5f9a6952093f7e",
+      "size_bytes": 22814
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4115.webp",
+      "sha256": "575317e492330df17039d6a1c51dbbbe624fcb5412b7417238fe0670df4ff9cf",
+      "size_bytes": 145132
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4115.webp",
+      "sha256": "6b96beaca9974b6ab368a04a6e0daae901d6415acffaa4a494f1946ff9144760",
+      "size_bytes": 133490
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4116.webp",
+      "sha256": "746031b4a064a4a6812536cacf8cfaea5bfe661a53981db8be9cc48a3edf8662",
+      "size_bytes": 306704
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4116.webp",
+      "sha256": "aff927df6c010b0536793951a0b8175e9d2b60e938b632bdf4e0060bc69b9bd8",
+      "size_bytes": 285654
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4117.webp",
+      "sha256": "0bb579dcf49fba6751eb80585fe4e3ca28a77a3dfc892e202294c5c0e83d82e4",
+      "size_bytes": 332464
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4117.webp",
+      "sha256": "e0729ec5a40727170daa0e62189c1f4ab96111db6001443927fd5caf1e9f17b6",
+      "size_bytes": 318356
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4118.webp",
+      "sha256": "8bb359629f58a5d4b341c38033bbceac5d727537b9493caccf944b391318b58d",
+      "size_bytes": 351500
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4118.webp",
+      "sha256": "5ffd20554977e75f9636fff3827ca0a7038f6c3b5e6f7e877576a8a63abeea7f",
+      "size_bytes": 352296
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4119.webp",
+      "sha256": "d782c4c073e8ee0b4f676e722954f509420f2f8ed3f3ec4ca965cce3b6a410f2",
+      "size_bytes": 314880
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4119.webp",
+      "sha256": "3af64473192ffd564e4029b857b1ff95c71ecfbe32ccf3c46f5742fa3694f772",
+      "size_bytes": 309294
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4120.webp",
+      "sha256": "50b7997e2284d50a1c3899b92e041c8d727f747ce9c4b140b93e9645f45c4485",
+      "size_bytes": 333704
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4120.webp",
+      "sha256": "bd3e4e34353f5c827e13b8cabfb806417fb153483fa9b75edda6227dbaa189d1",
+      "size_bytes": 337742
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4121.webp",
+      "sha256": "a1b3608bb9f0a572633a6824a0f6445dcbd2673737364c2db32ad270a446e7cf",
+      "size_bytes": 339700
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4121.webp",
+      "sha256": "6a7775b0d47c5ebd9b4da1e372164757001c8b38b007ccdcaab4bb4299311cb9",
+      "size_bytes": 347340
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4122.webp",
+      "sha256": "ac691b4187e5249137f930acbe2f8304d8d8101abee3bec52820e3b3f14e5a8e",
+      "size_bytes": 332020
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4122.webp",
+      "sha256": "592e48fb1f1e50fee1ac07a49a61d3f1a5ec20ba5b171757f8ed00a35e3da161",
+      "size_bytes": 325996
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4123.webp",
+      "sha256": "04c239461dab13a67a05212d1b2ce4494b9735e29a2b67aa76f3f5c9198ae4c4",
+      "size_bytes": 249918
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4123.webp",
+      "sha256": "5b34205df6c46267c55fcf01b66843761a663e8a6d69fb9c5dfa59af7a8a25fc",
+      "size_bytes": 244726
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2324/4124.webp",
+      "sha256": "73046761453a444420cba50167ddbfa58a47164e9bc5093cb042818c57d3098a",
+      "size_bytes": 460
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2324/4124.webp",
+      "sha256": "40eb82061d46028f07d0871f2978d7938a81e39e1091a4606148998a5a5734cd",
+      "size_bytes": 440
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4114.webp",
+      "sha256": "1b863609b6ae8229aa9142140886049b2d233ebda62daecae3429584beba5be6",
+      "size_bytes": 29428
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4114.webp",
+      "sha256": "091ca99d0c17841c6810d45bda782fa7d5a0fd3652df908d56568055371e7941",
+      "size_bytes": 27548
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4115.webp",
+      "sha256": "b694c21f03d25538376f8a1825e283750b1e685624689c2699ebb3c4d79bb753",
+      "size_bytes": 160404
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4115.webp",
+      "sha256": "adccbf50b81a5f59927c76476f60b66ce78b577ce1f9edfbe5e485419457b407",
+      "size_bytes": 145992
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4116.webp",
+      "sha256": "9ff7b6163325ce1b5f1ca4b9dc2be5f756367ca6c085cc78d770ef0b100767ad",
+      "size_bytes": 384574
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4116.webp",
+      "sha256": "958b95bdffa4cbc51771f062267fab6a96047f26a37dce9fd6b7d62276381ce8",
+      "size_bytes": 363090
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4117.webp",
+      "sha256": "ce4c37e0cdbd44cce43d0da58f0dddfaa4ce25ca1008ff9f81cc0a4998a59291",
+      "size_bytes": 366752
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4117.webp",
+      "sha256": "290a3aa9f2c0921c268b161384df450b8b2294a5fa448c5c86fd28045fd689de",
+      "size_bytes": 356886
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4118.webp",
+      "sha256": "956edeb70ca004fa0d1d66503a2e3925e07db4287fdb5ac4a178cf99786cc109",
+      "size_bytes": 404402
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4118.webp",
+      "sha256": "fb7197916528ceb1878079ae273491c4ce5f3424272ea7bbe0a5941837185be3",
+      "size_bytes": 405170
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4119.webp",
+      "sha256": "5e11b9332df92d89c96a3c366dc03e79047ae288864f4d8d973901991e09782b",
+      "size_bytes": 377158
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4119.webp",
+      "sha256": "5e0c8ebacb163c605ddf8770ecd28f28d9658ab8b73a3d72433e489293f53937",
+      "size_bytes": 364776
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4120.webp",
+      "sha256": "816a3d780310edbe802e318cc378c64ed27629bf00ca6f3a1cb5268a180b3bbe",
+      "size_bytes": 363774
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4120.webp",
+      "sha256": "777e6b0c3395517ec9eb19e2b3f7f99abc0124691b2da108e591861f6d7ed3cb",
+      "size_bytes": 353566
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4121.webp",
+      "sha256": "3f6157db39d31fb45760e78d87689f41e03cfe7bc083434a8486015d7505aadd",
+      "size_bytes": 334826
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4121.webp",
+      "sha256": "f9e733d082ae4ae9b7b4bd5b93e1d435ac22af278fd4812bd677d6b6a8b81029",
+      "size_bytes": 345934
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4122.webp",
+      "sha256": "0c7cff0ef3a7b979af40cb8e5e24b1a9d03c6252e9219df05b31de7634f06ca7",
+      "size_bytes": 310092
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4122.webp",
+      "sha256": "0efac447fd24a4204f3840ef2d0444f9d31b7ab1386c7f8f9611dcc569cdb4af",
+      "size_bytes": 299230
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4123.webp",
+      "sha256": "5b7e6487753371e24337644a53b3d27087e1b5e81e5fee7c1af27e802595ad5f",
+      "size_bytes": 99384
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4123.webp",
+      "sha256": "7d6f132d977e284f67c5e77d794a6c550eb2321c289bce3d1896b642b1375de9",
+      "size_bytes": 94492
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2325/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2325/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4114.webp",
+      "sha256": "8bfaf684276ce6ad3975287c56fcdab0fae8824b02cfef31f64ed018196802e3",
+      "size_bytes": 88622
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4114.webp",
+      "sha256": "ecc84ab302b1d08e0d1f346f44b94783adcf693d10b16f6c7f9977253063453c",
+      "size_bytes": 82450
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4115.webp",
+      "sha256": "f95718ef238ac54061dcc805b75c762aded6958c36d66541cae3f9732380d798",
+      "size_bytes": 251120
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4115.webp",
+      "sha256": "968ef8e6d26086170aec55d3e5b50da7ee7f36bbd814e4850f797fc5263be653",
+      "size_bytes": 224590
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4116.webp",
+      "sha256": "960e11a283ddc42e047eea1dc8d938caa452efb962671cae9606eebb7ce486ad",
+      "size_bytes": 301068
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4116.webp",
+      "sha256": "15f222bbe324a7a0874670dc66db9a2348ad39bd3729aab618e0cb350144c4f7",
+      "size_bytes": 278022
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4117.webp",
+      "sha256": "686dbdeda09864d46c744cd869f083f82778e2fa179881231167834b0f95e64e",
+      "size_bytes": 334212
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4117.webp",
+      "sha256": "c832470f21444824fb94db98275bf07e71387c559fb0170aa20ebdfbbc97c9ae",
+      "size_bytes": 320194
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4118.webp",
+      "sha256": "b2fc3be69e04fd4d5882ff27be3a059c23412c31ea5bd5db55b74aad5237fb6c",
+      "size_bytes": 328772
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4118.webp",
+      "sha256": "5cd6ed82763b3c5a4e54fcb8a50c3f893fdb7a1ff553d7778b08d12694f01ba2",
+      "size_bytes": 320848
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4119.webp",
+      "sha256": "9b7f3c01c425f2d7aacb8ec09ddcf45e9cf99eb60d7667e1e911a4ec10cf6c1d",
+      "size_bytes": 346724
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4119.webp",
+      "sha256": "eade8d9c9050b1f40136ff63550d1e9f2436a59a8fe9ef9d7ed07e69fe89cbce",
+      "size_bytes": 336474
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4120.webp",
+      "sha256": "8735e776a2576b154e92715cb6d3ea0680c6c025d16c58a5c8ca5adaa3c0c696",
+      "size_bytes": 300284
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4120.webp",
+      "sha256": "dfc792451bf720816c8d6fb49967b6e91498e87f3c72f110adf8e0aaaeccd849",
+      "size_bytes": 304752
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4121.webp",
+      "sha256": "88c1d002d2a8d7d7836bf59492f0118dec3ef9cff7e34c24f73283d710940ab7",
+      "size_bytes": 307146
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4121.webp",
+      "sha256": "d8a46af7893f5a2e9553b53a8505134324d45030b70fdc14ebaf36d0d0067263",
+      "size_bytes": 293584
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4122.webp",
+      "sha256": "c58366a2c7d0029aa16deff319dc6b7b77048a44963edb3f0d2eea35d4f22753",
+      "size_bytes": 277936
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4122.webp",
+      "sha256": "42df6438da0b80f133e42dcd1041e161875f7098364821e835cb3bd1bd3cb9bc",
+      "size_bytes": 261656
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4123.webp",
+      "sha256": "8468bb0c32f9ea35a8613930f6deabfc54aa72cd04ecac9222d538989a23756e",
+      "size_bytes": 1952
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4123.webp",
+      "sha256": "226a40ceb17ed4c12af5262759e87238b83277ac4f2f9b60e1e3983735a2a979",
+      "size_bytes": 2012
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2326/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2326/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4114.webp",
+      "sha256": "5044503b4cb523784b21e1391ec9a656d450ed310435db4ae048fe3e0c48859a",
+      "size_bytes": 85298
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4114.webp",
+      "sha256": "4cb485f9a3586306badb3bd2085d741f9e3d39e2497fb91819e5036846f3517b",
+      "size_bytes": 82060
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4115.webp",
+      "sha256": "6cb6d2a578c1aa9bedabfeccfba41bbe2428a06ea7b80842c00db6f65873fb37",
+      "size_bytes": 231706
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4115.webp",
+      "sha256": "3de3fd1bb5b86d1ba1051fed3b9542db51af738f1b679fdbcbb77e4563af7547",
+      "size_bytes": 211826
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4116.webp",
+      "sha256": "bd5774afc36187d020aa4b8c5b20d9c8affa8073c78d9d081d4b9bcd5cdc9df3",
+      "size_bytes": 220702
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4116.webp",
+      "sha256": "2a505a9d519a3b4d8e00b121fe1e6ace2933ff469deea8a5a21d0fc791422d90",
+      "size_bytes": 212772
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4117.webp",
+      "sha256": "6d2c8a8f6bd3597fe8726d950f360a9d6daab4f5dbc45e17f94fa802b22cc2ab",
+      "size_bytes": 313000
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4117.webp",
+      "sha256": "0e4b924fc6cc8f2366e5d1b0be3e5b10ae4eed15b3a3f767491fe92845e6e310",
+      "size_bytes": 303924
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4118.webp",
+      "sha256": "1133b9ff3318e1b20a7bc32292374db8ab19ff01b9b0f7229a8e015d48d9cf16",
+      "size_bytes": 327066
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4118.webp",
+      "sha256": "5e633b6536d41c2e959b594c3fdc73f4c054bfed631f6a20a3b587c2e68a0202",
+      "size_bytes": 308440
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4119.webp",
+      "sha256": "43ce3fc6747d89cd8b7beb9b39fd5bf724dac840e431acf823778840d54a25ba",
+      "size_bytes": 339750
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4119.webp",
+      "sha256": "37aa72e65c634c87904faa35c4e0dffe198feeb6d8bbdc7762e9ba3991874d6a",
+      "size_bytes": 329858
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4120.webp",
+      "sha256": "a62da35895aba3174ba035db19cf2b873b1fe188c68df74f112f5bd492a34567",
+      "size_bytes": 305126
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4120.webp",
+      "sha256": "7ba7881d454abde9a1300e386a7d99b2af59ce355540f8774b377c7539556c1f",
+      "size_bytes": 300934
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4121.webp",
+      "sha256": "eb940fc716ed8ce84ba538b99aa92e6d80e0c04b3239f3aad55511b5d85be67e",
+      "size_bytes": 308398
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4121.webp",
+      "sha256": "7abe1fb463dafa1cfe79b9754cdeacd1edd76afdeb34a5da9c15554fdd9c6660",
+      "size_bytes": 298028
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4122.webp",
+      "sha256": "29c793ce392b904ee1bde589d04cfc1aa62fb058c022c033c6d724c2f58a57d0",
+      "size_bytes": 107414
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4122.webp",
+      "sha256": "7952c400b317578ee9d31da6b82fb5fdef034d195b7d2c1a56285b4a28327c68",
+      "size_bytes": 106888
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2327/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2327/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4114.webp",
+      "sha256": "0623d9ec0b715e1505fdcc247695ae5b6400602a4ce46560a586c9eb25818981",
+      "size_bytes": 132582
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4114.webp",
+      "sha256": "8122e5d0b0a4fd021bafa1ac1ce39e7d5ab7cc5f305d6d59f3e42e4cd1c11654",
+      "size_bytes": 124178
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4115.webp",
+      "sha256": "2fb269e0579b2eae30702017f5c99e2f0cf3494c8740423daf82c3110a0b9a04",
+      "size_bytes": 285580
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4115.webp",
+      "sha256": "50485500ca9ccb6621e981220633c7aadce50e5873cd138ae04a5d499435b147",
+      "size_bytes": 274858
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4116.webp",
+      "sha256": "0617ec68efb8ae587a2537b828d29fc6df31b49ab49e7b9a368c702a9eb7ad06",
+      "size_bytes": 294714
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4116.webp",
+      "sha256": "668fa8e1c0ee77c33a6f75db0f664f98e77021a48bff65e1eceb8918679476da",
+      "size_bytes": 291420
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4117.webp",
+      "sha256": "09d5c44ddd787e415589c8a0e652d71546541a95103082e8a4a75d8cedf7a549",
+      "size_bytes": 315882
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4117.webp",
+      "sha256": "15a087094926482f0903f69156bdfc44983ee0cf0e9d20b4e537981c3de54699",
+      "size_bytes": 313034
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4118.webp",
+      "sha256": "59f5acd92f52440e5dc838af8b3c8fa22f78a304071732970767dae475c65459",
+      "size_bytes": 316632
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4118.webp",
+      "sha256": "02694b38ed91a7440ad65a7a067d66f6ea06ac236e3fad7ff9fce1bd488d8b31",
+      "size_bytes": 296840
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4119.webp",
+      "sha256": "0ac290240a214ab73d45e8071f054ebea93bfbb192a061515eeb5a7f1cf2017b",
+      "size_bytes": 347606
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4119.webp",
+      "sha256": "a1a8e847182bf2c9dc4d516201de827ecb2f8eafded43f3d0924b7d3cf1f14af",
+      "size_bytes": 342690
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4120.webp",
+      "sha256": "af338e936c0fe19c47ea14159e61daf4feee1741476a60b89b6f50cbfc536043",
+      "size_bytes": 295154
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4120.webp",
+      "sha256": "96c34df52f0628051b8006bee7a42d5dca53f79526d9300513974aa5dfb2dca1",
+      "size_bytes": 287456
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4121.webp",
+      "sha256": "ad49814dea9e6972a8d5ee4fcad3d61a525466ec27337b9c38231544fac0dd04",
+      "size_bytes": 306572
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4121.webp",
+      "sha256": "07f67265d1eefbe08c0037cf81743fd696bec1114d5851f33b0343172bd29483",
+      "size_bytes": 289338
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4122.webp",
+      "sha256": "a1dc87e30b6c7ac1f7b4058f17d447dba0ca183731d31ffe0be5327ba9298c2d",
+      "size_bytes": 4112
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4122.webp",
+      "sha256": "db8607f6788965ec63bd6e243700921b335c00d3bf15831391efe2a7d3d71427",
+      "size_bytes": 3976
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2328/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2328/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4114.webp",
+      "sha256": "bfe4b563edb81e758adef5628a0319307d0b1dda37cb5dcb4778cdb62c09597a",
+      "size_bytes": 126924
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4114.webp",
+      "sha256": "410d9b7d9862c039f3930dab46292131d22bb86f9e6e0d28287abee660d36530",
+      "size_bytes": 122784
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4115.webp",
+      "sha256": "7c565e4f86e7dbd368faea02a72e37a5c2c1edc103a33f10750de45217ad3a58",
+      "size_bytes": 221540
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4115.webp",
+      "sha256": "18f5fe734976c1874afa3b4fdaaede2071b1bfa514264a8a95f182be20d0ccd0",
+      "size_bytes": 224158
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4116.webp",
+      "sha256": "b5505929b73ae727232048f85f316e35b0a67ef84d321d37e69b3fb723c2e944",
+      "size_bytes": 287452
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4116.webp",
+      "sha256": "1f1c4e2a54ab1c1b899893c595744015c8e50d9cd1bb90cd2042b376eab4305d",
+      "size_bytes": 283610
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4117.webp",
+      "sha256": "4a7fbcbc2139cfb21e8b10469a74bf436db49cded86b5a83f38c27ca9e735969",
+      "size_bytes": 333364
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4117.webp",
+      "sha256": "c6a5050bb92870f87e4986ec423d4823a2417c7b0b239eb75ef55c84908a0ade",
+      "size_bytes": 312808
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4118.webp",
+      "sha256": "99622955fd869de3c8868e05c967ddb7fda33a07aa25a3a3ab208aa36aa9c6ed",
+      "size_bytes": 318616
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4118.webp",
+      "sha256": "1d2a6c4c332e23436e839bd1d7328448f9edbaed2b1b97dbf5c38cdf92ce1935",
+      "size_bytes": 306022
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4119.webp",
+      "sha256": "287f80cb5fdf0223ebe63331726c08b30a0a0719a3aa7db1b8da27c9db27dbdd",
+      "size_bytes": 328126
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4119.webp",
+      "sha256": "ff4b69a0fc632718daf4a37f91afd312d567a2414c6a87fd0ab4625b227c26d2",
+      "size_bytes": 322258
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4120.webp",
+      "sha256": "533b49d873bc3e0bd4ca512a69f9ede4ceec3b9003cdca4cd8edd5516a1a2d4e",
+      "size_bytes": 322614
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4120.webp",
+      "sha256": "86f56b0374a9fa82c550b6923051043cff2490087039d48cf481802e9b1da507",
+      "size_bytes": 301118
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4121.webp",
+      "sha256": "73d82d546df1a685e206d1615ab9efc321284dce80cb903dae4a834a495133ba",
+      "size_bytes": 288420
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4121.webp",
+      "sha256": "578e9f30a4b9542f04286f6b825d5098f58268b1bf51286953012e68148c0182",
+      "size_bytes": 273968
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4122.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4122.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2329/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2329/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4114.webp",
+      "sha256": "ff719ac8b36d5a49201f55bdb3a0d81400aa68e343670a6fec85609fcf09f5ea",
+      "size_bytes": 148576
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4114.webp",
+      "sha256": "67bcbf8f4fc0cf30d1a5851866c6fdf52ea35845bae0b611028d2f222f9c8940",
+      "size_bytes": 126444
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4115.webp",
+      "sha256": "2d5d0f6c7ca9de9d87859fe999a0acebd6db33adaad68626e291e5b447a1d049",
+      "size_bytes": 290360
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4115.webp",
+      "sha256": "657ac6a967236265bfad15b4e708824061f1b9986fe00b9e806b6be065b882ec",
+      "size_bytes": 291128
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4116.webp",
+      "sha256": "c27d21d948cab7efeda38931c4ab4322cfc149776b1ef188b7eb7fe2c43e0b2c",
+      "size_bytes": 293082
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4116.webp",
+      "sha256": "c06886cd6c05ce91178b5b9e6d7474c4b23c5a291771c75d24dc6529fa044ba4",
+      "size_bytes": 282898
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4117.webp",
+      "sha256": "5ffeafcdbf7203ecb9175b3eb5987ac11764154a9645518f08b758af7adf5787",
+      "size_bytes": 318260
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4117.webp",
+      "sha256": "21c46f5e5fc41a651374da9057cb2a5be90f50e645076a9837a9b1a1f92eea9d",
+      "size_bytes": 299988
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4118.webp",
+      "sha256": "88f4604ad6b3f188abc1837d7aa15225462ca19f84d0f438b6956a2fef8758fc",
+      "size_bytes": 316944
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4118.webp",
+      "sha256": "16f59d7ebd0d44029b2c7ce83d58991130589a7904fac7880c423bcedc6be52d",
+      "size_bytes": 302052
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4119.webp",
+      "sha256": "a5f1f15fff28442ee53ba9b4e4eb01302f3de02ae11cbf294dcbe8ac5d23de85",
+      "size_bytes": 341276
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4119.webp",
+      "sha256": "d52a357e56c2b3c820e12baf11990bb0a390b6a81e4840eca5394d5d62661244",
+      "size_bytes": 322376
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4120.webp",
+      "sha256": "d148da09dba6495f2e26cbf622a8b42b35c20edf524ea379c433d728817d704d",
+      "size_bytes": 306340
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4120.webp",
+      "sha256": "55f7fb866aea5b5e9487782d76796c6e2fecf71ac7b7ac0834930748f463e176",
+      "size_bytes": 296936
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4121.webp",
+      "sha256": "cb05cd8da7e6fc5cc9f84d1c33822de8b82ef693129f8e121841bed2866d980f",
+      "size_bytes": 266922
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4121.webp",
+      "sha256": "e8816405ce7538aff684999fd14b9cfabf17d469cd41a6000bde05953854c26f",
+      "size_bytes": 260222
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4122.webp",
+      "sha256": "afb8a9d2519e46a5de693416086649b348c813ae73d72e3ed027fb6b6da3870d",
+      "size_bytes": 16088
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4122.webp",
+      "sha256": "5814105ed43891cf126569eac6c45e1b1ef2a35447bb70980bae36d4c26b5a14",
+      "size_bytes": 15616
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2330/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2330/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4114.webp",
+      "sha256": "38a41c2228e068f1f577649dd5a3775d128ba3caea2d9a0b75ae8e8ef3764311",
+      "size_bytes": 102438
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4114.webp",
+      "sha256": "0091dc1077b59fd94ae09e2a04cd2a35d944c9b731d6b39cf737c65c09996dfc",
+      "size_bytes": 91448
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4115.webp",
+      "sha256": "5838328d1d8cc555d71f4a6ce4518f8af49a36e1c4758f8c24fb87576f947cdd",
+      "size_bytes": 121736
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4115.webp",
+      "sha256": "d1fb4459afc1f5ba78b8608c2a452f80d5e961184dea6759f68cd1f36361a108",
+      "size_bytes": 121758
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4116.webp",
+      "sha256": "c06a1e04a1154e5c7ee3b2eda197124e8cba2c3c92adb3e57396f6fe56276ab2",
+      "size_bytes": 126896
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4116.webp",
+      "sha256": "4cc1c2e28a370577f5334b3fb2bb7679d7d1e1e3859cdd2ae5f6318ba71f4643",
+      "size_bytes": 119130
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4117.webp",
+      "sha256": "120297ad76dcd60c57faa0f53bfe57f860584fbef6dce44b4c1e6bb587874020",
+      "size_bytes": 284252
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4117.webp",
+      "sha256": "a27b3d165723aefef06e69ab6347183dea593580d55a8c432fbd3311488cca91",
+      "size_bytes": 275408
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4118.webp",
+      "sha256": "a8d9bcc83d6f7d02d64b9cb6fc768967a621767c42cc500be1cdd51e4d8a1ab4",
+      "size_bytes": 302428
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4118.webp",
+      "sha256": "a2329786fbb2847c1e937c67f55767b85712231608118d14b5baff143d282905",
+      "size_bytes": 315412
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4119.webp",
+      "sha256": "aa5dada46ad9a977b778acdb3965c287a384f5166283319cd675fbcd6b602503",
+      "size_bytes": 318964
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4119.webp",
+      "sha256": "891a94377a8f67ef40a4543b92a137ad1483b337af81d79cc7044ecef5b74e82",
+      "size_bytes": 315530
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4120.webp",
+      "sha256": "d89793aee2e8faf4411a005e2e27d59148184e16d961951fc564f691570205e8",
+      "size_bytes": 322996
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4120.webp",
+      "sha256": "30b6ad168334d55c91f59e43aa071ca8f787188bb9c51eaa012f984c59375542",
+      "size_bytes": 313788
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4121.webp",
+      "sha256": "0befe80c4e59551ad7d9690b894fd8c53a5ee257cc308164be29e0f8c5a7c148",
+      "size_bytes": 264910
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4121.webp",
+      "sha256": "8e6fca47d75e8da0808265239307f71f26f9cc0f5be537906b262bb20e7b162f",
+      "size_bytes": 253664
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4122.webp",
+      "sha256": "a84f2748f67f58b2d5423e4622c625a9cfd3270587f370278f26270c31f1b0f8",
+      "size_bytes": 15720
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4122.webp",
+      "sha256": "654fb49a766b733c6f4921d0192ad63ad9164aca7a04f132d8390ea2a824419f",
+      "size_bytes": 14900
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2331/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2331/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4114.webp",
+      "sha256": "c0a2a1d4a159e93f1275ab1dbe4fb2343aec2c90352890deaf4d6024069748fb",
+      "size_bytes": 134
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4114.webp",
+      "sha256": "ce214e5142e489fa1b09458db8139b8b61ecba634b04613aa3f14f95af12703f",
+      "size_bytes": 142
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4115.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4115.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4116.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4116.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4117.webp",
+      "sha256": "90c6e5cfd1c03ef6d4ad04e5d709e8094582312684bc5697625631d90ac4983e",
+      "size_bytes": 58230
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4117.webp",
+      "sha256": "876be0f8edf07cf781028e1eb8f9739358400e091dc19896ef4df71ea200204d",
+      "size_bytes": 58414
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4118.webp",
+      "sha256": "e590ee6bee17c2cb4d73ec5d9e0bc6e6aa0c43f1942ddebd669254f1d0e27fda",
+      "size_bytes": 103596
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4118.webp",
+      "sha256": "b3417b3963bf5d5dbc1f6fffdbb129c3ddeb13398176f00e2d7495f7d5de1c6c",
+      "size_bytes": 99930
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4119.webp",
+      "sha256": "ee215608ca9b745609e78d8973f514d2bb7f6a4fb767a62ddedd77febeedbeb9",
+      "size_bytes": 103148
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4119.webp",
+      "sha256": "11c3d0308fa320df7ffe2b7e11f99b0c7a6fd16b7a5d31b1c8b1201f1663234b",
+      "size_bytes": 102996
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4120.webp",
+      "sha256": "500123f71fbcacb72315a9799fa29531c6a859e7353d87c6f7c95254d83be7d7",
+      "size_bytes": 98684
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4120.webp",
+      "sha256": "a07ca99b6ddaed773ebfa2d09dd8e0240ca52d9ebf69a1691743d0a754e1ccf6",
+      "size_bytes": 97540
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4121.webp",
+      "sha256": "ae2cc97fcf85ee9812d8e085ef089ef78a2d01039e58c2cf2fb34433037a2cee",
+      "size_bytes": 69966
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4121.webp",
+      "sha256": "1d5bdb0006d701a737139a837184dcf398da5bdb1c819586344d906b7e4ce7d1",
+      "size_bytes": 61898
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4122.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4122.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4123.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2019/13/2332/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    },
+    {
+      "url": "assets/images/rivers/2024/13/2332/4124.webp",
+      "sha256": "e11263e01a109975ae10bdc4a3a8d28c162d07eecb327b442f278f66562ee9af",
+      "size_bytes": 52
+    }
+  ],
+  "coverage": {
+    "kind": "processing-block",
+    "block_ids": [
+      7
+    ],
+    "total_blocks": 9
+  },
+  "built_at": "2026-09-30T19:30:11.744772+00:00"
+}

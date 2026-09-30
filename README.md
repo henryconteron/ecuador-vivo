@@ -61,6 +61,14 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
   de NDVI y conteo de observaciones útiles. Los tres derivados nuevos reutilizan
   el GeoTIFF original; no añaden una clasificación de minería ni resolución ficticia;
 - mapa topográfico principal y mapa de calles alternativo;
+- pipeline provincial **Napo a 10 m**, primer bloque Tena–Archidona verificado:
+  392 teselas reales (aprox. 67 MB, carga solo del área visible), comparación
+  2019/2024 y cobertura parcial declarada. Marcadores exploratorios aún pendientes
+  y deshabilitados. Exportación de Earth Engine por teselas
+  y cribado exploratorio de cambios de agua. Solo se habilita con archivos
+  descargados y verificados; el manifiesto indica si están pendientes. No es
+  inventario de todos los ríos ni detector de minería/contaminación.
+  [Método y siguientes pasos](documentation/napo-rivers.md);
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;
 - búsqueda por nombre, provincia, identificador o catálogo de origen;
 - filtro por tipo de movimiento;

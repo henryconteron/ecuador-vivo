@@ -55,3 +55,8 @@ ni clasificaciones automáticas de minería o contaminación. Métodos:
 [cobertura](../documentation/napo-landcover.md),
 [imagen/clasificación](../documentation/napo-imagery.md),
 [señales espectrales y ríos](../documentation/napo-spectral-rivers.md).
+
+`rivers/` añade configuración y manifiesto de la exportación **provincial**
+Napo a 10 m. `pending` no publica observaciones; `ready` requiere los chunks
+reales, recibo, teselas y GeoJSON de señales candidatas verificados. No es
+la cuenca internacional ni solo Jatunyacu. [Método](../documentation/napo-rivers.md).

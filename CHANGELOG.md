@@ -2,6 +2,19 @@
 
 ## Sin publicar — 2026-09-30
 
+- Pipeline provincial progresivo Napo a 10 m: RGB sin pérdida por teselas, comparación
+  temporal y cribado NDWI por escena con celdas candidatas de 1 km, QA y
+  atribución. Primer bloque Tena–Archidona real habilitado: 392 teselas, 67 MB
+  con carga por zona visible. El cribado permanece pendiente, sin puntos
+  ficticios; no se fabrica resolución ni se atribuyen causas del cambio.
+- Primer intento provincial cancelado por alto consumo de cuota; cribado
+  original falló por memoria. Reformulación por bloques y muestra trimestral
+  limitada, sin publicar esos intentos como productos listos.
+- RGB del bloque completado en nueve minutos (1,67 horas EECU); recibo y
+  archivos verificados. Se solicitó cancelar el cribado del bloque tras cuatro
+  intentos automáticos sin resultado verificable; imágenes y cribado tienen
+  estados independientes.
+
 - Visor satelital Napo con zoom y paneo georreferenciados, corte de comparación
   2019/2024, año individual, opacidad, leyenda reactiva y enlaces reproducibles.
 - NDMI, diferencia de NDVI y apoyo observacional derivados del GeoTIFF real ya

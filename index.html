@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
     <link rel="preconnect" href="https://tile.opentopomap.org" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260930-7" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260930-8" />
   </head>
   <body data-page="map">
     <a class="skip-link" href="#map" data-i18n="skip.map">Ir directamente al mapa</a>
@@ -68,6 +68,13 @@
 
           <div id="map" tabindex="0" data-i18n-aria="map.aria" aria-label="Mapa interactivo del Ecuador continental"></div>
           <div id="spectral-map-divider" class="spectral-map-divider" aria-hidden="true" hidden><span>2019 │ 2024</span></div>
+          <div id="rivers-divider" class="spectral-map-divider" aria-hidden="true" hidden><span>2019 │ 2024</span></div>
+          <section id="rivers-toolbar" class="spectral-map-toolbar" aria-label="Imágenes provinciales" data-i18n-aria="rivers.toolbar" hidden>
+            <header><strong data-i18n="rivers.title">Napo · detalle a 10 m</strong><button id="rivers-hide" type="button" data-i18n="spectralMap.hide">Ocultar</button></header>
+            <label><span data-i18n="spectralMap.time">Modo temporal</span><select id="rivers-time" aria-label="Modo temporal provincial" data-i18n-aria="rivers.time"><option value="compare">2019 ↔ 2024</option><option value="2019">2019</option><option value="2024">2024</option></select></label>
+            <div id="rivers-swipe"><label for="rivers-split" data-i18n="spectral.slider">Mover el límite entre los años</label><input id="rivers-split" type="range" min="0" max="100" step="1" value="50" /></div>
+            <button id="rivers-fit" type="button" data-i18n="rivers.fit">Ver cobertura disponible</button><small id="rivers-scope"></small>
+          </section>
           <section id="spectral-map-toolbar" class="spectral-map-toolbar" data-i18n-aria="spectralMap.toolbar" aria-label="Controles satelitales del visor" hidden>
             <header><strong id="spectral-map-title"></strong><button id="spectral-map-hide" type="button" data-i18n="spectralMap.hide">Ocultar</button></header>
             <label><span data-i18n="spectral.chooseMode">Elegir señal espectral</span><select id="spectral-map-quick-mode" data-i18n-aria="spectral.chooseMode" aria-label="Elegir señal espectral">
@@ -179,6 +186,12 @@
               <div class="legend-divider" aria-hidden="true"></div><p id="spectral-map-legend-title" class="legend-subtitle"></p>
               <div id="spectral-map-legend-scale"><div id="spectral-map-gradient"></div><p id="spectral-map-ticks"><span id="spectral-map-min"></span><span id="spectral-map-mid"></span><span id="spectral-map-max"></span></p></div>
               <p id="spectral-map-legend-note"></p><small data-i18n="spectralMap.legendCaution">Escalas fijas. No midas valores desde el color ni interpretes los huecos como terreno.</small>
+            </section>
+            <section class="legend-section" data-legend-layer="rivers" hidden>
+              <div class="legend-divider" aria-hidden="true"></div><p class="legend-subtitle" data-i18n="rivers.title">Napo · detalle a 10 m</p>
+              <p id="rivers-legend-year">2019 ↔ 2024</p><small data-i18n="rivers.scope">Bloque de Napo · RGB de muestra anual · 10 m. Cobertura parcial, no toda la provincia ni toda la cuenca.</small>
+              <small data-i18n="rivers.noData">Donde aparece el mapa base no hay imagen satelital comparable o está fuera de Napo. No interpretes ese fondo como un cambio del paisaje.</small>
+              <p id="rivers-marker-legend" hidden><span style="color:#ffb15f" aria-hidden="true">●</span> <span data-i18n="rivers.candidateTitle">Cambio de agua · candidato sin revisar</span></p>
             </section>
             <section class="legend-section" data-legend-layer="earthquakes" hidden>
               <div class="legend-divider" aria-hidden="true"></div>
@@ -402,10 +415,19 @@
               <a id="landcover-source" href="https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1" target="_blank" rel="noopener noreferrer" data-i18n="landcover.source">Fuente y leyenda oficial ↗</a>
               <a class="official-source-link" href="https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-landcover.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Método y reproducibilidad ↗</a>
             </div>
+            <div class="now-layer-card" data-system-content="water life" hidden>
+              <label class="layer-switch" for="rivers-toggle"><span><strong data-i18n="rivers.title">Napo · detalle a 10 m</strong><small data-i18n="rivers.hint">Cobertura provincial progresiva · bloques verificados</small></span><input id="rivers-toggle" type="checkbox" disabled /><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <p id="rivers-status" class="layer-status" role="status" data-i18n="rivers.loading">Comprobando la exportación provincial…</p>
+              <label class="spectral-compare-check" for="rivers-signals"><input id="rivers-signals" type="checkbox" disabled /><span data-i18n="rivers.signals">Señalar candidatos de cambio en agua superficial</span></label>
+              <p id="rivers-count" class="layer-status"></p>
+              <p class="layer-caution" data-i18n="rivers.noData">Donde aparece el mapa base no hay imagen satelital comparable o está fuera de Napo. No interpretes ese fondo como un cambio del paisaje.</p>
+              <p class="layer-caution" data-i18n="rivers.caution">Señales exploratorias, no cambios confirmados del cauce ni evidencia de minería o contaminación. Revisar nubes, sombras, estacionalidad y nivel del agua.</p>
+              <a class="official-source-link" href="https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="rivers.method">Método, cobertura y límites ↗</a>
+            </div>
             <div class="now-layer-card spectral-invitation" data-system-content="life water" hidden>
               <span class="eyebrow" data-i18n="spectral.eyebrow">Laboratorio espectral · Napo · 2019 ↔ 2024</span>
               <h3 data-i18n="spectral.invitation">Un río cambia. ¿Qué nos cuenta la luz?</h3>
-              <p data-i18n="spectral.invitationCopy">Explora el Jatunyacu y su entorno con imágenes reales, señales de vegetación y agua, y evidencia independiente.</p>
+              <p data-i18n="spectral.invitationCopy">Explora los ríos y el paisaje de la ventana Tena–Archidona con imágenes reales, señales de vegetación y agua, y evidencia independiente. La cobertura no abarca todavía toda Napo.</p>
               <label class="layer-switch" for="spectral-map-toggle"><span><strong data-i18n="spectralMap.title">Imágenes e índices · Napo</strong><small data-i18n="spectralMap.hint">2019 ↔ 2024 · zoom y comparación geográfica</small></span><input id="spectral-map-toggle" type="checkbox" disabled /><span class="switch-track" aria-hidden="true"><span></span></span></label>
               <p id="spectral-map-status" class="layer-status" role="status" data-i18n="spectral.loading">Comprobando las dos fechas y su procedencia…</p>
               <div id="spectral-map-settings" class="spectral-map-settings" hidden>
@@ -620,8 +642,8 @@
         <small>Modified Copernicus Sentinel data (2019, 2024), processed with Google Earth Engine; Cloud Score+ by Google, CC BY 4.0.</small>
       </details>
     </dialog>
-    <script src="assets/js/i18n.js?v=20260930-7"></script>
+    <script src="assets/js/i18n.js?v=20260930-10"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="assets/js/map.js?v=20260930-7"></script>
+    <script type="module" src="assets/js/map.js?v=20260930-9"></script>
   </body>
 </html>

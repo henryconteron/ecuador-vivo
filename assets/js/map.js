@@ -23,8 +23,9 @@ import {
 import { nearestFeature } from "./map/place.js";
 import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
 import { mountNapoImagery } from "./map/imagery.js?v=20260930-5";
-import { mountNapoSpectral } from "./map/spectral.js?v=20260930-7";
-import { mountNapoSpectralMap } from "./map/spectral-map.js?v=20260930-7";
+import { mountNapoSpectral } from "./map/spectral.js?v=20260930-8";
+import { mountNapoSpectralMap } from "./map/spectral-map.js?v=20260930-8";
+import { mountNapoRivers } from "./map/rivers.js?v=20260930-9";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -44,7 +45,7 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930-7";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930-8";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,
@@ -366,6 +367,7 @@ function initializeAtlas() {
   let napoImagery;
   let napoSpectral;
   let napoSpectralMap;
+  let napoRivers;
   let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
@@ -1029,6 +1031,7 @@ function initializeAtlas() {
       thermal: map.hasLayer(thermalLayer),
       landcover: napoLandcover?.isActive() ?? false,
       "spectral-map": napoSpectralMap?.isActive() ?? false,
+      rivers: napoRivers?.isActive() ?? false,
       earthquakes: map.hasLayer(earthquakeLayer),
     };
     let visibleSections = 0;
@@ -1041,6 +1044,7 @@ function initializeAtlas() {
     const contexts = activeSpatialContexts(activeLayers, i18n?.language, { demo: demoMode });
     if (napoLandcover?.isActive()) contexts.push(napoLandcover.context());
     if (napoSpectralMap?.isActive()) contexts.push(napoSpectralMap.context());
+    if (napoRivers?.isActive()) contexts.push(napoRivers.context());
     document.querySelector("#spatial-count").textContent = String(contexts.length);
     document.querySelector("#spatial-empty").hidden = contexts.length > 0;
     const contextList = document.querySelector("#spatial-context-list");
@@ -1301,6 +1305,7 @@ function initializeAtlas() {
     if (map.hasLayer(thermalLayer)) sources.add("NASA FIRMS / GIBS");
     if (napoLandcover?.isActive()) sources.add("MapBiomas Ecuador V1");
     if (napoSpectralMap?.isActive()) sources.add("Copernicus Sentinel-2 / Cloud Score+");
+    if (napoRivers?.isActive()) { sources.add("Copernicus Sentinel-2 / Cloud Score+"); sources.add("geoBoundaries v6"); }
     if (map.hasLayer(precipitationLayer)) sources.add("NASA GPM IMERG / GIBS");
     if (map.hasLayer(airTemperatureLayer)) sources.add("NASA Aqua AIRS / GIBS");
     if (map.hasLayer(cloudFractionLayer)) sources.add("NASA Aqua MODIS / GIBS");
@@ -1796,6 +1801,7 @@ function initializeAtlas() {
     napoImagery?.render();
     napoSpectral?.render();
     napoSpectralMap?.render();
+    napoRivers?.render();
     if (demoMode) {
       elements.projectStatus.setAttribute("aria-label", t("status.synthetic"));
       elements.statusFull.textContent = t("status.synthetic");
@@ -1857,9 +1863,13 @@ function initializeAtlas() {
     focus: () => setRegionFocus("napo", {updateUrl: true})});
   napoImagery = mountNapoImagery({t, language: () => i18n?.language ?? "es"});
   napoSpectralMap = mountNapoSpectralMap({L, map, t, language: () => i18n?.language ?? "es",
+    onActivate: () => napoRivers?.setEnabled(false),
     onChange: () => { updateLegendVisibility(); updateSourceCount(); napoSpectral?.render(); },
     focus: () => setRegionFocus("napo", {fit: false, updateUrl: regionFocus !== "napo"})});
   napoSpectral = mountNapoSpectral({t, language: () => i18n?.language ?? "es", onExploreMap: options => napoSpectralMap.activate(options), canExploreMap: () => napoSpectralMap.isReady()});
+  napoRivers = mountNapoRivers({L, map, t, language: () => i18n?.language ?? "es",
+    onChange: () => { updateLegendVisibility(); updateSourceCount(); }, onActivate: () => napoSpectralMap.deactivate(),
+    focus: () => setRegionFocus("napo", {fit: false, updateUrl: regionFocus !== "napo"})});
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

@@ -27,3 +27,5 @@ jobs:
       - run: python scripts/build_napo_landcover.py --help
       - run: python scripts/build_napo_imagery.py --help
       - run: python scripts/build_napo_spectral.py --help
+      - run: python scripts/build_napo_rivers.py --help
+      - run: python scripts/build_napo_river_changes.py --help
