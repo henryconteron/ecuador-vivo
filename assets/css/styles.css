@@ -29,6 +29,16 @@
 .spatial-context li small { color: #9cdbc0; }
 .spatial-context li p { color: var(--muted); font-size: 0.75rem; line-height: 1.6; margin: 0.4rem 0 0; }
 .spatial-context > a { font-size: 0.75rem; color: #9cdbc0; line-height: 1.65; }
+.landcover-years { display: flex; gap: 0.5rem; margin-block: 0.8rem; }
+.landcover-years[hidden] { display: none; }
+.landcover-years button { flex: 1; padding: 0.6rem; border: 1px solid var(--line); border-radius: 0.4rem; color: var(--ink); background: var(--panel); cursor: pointer; }
+.landcover-years button[aria-pressed="true"] { background: #315d50; border-color: #91bcaa; }
+.landcover-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.landcover-table caption { text-align: left; line-height: 1.5; color: var(--muted); padding-bottom: 0.6rem; }
+.landcover-table th, .landcover-table td { padding: 0.4rem 0.2rem; border-bottom: 1px solid var(--line); text-align: right; }
+.landcover-table th:first-child, .landcover-table td:first-child { text-align: left; }
+.landcover-legend i { width: 0.75rem; height: 0.75rem; border-radius: 2px; flex: 0 0 auto; }
+.categorical-overlay { image-rendering: pixelated; }
 
 * {
   box-sizing: border-box;

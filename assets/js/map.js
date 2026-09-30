@@ -21,6 +21,7 @@ import {
   createFaultPopup as buildFaultPopup,
 } from "./map/popups.js";
 import { nearestFeature } from "./map/place.js";
+import { mountNapoLandcover } from "./map/landcover.js?v=20260930";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -40,7 +41,7 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930-3";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,
@@ -341,6 +342,7 @@ function initializeAtlas() {
   let floodState = "off";
   let floodTileErrors = 0;
   let thermalState = "off";
+  let napoLandcover;
   let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
@@ -1002,6 +1004,7 @@ function initializeAtlas() {
       "cloud-fraction": map.hasLayer(cloudFractionLayer),
       flood: map.hasLayer(floodLayer),
       thermal: map.hasLayer(thermalLayer),
+      landcover: napoLandcover?.isActive() ?? false,
       earthquakes: map.hasLayer(earthquakeLayer),
     };
     let visibleSections = 0;
@@ -1012,6 +1015,7 @@ function initializeAtlas() {
     });
     elements.legendEmpty.hidden = visibleSections > 0;
     const contexts = activeSpatialContexts(activeLayers, i18n?.language, { demo: demoMode });
+    if (napoLandcover?.isActive()) contexts.push(napoLandcover.context());
     document.querySelector("#spatial-count").textContent = String(contexts.length);
     document.querySelector("#spatial-empty").hidden = contexts.length > 0;
     const contextList = document.querySelector("#spatial-context-list");
@@ -1270,6 +1274,7 @@ function initializeAtlas() {
     if (map.hasLayer(basinLayer)) sources.add("INAMHI / MAATE");
     if (map.hasLayer(stationLayer)) sources.add("INAMHI Red Hidrometeorológica");
     if (map.hasLayer(thermalLayer)) sources.add("NASA FIRMS / GIBS");
+    if (napoLandcover?.isActive()) sources.add("MapBiomas Ecuador V1");
     if (map.hasLayer(precipitationLayer)) sources.add("NASA GPM IMERG / GIBS");
     if (map.hasLayer(airTemperatureLayer)) sources.add("NASA Aqua AIRS / GIBS");
     if (map.hasLayer(cloudFractionLayer)) sources.add("NASA Aqua MODIS / GIBS");
@@ -1761,6 +1766,7 @@ function initializeAtlas() {
   });
 
   window.addEventListener("atlas:languagechange", () => {
+    napoLandcover?.render();
     if (demoMode) {
       elements.projectStatus.setAttribute("aria-label", t("status.synthetic"));
       elements.statusFull.textContent = t("status.synthetic");
@@ -1817,6 +1823,9 @@ function initializeAtlas() {
     elements.sidebar.prepend(hint);
   }
   setRegionFocus(regionFocus, { fit: regionFocus === "napo" });
+  napoLandcover = mountNapoLandcover({L, map, t, language: () => i18n?.language ?? "es",
+    onChange: () => { updateLegendVisibility(); updateSourceCount(); },
+    focus: () => setRegionFocus("napo", {updateUrl: true})});
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

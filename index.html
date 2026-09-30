@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
     <link rel="preconnect" href="https://tile.opentopomap.org" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260930-2" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260930-3" />
   </head>
   <body data-page="map">
     <a class="skip-link" href="#map" data-i18n="skip.map">Ir directamente al mapa</a>
@@ -158,6 +158,11 @@
               <div class="legend-divider" aria-hidden="true"></div>
               <p class="legend-subtitle" data-i18n="legend.thermal">Observación térmica</p>
               <div class="legend-items thermal-legend"><span><i class="thermal-symbol"></i><span data-i18n="thermal.detection">Anomalía detectada por VIIRS</span></span></div>
+            </section>
+            <section class="legend-section" data-legend-layer="landcover" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p id="landcover-legend-year" class="legend-subtitle" data-i18n="landcover.title">Cobertura del suelo · Napo</p>
+              <div id="landcover-legend" class="legend-items landcover-legend"></div>
             </section>
             <section class="legend-section" data-legend-layer="earthquakes" hidden>
               <div class="legend-divider" aria-hidden="true"></div>
@@ -352,6 +357,30 @@
                 <a href="https://servicios.inamhi.gob.ec/aplicaciones-web/" target="_blank" rel="noopener noreferrer"><span data-i18n="flood.inamhi">Monitoreo oficial de INAMHI</span><span aria-hidden="true">↗</span></a>
               </details>
             </div>
+            <div id="landcover-layer-card" class="now-layer-card" data-system-content="life" hidden>
+              <div class="now-layer-heading"><span data-i18n="landcover.badge">Tena–Archidona · historia del territorio</span><small>MapBiomas V1 · 30 m</small></div>
+              <label class="layer-switch" for="landcover-toggle">
+                <span><strong data-i18n="landcover.title">Cobertura del suelo · Napo</strong><small>2000 ↔ 2024</small></span>
+                <input id="landcover-toggle" type="checkbox" disabled />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <p id="landcover-status" class="layer-status" role="status" data-i18n="landcover.loading">Comprobando el recorte local…</p>
+              <div id="landcover-years" class="landcover-years" role="group" aria-label="Elegir año de cobertura" data-i18n-aria="landcover.chooseYear" hidden>
+                <button type="button" aria-pressed="false">2000</button><button type="button" aria-pressed="true">2024</button>
+              </div>
+              <details id="landcover-summary" class="thermal-story" hidden>
+                <summary data-i18n="landcover.compare">Comparar las mismas observaciones</summary>
+                <p id="landcover-completeness"></p><p id="landcover-change"></p>
+                <table class="landcover-table"><caption data-i18n="landcover.denominator">Porcentaje de píxeles observados en ambos años, no porcentaje del cantón.</caption><thead><tr><th scope="col" data-i18n="landcover.class">Clase</th><th scope="col">2000</th><th scope="col">2024</th></tr></thead><tbody id="landcover-table-body"></tbody></table>
+              </details>
+              <details class="thermal-story">
+                <summary data-i18n="landcover.question">Un color cambia. ¿Cambió realmente el territorio?</summary>
+                <p data-i18n="landcover.answer">El satélite observa luz; un modelo la clasifica. Un cambio de clase es una pista, no una prueba automática de deforestación. Hay que revisar imágenes, errores de clasificación y evidencia local.</p>
+              </details>
+              <p class="layer-caution" data-i18n="landcover.caution">Ventana de exploración, no límites cantonales. Los mapas son clasificaciones anuales a 30 m; no identifican propiedades ni causas del cambio.</p>
+              <a id="landcover-source" href="https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1" target="_blank" rel="noopener noreferrer" data-i18n="landcover.source">Fuente y leyenda oficial ↗</a>
+              <a class="official-source-link" href="https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-landcover.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Cómo completar la exportación ↗</a>
+            </div>
             <div id="thermal-layer-card" class="now-layer-card" data-system-content="life" hidden>
               <div class="now-layer-heading"><span data-i18n="now.badge">Ecuador ahora</span><small>NASA GIBS</small></div>
               <label class="layer-switch" for="thermal-toggle">
@@ -467,8 +496,8 @@
       <footer><span data-i18n="footer.credit">Desarrollado por Henry P. Conteron Moreta</span><span data-i18n="footer.disciplines">Geociencias · SIG · Ecuador</span></footer>
     </div>
 
-    <script src="assets/js/i18n.js?v=20260930"></script>
+    <script src="assets/js/i18n.js?v=20260930-3"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="assets/js/map.js?v=20260930-2"></script>
+    <script type="module" src="assets/js/map.js?v=20260930-3"></script>
   </body>
 </html>

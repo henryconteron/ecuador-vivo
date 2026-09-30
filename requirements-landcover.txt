@@ -1,0 +1,4 @@
+# Optional local pipeline; the public browser needs no Python runtime.
+rasterio==1.5.1
+numpy==2.4.3
+Pillow==12.1.1

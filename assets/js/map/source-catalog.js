@@ -143,8 +143,8 @@ export const SOURCE_CATALOG = Object.freeze([
     access: { es: "Plataforma / descargas", en: "Platform / downloads" },
     institution: "MapBiomas Ecuador",
     name: { es: "Cobertura y uso del suelo", en: "Land cover and land use" },
-    purpose: { es: "Cobertura anual a 30 m; recortes por provincia y cantón, con versión fija", en: "Annual 30 m land cover; province and canton subsets with a pinned version" },
-    url: "https://ecuador.mapbiomas.org/iniciativas-y-productos/cobertura-y-uso-del-suelo/cobertura-30m/",
+    purpose: { es: "Publisher Catalog V1: 30 m, 1985–2024; recorte Tena–Archidona pendiente de exportación", en: "Publisher Catalog V1: 30 m, 1985–2024; Tena–Archidona subset awaiting export" },
+    url: "https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1",
   },
   {
     id: "chc-chirps3", systems: ["water", "sky"], status: "candidate",
