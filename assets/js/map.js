@@ -40,7 +40,8 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930";
+import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,
   loadStationSnapshot,
@@ -84,6 +85,7 @@ function initializeAtlas() {
   const demoMode = urlParameters.get("demo") === "1";
   const requestedTour = urlParameters.get("tour");
   const guidedTour = ["earth", "water", "sky"].includes(requestedTour) ? requestedTour : null;
+  let regionFocus = normalizeRegionFocus(urlParameters.get("focus"));
   document.body.classList.toggle("is-demo", demoMode);
   const catalogUrl = demoMode ? DATASETS.faults.demo : DATASETS.faults.production;
   const evidenceUrl = demoMode ? DATASETS.evidence.demo : DATASETS.evidence.production;
@@ -596,6 +598,27 @@ function initializeAtlas() {
     });
   }
 
+  function setRegionFocus(value, { fit = true, updateUrl = false } = {}) {
+    regionFocus = normalizeRegionFocus(value);
+    document.querySelectorAll("[data-region-focus]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.regionFocus === regionFocus));
+    });
+    document.querySelector("#focus-note").hidden = regionFocus !== "napo";
+    const regionLabel = document.querySelector(".map-region");
+    regionLabel.dataset.i18n = regionFocus === "napo" ? "focus.napo" : "map.region";
+    regionLabel.textContent = t(regionLabel.dataset.i18n);
+    if (fit) map.fitBounds(REGION_VIEWS[regionFocus].bounds);
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      if (regionFocus === "napo") url.searchParams.set("focus", "napo");
+      else url.searchParams.delete("focus");
+      window.history.pushState({ ...window.history.state, focus: regionFocus }, "", url);
+    }
+  }
+  document.querySelectorAll("[data-region-focus]").forEach((button) => {
+    button.addEventListener("click", () => setRegionFocus(button.dataset.regionFocus, { updateUrl: true }));
+  });
+
   function renderSystemView({ updateUrl = false } = {}) {
     elements.sidebar.dataset.activeSystem = activeSystem;
     elements.systemButtons.forEach((button) => {
@@ -969,6 +992,7 @@ function initializeAtlas() {
 
   function updateLegendVisibility() {
     const activeLayers = {
+      hillshade: map.hasLayer(hillshadeLayer),
       faults: map.hasLayer(faultLayer),
       evidence: map.hasLayer(evidenceLayer),
       basins: map.hasLayer(basinLayer),
@@ -987,9 +1011,29 @@ function initializeAtlas() {
       if (visible) visibleSections += 1;
     });
     elements.legendEmpty.hidden = visibleSections > 0;
+    const contexts = activeSpatialContexts(activeLayers, i18n?.language, { demo: demoMode });
+    document.querySelector("#spatial-count").textContent = String(contexts.length);
+    document.querySelector("#spatial-empty").hidden = contexts.length > 0;
+    const contextList = document.querySelector("#spatial-context-list");
+    contextList.replaceChildren();
+    contexts.forEach((context) => {
+      const item = document.createElement("li");
+      const name = document.createElement("strong");
+      const resolution = document.createElement("small");
+      const limit = document.createElement("p");
+      const date = document.getElementById(`${context.id}-date`)?.value;
+      name.textContent = context.name;
+      resolution.textContent = context.resolution + (date ? ` · ${date}` : "");
+      limit.textContent = context.limit;
+      item.append(name, resolution, limit);
+      contextList.append(item);
+    });
   }
 
   updateLegendVisibility();
+  document.querySelectorAll('input[type="date"]').forEach((input) => {
+    input.addEventListener("change", () => queueMicrotask(updateLegendVisibility));
+  });
 
   function matchesFilters(feature) {
     const query = normalize(elements.search.value);
@@ -1337,6 +1381,7 @@ function initializeAtlas() {
 
   window.addEventListener("popstate", () => {
     selectSystem(new URLSearchParams(window.location.search).get("system"));
+    setRegionFocus(new URLSearchParams(window.location.search).get("focus"));
   });
 
   elements.explainPlace.addEventListener("click", () => setPlaceMode(!placeMode));
@@ -1420,6 +1465,7 @@ function initializeAtlas() {
     if (elements.hillshadeToggle.checked) hillshadeLayer.addTo(map);
     else map.removeLayer(hillshadeLayer);
     elements.hillshadeOpacity.disabled = !elements.hillshadeToggle.checked;
+    updateLegendVisibility();
     updateSourceCount();
   });
   elements.hillshadeOpacity.addEventListener("input", updateHillshadeOpacity);
@@ -1711,7 +1757,7 @@ function initializeAtlas() {
     selectedBasin = null;
     placeMarker.removeFrom(map);
     setPlaceMode(false);
-    map.fitBounds(ecuadorBounds);
+    setRegionFocus("ecuador", { updateUrl: true });
   });
 
   window.addEventListener("atlas:languagechange", () => {
@@ -1735,6 +1781,7 @@ function initializeAtlas() {
     updateThermalStatus();
     updateLegendVisibility();
     renderSystemView();
+    setRegionFocus(regionFocus, { fit: false });
     renderPlaceExplanation();
     if (mapError.hidden === false) {
       mapError.querySelector("strong").textContent = t("errors.mapUnavailable");
@@ -1769,6 +1816,7 @@ function initializeAtlas() {
     hint.setAttribute("role", "status");
     elements.sidebar.prepend(hint);
   }
+  setRegionFocus(regionFocus, { fit: regionFocus === "napo" });
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

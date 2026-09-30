@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
     <link rel="preconnect" href="https://tile.opentopomap.org" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260929" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260930-2" />
   </head>
   <body data-page="map">
     <a class="skip-link" href="#map" data-i18n="skip.map">Ir directamente al mapa</a>
@@ -173,6 +173,14 @@
         </section>
 
         <aside class="sidebar" data-i18n-aria="sidebar.aria" aria-label="Explorador, catálogo y filtros">
+          <section class="regional-focus" aria-labelledby="focus-title">
+            <h2 id="focus-title" data-i18n="focus.title">Desde Ecuador hasta tu territorio</h2>
+            <div role="group" data-i18n-aria="focus.choose" aria-label="Elegir zona de exploración">
+              <button type="button" data-region-focus="ecuador" aria-pressed="true" data-i18n="focus.ecuador">Ecuador</button>
+              <button type="button" data-region-focus="napo" aria-pressed="false" data-i18n="focus.napo">Tena–Archidona</button>
+            </div>
+            <p id="focus-note" data-i18n="focus.note" hidden>Encuadre de exploración de Napo, no límite administrativo. Cambia la vista, no filtra los catálogos.</p>
+          </section>
           <section class="intro">
             <p id="system-eyebrow" class="eyebrow" data-i18n="intro.eyebrow">Ecuador Vivo · Tierra</p>
             <h1 id="system-intro-title" data-i18n="intro.title">Todo paisaje es una historia en movimiento</h1>
@@ -440,6 +448,13 @@
             <p data-i18n="responsible.copy">Una forma del relieve es una pista, no una prueba aislada. Este visor es educativo y no sustituye un estudio oficial de amenaza.</p>
           </section>
 
+          <details class="spatial-context">
+            <summary><span data-i18n="spatial.title">Resolución y límites</span><span id="spatial-count"></span></summary>
+            <p data-i18n="spatial.intro">Acercar el mapa no mejora el dato. Resolución, escala y exactitud son cosas diferentes.</p>
+            <ul id="spatial-context-list"></ul>
+            <p id="spatial-empty" data-i18n="spatial.empty" hidden>No hay capas temáticas activas para comparar.</p>
+            <a href="https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-data-strategy.md" target="_blank" rel="noopener noreferrer" data-i18n="spatial.research">Fuentes evaluadas para Napo y plan de mejora ↗</a>
+          </details>
           <details class="source-network">
             <summary><span data-i18n="sourcesNetwork.title">Red de datos</span><span id="source-network-badge">—</span></summary>
             <p data-i18n="sourcesNetwork.copy">Cada servicio conserva su institución, método de acceso y estado antes de convertirse en una capa.</p>
@@ -452,8 +467,8 @@
       <footer><span data-i18n="footer.credit">Desarrollado por Henry P. Conteron Moreta</span><span data-i18n="footer.disciplines">Geociencias · SIG · Ecuador</span></footer>
     </div>
 
-    <script src="assets/js/i18n.js?v=20260929"></script>
+    <script src="assets/js/i18n.js?v=20260930"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="assets/js/map.js?v=20260929"></script>
+    <script type="module" src="assets/js/map.js?v=20260930-2"></script>
   </body>
 </html>

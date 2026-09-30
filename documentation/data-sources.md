@@ -21,6 +21,10 @@ fuente original.
 
 ## Prioridad de evaluación
 
+La [estrategia territorial para Tena–Archidona, Napo](napo-data-strategy.md), revisada el
+30 de septiembre de 2026, compara fuentes oficiales, resolución, permisos y limitaciones.
+Las fuentes nuevas allí evaluadas siguen siendo candidatas; no se han añadido como capas.
+
 | Sistema | Fuente productora | Posible uso | Acceso previsto | Estado |
 |---|---|---|---|---|
 | Tierra | GEM Foundation | fallas activas | GeoJSON curado | connected |

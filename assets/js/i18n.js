@@ -1,6 +1,15 @@
 (() => {
   const translations = {
     es: {
+      "focus.title": "Desde Ecuador hasta tu territorio",
+      "focus.choose": "Elegir zona de exploración",
+      "focus.ecuador": "Ecuador",
+      "focus.napo": "Tena–Archidona",
+      "focus.note": "Encuadre de exploración de Napo, no límite administrativo. Cambia la vista, no filtra los catálogos.",
+      "spatial.title": "Resolución y límites",
+      "spatial.intro": "Acercar el mapa no mejora el dato. Resolución, escala y exactitud son cosas diferentes.",
+      "spatial.empty": "No hay capas temáticas activas para comparar.",
+      "spatial.research": "Fuentes evaluadas para Napo y plan de mejora ↗",
       "library.eyebrow": "Cuaderno de exploración · Ecuador",
       "library.title": "Sigue las pistas.",
       "library.lead": "Un río, una montaña, una nube. Lo cotidiano se vuelve extraordinario cuando preguntas cómo llegó a ser así.",
@@ -683,6 +692,15 @@
       "cta.button": "Entrar al explorador"
     },
     en: {
+      "focus.title": "From Ecuador to your landscape",
+      "focus.choose": "Choose an exploration area",
+      "focus.ecuador": "Ecuador",
+      "focus.napo": "Tena–Archidona",
+      "focus.note": "Exploration window in Napo, not an administrative boundary. Changes the view, not the catalog filters.",
+      "spatial.title": "Resolution and limits",
+      "spatial.intro": "Zoom does not improve the data. Resolution, map scale, and accuracy are different things.",
+      "spatial.empty": "No active thematic layers to compare.",
+      "spatial.research": "Sources assessed for Napo and improvement plan ↗",
       "library.eyebrow": "Exploration notebook · Ecuador",
       "library.title": "Follow the clues.",
       "library.lead": "A river, a mountain, a cloud. Everyday sights become extraordinary when you ask how they came to be.",
