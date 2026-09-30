@@ -80,11 +80,39 @@
 #imagery-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding-top: 0.6rem; }
 #imagery-legend > span { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: #c8d8cf; }
 #imagery-legend i { width: 0.8rem; height: 0.8rem; border: 1px solid #a3b6aa; border-radius: 2px; }
+.spectral-invitation { background: linear-gradient(135deg, #172e36, #142521); border-color: #4d7275; }
+.spectral-invitation .eyebrow { color: #a9d5d5; font-size: 0.67rem; }
+.spectral-invitation h3 { margin: 0.65rem 0 0.4rem; font-family: Georgia, serif; font-size: 1.4rem; font-weight: 400; }
+.spectral-invitation > p { color: #b7cdca; font-size: 0.8rem; line-height: 1.6; }
+.spectral-invitation > button { border: 1px solid #648f85; border-radius: 0.45rem; padding: 0.65rem 0.8rem; background: #24453c; color: #edf9f4; font: inherit; font-size: 0.82rem; cursor: pointer; }
+.spectral-controls { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; align-items: end; border-block: 1px solid #345149; padding-block: 1rem; }
+.spectral-modes { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.spectral-modes button { border: 1px solid #557b70; border-radius: 0.45rem; background: #172e26; color: #bed8cb; padding: 0.65rem 0.8rem; font: inherit; font-size: 0.78rem; cursor: pointer; }
+.spectral-modes button[aria-pressed="true"] { background: #b6dbc7; border-color: #b6dbc7; color: #10291e; }
+.spectral-controls > label { display: grid; gap: 0.35rem; font-size: 0.73rem; color: #bad2c8; flex: 1 1 230px; }
+.spectral-controls select { width: 100%; min-height: 2.55rem; padding: 0.45rem 0.6rem; border: 1px solid #557b70; border-radius: 0.45rem; background: #172e26; color: #e5f1e9; font: inherit; }
+.spectral-mode-copy { font-size: 0.84rem; line-height: 1.7; color: #c2d7cc; max-width: 95ch; }
+.spectral-plane { position: absolute; inset: 0; overflow: hidden; }
+.spectral-plane > img { position: absolute; max-width: none; object-fit: fill; }
+#spectral-later { clip-path: inset(0 0 0 50%); }
+.spectral-legend { margin-top: 0.7rem; padding: 0.8rem; border: 1px solid #36564a; border-radius: 0.45rem; }
+.spectral-legend[hidden] { display: none; }
+.spectral-legend > p { margin: 0 0 0.45rem; font-size: 0.72rem; color: #bdd2c6; }
+#spectral-gradient { height: 0.8rem; border: 1px solid #9aada3; border-radius: 0.2rem; }
+.spectral-ticks { display: flex; justify-content: space-between; margin-top: 0.35rem; font-size: 0.71rem; color: #c9dace; }
+.spectral-formula { font: 0.75rem ui-monospace, monospace; color: #afc8ba; line-height: 1.6; }
+.spectral-context-link { display: inline-block; margin-top: 0.65rem; color: #a9d8c6; font-size: 0.77rem; }
+.spectral-caution { padding: 0.85rem 1rem; border-left: 3px solid #d0b272; background: #25291e; color: #e0d5b4; font-size: 0.8rem; line-height: 1.7; }
+.spectral-dialog .imagery-slider-row output { flex-basis: 190px; }
 @media (max-width: 760px) {
   .imagery-layout { grid-template-columns: 1fr; gap: 1.2rem; }
   .imagery-header { flex-wrap: wrap; }
   .imagery-slider-row { flex-wrap: wrap; gap: 0.3rem; }
   .imagery-slider-row output { flex: 1 1 100%; text-align: left; }
+  .spectral-controls { gap: 0.8rem; }
+  .spectral-modes { width: 100%; }
+  .spectral-modes button { flex: 1 1 100px; }
+  .spectral-dialog .imagery-slider-row output { flex: 1 1 100%; }
 }
 
 * {

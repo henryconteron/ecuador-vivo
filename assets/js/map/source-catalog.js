@@ -154,11 +154,11 @@ export const SOURCE_CATALOG = Object.freeze([
     url: "https://chc.ucsb.edu/data/chirps3",
   },
   {
-    id: "sentinel2-napo", systems: ["life"], status: "connected",
+    id: "sentinel2-napo", systems: ["life", "water"], status: "connected",
     access: {es: "Composición local · Earth Engine", en: "Local composite · Earth Engine"},
     institution: "Copernicus / ESA · Google Earth Engine",
     name: {es: "Sentinel-2 y Cloud Score+ · Napo", en: "Sentinel-2 and Cloud Score+ · Napo"},
-    purpose: {es: "Mediana óptica 2024, entradas de 10 m muestreadas a 30 m; contexto visual, no validación independiente de MapBiomas", en: "2024 optical median, 10 m inputs sampled at 30 m; visual context, not independent MapBiomas validation"},
+    purpose: {es: "RGB, NDVI y MNDWI 2019/2024 en Napo; entradas de 10/20 m muestreadas a 30 m. Exploración visual, no detector de minería ni validación de MapBiomas", en: "2019/2024 RGB, NDVI and MNDWI in Napo; 10/20 m inputs sampled at 30 m. Visual exploration, not a mining detector or MapBiomas validation"},
     url: "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
   },
   {

@@ -41,3 +41,16 @@ Instantánea reproducible de la red continental que la API del visor hidrometeor
 marcó como `TRANSMITIENDO` al recuperarla. Conserva ubicación y metadatos básicos de las estaciones,
 pero no mediciones, series temporales ni pronósticos. La fecha, el endpoint, los filtros y los
 conteos se guardan en `metadata`; el archivo se renueva con `npm run update:stations`.
+
+## Ventanas satelitales de Napo
+
+`landcover/` conserva la configuración y el manifiesto MapBiomas Ecuador V1
+2000/2024; `imagery/`, la comparación Sentinel-2/MapBiomas 2024; `spectral/`,
+la comparación Sentinel-2 RGB/NDVI/MNDWI 2019/2024. Los manifiestos conservan
+escenas, métodos, límites, calidad y SHA-256. Las vistas pequeñas están en
+`assets/images/`; los GeoTIFF y recibos originales de trabajo quedan en
+`raw/`, ignorada por Git. Son ventanas editoriales, no límites administrativos
+ni clasificaciones automáticas de minería o contaminación. Métodos:
+[cobertura](../documentation/napo-landcover.md),
+[imagen/clasificación](../documentation/napo-imagery.md),
+[señales espectrales y ríos](../documentation/napo-spectral-rivers.md).

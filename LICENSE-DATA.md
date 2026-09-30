@@ -88,6 +88,20 @@ común adicional. No se interpola su clasificación ni se cambia su leyenda.
 El manifiesto `data/imagery/napo-manifest.json` conserva escenas, fechas,
 parámetros y SHA-256; [método y límites](documentation/napo-imagery.md).
 
+## Laboratorio espectral de Napo
+
+Las seis vistas de `assets/images/spectral/` contienen **modified Copernicus
+Sentinel data (2019, 2024)**. Se aplican las condiciones Sentinel indicadas
+arriba, no MIT. Modificaciones: QA con Cloud Score+ (Google, CC BY 4.0),
+mediana anual por banda, cálculo de NDVI/MNDWI, recorte, muestreo a 30 m,
+reproyección y renderizado. Las paletas son visualizaciones, no clasificaciones.
+La referencia MapBiomas solo aporta la cuadrícula web; sus clases y su máscara
+no se incorporan a estas vistas. Recibo y SHA-256:
+`data/spectral/napo-manifest.json`; [método y bibliografía](documentation/napo-spectral-rivers.md).
+
+MAAP #230/EcoCiencia se enlaza y atribuye como contexto independiente. No se
+redistribuyen sus imágenes ni se afirma disponer de permiso sobre esas figuras web.
+
 ## Datos demostrativos
 
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor

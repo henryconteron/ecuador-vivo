@@ -2,6 +2,11 @@
 
 ## Sin publicar — 2026-09-30
 
+- Laboratorio fluvial bilingüe 2019/2024 con vistas RGB/NDVI/MNDWI, cuadrícula
+  común, zoom editorial al Jatunyacu y contraste con monitoreo MAAP/EcoCiencia.
+- Exportador multibanda y procesador Python que verifican fórmulas espectrales,
+  QA por banda, soporte común y procedencia; sin clasificación automática de minería.
+- Compatibilidad ES5 en la validación de conteos del exportador óptico anterior.
 - Laboratorio visual bilingüe Sentinel-2/MapBiomas 2024: comparación deslizable de
   Tena–Archidona, 296 escenas enlazadas a QA, máscara común explícita, calidad y fuentes.
 - Procesador Python de imagen óptica con recibo, SHA-256, rejilla compartida y

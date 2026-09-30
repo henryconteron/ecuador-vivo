@@ -12,6 +12,7 @@ var excludedScl = [0, 1, 3, 8, 9, 10, 11];
 var crs = 'EPSG:32718';
 var scale = 30;
 var region = ee.Geometry.Rectangle(bbox, 'EPSG:4326', false);
+function integer(value) { return typeof value === 'number' && isFinite(value) && Math.floor(value) === value; }
 var source = ee.ImageCollection(asset).filterBounds(region).filterDate(period[0], period[1]).sort('system:index');
 var quality = ee.ImageCollection(qualityAsset).filterBounds(region).filterDate(period[0], period[1]);
 // Explicit inner join excludes scenes without a QA counterpart and records the IDs.
@@ -27,7 +28,7 @@ ee.Dictionary({source_count: source.size(), joined_count: linked.size(),
 }).evaluate(function (metadata, failure) {
   if (failure) { print('Source lookup failed; no tasks created.', failure); return; }
   if (!metadata || !Array.isArray(metadata.scene_ids) || !Array.isArray(metadata.acquired_ms) ||
-      !Number.isInteger(metadata.joined_count) || !Number.isInteger(metadata.source_count) ||
+      !integer(metadata.joined_count) || !integer(metadata.source_count) ||
       metadata.source_count < metadata.joined_count || metadata.joined_count < minObservations || metadata.joined_count > 800 ||
       metadata.joined_count !== metadata.scene_ids.length || metadata.joined_count !== metadata.acquired_ms.length) {
     print('Unexpected source count; no tasks created.', metadata); return;

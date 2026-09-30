@@ -23,6 +23,7 @@ import {
 import { nearestFeature } from "./map/place.js";
 import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
 import { mountNapoImagery } from "./map/imagery.js?v=20260930-5";
+import { mountNapoSpectral } from "./map/spectral.js?v=20260930-6";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -42,7 +43,7 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930-5";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930-6";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,
@@ -345,6 +346,7 @@ function initializeAtlas() {
   let thermalState = "off";
   let napoLandcover;
   let napoImagery;
+  let napoSpectral;
   let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
@@ -1770,6 +1772,7 @@ function initializeAtlas() {
   window.addEventListener("atlas:languagechange", () => {
     napoLandcover?.render();
     napoImagery?.render();
+    napoSpectral?.render();
     if (demoMode) {
       elements.projectStatus.setAttribute("aria-label", t("status.synthetic"));
       elements.statusFull.textContent = t("status.synthetic");
@@ -1830,6 +1833,7 @@ function initializeAtlas() {
     onChange: () => { updateLegendVisibility(); updateSourceCount(); },
     focus: () => setRegionFocus("napo", {updateUrl: true})});
   napoImagery = mountNapoImagery({t, language: () => i18n?.language ?? "es"});
+  napoSpectral = mountNapoSpectral({t, language: () => i18n?.language ?? "es"});
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

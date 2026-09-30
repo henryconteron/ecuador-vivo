@@ -51,6 +51,10 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
   clasificación MapBiomas sobre una misma vista Tena–Archidona, con deslizador,
   filtro de nubes, cobertura útil, fuentes y controles de teclado; no es una
   validación independiente del clasificador. [Método reproducible](documentation/napo-imagery.md);
+- laboratorio **Un río, dos años, tres miradas**: RGB, NDVI y MNDWI Sentinel-2
+  de 2019/2024, máscara común y acercamiento editorial al tramo inferior del
+  Jatunyacu. El monitoreo MAAP/EcoCiencia se cita como evidencia externa; los
+  índices no identifican minería ni contaminación. [Método, fuentes y límites](documentation/napo-spectral-rivers.md);
 - mapa web adaptable a computadoras y teléfonos;
 - mapa topográfico principal y mapa de calles alternativo;
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;
