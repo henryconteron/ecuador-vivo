@@ -104,6 +104,39 @@
 .spectral-context-link { display: inline-block; margin-top: 0.65rem; color: #a9d8c6; font-size: 0.77rem; }
 .spectral-caution { padding: 0.85rem 1rem; border-left: 3px solid #d0b272; background: #25291e; color: #e0d5b4; font-size: 0.8rem; line-height: 1.7; }
 .spectral-dialog .imagery-slider-row output { flex-basis: 190px; }
+.spectral-rgb-overlay, .leaflet-napo-spectral-pane .categorical-overlay { background: repeating-linear-gradient(135deg, #47534e 0 7px, #303f37 7px 14px); }
+.spectral-map-settings > label { display: grid; gap: 0.4rem; margin-block: 0.7rem; font-size: 0.78rem; color: #c4dad0; }
+.spectral-map-settings select, .spectral-map-toolbar select { width: 100%; min-height: 2.5rem; border: 1px solid #557b70; border-radius: 0.4rem; background: #172e26; color: #e5f1e9; padding: 0.4rem; font: inherit; }
+.spectral-map-settings .spectral-compare-check { display: flex; align-items: center; gap: 0.55rem; }
+.spectral-compare-check input { accent-color: #9bd5bb; }
+.spectral-map-settings button:disabled { opacity: 0.45; cursor: default; }
+.spectral-map-toolbar { position: absolute; z-index: 501; top: 7rem; right: 1rem; width: min(16rem, calc(100% - 2rem)); padding: 0.7rem; border: 1px solid #567b6f; border-radius: 0.65rem; background: #11251fee; color: #e7f5ed; box-shadow: 0 6px 25px #0004; }
+.spectral-map-toolbar[hidden], .spectral-map-divider[hidden], .spectral-map-settings[hidden] { display: none; }
+.spectral-map-toolbar header { display: flex; align-items: start; justify-content: space-between; gap: 0.5rem; font-size: 0.74rem; margin-bottom: 0.6rem; }
+.spectral-map-toolbar button { border: 1px solid #557b70; border-radius: 0.35rem; color: #d0e6da; background: #203a30; padding: 0.25rem 0.4rem; font: inherit; cursor: pointer; }
+.spectral-map-toolbar label { display: block; font-size: 0.68rem; color: #b7d1c1; margin-block: 0.45rem; }
+.spectral-map-toolbar select { font-size: 0.74rem; }
+.spectral-map-toolbar input[type="range"] { width: 100%; margin: 0; accent-color: #a9d8bd; cursor: ew-resize; }
+.spectral-map-toolbar small { display: block; margin-top: 0.5rem; color: #bed1c6; font-size: 0.65rem; line-height: 1.45; }
+.spectral-map-years { display: flex; justify-content: space-between; margin-block: 0.4rem 0.2rem; font-size: 0.7rem; }
+.spectral-map-divider { position: absolute; z-index: 450; top: 0; bottom: 0; border-left: 2px solid #fff; pointer-events: none; filter: drop-shadow(0 0 2px #16372b); }
+.spectral-map-divider > span { position: absolute; top: 52%; transform: translateX(-50%); white-space: nowrap; padding: 0.35rem 0.5rem; border-radius: 0.5rem; background: #11271ff2; color: #eef9f2; font-size: 0.7rem; }
+.spectral-map-legend { max-width: 16rem; }
+#spectral-map-gradient { height: 0.65rem; border: 1px solid #93ab9d; border-radius: 0.2rem; }
+#spectral-map-ticks { margin: 0.35rem 0; font-size: 0.7rem; display: flex; justify-content: space-between; }
+.spectral-map-legend > p, .spectral-map-legend > small { display: block; font-size: 0.68rem; line-height: 1.45; color: #c2d4c9; }
+body.is-map-expanded .app-shell { height: 100dvh; grid-template-rows: auto minmax(0, 1fr); }
+body.is-map-expanded .workspace { display: block; overflow: hidden; }
+body.is-map-expanded .map-panel { height: 100%; width: 100%; }
+body.is-map-expanded .sidebar, body.is-map-expanded footer { display: none; }
+@media (max-width: 30rem) {
+  .spectral-map-toolbar { top: 5rem; left: 0.7rem; right: auto; width: 12rem; padding: 0.5rem; }
+  .spectral-map-toolbar header { justify-content: flex-end; margin-bottom: 0.25rem; }
+  .spectral-map-toolbar header strong, .spectral-map-toolbar > label > span { display: none; }
+  .spectral-map-toolbar > label { margin-block: 0.3rem; }
+  .spectral-map-toolbar small { font-size: 0.62rem; }
+  .spectral-map-legend { max-width: 10rem; }
+}
 @media (max-width: 760px) {
   .imagery-layout { grid-template-columns: 1fr; gap: 1.2rem; }
   .imagery-header { flex-wrap: wrap; }

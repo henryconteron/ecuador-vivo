@@ -56,6 +56,10 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
   Jatunyacu. El monitoreo MAAP/EcoCiencia se cita como evidencia externa; los
   índices no identifican minería ni contaminación. [Método, fuentes y límites](documentation/napo-spectral-rivers.md);
 - mapa web adaptable a computadoras y teléfonos;
+- imágenes e índices de Napo integrados al visor con zoom, comparación geográfica,
+  año individual, opacidad y leyenda reactiva: RGB, NDVI, MNDWI, NDMI, diferencia
+  de NDVI y conteo de observaciones útiles. Los tres derivados nuevos reutilizan
+  el GeoTIFF original; no añaden una clasificación de minería ni resolución ficticia;
 - mapa topográfico principal y mapa de calles alternativo;
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;
 - búsqueda por nombre, provincia, identificador o catálogo de origen;

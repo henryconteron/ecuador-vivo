@@ -112,7 +112,7 @@ def _indexed_image(values, paired, display):
     return image
 
 
-def build_bundle(input_path, receipt_path, output_root, config, landcover):
+def build_bundle(input_path, receipt_path, output_root, config, landcover, explorer=None):
     import numpy as np
     import rasterio
     from rasterio.features import geometry_mask
@@ -256,13 +256,61 @@ def build_bundle(input_path, receipt_path, output_root, config, landcover):
             # All validation/rendering succeeds before replacing any public bundle files.
             manifest_file = staging / "manifest.json"
             manifest_file.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            for row in files:
+            extra_files = []
+            if explorer is not None:
+                if explorer.get("schema_version") != 1 or explorer.get("derivation") != "native-float32-before-nearest-display-resampling" or explorer.get("ndmi_formula") != "(B8-B11)/(B8+B11)" or explorer.get("change_formula") != "NDVI_2024-NDVI_2019" or explorer.get("quality_band") != "clear_count" or explorer.get("ndmi_source") != "https://www.usgs.gov/landsat-missions/normalized-difference-moisture-index":
+                    raise ValueError("Unknown explorer derivation")
+                moisture_valid = common.copy()
+                for base in (0, 8):
+                    moisture_valid &= (data[base + 3] + data[base + 4]) > 0
+                if not moisture_valid.any():
+                    raise ValueError("No paired NDMI pixels")
+                for mode, year in [("ndmi", 2019), ("ndmi", 2024), ("quality", 2019), ("quality", 2024), ("change", None)]:
+                    display = explorer["display"][mode]
+                    expected_range = {"ndmi": [-1, 1], "change": [-2, 2], "quality": [0, 80]}[mode]
+                    if [display["min"], display["max"]] != expected_range or display["levels"] != 129:
+                        raise ValueError("Explorer scales must be fixed across years")
+                    support = moisture_valid if mode == "ndmi" else common
+                    base = 0 if year == 2019 else 8
+                    if mode == "ndmi":
+                        denominator = data[base + 3] + data[base + 4]
+                        values = np.divide(data[base + 3] - data[base + 4], denominator,
+                                           out=np.zeros_like(denominator), where=support)
+                    elif mode == "quality":
+                        values = data[base + 7]
+                    else:
+                        values = data[13] - data[5]
+                    if np.any(~np.isfinite(values[support])) or np.any(values[support] < display["min"] - 1e-6) or np.any(values[support] > display["max"] + 1e-6):
+                        raise ValueError("Explorer values exceed the documented scale")
+                    sampled = np.zeros((height, width), dtype="float32")
+                    visible = np.zeros((height, width), dtype="uint8")
+                    reproject(np.where(support, values, config["nodata"]), sampled,
+                              src_transform=src.transform, src_crs=src.crs, dst_transform=destination_transform,
+                              dst_crs="EPSG:3857", src_nodata=config["nodata"], dst_nodata=0, resampling=Resampling.nearest)
+                    reproject(support.astype("uint8"), visible, src_transform=src.transform, src_crs=src.crs,
+                              dst_transform=destination_transform, dst_crs="EPSG:3857", resampling=Resampling.nearest)
+                    normalized = 2 * (sampled - display["min"]) / (display["max"] - display["min"]) - 1
+                    palette = {**display, "min": -1, "max": 1}
+                    image = _indexed_image(normalized, visible > 0, palette)
+                    name = f"napo-{mode}-{year if year else '2019-2024'}.png"
+                    temporary = staging / name
+                    image.save(temporary, optimize=True, transparency=0)
+                    extra_files.append({"mode": mode, "year": year, "url": f"assets/images/spectral/{name}", "sha256": sha256(temporary)})
+                extended = {"schema_version": 1, "status": "ready", "config": explorer,
+                            "parent_input_sha256": manifest["input_sha256"], "parent_receipt_sha256": manifest["receipt_sha256"],
+                            "display_bounds": bounds, "width": width, "height": height, "display_crs": "EPSG:3857",
+                            "resampling": "nearest", "common_pixels": stats["common_pixels"],
+                            "ndmi_common_pixels": int(moisture_valid.sum()), "images": extra_files}
+                (staging / "explorer.json").write_text(json.dumps(extended, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            for row in files + extra_files:
                 target = output_root / row["url"]
                 target.parent.mkdir(parents=True, exist_ok=True)
                 (staging / Path(row["url"]).name).replace(target)
             target = output_root / "data/spectral/napo-manifest.json"
             target.parent.mkdir(parents=True, exist_ok=True)
             manifest_file.replace(target)
+            if explorer is not None:
+                (staging / "explorer.json").replace(output_root / "data/spectral/napo-explorer-manifest.json")
     return manifest
 
 
@@ -270,11 +318,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--receipt", required=True, type=Path)
+    parser.add_argument("--explorer", action="store_true", help="Also derive NDMI, NDVI difference and observation-count previews")
     args = parser.parse_args()
     config = json.loads((ROOT / "data/spectral/napo-config.json").read_text(encoding="utf-8"))
     landcover = json.loads((ROOT / "data/landcover/napo-manifest.json").read_text(encoding="utf-8"))
     try:
-        manifest = build_bundle(args.input, args.receipt, ROOT, config, landcover)
+        explorer = json.loads((ROOT / "data/spectral/napo-explorer-config.json").read_text(encoding="utf-8")) if args.explorer else None
+        manifest = build_bundle(args.input, args.receipt, ROOT, config, landcover, explorer=explorer)
     except (ValueError, KeyError, FileNotFoundError) as error:
         parser.exit(1, f"Build stopped: {error}\n")
     print(f'Ready: {manifest["statistics"]["common_pixels"]} common native pixels; six aligned views')

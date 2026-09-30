@@ -90,14 +90,16 @@ parámetros y SHA-256; [método y límites](documentation/napo-imagery.md).
 
 ## Laboratorio espectral de Napo
 
-Las seis vistas de `assets/images/spectral/` contienen **modified Copernicus
+Las once vistas de `assets/images/spectral/` contienen **modified Copernicus
 Sentinel data (2019, 2024)**. Se aplican las condiciones Sentinel indicadas
 arriba, no MIT. Modificaciones: QA con Cloud Score+ (Google, CC BY 4.0),
-mediana anual por banda, cálculo de NDVI/MNDWI, recorte, muestreo a 30 m,
+mediana anual por banda, cálculo de NDVI/MNDWI/NDMI, diferencia de NDVI,
+visualización de conteos de observaciones útiles, recorte, muestreo a 30 m,
 reproyección y renderizado. Las paletas son visualizaciones, no clasificaciones.
 La referencia MapBiomas solo aporta la cuadrícula web; sus clases y su máscara
 no se incorporan a estas vistas. Recibo y SHA-256:
-`data/spectral/napo-manifest.json`; [método y bibliografía](documentation/napo-spectral-rivers.md).
+`data/spectral/napo-manifest.json` y `data/spectral/napo-explorer-manifest.json`;
+[método y bibliografía](documentation/napo-spectral-rivers.md).
 
 MAAP #230/EcoCiencia se enlaza y atribuye como contexto independiente. No se
 redistribuyen sus imágenes ni se afirma disponer de permiso sobre esas figuras web.

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "config": {
+    "schema_version": 1,
+    "derivation": "native-float32-before-nearest-display-resampling",
+    "ndmi_formula": "(B8-B11)/(B8+B11)",
+    "change_formula": "NDVI_2024-NDVI_2019",
+    "quality_band": "clear_count",
+    "display": {
+      "ndmi": {
+        "min": -1,
+        "max": 1,
+        "levels": 129,
+        "palette": [
+          "#94604b",
+          "#eee9d4",
+          "#245e9b"
+        ]
+      },
+      "change": {
+        "min": -2,
+        "max": 2,
+        "levels": 129,
+        "palette": [
+          "#c15a45",
+          "#f3eddb",
+          "#267454"
+        ]
+      },
+      "quality": {
+        "min": 0,
+        "max": 80,
+        "levels": 129,
+        "palette": [
+          "#6c4c6b",
+          "#e1c88b",
+          "#387b86"
+        ]
+      }
+    },
+    "ndmi_source": "https://www.usgs.gov/landsat-missions/normalized-difference-moisture-index"
+  },
+  "parent_input_sha256": "b84ec5ea7113229b6f2fc38df41c332c6b6aafe75a233cb200b88de3559f0c97",
+  "parent_receipt_sha256": "54bb9392d25470db2741cd1a1bf3aaaf1533c4627f397e011db36d9ba28a7137",
+  "display_bounds": [
+    [
+      -1.1202365473918807,
+      -78.0402419925993
+    ],
+    [
+      -0.7198200371649791,
+      -77.54949235288481
+    ]
+  ],
+  "width": 1821,
+  "height": 1486,
+  "display_crs": "EPSG:3857",
+  "resampling": "nearest",
+  "common_pixels": 2499892,
+  "ndmi_common_pixels": 2499892,
+  "images": [
+    {
+      "mode": "ndmi",
+      "year": 2019,
+      "url": "assets/images/spectral/napo-ndmi-2019.png",
+      "sha256": "3600339dc2ad2cdaf396c275b25e5b5686461027bd279183c4d654924871d49b"
+    },
+    {
+      "mode": "ndmi",
+      "year": 2024,
+      "url": "assets/images/spectral/napo-ndmi-2024.png",
+      "sha256": "3e1b22f801b82e87091a3c997eeda61861121812051149387c2bda96cf1bb9ba"
+    },
+    {
+      "mode": "quality",
+      "year": 2019,
+      "url": "assets/images/spectral/napo-quality-2019.png",
+      "sha256": "6c1872dccc6dfa81875727df3508db9c0197bb35ef7d2bb5e3a4fac8de14dcb5"
+    },
+    {
+      "mode": "quality",
+      "year": 2024,
+      "url": "assets/images/spectral/napo-quality-2024.png",
+      "sha256": "11c204e1b57797ae49128a298de9377ddfdbfb157cc6bcd697f76f448d5d0477"
+    },
+    {
+      "mode": "change",
+      "year": null,
+      "url": "assets/images/spectral/napo-change-2019-2024.png",
+      "sha256": "d6504cd772ef0be2dd01496edb0f463f7c57a29bb474eaa9c4f00a2355855b2d"
+    }
+  ]
+}

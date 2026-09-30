@@ -46,7 +46,8 @@ conteos se guardan en `metadata`; el archivo se renueva con `npm run update:stat
 
 `landcover/` conserva la configuración y el manifiesto MapBiomas Ecuador V1
 2000/2024; `imagery/`, la comparación Sentinel-2/MapBiomas 2024; `spectral/`,
-la comparación Sentinel-2 RGB/NDVI/MNDWI 2019/2024. Los manifiestos conservan
+la comparación Sentinel-2 RGB/NDVI/MNDWI 2019/2024 y derivados del mismo
+GeoTIFF (NDMI, diferencia de NDVI y conteo de observaciones). Los manifiestos conservan
 escenas, métodos, límites, calidad y SHA-256. Las vistas pequeñas están en
 `assets/images/`; los GeoTIFF y recibos originales de trabajo quedan en
 `raw/`, ignorada por Git. Son ventanas editoriales, no límites administrativos

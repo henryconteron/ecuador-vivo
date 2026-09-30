@@ -85,7 +85,7 @@ export async function loadSpectralPair(rows, {width, height, isCurrent = () => t
   return isCurrent() ? images : null;
 }
 
-export function mountNapoSpectral({t, language}) {
+export function mountNapoSpectral({t, language, onExploreMap, canExploreMap = () => false}) {
   const launch = document.querySelector("#spectral-launch"), dialog = document.querySelector("#spectral-dialog");
   if (!launch || !dialog) return {render() {}};
   const stage = document.querySelector("#spectral-stage"), slider = document.querySelector("#spectral-slider");
@@ -114,6 +114,7 @@ export function mountNapoSpectral({t, language}) {
     document.querySelector("#spectral-status").textContent = t(`spectral.${state}`);
     document.querySelector("#spectral-image-status").textContent = t(`spectral.${imageState}`);
     launch.disabled = !manifest;
+    document.querySelector("#spectral-open-map").disabled = !canExploreMap();
     modeButtons.forEach(button => { button.setAttribute("aria-pressed", String(button.dataset.spectralMode === mode)); button.disabled = !manifest; });
     document.querySelector("#spectral-mode-copy").textContent = t(`spectral.${mode}Copy`);
     document.querySelector("#spectral-formula").textContent = mode === "rgb" ? t("spectral.rgbFormula") : mode === "ndvi" ? "NDVI = (B8 − B4) / (B8 + B4)" : "MNDWI = (B3 − B11) / (B3 + B11)";
@@ -170,6 +171,9 @@ export function mountNapoSpectral({t, language}) {
     if (imageState !== "imageReady") void loadMode();
   });
   document.querySelector("#spectral-close").addEventListener("click", () => dialog.close());
+  document.querySelector("#spectral-open-map").addEventListener("click", () => {
+    if (onExploreMap?.({mode, river: focus.value === "river"})) dialog.close();
+  });
   dialog.addEventListener("close", () => launch.focus());
   async function load() {
     try {

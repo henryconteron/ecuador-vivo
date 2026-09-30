@@ -46,6 +46,41 @@ class SpectralReceiptTests(unittest.TestCase):
 
 @unittest.skipUnless(AVAILABLE, "Install requirements-landcover.txt for spectral pipeline tests")
 class SpectralRasterTests(unittest.TestCase):
+    def test_explorer_derives_before_resampling_and_keeps_undefined_ndmi_transparent(self):
+        import numpy as np
+        import rasterio
+        from PIL import Image
+        settings = json.loads((ROOT / "data/spectral/napo-explorer-config.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            config, landcover, raster, receipt_path, array = self.fixture(root)
+            # NDMI denominator zero; NDVI and MNDWI are still defined.
+            array[3:5, 1, 1] = 0; array[5, 1, 1] = -1; array[6, 1, 1] = 1
+            # A genuine NDVI decrease at a different test-only pixel.
+            array[11, 2, 1] = 0.1; array[13, 2, 1] = 0
+            with rasterio.open(raster, "r+") as dst: dst.write(array)
+            primary = builder.build_bundle(raster, receipt_path, root, config, landcover, explorer=settings)
+            extra = json.loads((root / "data/spectral/napo-explorer-manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(extra["parent_input_sha256"], primary["input_sha256"])
+            self.assertEqual(extra["common_pixels"], 14)
+            self.assertEqual(extra["ndmi_common_pixels"], 13)
+            self.assertEqual(len(extra["images"]), 5)
+            for row in extra["images"]:
+                self.assertEqual(builder.sha256(root / row["url"]), row["sha256"])
+                with Image.open(root / row["url"]) as image:
+                    codes = np.array(image)
+                    self.assertEqual(codes[0, 0], 0)
+                    self.assertEqual(codes[1, 1] == 0, row["mode"] == "ndmi")
+                    if row["mode"] == "change":
+                        self.assertEqual(codes[3, 3], 65)  # unchanged is opaque zero
+                        self.assertEqual(codes[2, 1], 49)  # -0.5 on the fixed [-2, 2] scale
+                    if row["mode"] == "quality": self.assertEqual(codes[3, 3], 6)  # count = 3
+            published = builder.sha256(root / "data/spectral/napo-explorer-manifest.json")
+            invalid = copy.deepcopy(settings); invalid["change_formula"] = "wrong"
+            with self.assertRaises(ValueError):
+                builder.build_bundle(raster, receipt_path, root, config, landcover, explorer=invalid)
+            self.assertEqual(builder.sha256(root / "data/spectral/napo-explorer-manifest.json"), published)
+
     def fixture(self, root):
         import numpy as np
         import rasterio

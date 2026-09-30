@@ -158,7 +158,7 @@ export const SOURCE_CATALOG = Object.freeze([
     access: {es: "Composición local · Earth Engine", en: "Local composite · Earth Engine"},
     institution: "Copernicus / ESA · Google Earth Engine",
     name: {es: "Sentinel-2 y Cloud Score+ · Napo", en: "Sentinel-2 and Cloud Score+ · Napo"},
-    purpose: {es: "RGB, NDVI y MNDWI 2019/2024 en Napo; entradas de 10/20 m muestreadas a 30 m. Exploración visual, no detector de minería ni validación de MapBiomas", en: "2019/2024 RGB, NDVI and MNDWI in Napo; 10/20 m inputs sampled at 30 m. Visual exploration, not a mining detector or MapBiomas validation"},
+    purpose: {es: "RGB, NDVI, MNDWI y NDMI 2019/2024 en Napo, diferencia de NDVI y conteos QA; entradas de 10/20 m muestreadas a 30 m. Exploración visual, no detector de minería ni validación de MapBiomas", en: "2019/2024 RGB, NDVI, MNDWI and NDMI in Napo, NDVI difference and QA counts; 10/20 m inputs sampled at 30 m. Visual exploration, not a mining detector or MapBiomas validation"},
     url: "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
   },
   {

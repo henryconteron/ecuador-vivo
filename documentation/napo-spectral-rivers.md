@@ -7,6 +7,57 @@ Los datos y parámetros reproducibles están en `data/spectral/napo-config.json`
 el recibo, las fechas de las escenas, la cobertura útil y los SHA-256 se conservan
 en `data/spectral/napo-manifest.json`.
 
+## Visor geográfico y derivados adicionales
+
+En **Agua** o **Vida**, activa **Imágenes e índices · Napo**. El visor permite
+zoom, desplazamiento y comparación 2019/2024 con un corte fijado a la pantalla.
+Ambos años usan los mismos límites EPSG:3857 y se mueven juntos. Puedes elegir
+un solo año, ajustar opacidad y regresar a Tena–Archidona o al tramo del Jatunyacu.
+**Ampliar visor** oculta temporalmente el panel y da todo el espacio al mapa;
+**Volver al panel** o Escape restaura la interfaz sin perder la selección.
+El botón **Explorar con zoom** del laboratorio abre esa misma señal en el mapa.
+La leyenda, atribución y contexto de resolución corresponden a la capa activa;
+la trama gris indica ausencia de datos comparables. Fuera del borde exportado
+solo se ve el mapa base. Ampliar no aporta más resolución que el muestreo de 30 m.
+
+Se añaden cinco imágenes derivadas del **mismo GeoTIFF multibanda ya exportado**,
+sin una nueva consulta ni consumo adicional de cuota de Earth Engine:
+
+- **NDMI 2019/2024**: `(B8 − B11) / (B8 + B11)`. Se calcula sobre las medianas
+  de reflectancia NIR y SWIR1 en la cuadrícula nativa. Es una señal relacionada
+  con humedad de vegetación, no una medición de lluvia, agua del suelo ni estrés
+  hídrico directo. [Fundamento NIR/SWIR — USGS](https://www.usgs.gov/landsat-missions/normalized-difference-moisture-index).
+  La documentación enlazada emplea Landsat; aquí se usan las bandas equivalentes
+  de Sentinel-2 (B8/B11), no los números de banda de Landsat.
+- **Diferencia de NDVI**: `NDVI_2024 − NDVI_2019`, sobre soporte común nativo.
+  Rango matemático y paleta fija −2 a +2, centro 0. Valores menores/mayores no
+  equivalen a pérdida/ganancia validada de bosque, ni explican causas. No se
+  calculan hectáreas de deforestación o minería ni se aplican umbrales automáticos.
+- **Observaciones útiles 2019/2024**: banda `clear_count` original, máscara
+  conjunta de cinco bandas y filtros de calidad declarados. Escala visual fija
+  0–80 en ambos años; el constructor rechaza datos que excedan esa escala,
+  en lugar de saturarlos silenciosamente. No representa probabilidad de certeza.
+  Solo se muestra soporte común, no todos los píxeles descartados por baja calidad.
+
+Los derivados se calculan **antes** de la reproyección, que utiliza vecino más
+cercano. NDMI exige denominador positivo en ambos años; si no lo tiene, ambos
+lados quedan sin datos, sin inventar un cero. En esta exportación el soporte
+NDMI conserva los 2.499.892 píxeles comunes. Las paletas tienen 129 niveles:
+son vistas cuantizadas, no archivos numéricos para medir índices desde sus colores.
+
+Configuración: `data/spectral/napo-explorer-config.json`. Procedencia, cuadrícula,
+conteos y SHA-256: `data/spectral/napo-explorer-manifest.json`, enlazado a los
+SHA-256 del GeoTIFF y recibo del manifiesto principal. La carga es bajo demanda
+por señal (no se descargan las once vistas al abrir el atlas). Los cinco derivados
+añaden 4.967.504 bytes; toda la colección de once vistas suma 10.425.730 bytes.
+Los errores de imagen retiran la vista completa; una petición antigua no puede
+reaparecer después de apagar la capa o cambiar de señal.
+
+Ejemplo de enlace reproducible de **selección y encuadre** (no de un zoom manual):
+`?system=water&focus=napo&view=spectral&signal=ndmi&year=2024&compare=1&split=50&area=jatunyacu`.
+El selector permite `rgb`, `ndvi`, `mndwi`, `ndmi`, `quality` o `change`.
+La diferencia siempre es una sola vista 2019/2024, no dos años independientes.
+
 ## Pregunta y alcance
 
 ¿Qué cambia en la señal de vegetación y agua de un paisaje fluvial? Primero se
@@ -124,13 +175,13 @@ Desde la raíz del repositorio:
    `python -m pip install -r requirements-landcover.txt` y ejecutar:
 
 ```powershell
-python scripts/build_napo_spectral.py --input data/raw/spectral/napo_spectral_2019_2024.tif --receipt data/raw/spectral/napo_spectral_2019_2024_receipt.geojson
+python scripts/build_napo_spectral.py --input data/raw/spectral/napo_spectral_2019_2024.tif --receipt data/raw/spectral/napo_spectral_2019_2024_receipt.geojson --explorer
 pnpm run check:spectral
 python -m unittest discover -s tests
 ```
 
 `npm run check:spectral` ejecuta el mismo script en entornos con npm.
-Los archivos públicos son seis vistas pequeñas y un manifiesto; el GeoTIFF
+Los archivos públicos son seis vistas base, cinco derivados y sus manifiestos; el GeoTIFF
 multibanda queda local. Los fallos de validación detienen la publicación del
 paquete. El estado pendiente no muestra imágenes ficticias.
 

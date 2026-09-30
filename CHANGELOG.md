@@ -2,6 +2,10 @@
 
 ## Sin publicar — 2026-09-30
 
+- Visor satelital Napo con zoom y paneo georreferenciados, corte de comparación
+  2019/2024, año individual, opacidad, leyenda reactiva y enlaces reproducibles.
+- NDMI, diferencia de NDVI y apoyo observacional derivados del GeoTIFF real ya
+  exportado, con fórmulas nativas, soporte común y escalas fijas documentadas.
 - Laboratorio fluvial bilingüe 2019/2024 con vistas RGB/NDVI/MNDWI, cuadrícula
   común, zoom editorial al Jatunyacu y contraste con monitoreo MAAP/EcoCiencia.
 - Exportador multibanda y procesador Python que verifican fórmulas espectrales,

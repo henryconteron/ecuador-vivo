@@ -23,7 +23,8 @@ import {
 import { nearestFeature } from "./map/place.js";
 import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
 import { mountNapoImagery } from "./map/imagery.js?v=20260930-5";
-import { mountNapoSpectral } from "./map/spectral.js?v=20260930-6";
+import { mountNapoSpectral } from "./map/spectral.js?v=20260930-7";
+import { mountNapoSpectralMap } from "./map/spectral-map.js?v=20260930-7";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -43,7 +44,7 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930-6";
+import { catalogForSystem } from "./map/source-catalog.js?v=20260930-7";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
 import {
   filterStations,
@@ -98,6 +99,23 @@ function initializeAtlas() {
   );
   L.control.zoom({ position: "bottomright" }).addTo(map);
   L.control.scale({ imperial: false, position: "topright" }).addTo(map);
+  const expandMap = document.querySelector("#expand-map");
+  function setExpandedMap(expanded) {
+    document.body.classList.toggle("is-map-expanded", expanded);
+    expandMap.setAttribute("aria-pressed", String(expanded));
+    const label = expandMap.querySelector("[data-i18n]");
+    label.dataset.i18n = expanded ? "map.collapse" : "map.expand";
+    label.textContent = t(label.dataset.i18n);
+    expandMap.dataset.i18nAria = label.dataset.i18n;
+    expandMap.setAttribute("aria-label", label.textContent);
+    map.invalidateSize({pan: false});
+  }
+  expandMap.addEventListener("click", () => setExpandedMap(!document.body.classList.contains("is-map-expanded")));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && document.body.classList.contains("is-map-expanded") && !document.querySelector("dialog[open]")) {
+      setExpandedMap(false); expandMap.focus();
+    }
+  });
 
   const basemaps = {
     topographic: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
@@ -347,6 +365,7 @@ function initializeAtlas() {
   let napoLandcover;
   let napoImagery;
   let napoSpectral;
+  let napoSpectralMap;
   let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
@@ -1009,6 +1028,7 @@ function initializeAtlas() {
       flood: map.hasLayer(floodLayer),
       thermal: map.hasLayer(thermalLayer),
       landcover: napoLandcover?.isActive() ?? false,
+      "spectral-map": napoSpectralMap?.isActive() ?? false,
       earthquakes: map.hasLayer(earthquakeLayer),
     };
     let visibleSections = 0;
@@ -1020,6 +1040,7 @@ function initializeAtlas() {
     elements.legendEmpty.hidden = visibleSections > 0;
     const contexts = activeSpatialContexts(activeLayers, i18n?.language, { demo: demoMode });
     if (napoLandcover?.isActive()) contexts.push(napoLandcover.context());
+    if (napoSpectralMap?.isActive()) contexts.push(napoSpectralMap.context());
     document.querySelector("#spatial-count").textContent = String(contexts.length);
     document.querySelector("#spatial-empty").hidden = contexts.length > 0;
     const contextList = document.querySelector("#spatial-context-list");
@@ -1279,6 +1300,7 @@ function initializeAtlas() {
     if (map.hasLayer(stationLayer)) sources.add("INAMHI Red Hidrometeorológica");
     if (map.hasLayer(thermalLayer)) sources.add("NASA FIRMS / GIBS");
     if (napoLandcover?.isActive()) sources.add("MapBiomas Ecuador V1");
+    if (napoSpectralMap?.isActive()) sources.add("Copernicus Sentinel-2 / Cloud Score+");
     if (map.hasLayer(precipitationLayer)) sources.add("NASA GPM IMERG / GIBS");
     if (map.hasLayer(airTemperatureLayer)) sources.add("NASA Aqua AIRS / GIBS");
     if (map.hasLayer(cloudFractionLayer)) sources.add("NASA Aqua MODIS / GIBS");
@@ -1773,6 +1795,7 @@ function initializeAtlas() {
     napoLandcover?.render();
     napoImagery?.render();
     napoSpectral?.render();
+    napoSpectralMap?.render();
     if (demoMode) {
       elements.projectStatus.setAttribute("aria-label", t("status.synthetic"));
       elements.statusFull.textContent = t("status.synthetic");
@@ -1833,7 +1856,10 @@ function initializeAtlas() {
     onChange: () => { updateLegendVisibility(); updateSourceCount(); },
     focus: () => setRegionFocus("napo", {updateUrl: true})});
   napoImagery = mountNapoImagery({t, language: () => i18n?.language ?? "es"});
-  napoSpectral = mountNapoSpectral({t, language: () => i18n?.language ?? "es"});
+  napoSpectralMap = mountNapoSpectralMap({L, map, t, language: () => i18n?.language ?? "es",
+    onChange: () => { updateLegendVisibility(); updateSourceCount(); napoSpectral?.render(); },
+    focus: () => setRegionFocus("napo", {fit: false, updateUrl: regionFocus !== "napo"})});
+  napoSpectral = mountNapoSpectral({t, language: () => i18n?.language ?? "es", onExploreMap: options => napoSpectralMap.activate(options), canExploreMap: () => napoSpectralMap.isReady()});
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

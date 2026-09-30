@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "derivation": "native-float32-before-nearest-display-resampling",
+  "ndmi_formula": "(B8-B11)/(B8+B11)",
+  "change_formula": "NDVI_2024-NDVI_2019",
+  "quality_band": "clear_count",
+  "display": {
+    "ndmi": {"min": -1, "max": 1, "levels": 129, "palette": ["#94604b", "#eee9d4", "#245e9b"]},
+    "change": {"min": -2, "max": 2, "levels": 129, "palette": ["#c15a45", "#f3eddb", "#267454"]},
+    "quality": {"min": 0, "max": 80, "levels": 129, "palette": ["#6c4c6b", "#e1c88b", "#387b86"]}
+  },
+  "ndmi_source": "https://www.usgs.gov/landsat-missions/normalized-difference-moisture-index"
+}
