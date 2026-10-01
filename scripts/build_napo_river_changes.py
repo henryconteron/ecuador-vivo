@@ -195,10 +195,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", nargs="+", required=True, type=Path)
     parser.add_argument("--receipt", required=True, type=Path)
+    parser.add_argument("--config", type=Path, default=ROOT / "data/rivers/napo-config.json", help="Configuration of matching RGB/count exports")
+    parser.add_argument("--output-root", type=Path, default=ROOT, help="Existing matching RGB bundle; pinned samples require tmp staging")
     args = parser.parse_args()
-    config = json.loads((ROOT / "data/rivers/napo-config.json").read_text(encoding="utf-8"))
     try:
-        result = build_changes(args.inputs, args.receipt, ROOT, config)
+        config = json.loads(args.config.read_text(encoding="utf-8"))
+        output_root = args.output_root.resolve()
+        if config.get("scene_selection", {}).get("mode") == "frozen-inventory-acquisition-tile-latest-generation-v1" and (
+                not output_root.is_relative_to((ROOT / "tmp").resolve()) or output_root == (ROOT / "tmp").resolve()):
+            raise ValueError("Pinned screening must use an isolated --output-root under tmp/, never the published root")
+        result = build_changes(args.inputs, args.receipt, output_root, config)
     except (ValueError, KeyError, OSError) as error:
         parser.exit(1, f"Screening stopped: {error}\n")
     print(f'Unreviewed cells: {result["candidate_count"]}; comparable pixels: {result["screening"]["comparable_pixels"]}')

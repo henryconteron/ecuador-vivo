@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "status": "rebuilt-integrity-verified-unreviewed",
+  "plan_sha256": "6283cb911fc0f97444d63f181d20f0f11f02b05954e6802d9f364e7d17734ca6",
+  "source_manifest_sha256": "5ea2f1ebda24f575217ab665af047c99ef50e504569791e7d5149fce16732663",
+  "processing_block": {
+    "id": 7,
+    "bbox": [
+      -77.96546,
+      -1.24118,
+      -77.50556999999999,
+      -0.8169066666666666
+    ]
+  },
+  "before": {
+    "comparable_pixels": 5329345,
+    "retained_pixels": {
+      "gain": 7592,
+      "loss": 8354
+    },
+    "candidate_cells": 24,
+    "rgb_tiles": 392,
+    "rgb_bytes": 67023224
+  },
+  "after": {
+    "comparable_pixels": 5329345,
+    "retained_pixels": {
+      "gain": 7592,
+      "loss": 8354
+    },
+    "candidate_cells": 24,
+    "rgb_tiles": 392,
+    "rgb_bytes": 67023224
+  },
+  "rgb_tile_changes": {
+    "changed": 0,
+    "added": 0,
+    "removed": 0
+  },
+  "inventory": [
+    {
+      "year": 2019,
+      "before_files": 32,
+      "after_files": 31,
+      "before_utc_days": 17,
+      "after_utc_days": 17,
+      "remaining_pass_tile_variants": 0
+    },
+    {
+      "year": 2024,
+      "before_files": 32,
+      "after_files": 32,
+      "before_utc_days": 13,
+      "after_utc_days": 13,
+      "remaining_pass_tile_variants": 0
+    }
+  ],
+  "cell_changes": [
+    {
+      "cell_id": 11391370,
+      "status": "retained",
+      "before": {
+        "gain_ha": 1.25,
+        "loss_ha": 0.27,
+        "comparable_pixels": 9983
+      },
+      "after": {
+        "gain_ha": 1.25,
+        "loss_ha": 0.27,
+        "comparable_pixels": 9983
+      }
+    },
+    {
+      "cell_id": 11391371,
+      "status": "retained",
+      "before": {
+        "gain_ha": 2.3,
+        "loss_ha": 1.26,
+        "comparable_pixels": 9542
+      },
+      "after": {
+        "gain_ha": 2.3,
+        "loss_ha": 1.26,
+        "comparable_pixels": 9542
+      }
+    },
+    {
+      "cell_id": 11491351,
+      "status": "retained",
+      "before": {
+        "gain_ha": 2.52,
+        "loss_ha": 2.25,
+        "comparable_pixels": 9894
+      },
+      "after": {
+        "gain_ha": 2.52,
+        "loss_ha": 2.25,
+        "comparable_pixels": 9894
+      }
+    },
+    {
+      "cell_id": 11491355,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 9992
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 9992
+      }
+    },
+    {
+      "cell_id": 11491362,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 7.13,
+        "comparable_pixels": 9862
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 7.13,
+        "comparable_pixels": 9862
+      }
+    },
+    {
+      "cell_id": 11491370,
+      "status": "retained",
+      "before": {
+        "gain_ha": 8.17,
+        "loss_ha": 2.02,
+        "comparable_pixels": 9966
+      },
+      "after": {
+        "gain_ha": 8.17,
+        "loss_ha": 2.02,
+        "comparable_pixels": 9966
+      }
+    },
+    {
+      "cell_id": 11491371,
+      "status": "retained",
+      "before": {
+        "gain_ha": 5.92,
+        "loss_ha": 0,
+        "comparable_pixels": 9995
+      },
+      "after": {
+        "gain_ha": 5.92,
+        "loss_ha": 0,
+        "comparable_pixels": 9995
+      }
+    },
+    {
+      "cell_id": 11591351,
+      "status": "retained",
+      "before": {
+        "gain_ha": 3.51,
+        "loss_ha": 2.85,
+        "comparable_pixels": 9344
+      },
+      "after": {
+        "gain_ha": 3.51,
+        "loss_ha": 2.85,
+        "comparable_pixels": 9344
+      }
+    },
+    {
+      "cell_id": 11591360,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 5.7,
+        "comparable_pixels": 9916
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 5.7,
+        "comparable_pixels": 9916
+      }
+    },
+    {
+      "cell_id": 11591361,
+      "status": "retained",
+      "before": {
+        "gain_ha": 1.9,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9895
+      },
+      "after": {
+        "gain_ha": 1.9,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9895
+      }
+    },
+    {
+      "cell_id": 11591369,
+      "status": "retained",
+      "before": {
+        "gain_ha": 3.55,
+        "loss_ha": 6.35,
+        "comparable_pixels": 9061
+      },
+      "after": {
+        "gain_ha": 3.55,
+        "loss_ha": 6.35,
+        "comparable_pixels": 9061
+      }
+    },
+    {
+      "cell_id": 11591370,
+      "status": "retained",
+      "before": {
+        "gain_ha": 4.33,
+        "loss_ha": 2.61,
+        "comparable_pixels": 9994
+      },
+      "after": {
+        "gain_ha": 4.33,
+        "loss_ha": 2.61,
+        "comparable_pixels": 9994
+      }
+    },
+    {
+      "cell_id": 11691359,
+      "status": "retained",
+      "before": {
+        "gain_ha": 8.92,
+        "loss_ha": 10.85,
+        "comparable_pixels": 9403
+      },
+      "after": {
+        "gain_ha": 8.92,
+        "loss_ha": 10.85,
+        "comparable_pixels": 9403
+      }
+    },
+    {
+      "cell_id": 11691360,
+      "status": "retained",
+      "before": {
+        "gain_ha": 6.32,
+        "loss_ha": 17.6,
+        "comparable_pixels": 9826
+      },
+      "after": {
+        "gain_ha": 6.32,
+        "loss_ha": 17.6,
+        "comparable_pixels": 9826
+      }
+    },
+    {
+      "cell_id": 11691367,
+      "status": "retained",
+      "before": {
+        "gain_ha": 1.03,
+        "loss_ha": 2.69,
+        "comparable_pixels": 9988
+      },
+      "after": {
+        "gain_ha": 1.03,
+        "loss_ha": 2.69,
+        "comparable_pixels": 9988
+      }
+    },
+    {
+      "cell_id": 11691368,
+      "status": "retained",
+      "before": {
+        "gain_ha": 9.16,
+        "loss_ha": 4.42,
+        "comparable_pixels": 9360
+      },
+      "after": {
+        "gain_ha": 9.16,
+        "loss_ha": 4.42,
+        "comparable_pixels": 9360
+      }
+    },
+    {
+      "cell_id": 11691369,
+      "status": "retained",
+      "before": {
+        "gain_ha": 2.81,
+        "loss_ha": 0.41,
+        "comparable_pixels": 9812
+      },
+      "after": {
+        "gain_ha": 2.81,
+        "loss_ha": 0.41,
+        "comparable_pixels": 9812
+      }
+    },
+    {
+      "cell_id": 11791357,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 2.56,
+        "comparable_pixels": 9850
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 2.56,
+        "comparable_pixels": 9850
+      }
+    },
+    {
+      "cell_id": 11791358,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 10000
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 10000
+      }
+    },
+    {
+      "cell_id": 11791365,
+      "status": "retained",
+      "before": {
+        "gain_ha": 4.93,
+        "loss_ha": 5.39,
+        "comparable_pixels": 9740
+      },
+      "after": {
+        "gain_ha": 4.93,
+        "loss_ha": 5.39,
+        "comparable_pixels": 9740
+      }
+    },
+    {
+      "cell_id": 11791367,
+      "status": "retained",
+      "before": {
+        "gain_ha": 5.89,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9986
+      },
+      "after": {
+        "gain_ha": 5.89,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9986
+      }
+    },
+    {
+      "cell_id": 11891365,
+      "status": "retained",
+      "before": {
+        "gain_ha": 1.25,
+        "loss_ha": 2.26,
+        "comparable_pixels": 9996
+      },
+      "after": {
+        "gain_ha": 1.25,
+        "loss_ha": 2.26,
+        "comparable_pixels": 9996
+      }
+    },
+    {
+      "cell_id": 11891366,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0.6,
+        "loss_ha": 1.21,
+        "comparable_pixels": 9910
+      },
+      "after": {
+        "gain_ha": 0.6,
+        "loss_ha": 1.21,
+        "comparable_pixels": 9910
+      }
+    },
+    {
+      "cell_id": 11991367,
+      "status": "retained",
+      "before": {
+        "gain_ha": 0,
+        "loss_ha": 1.03,
+        "comparable_pixels": 10000
+      },
+      "after": {
+        "gain_ha": 0,
+        "loss_ha": 1.03,
+        "comparable_pixels": 10000
+      }
+    }
+  ],
+  "limitations": [
+    "Technical integrity, not field or hydrological validation.",
+    "Same-day/overlapping tiles may still not be independent observations.",
+    "Annual samples are not seasonally matched; latest generation is not proven better quality.",
+    "No mining, pollution or channel-migration cause is established; all cells remain unreviewed."
+  ],
+  "rebuilt_manifest_sha256": "adee30234a5d8d2b8bc77cf3b52ab36130d657201d863ca69d991e4dafcbc393"
+}

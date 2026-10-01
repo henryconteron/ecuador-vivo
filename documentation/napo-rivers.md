@@ -72,8 +72,42 @@ QA, límite y bloque coinciden con el RGB. Python obtuvo 5.329.345 píxeles
 comparables y **24 celdas candidatas sin revisar**; el estado actual de cribado
 es `ready`. Ese estado certifica integridad técnica, no validación científica
 de cada señal. No se volvió a exportar RGB ni se lanzaron los otros ocho bloques.
-No se dispone de una lectura final del cómputo/cuota de esta tarea: no se
-infieren horas EECU a partir del tamaño del archivo o de su hora de creación.
+La lectura final consultada en el Code Editor el 1 de octubre confirmó
+`Completed`, primer intento, diez minutos y 4.602,8711 EECU-segundos
+(aprox. 1,28 horas EECU). Esto no informa la cuota mensual restante.
+
+**Muestra depurada integrada localmente el 1 de octubre de 2026:** se auditó
+en GEE el plan `6283cb911fc0f97444d63f181d20f0f11f02b05954e6802d9f364e7d17734ca6`,
+con IDs y fechas exactos, sin sustituir escenas ni rellenar el cupo trimestral.
+Se ejecutaron RGB y conteos secuencialmente y se descargaron ambos recibos:
+
+- RGB `QDAQB64MTUFNJKPWQELOL5MK`: `Completed`, diez minutos, primer intento,
+  3.233,9036 EECU-segundos. [Snapshot del RGB depurado](https://code.earthengine.google.com/9335199e44354590a4d6f0005fcae77c).
+- Recibo RGB `L3E7LRIXGCYNXN7MSRSOSVT3`: completado, cinco segundos.
+- Conteos `TI62ULGNHUJHNZFPDPZIMKLH`: `Completed`, trece minutos, primer intento,
+  4.414,9360 EECU-segundos. [Snapshot de conteos depurados](https://code.earthengine.google.com/8096332a0680389d6fc5f0184fdd5064).
+- Recibo conteos `PNS27AUAQXHFU2FKYEOOTBDT`: completado, tres segundos.
+
+El proyecto figuraba como no comercial, nivel Community. No se modificó
+facturación ni se lanzaron los demás bloques. El envío RGB necesitó un reintento
+tras un error de conexión; la tarea finalmente aceptada terminó sin error.
+No se obtuvo una lectura de cuota mensual restante: no inferirla de estos costes.
+
+Python reconstruyó y verificó ambos productos en `tmp/rivers-next/rebuilt`.
+La muestra pasa de 32/32 a **31/32 archivos**, sin cambiar los 17/13 días UTC.
+Las 392 teselas RGB tienen exactamente los mismos SHA-256 que antes; permanecen
+5.329.345 píxeles comparables, 7.592/8.354 píxeles de señal retenida de
+aumento/disminución y las mismas 24 celdas con iguales valores. **No hay una
+mejora visual ni nuevas señales demostradas por esta depuración.** Tampoco
+constituye revisión de campo, validación estacional ni identificación de causas.
+
+`data/rivers/history/sample-comparison.json` contiene la comparación completa,
+comprobada por las pruebas contra los resultados anteriores y nuevos.
+El historial conserva manifiesto/configuración/celdas originales y el plan;
+`tmp/rivers-next/original-bundle` conserva además las imágenes originales como
+respaldo local. No se modificó retrospectivamente el inventario de un producto
+antiguo: el nuevo manifiesto procede de exportaciones nuevas reales. La
+integración es local, no implica commit, push ni publicación en GitHub Pages.
 
 La primera ejecución reducida no creó tareas porque `merge` modificó los
 índices de adquisición. Se corrigió preservando el ID original antes de
@@ -141,6 +175,38 @@ estación; el cribado no corrige automáticamente ese sesgo. Diferente frecuenci
 anual **no prueba** migración del cauce. No identifica minería, mercurio ni
 contaminación química, ni atribuye causas/responsabilidades o evalúa riesgo.
 
+### Auditoría temporal del inventario (2026-10-01)
+
+El panel **¿Qué fechas estamos comparando?** deriva su calendario exclusivamente
+de los pares `scene_ids` / `acquired_ms` del recibo verificado. Usa UTC, conserva
+todos los productos e identifica grupos con igual fecha/hora de adquisición
+en el ID y tesela MGRS, pero distinto procesamiento. No deduce nubosidad local,
+calidad por píxel ni fechas de cambio a partir de este inventario.
+
+| Muestra | Archivos seleccionados | Días UTC distintos | Meses representados |
+| --- | --- | --- | --- |
+| 2019 (actual) | 31 | 17 | 11 |
+| 2024 | 32 | 13 | 9 |
+
+La muestra original de 2019 incluía dos productos `20190621T153629_*_T17MRU` con distinto
+identificador de procesamiento. Son variantes del mismo pase y tesela: no asumir
+que aportan información independiente. El exportador original y sus resultados
+conservan ambos en el historial. La muestra actual fue exportada y recalculada
+con una sola variante; no se editó el recibo antiguo para simular ese cálculo.
+La contribución efectiva de cada variante a cada píxel no se conoce a partir
+del inventario global. El mínimo de 10 describe entradas válidas de la muestra,
+no diez pases o días independientes. El panel y las fichas lo advierten.
+
+La regla reproducible de deduplicación por adquisición/tesela está documentada
+más abajo; se generaron RGB/conteos/recibos emparejados. No editar solo la lista del manifiesto: sería
+una procedencia falsa para los archivos existentes. La comparación actual es
+exploratoria, no un análisis estacional validado. Cero en un mes significa
+ausencia en la muestra acotada, no ausencia de adquisiciones de Sentinel-2.
+
+El calendario abre los identificadores de cada mes; el manifiesto completo
+se puede descargar como JSON. No son fotografías individuales disponibles
+en este visor. Véase la [descripción oficial de los identificadores y gránulos](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED).
+
 Para revisar cada celda: comprobar escenas originales y fechas, comparar
 estaciones iguales, revisar QA y contexto hidrológico, contrastar con campo
 y fuentes independientes. Mantener `status: unreviewed` hasta revisión
@@ -195,6 +261,108 @@ las teselas existentes. Una discrepancia del área provincial ≤1 m² se tolera
 solo por redondeo de la reducción de Earth Engine, con geometría exactamente
 igual. En una interrupción durante publicación, SHA-256 impide mostrar una
 colección que no corresponda al manifiesto.
+
+## Reproducir la depuración sin sobrescribir el actual
+
+La receta se genera inicialmente como **planificada**: preparar archivos por
+sí solo no ejecuta ni valida nada en Earth Engine. La ejecución real y los
+resultados integrados están documentados arriba. Para reproducir la receta:
+
+```powershell
+node scripts/prepare_napo_river_sample.mjs
+```
+
+Genera, exclusivamente en `tmp/rivers-next/` (ignorado por Git):
+
+- `scene-plan.json`: inventario, decisiones de conservación/descarte y SHA-256
+  del manifiesto original; sin nuevas escenas ni relleno del cupo trimestral.
+- `napo-config-next.json`: configuración de la muestra depurada, inicialmente
+  separada del lote original y ahora coincidente con el conjunto integrado.
+- `export_napo_rivers_pinned_gee.js`: script generado con IDs fijos y modo
+  `audit` por defecto. No crea tareas de exportación en ese modo. Sí consulta
+  metadatos y la unión con QA si se ejecuta en GEE; no presumir coste nulo.
+
+La regla agrupa por fecha/hora de adquisición del ID + tesela MGRS y conserva
+el mayor segundo componente del ID (fecha/hora de generación del proveedor).
+Es una decisión reproducible, **no una prueba de mejor calidad**. Conserva
+`20190621T153629_20190621T154333_T17MRU` y descarta
+`20190621T153629_20190621T153627_T17MRU` en el lote depurado. El total
+pasa a **31/32 archivos**, manteniendo 17/13 días distintos. Esto no equilibra
+estaciones, niveles del río o apoyo por píxel. La ejecución real recalculó
+los candidatos y obtuvo los mismos 24, como documenta la comparación.
+
+`node scripts/prepare_napo_river_sample.mjs --check` verifica la receta local
+sin escribir. Si el template, bytes del manifiesto o archivos de staging
+cambian, el preparador no adapta/sobrescribe silenciosamente. Las pruebas con
+simulación local del cliente comprueban cero tareas en `audit`, selección,
+fechas y bloque; **no sustituyen una ejecución real de GEE**.
+
+El procesamiento se realizó en este orden (no hace falta repetirlo para
+publicar los archivos actuales; una repetición consumiría nueva cuota):
+
+1. Copiar el script generado al Code Editor y ejecutarlo con `exportMode =
+   'audit'`. Comprobar que los IDs, fechas, unión con QA y bloque coinciden.
+   Ante un ID/QA faltante o cambiado, se detiene: no se sustituye por otro.
+2. Revisar variantes, cuota y calidad antes de cambiar explícitamente el modo
+   a `rgb`. Exportar solo ese bloque y descargar RGB + su recibo.
+3. Usar exactamente la misma receta con `water-counts`; descargar conteos +
+   su recibo. Los prefijos llevan `_dedup_<hash>` y no se confunden con el lote
+   original. No lanzar todos los bloques ni exportar ambas recetas a ciegas.
+4. Construir ambos productos **en staging**, con los parámetros nuevos
+   `--config` y `--output-root`; no reemplazar el atlas todavía. Ejemplo, con
+   nombres ilustrativos que deben sustituirse por las descargas reales:
+
+```powershell
+python scripts/build_napo_rivers.py --inputs data/raw/rivers/NUEVO_RGB.tif --receipt data/raw/rivers/NUEVO_RGB_receipt.geojson --config tmp/rivers-next/napo-config-next.json --output-root tmp/rivers-next/rebuilt
+python scripts/build_napo_river_changes.py --inputs data/raw/rivers/NUEVOS_CONTEOS.tif --receipt data/raw/rivers/NUEVOS_CONTEOS_receipt.geojson --config tmp/rivers-next/napo-config-next.json --output-root tmp/rivers-next/rebuilt
+node scripts/validate-rivers.mjs --root tmp/rivers-next/rebuilt
+```
+
+Si hay varios chunks, incluir **todos** después de `--inputs`; los nombres
+`NUEVO_*` no son archivos existentes. Los CLI impiden construir la muestra
+fija directamente en la raíz publicada. RGB/conteos deben coincidir con la
+lista fija del plan y entre sí; el validador rechaza variantes por pase/tesela.
+No mezclar conteos depurados con el RGB antiguo. Tras validación, revisar el
+cambio de apoyo observacional y candidatos respecto al lote anterior; la
+integración técnica no equivale a validación científica ni revisión de campo.
+
+Para verificar/comparar el lote reconstruido sin modificar el atlas:
+
+```powershell
+node scripts/promote_napo_river_sample.mjs
+```
+
+Solo después de esa comprobación, `--apply` preserva el lote anterior,
+archiva procedencia/comparación y copia el conjunto emparejado con el manifiesto
+al final. Se rechaza otro manifiesto de origen, método, bloque o adquisición;
+no se borran imágenes antiguas ni se ejecuta Git. La receta original continúa
+reproduciéndose desde el archivo histórico tras la integración.
+
+La regla del ID se fundamenta en la [descripción oficial de Sentinel-2 en
+Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED).
+La carga fija usa [ImageCollection.fromImages](https://developers.google.com/earth-engine/apidocs/ee-imagecollection-fromimages).
+
+## Navegar y compartir una celda, sin certificarla
+
+En los controles del visor, **Recorrer celdas candidatas** permite seleccionar
+una celda o avanzar con Anterior/Siguiente. La lista ordena la suma aproximada
+de señal de aumento y disminución; no clasifica riesgo, gravedad o confianza.
+La selección activa los marcadores y acerca el contorno de 1 km al límite
+de visualización nativo. El centro no identifica un río ni localiza cada
+píxel de cambio. Los extremos de la lista vuelven al inicio/final.
+
+**Compartir**, en la cabecera, conserva `view=rivers`, año, corte y `cell`.
+Al abrir el enlace, la celda se acepta solo si existe en la colección cuyo
+SHA-256 y procedencia se verificaron. Un ID desconocido se descarta. Desactivar
+los marcadores elimina la selección del enlace y la leyenda correspondiente.
+Se comparte una vista, no una revisión científica ni un dictamen.
+
+**Antes de sacar conclusiones** recuerda revisar ambas vistas, escenas
+fechadas, QA, nivel del agua y estacionalidad, y contrastar otro sensor o
+evidencia de campo. Los RGB son medianas de una muestra anual: no pueden
+establecer por sí solos cuándo ocurrió una modificación. Este protocolo es
+orientativo; recorrer celdas no modifica el estado `unreviewed`. No se han
+añadido nuevas adquisiciones ni resultados de validación mediante esta interfaz.
 
 ## Lo más útil después en Earth Engine
 

@@ -2,6 +2,30 @@
 
 ## Sin publicar — 2026-10-01
 
+- Muestra fija depurada 31/32 auditada y ejecutada en GEE: RGB y conteos
+  descargados, reconstruidos y verificados en staging e integrados localmente.
+  No cambió ninguna de las 392 teselas RGB ni los resultados de las 24 celdas:
+  mejora de procedencia, no de resolución, apariencia o validación científica.
+- Comparación ES/EN descargable desde el calendario, archivo de procedencia
+  original y plan; promoción comprobada con respaldo recuperable antes de
+  reemplazar archivos, manifiesto al final y sin commit/push automático.
+- Recibos de muestras fijas deben coincidir con IDs del plan y rechazar pases/
+  teselas repetidos. CLI RGB/conteos con configuración explícita y staging
+  obligatorio para esas muestras; validación por raíz alternativa.
+
+- Auditoría temporal ES/EN del recibo real: calendario mensual e inventario
+  de fechas/IDs, manifiesto descargable y distinción entre archivos, días
+  diferentes y apoyo por píxel. 31/32 archivos corresponden a 17/13 días.
+- Advertencia explícita de dos variantes del pase/tesela del 21 de junio de
+  2019 en el lote original; se conserva ese recibo histórico y se exporta una
+  muestra emparejada nueva, sin presumir independencia de los conteos.
+  Los 24 candidatos siguen sin validación de campo o hidrológica.
+
+- Navegador ES/EN para las celdas de cribado, anterior/siguiente y selección
+  con zoom nativo; enlaces compartidos que reabren una celda verificada.
+  Guía de revisión plegable, sin convertir exploración en validación científica
+  ni consumir nuevas exportaciones de Earth Engine. Orden por señal, no riesgo.
+
 - Cribado real del bloque 7 Tena–Archidona: 24 celdas candidatas sin revisar,
   derivadas de conteos ópticos exportados, no de las imágenes RGB. Marcadores
   opcionales, contorno de revisión de 1 km y acercamiento al abrir una ficha.

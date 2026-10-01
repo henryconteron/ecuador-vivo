@@ -118,6 +118,41 @@
 .spectral-map-toolbar select { font-size: 0.74rem; }
 .spectral-map-toolbar input[type="range"] { width: 100%; margin: 0; accent-color: #a9d8bd; cursor: ew-resize; }
 .spectral-map-toolbar small { display: block; margin-top: 0.5rem; color: #bed1c6; font-size: 0.65rem; line-height: 1.45; }
+#rivers-toolbar { max-height: calc(100% - 16rem); overflow-y: auto; }
+.rivers-review { border-top: 1px solid #557b70; margin-top: 0.65rem; padding-top: 0.55rem; font-size: 0.75rem; }
+.rivers-review summary { cursor: pointer; min-height: 2rem; }
+.rivers-navigation { display: flex; gap: 0.4rem; margin-block: 0.45rem; }
+.rivers-navigation button { flex: 1; }
+.rivers-review button { min-height: 2.75rem; }
+.rivers-review button:disabled { opacity: 0.45; cursor: default; }
+.rivers-review ol { padding-left: 1.25rem; line-height: 1.5; }
+.rivers-review li + li { margin-top: 0.6rem; }
+.rivers-review a { color: #a9d8bd; }
+.rivers-review :focus-visible { outline: 2px solid #ffb15f; outline-offset: 2px; }
+.rivers-observations { width: min(980px, 94vw); }
+.rivers-observation-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.rivers-observation-summary article { padding: 0.8rem; border: 1px solid #466859; border-radius: 0.6rem; background: #1b3027; }
+.rivers-observation-summary p { margin-block: 0.4rem; }
+.rivers-observation-summary small { color: #b7d1c1; }
+.rivers-observation-warning { margin-top: 1rem; padding: 0.85rem; border-left: 3px solid #ffb15f; background: #31281c; line-height: 1.5; font-size: 0.85rem; }
+.rivers-observation-warning p { margin-block: 0.5rem; }
+.rivers-observation-warning code, #rivers-observation-list code { display: block; overflow-wrap: anywhere; font-size: 0.72rem; color: #d7e6dc; }
+.rivers-observations-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+.rivers-observations-layout h3 { font-size: 1rem; }
+.rivers-observation-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.rivers-observation-table caption { text-align: left; line-height: 1.5; color: #b7d1c1; margin-bottom: 0.65rem; }
+.rivers-observation-table th, .rivers-observation-table td { padding: 0.15rem; text-align: left; border-bottom: 1px solid #34493e; }
+.rivers-observation-table button { width: 100%; min-height: 2.75rem; padding: 0.25rem; color: #def0e3; background: #203a30; border: 1px solid #557b70; border-radius: 0.35rem; cursor: pointer; }
+#rivers-observation-month { display: block; width: 100%; margin-top: 0.4rem; min-height: 2.75rem; color: #e5f1e9; background: #172e26; border: 1px solid #557b70; border-radius: 0.4rem; padding: 0.4rem; font: inherit; }
+#rivers-observation-list { padding-left: 1.1rem; }
+#rivers-observation-list li { margin-bottom: 0.85rem; line-height: 1.5; }
+#rivers-observation-list small { color: #ffb15f; }
+.rivers-observation-sources { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; }
+.rivers-observation-sources a { color: #a9d8bd; }
+.rivers-observations :focus-visible { outline: 2px solid #ffb15f; outline-offset: 2px; }
+@media (max-width: 600px) {
+  .rivers-observations-layout, .rivers-observation-summary { grid-template-columns: 1fr; }
+}
 .spectral-map-years { display: flex; justify-content: space-between; margin-block: 0.4rem 0.2rem; font-size: 0.7rem; }
 .spectral-map-divider { position: absolute; z-index: 450; top: 0; bottom: 0; border-left: 2px solid #fff; pointer-events: none; filter: drop-shadow(0 0 2px #16372b); }
 .spectral-map-divider > span { position: absolute; top: 52%; transform: translateX(-50%); white-space: nowrap; padding: 0.35rem 0.5rem; border-radius: 0.5rem; background: #11271ff2; color: #eef9f2; font-size: 0.7rem; }
@@ -131,6 +166,7 @@ body.is-map-expanded .map-panel { height: 100%; width: 100%; }
 body.is-map-expanded .sidebar, body.is-map-expanded footer { display: none; }
 @media (max-width: 30rem) {
   .spectral-map-toolbar { top: 5rem; left: 0.7rem; right: auto; width: 12rem; padding: 0.5rem; }
+  #rivers-toolbar { max-height: calc(100% - 11rem); }
   .spectral-map-toolbar header { justify-content: flex-end; margin-bottom: 0.25rem; }
   .spectral-map-toolbar header strong, .spectral-map-toolbar > label > span { display: none; }
   .spectral-map-toolbar > label { margin-block: 0.3rem; }

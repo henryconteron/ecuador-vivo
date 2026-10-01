@@ -1,8 +1,62 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
+import "./test-napo-river-sample.mjs";
 import {validateRiverManifest, validateRiverCandidates} from "../assets/js/map/rivers.js";
-const config = JSON.parse(fs.readFileSync("data/rivers/napo-config.json", "utf8"));
+import {orderedRiverCells, riverCellFromParam, adjacentRiverCell} from "../assets/js/map/rivers-review.js";
+import {summarizeRiverObservations} from "../assets/js/map/rivers-observations.js";
+import {loadSampleSource} from "../scripts/prepare_napo_river_sample.mjs";
+// Inventory preserves input pairing even when acquisition times arrive unsorted.
+const sceneFixture = [{year: 2019, joined_count: 3,
+  scene_ids: ["20190621T153629_20190621T154333_T17MRU", "20190107T153611_20190107T153741_T18MTD", "20190621T153629_20190621T153627_T17MRU"],
+  acquired_ms: [Date.parse("2019-06-21T15:43:43Z"), Date.parse("2019-01-07T15:43:26Z"), Date.parse("2019-06-21T15:43:36Z")]}];
+const sceneBefore = structuredClone(sceneFixture), summary = summarizeRiverObservations(sceneFixture)[0];
+assert.deepEqual(sceneFixture, sceneBefore);
+assert.equal(summary.entries, 3); assert.equal(summary.days, 2);
+assert.equal(summary.records[0].id, sceneFixture[0].scene_ids[1]);
+assert.equal(summary.months[5].entries, 2); assert.equal(summary.months[5].days, 1);
+assert.equal(summary.months[1].entries, 0); assert.equal(summary.months[1].days, 0);
+assert.deepEqual(summary.variants[0].ids, [sceneFixture[0].scene_ids[2], sceneFixture[0].scene_ids[0]]);
+for (const mutate of [r => r.acquired_ms.pop(), r => r.acquired_ms[0] = NaN, r => r.acquired_ms[0] = Date.parse("2020-06-21"),
+  r => r.scene_ids[0] = "wrong", r => r.scene_ids[0] = "20190620T153629_20190621T154333_T17MRU", r => r.joined_count = 4]) {
+  const invalid = structuredClone(sceneFixture); mutate(invalid[0]); assert.throws(() => summarizeRiverObservations(invalid));
+}
+assert.throws(() => summarizeRiverObservations([]));
+assert.throws(() => summarizeRiverObservations([...sceneFixture, ...sceneFixture]));
+const repeatedId = structuredClone(sceneFixture); repeatedId[0].scene_ids[0] = repeatedId[0].scene_ids[2];
+assert.throws(() => summarizeRiverObservations(repeatedId));
+const midnight = summarizeRiverObservations([{year: 2024, joined_count: 2,
+  scene_ids: ["20240229T003000_20240229T013000_T17MRU", "20240229T003000_20240229T013000_T18MTD"],
+  acquired_ms: [Date.parse("2024-02-29T00:30:00Z"), Date.parse("2024-02-29T00:30:15Z")]}])[0];
+assert.equal(midnight.months[1].days, 1); assert.equal(midnight.variants.length, 0, "Different tiles on a shared day are not same-tile variants");
+// Real public receipt audit, not synthetic or per-pixel support claims.
+const actualManifest = JSON.parse(fs.readFileSync("data/rivers/napo-manifest.json", "utf8"));
+const actualInventory = summarizeRiverObservations(actualManifest.receipt.scenes);
+const isPinnedSample = actualManifest.config.scene_selection.mode === "frozen-inventory-acquisition-tile-latest-generation-v1";
+assert.deepEqual(actualInventory.map(row => [row.year, row.entries, row.days]), [[2019, isPinnedSample ? 31 : 32, 17], [2024, 32, 13]]);
+assert.equal(actualInventory[0].variants.length, isPinnedSample ? 0 : 1); assert.equal(actualInventory[1].variants.length, 0);
+if (!isPinnedSample) assert.equal(actualInventory[0].variants[0].key, "20190621T153629_T17MRU");
+assert.deepEqual(actualInventory.map(row => row.months.filter(month => month.entries > 0).length), [11, 9]);
+for (const row of actualInventory) assert.equal(row.months.reduce((sum, month) => sum + month.entries, 0), row.entries);
+// Synthetic navigation fixtures only: never exported as real observations.
+const navigationFixture = {features: [
+  {properties: {cell_id: 3, gain_ha: 1, loss_ha: 2}},
+  {properties: {cell_id: 2, gain_ha: 2, loss_ha: 1}},
+  {properties: {cell_id: 1, gain_ha: 0, loss_ha: 4}}
+]};
+const ordered = orderedRiverCells(navigationFixture);
+assert.deepEqual(ordered.map(cell => cell.properties.cell_id), [1, 2, 3]);
+assert.equal(navigationFixture.features[0].properties.cell_id, 3, "Keep the provenance collection order unchanged");
+assert.equal(riverCellFromParam("2", ordered), 2);
+for (const invalid of [null, "", "02", "2.0", "2e0", " 2", "2 ", "99", "9007199254740993", "<script>"]) assert.equal(riverCellFromParam(invalid, ordered), null);
+assert.equal(adjacentRiverCell(ordered, null, 1), 1);
+assert.equal(adjacentRiverCell(ordered, null, -1), 3);
+assert.equal(adjacentRiverCell(ordered, 1, -1), 3);
+assert.equal(adjacentRiverCell(ordered, 3, 1), 1);
+assert.equal(adjacentRiverCell([], null, 1), null);
+assert.deepEqual(orderedRiverCells(null), []);
+// Original quarterly exporter/isolated fixtures; the pinned public sample is tested separately above.
+const {config} = loadSampleSource();
 assert.equal(validateRiverManifest({schema_version: 1, status: "pending"}, config), null);
 assert.throws(() => validateRiverManifest({schema_version: 1, status: "ready"}, config));
 const manifest = {candidate_count: 1};

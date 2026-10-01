@@ -70,6 +70,17 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
   descargados y verificados; el manifiesto indica si están pendientes. No es
   inventario de todos los ríos ni detector de minería/contaminación.
   [Método y siguientes pasos](documentation/napo-rivers.md);
+- auditoría temporal de esa muestra a 10 m: calendario e identificadores
+  originales, distinción entre 31/32 archivos y 17/13 días UTC distintos.
+  La muestra original de 2019 tenía dos variantes del mismo pase/tesela;
+  se recalcularon RGB y conteos con una sola, sin rellenar fechas. No presupone
+  independencia de los conteos ni validación estacional;
+- muestra depurada ejecutada en Earth Engine y reconstruida en Python: IDs fijos,
+  decisiones explícitas, modo de auditoría sin exportaciones por defecto
+  y reconstrucción aislada en `tmp/`. Verificación antes/después, historial
+  de procedencia y respaldo recuperable antes de integrar. En este bloque no
+  cambió ninguna tesela RGB ni los resultados de las 24 celdas; el informe
+  descargable documenta ese resultado, sin inventar una mejora visual;
 - catálogo inicial de fallas activas derivado de GEM GAF-DB;
 - búsqueda por nombre, provincia, identificador o catálogo de origen;
 - filtro por tipo de movimiento;

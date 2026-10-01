@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
     <link rel="preconnect" href="https://tile.opentopomap.org" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="assets/css/styles.css?v=20261001-1" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261001-4" />
   </head>
   <body data-page="map">
     <a class="skip-link" href="#map" data-i18n="skip.map">Ir directamente al mapa</a>
@@ -74,6 +74,21 @@
             <label><span data-i18n="spectralMap.time">Modo temporal</span><select id="rivers-time" aria-label="Modo temporal provincial" data-i18n-aria="rivers.time"><option value="compare">2019 ↔ 2024</option><option value="2019">2019</option><option value="2024">2024</option></select></label>
             <div id="rivers-swipe"><label for="rivers-split" data-i18n="spectral.slider">Mover el límite entre los años</label><input id="rivers-split" type="range" min="0" max="100" step="1" value="50" /></div>
             <button id="rivers-fit" type="button" data-i18n="rivers.fit">Ver cobertura disponible</button><small id="rivers-scope"></small>
+            <button id="rivers-observations-open" type="button" data-i18n="rivers.observationOpen" disabled>¿Qué fechas estamos comparando?</button>
+            <details class="rivers-review">
+              <summary data-i18n="rivers.navigate">Recorrer celdas candidatas</summary>
+              <label for="rivers-cell" data-i18n="rivers.cellLabel">Celda · señal total aproximada</label>
+              <select id="rivers-cell" aria-describedby="rivers-cell-position" disabled></select>
+              <div class="rivers-navigation"><button id="rivers-previous" type="button" data-i18n="rivers.previous" disabled>Anterior</button><button id="rivers-next" type="button" data-i18n="rivers.next" disabled>Siguiente</button></div>
+              <button id="rivers-inspect" type="button" data-i18n="rivers.inspectCell" disabled>Explorar esta celda a 10 m</button>
+              <small id="rivers-cell-position" role="status"></small>
+              <small data-i18n="rivers.shareCell">Selecciona una celda y usa «Compartir» en la cabecera. El enlace reabre esa celda y conserva el año y el corte.</small>
+            </details>
+            <details class="rivers-review">
+              <summary data-i18n="rivers.reviewGuide">Antes de sacar conclusiones</summary>
+              <ol><li data-i18n="rivers.reviewImages">Alterna ambos años y recorre la celda: el marcador es su centro, no el punto exacto del cambio.</li><li data-i18n="rivers.reviewDates">Estos RGB son medianas de una muestra anual, no fotos de una misma fecha. Para comprobar cambios, revisa escenas fechadas y condiciones hidrológicas comparables.</li><li data-i18n="rivers.reviewArtifacts">Descarta nubes, sombras y huecos; compara el nivel del agua y la estacionalidad. Más zoom no crea detalle por debajo de 10 m.</li><li data-i18n="rivers.reviewEvidence">Contrasta con otra fecha o sensor y evidencia de campo antes de atribuir una causa. Explorar una celda no cambia su estado «sin revisar».</li></ol>
+              <a href="https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="rivers.method">Método, cobertura y límites ↗</a>
+            </details>
           </section>
           <section id="spectral-map-toolbar" class="spectral-map-toolbar" data-i18n-aria="spectralMap.toolbar" aria-label="Controles satelitales del visor" hidden>
             <header><strong id="spectral-map-title"></strong><button id="spectral-map-hide" type="button" data-i18n="spectralMap.hide">Ocultar</button></header>
@@ -559,6 +574,23 @@
       <footer><span data-i18n="footer.credit">Desarrollado por Henry P. Conteron Moreta</span><span data-i18n="footer.disciplines">Geociencias · SIG · Ecuador</span></footer>
     </div>
 
+    <dialog id="rivers-observations" class="imagery-dialog rivers-observations" aria-labelledby="rivers-observations-title" aria-describedby="rivers-observations-lead">
+      <div class="imagery-header">
+        <div><p class="eyebrow" data-i18n="rivers.observationEyebrow">Napo · procedencia de la muestra</p><h2 id="rivers-observations-title" data-i18n="rivers.observationTitle">Dos años no son dos fotografías.</h2></div>
+        <div class="imagery-actions"><button type="button" data-language-toggle aria-label="Switch to English">EN</button><button id="rivers-observations-close" type="button" data-i18n="imagery.close" autofocus>Cerrar</button></div>
+      </div>
+      <p id="rivers-observations-lead" class="imagery-lead" data-i18n="rivers.observationLead">El visor combina una muestra de archivos de cada año. Sus fechas no son iguales y varios archivos pueden venir del mismo día. Este calendario describe la muestra seleccionada, no las observaciones útiles en cada píxel.</p>
+      <div id="rivers-observation-summary" class="rivers-observation-summary"></div>
+      <p id="rivers-observation-dedup" class="imagery-lead" data-i18n="rivers.observationDedup" hidden>La muestra se recalculó conservando un producto por adquisición y tesela, sin añadir fechas. Se eliminaron variantes, no las diferencias estacionales ni los solapamientos entre teselas. Las señales siguen sin revisar.</p>
+      <aside id="rivers-observation-variants" class="rivers-observation-warning" hidden><strong data-i18n="rivers.observationVariantTitle">Atención: variantes del mismo pase y tesela</strong><p data-i18n="rivers.observationVariantWarning">El inventario contiene productos con la misma adquisición y tesela, pero distinto procesamiento. No deben contarse automáticamente como observaciones independientes. Los resultados actuales conservan la muestra original y siguen sin validar; revisar y deduplicar antes de un nuevo cálculo.</p><code id="rivers-observation-variant-ids"></code></aside>
+      <div class="rivers-observations-layout">
+        <section><h3 data-i18n="rivers.observationCalendar">¿En qué meses hay datos?</h3><table class="rivers-observation-table"><caption data-i18n="rivers.observationCaption">Archivos / días distintos (UTC). Pulsa una cifra para ver su inventario. Cero indica ausencia en esta muestra, no ausencia en el archivo de Sentinel-2.</caption><thead><tr><th scope="col" data-i18n="rivers.observationMonth">Mes</th><th scope="col">2019</th><th scope="col">2024</th></tr></thead><tbody id="rivers-observation-calendar"></tbody></table></section>
+        <section><h3 data-i18n="rivers.observationInventory">Fechas e identificadores originales</h3><label for="rivers-observation-month" data-i18n="rivers.observationFilter">Seleccionar año y mes</label><select id="rivers-observation-month"></select><p id="rivers-observation-empty" data-i18n="rivers.observationEmpty" hidden>No hay archivos seleccionados en este mes.</p><ul id="rivers-observation-list" aria-live="polite"></ul></section>
+      </div>
+      <p class="imagery-lead" data-i18n="rivers.observationLimits">Igual número de archivos no garantiza igual estación, nivel del río ni apoyo por píxel. Esta distribución no mide lluvia, caudal ni confianza del cambio. No se han descargado aquí fotografías individuales: el visor continúa mostrando medianas anuales.</p>
+      <nav class="rivers-observation-sources" aria-label="Procedencia de observaciones" data-i18n-aria="rivers.observationSources"><a href="data/rivers/napo-manifest.json" download="napo-procedencia-10m.json" data-i18n="rivers.observationDownload">Descargar manifiesto de procedencia (JSON)</a><a id="rivers-observation-comparison" href="data/rivers/history/sample-comparison.json" download="napo-comparacion-muestras.json" data-i18n="rivers.observationComparison" hidden>Comparar resultados antes y después (JSON)</a><a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED" target="_blank" rel="noopener noreferrer" data-i18n="rivers.observationSource">Sentinel-2: fechas, productos y bandas ↗</a></nav>
+    </dialog>
+
     <dialog id="imagery-dialog" class="imagery-dialog" aria-labelledby="imagery-title" aria-describedby="imagery-lead">
       <div class="imagery-header">
         <div><p class="eyebrow" data-i18n="imagery.eyebrow">Laboratorio visual · 2024</p><h2 id="imagery-title" data-i18n="imagery.title">El territorio no viene con una leyenda.</h2></div>
@@ -642,8 +674,8 @@
         <small>Modified Copernicus Sentinel data (2019, 2024), processed with Google Earth Engine; Cloud Score+ by Google, CC BY 4.0.</small>
       </details>
     </dialog>
-    <script src="assets/js/i18n.js?v=20261001-1"></script>
+    <script src="assets/js/i18n.js?v=20261001-4"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="assets/js/map.js?v=20261001-1"></script>
+    <script type="module" src="assets/js/map.js?v=20261001-4"></script>
   </body>
 </html>

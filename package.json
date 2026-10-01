@@ -13,6 +13,7 @@
     "check:landcover": "node tests/test-landcover.mjs && node scripts/validate-landcover.mjs",
     "check:imagery": "node tests/test-imagery.mjs && node scripts/validate-imagery.mjs",
     "check:spectral": "node tests/test-spectral.mjs && node tests/test-spectral-export.mjs && node scripts/validate-spectral.mjs && node tests/test-spectral-map.mjs",
-    "check:rivers": "node tests/test-rivers.mjs && node scripts/validate-rivers.mjs"
+    "check:rivers": "node tests/test-rivers.mjs && node scripts/validate-rivers.mjs",
+    "check:river-sample": "node tests/test-napo-river-sample.mjs && node scripts/prepare_napo_river_sample.mjs --check"
   }
 }

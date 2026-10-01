@@ -4,6 +4,8 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +17,8 @@ spec.loader.exec_module(builder)
 class RiverBuilderTests(unittest.TestCase):
     def setUp(self):
         self.config = json.loads((ROOT / "data/rivers/napo-config.json").read_text(encoding="utf-8"))
+        # Synthetic fixtures do not impersonate the pinned public acquisitions.
+        self.config["scene_selection"] = {"mode": "quarter-cloud-ranked-per-block", "max_per_quarter": 8}
         # Tiny artificial provincial grid, ONLY in this isolated test fixture.
         self.config["processing_grid"]["bbox"] = [-77.901, -1.01, -77.898, -1.007]
         self.receipt = {key: copy.deepcopy(value) for key, value in self.config.items() if key not in ["file_dimensions", "max_pixels", "attribution"]}
@@ -41,6 +45,39 @@ class RiverBuilderTests(unittest.TestCase):
         self.assertEqual(builder.validate_candidates(empty), empty)
         with self.assertRaises(ValueError):
             builder.validate_candidates({"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [-77.8, -1.0]}, "properties": {"status": "confirmed"}}]})
+
+    def test_pinned_receipt_rejects_substitution_and_repeated_pass_tile(self):
+        config, receipt = copy.deepcopy(self.config), copy.deepcopy(self.receipt)
+        for row in receipt["scenes"]:
+            row["scene_ids"] = [f'{row["year"]}01{day + 1:02d}T153629_{row["year"]}01{day + 1:02d}T163629_T17MRU' for day in range(10)]
+        config["scene_selection"] = {"mode": "frozen-inventory-acquisition-tile-latest-generation-v1", "no_refill": True,
+            "plan_sha256": "a" * 64, "source_manifest_sha256": "b" * 64,
+            "pinned_scene_ids": [list(row["scene_ids"]) for row in receipt["scenes"]]}
+        receipt["scene_selection"] = copy.deepcopy(config["scene_selection"])
+        builder.validate_receipt(receipt, config)
+        substituted = copy.deepcopy(receipt)
+        substituted["scenes"][0]["scene_ids"][0] = "wrong"
+        with self.assertRaisesRegex(ValueError, "differ from pinned"):
+            builder.validate_receipt(substituted, config)
+        repeated = copy.deepcopy(receipt)
+        repeated["scenes"][0]["scene_ids"][1] = repeated["scenes"][0]["scene_ids"][0].replace("T163629_", "T173629_")
+        duplicate_config = copy.deepcopy(config)
+        duplicate_config["scene_selection"]["pinned_scene_ids"][0] = list(repeated["scenes"][0]["scene_ids"])
+        repeated["scene_selection"] = copy.deepcopy(duplicate_config["scene_selection"])
+        with self.assertRaisesRegex(ValueError, "Repeated pass/tile"):
+            builder.validate_receipt(repeated, duplicate_config)
+
+    def test_pinned_cli_requires_isolated_staging_before_reading_inputs(self):
+        config = copy.deepcopy(self.config)
+        config["scene_selection"]["mode"] = "frozen-inventory-acquisition-tile-latest-generation-v1"
+        with tempfile.TemporaryDirectory() as folder:
+            config_path = Path(folder) / "fixture-config.json"
+            config_path.write_text(json.dumps(config), encoding="utf-8")
+            for script in ["build_napo_rivers.py", "build_napo_river_changes.py"]:
+                result = subprocess.run([sys.executable, str(ROOT / "scripts" / script), "--inputs", "never-read.tif", "--receipt", "never-read.geojson", "--config", str(config_path)],
+                    cwd=ROOT, capture_output=True, text=True, timeout=15)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn("isolated --output-root under tmp/", result.stderr)
 
     def test_lossless_paired_pyramid_and_reject_upscaled_30m(self):
         import numpy as np

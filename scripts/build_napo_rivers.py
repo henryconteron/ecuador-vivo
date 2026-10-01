@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 import tempfile
 
@@ -71,6 +72,21 @@ def validate_receipt(receipt, config):
             not isinstance(x, (float, int)) or not math.isfinite(x) or not start <= x < end for x in dates
         ):
             raise ValueError("Invalid acquisition IDs/times")
+        selection = config["scene_selection"]
+        if selection.get("mode") == "frozen-inventory-acquisition-tile-latest-generation-v1":
+            pinned = selection.get("pinned_scene_ids")
+            if selection.get("no_refill") is not True or any(not isinstance(selection.get(key), str) or not re.fullmatch(r"[a-f0-9]{64}", selection[key]) for key in ["plan_sha256", "source_manifest_sha256"]):
+                raise ValueError("Missing pinned plan provenance")
+            if not isinstance(pinned, list) or len(pinned) != 2 or ids != pinned[i]:
+                raise ValueError("Actual observations differ from pinned deduplicated plan")
+            keys = []
+            for scene in ids:
+                parts = scene.split("_")
+                if not re.fullmatch(r"\d{8}T\d{6}_\d{8}T\d{6}_T\d{2}[A-Z]{3}", scene):
+                    raise ValueError("Malformed pinned scene ID")
+                keys.append((parts[0], parts[2]))
+            if len(set(keys)) != len(keys):
+                raise ValueError("Repeated pass/tile in deduplicated plan")
 
 
 def validate_candidates(collection):
@@ -202,7 +218,7 @@ def build_bundle(inputs, receipt_path, candidates_path, output_root, config):
             if candidates_path:
                 (staging / "candidates.geojson").write_bytes(candidates_path.read_bytes())
                 (staging / "candidates.geojson").replace(public / "napo-candidates.geojson")
-            (staging / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            (staging / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
             (staging / "manifest.json").replace(public / "napo-manifest.json")
     return manifest
 
@@ -212,12 +228,20 @@ def main():
     parser.add_argument("--inputs", nargs="+", required=True, type=Path)
     parser.add_argument("--receipt", required=True, type=Path)
     parser.add_argument("--candidates", type=Path, help="Deprecated: use build_napo_river_changes.py with matching exact counts instead")
+    parser.add_argument("--config", type=Path, default=ROOT / "data/rivers/napo-config.json", help="Explicit configuration; pinned samples must build in tmp staging")
+    parser.add_argument("--output-root", type=Path, default=ROOT, help="Bundle root; use tmp/rivers-next/rebuilt for a pinned sample")
     args = parser.parse_args()
     if args.candidates is not None:
         parser.error("Build RGB without --candidates, then use build_napo_river_changes.py; candidate provenance requires matching count exports")
-    config = json.loads((ROOT / "data/rivers/napo-config.json").read_text(encoding="utf-8"))
     try:
-        result = build_bundle(args.inputs, args.receipt, args.candidates, ROOT, config)
+        config = json.loads(args.config.read_text(encoding="utf-8"))
+        output_root = args.output_root.resolve()
+        pinned = config.get("scene_selection", {}).get("mode") == "frozen-inventory-acquisition-tile-latest-generation-v1"
+        if pinned and (not output_root.is_relative_to((ROOT / "tmp").resolve()) or output_root == (ROOT / "tmp").resolve()):
+            raise ValueError("Pinned rebuild must use an isolated --output-root under tmp/, never the published root")
+        result = build_bundle(args.inputs, args.receipt, args.candidates, output_root, config)
+        if pinned:
+            (output_root / "data/rivers/napo-config.json").write_text(json.dumps(config, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     except (ValueError, KeyError, OSError) as error:
         parser.exit(1, f"Provincial build stopped: {error}\n")
     print(f'Ready: {len(result["tiles"])} lossless tiles; screening {result["candidate_status"]}, count {result["candidate_count"]}')

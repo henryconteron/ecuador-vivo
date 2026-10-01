@@ -1,42 +1,38 @@
 {
   "schema_version": 1,
-  "boundary_asset": "WM/geoLab/geoBoundaries/600/ADM1",
-  "boundary_filter": {
-    "shapeGroup": "ECU",
-    "shapeName": "Napo"
-  },
-  "asset": "COPERNICUS/S2_SR_HARMONIZED",
-  "quality_asset": "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED",
-  "years": [
-    2019,
-    2024
-  ],
-  "periods": [
-    [
-      "2019-01-01",
-      "2020-01-01"
-    ],
-    [
-      "2024-01-01",
-      "2025-01-01"
+  "status": "planned-not-exported-not-validated",
+  "rule": "frozen-inventory-acquisition-tile-latest-generation-v1",
+  "source_manifest_sha256": "5ea2f1ebda24f575217ab665af047c99ef50e504569791e7d5149fce16732663",
+  "source_rgb_receipt_sha256": "8188ea646af4594c224283f6ce8ef4491864f51c8c15e7fe24557be2500ebb3c",
+  "processing_block": {
+    "id": 7,
+    "bbox": [
+      -77.96546,
+      -1.24118,
+      -77.50556999999999,
+      -0.8169066666666666
     ]
+  },
+  "no_refill": true,
+  "no_new_scenes": true,
+  "per_pixel_support_unknown_until_reexport": true,
+  "limitations": [
+    "Latest generation ID is a reproducible choice, not proven better quality.",
+    "Deduplicating a frozen sample does not balance months, seasons or river levels.",
+    "Selected tile/pass groups are not independent days; pixel masks remain unknown.",
+    "Existing RGB, counts and candidate cells are unchanged and unreviewed."
   ],
-  "bands": [
-    "B4",
-    "B3",
-    "B2",
-    "B8"
-  ],
-  "clear_threshold": 0.65,
-  "min_observations": 10,
-  "rgb_min_observations": 3,
-  "scene_selection": {
-    "mode": "frozen-inventory-acquisition-tile-latest-generation-v1",
-    "plan_sha256": "6283cb911fc0f97444d63f181d20f0f11f02b05954e6802d9f364e7d17734ca6",
-    "source_manifest_sha256": "5ea2f1ebda24f575217ab665af047c99ef50e504569791e7d5149fce16732663",
-    "no_refill": true,
-    "pinned_scene_ids": [
-      [
+  "years": [
+    {
+      "year": 2019,
+      "period": [
+        "2019-01-01",
+        "2020-01-01"
+      ],
+      "original_entries": 32,
+      "selected_entries": 31,
+      "distinct_utc_days": 17,
+      "scene_ids": [
         "20190107T153611_20190107T153741_T18MTD",
         "20190107T153611_20190107T153741_T18MTE",
         "20190127T153621_20190127T153743_T18MTD",
@@ -69,7 +65,59 @@
         "20191208T153619_20191208T154047_T17MRU",
         "20191208T153619_20191208T154047_T18MTD"
       ],
-      [
+      "acquired_ms": [
+        1546875806000,
+        1546875791000,
+        1548603808000,
+        1550331809000,
+        1550331795000,
+        1550331807000,
+        1551627811000,
+        1551627809000,
+        1558107815000,
+        1558539805000,
+        1558971816000,
+        1558971802000,
+        1558971814000,
+        1559403819000,
+        1561131823000,
+        1562859822348,
+        1562859820232,
+        1567179817274,
+        1567179803012,
+        1567179815155,
+        1567179800430,
+        1569771813930,
+        1569771811810,
+        1570203798840,
+        1570635797762,
+        1571931814725,
+        1573659815642,
+        1573659813525,
+        1573659798823,
+        1575819807730,
+        1575819805607
+      ],
+      "decisions": [
+        {
+          "acquisition_tile": "20190621T153629_T17MRU",
+          "retained": "20190621T153629_20190621T154333_T17MRU",
+          "discarded": [
+            "20190621T153629_20190621T153627_T17MRU"
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "period": [
+        "2024-01-01",
+        "2025-01-01"
+      ],
+      "original_entries": 32,
+      "selected_entries": 32,
+      "distinct_utc_days": 13,
+      "scene_ids": [
         "20240126T153629_20240126T153623_T17MRU",
         "20240126T153629_20240126T153623_T17MRV",
         "20240126T153629_20240126T153623_T18MTD",
@@ -102,62 +150,42 @@
         "20241111T153619_20241111T153851_T18MTD",
         "20241201T153629_20241201T153626_T17MRU",
         "20241201T153629_20241201T153626_T18MTD"
-      ]
-    ]
-  },
-  "processing_grid": {
-    "bbox": [
-      -78.42535,
-      -1.24118,
-      -77.04568,
-      0.03164
-    ],
-    "columns": 3,
-    "rows": 3
-  },
-  "excluded_scl": [
-    0,
-    1,
-    3,
-    8,
-    9,
-    10,
-    11
-  ],
-  "water_formula": "(B3-B8)/(B3+B8)",
-  "water_threshold": 0.2,
-  "change_threshold": 0.5,
-  "water_frequency_min": 0.5,
-  "min_connected_pixels": 100,
-  "screening_cell_m": 1000,
-  "min_cell_change_ha": 1,
-  "export_crs": "EPSG:3857",
-  "export_transform": [
-    10,
-    0,
-    0,
-    0,
-    -10,
-    0
-  ],
-  "export_bands": [
-    "y2019_R",
-    "y2019_G",
-    "y2019_B",
-    "y2019_A",
-    "y2024_R",
-    "y2024_G",
-    "y2024_B",
-    "y2024_A"
-  ],
-  "display": {
-    "min": 0,
-    "max": 0.3,
-    "gamma": 1.2
-  },
-  "file_dimensions": 4096,
-  "max_pixels": 50000000,
-  "scope": "province-napo-incremental-blocks-not-entire-river-basin",
-  "method": "joint-four-band-qa-annual-median-rgb-scene-level-ndwi-frequency",
-  "attribution": "Modified Copernicus Sentinel data (2019, 2024); Cloud Score+ by Google; province boundary: geoBoundaries v6, CC BY 4.0."
+      ],
+      "acquired_ms": [
+        1706283812191,
+        1706283797935,
+        1706283810072,
+        1706283795353,
+        1711035814668,
+        1711035801514,
+        1711035812550,
+        1711035800107,
+        1713195814546,
+        1713195812432,
+        1713195797737,
+        1713627800075,
+        1719243816721,
+        1719243802472,
+        1719243799901,
+        1719675799811,
+        1723131814210,
+        1723131799954,
+        1723131812084,
+        1723131797364,
+        1725291814322,
+        1725291799619,
+        1726155812635,
+        1726155811349,
+        1727883812595,
+        1727883797898,
+        1728747812105,
+        1728747809988,
+        1728747795269,
+        1731339806445,
+        1733067814835,
+        1733067812721
+      ],
+      "decisions": []
+    }
+  ]
 }
