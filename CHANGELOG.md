@@ -1,5 +1,20 @@
 # Registro de cambios
 
+## Sin publicar — 2026-10-01
+
+- Cribado real del bloque 7 Tena–Archidona: 24 celdas candidatas sin revisar,
+  derivadas de conteos ópticos exportados, no de las imágenes RGB. Marcadores
+  opcionales, contorno de revisión de 1 km y acercamiento al abrir una ficha.
+- Procedencia de conteos y RGB emparejada por escenas, QA, límite y cuadrícula;
+  fracciones exactas, componentes de ocho vecinos en Python sin cortar las
+  costuras entre archivos. 5.329.345 píxeles comparables; áreas aproximadas,
+  sin atribuir minería, contaminación ni cambios confirmados del cauce.
+- Pruebas de falta de datos, cero agua observado, umbral exacto, desbordamiento
+  numérico, conectividad, costuras y rechazo de datos incompatibles; integridad
+  SHA-256 y publicación que no modifica las teselas RGB existentes.
+- Leyenda limitada en anchura para no cubrir el visor ampliado; fichas ES/EN
+  con apoyo observacional por celda, no presentado como índice de confianza.
+
 ## Sin publicar — 2026-09-30
 
 - Pipeline provincial progresivo Napo a 10 m: RGB sin pérdida por teselas, comparación

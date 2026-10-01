@@ -1,0 +1,1320 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.69079734707681,
+          -1.0374974509198576
+        ]
+      },
+      "properties": {
+        "cell_id": 11491351,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 2.52,
+        "loss_ha": 2.25,
+        "comparable_pixels": 9894,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.69079734707681,
+          -1.0464791182704087
+        ]
+      },
+      "properties": {
+        "cell_id": 11591351,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 3.51,
+        "loss_ha": 2.85,
+        "comparable_pixels": 9344,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.65486473571202,
+          -1.0374974509198576
+        ]
+      },
+      "properties": {
+        "cell_id": 11491355,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 9992,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.63689843002963,
+          -1.0644423755952566
+        ]
+      },
+      "properties": {
+        "cell_id": 11791357,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 2.56,
+        "comparable_pixels": 9850,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.62791527718844,
+          -1.0644423755952566
+        ]
+      },
+      "properties": {
+        "cell_id": 11791358,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 1.33,
+        "comparable_pixels": 10000,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.61893212434725,
+          -1.0554607599024222
+        ]
+      },
+      "properties": {
+        "cell_id": 11691359,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 8.92,
+        "loss_ha": 10.85,
+        "comparable_pixels": 9403,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.60994897150606,
+          -1.0464791182704087
+        ]
+      },
+      "properties": {
+        "cell_id": 11591360,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 5.7,
+        "comparable_pixels": 9916,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.60994897150606,
+          -1.0554607599024222
+        ]
+      },
+      "properties": {
+        "cell_id": 11691360,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 6.32,
+        "loss_ha": 17.6,
+        "comparable_pixels": 9826,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.60096581866486,
+          -1.0464791182704087
+        ]
+      },
+      "properties": {
+        "cell_id": 11591361,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 1.9,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9895,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.59198266582366,
+          -1.0374974509198576
+        ]
+      },
+      "properties": {
+        "cell_id": 11491362,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 7.13,
+        "comparable_pixels": 9862,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.56503320730008,
+          -1.0644423755952566
+        ]
+      },
+      "properties": {
+        "cell_id": 11791365,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 4.93,
+        "loss_ha": 5.39,
+        "comparable_pixels": 9740,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.56503320730008,
+          -1.073423965128283
+        ]
+      },
+      "properties": {
+        "cell_id": 11891365,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 1.25,
+        "loss_ha": 2.26,
+        "comparable_pixels": 9996,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.55605005445888,
+          -1.073423965128283
+        ]
+      },
+      "properties": {
+        "cell_id": 11891366,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.6,
+        "loss_ha": 1.21,
+        "comparable_pixels": 9910,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.54706690161768,
+          -1.0554607599024222
+        ]
+      },
+      "properties": {
+        "cell_id": 11691367,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 1.03,
+        "loss_ha": 2.69,
+        "comparable_pixels": 9988,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.54706690161768,
+          -1.0644423755952566
+        ]
+      },
+      "properties": {
+        "cell_id": 11791367,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 5.89,
+        "loss_ha": 0.08,
+        "comparable_pixels": 9986,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.54706690161768,
+          -1.0824055282808858
+        ]
+      },
+      "properties": {
+        "cell_id": 11991367,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 0.0,
+        "loss_ha": 1.03,
+        "comparable_pixels": 10000,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.53808374877649,
+          -1.0554607599024222
+        ]
+      },
+      "properties": {
+        "cell_id": 11691368,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 9.16,
+        "loss_ha": 4.42,
+        "comparable_pixels": 9360,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.52910059593529,
+          -1.0464791182704087
+        ]
+      },
+      "properties": {
+        "cell_id": 11591369,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 3.55,
+        "loss_ha": 6.35,
+        "comparable_pixels": 9061,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.52910059593529,
+          -1.0554607599024222
+        ]
+      },
+      "properties": {
+        "cell_id": 11691369,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 2.81,
+        "loss_ha": 0.41,
+        "comparable_pixels": 9812,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.5201174430941,
+          -1.0285157580714102
+        ]
+      },
+      "properties": {
+        "cell_id": 11391370,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 1.25,
+        "loss_ha": 0.27,
+        "comparable_pixels": 9983,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.5201174430941,
+          -1.0374974509198576
+        ]
+      },
+      "properties": {
+        "cell_id": 11491370,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 8.17,
+        "loss_ha": 2.02,
+        "comparable_pixels": 9966,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.5201174430941,
+          -1.0464791182704087
+        ]
+      },
+      "properties": {
+        "cell_id": 11591370,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 4.33,
+        "loss_ha": 2.61,
+        "comparable_pixels": 9994,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.51113429025291,
+          -1.0285157580714102
+        ]
+      },
+      "properties": {
+        "cell_id": 11391371,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 2.3,
+        "loss_ha": 1.26,
+        "comparable_pixels": 9542,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.51113429025291,
+          -1.0374974509198576
+        ]
+      },
+      "properties": {
+        "cell_id": 11491371,
+        "kind": "water-frequency-change-candidate",
+        "status": "unreviewed",
+        "years": [
+          2019,
+          2024
+        ],
+        "sampling_m": 10,
+        "screening_cell_m": 1000,
+        "min_observations": 10,
+        "water_threshold": 0.2,
+        "change_threshold": 0.5,
+        "gain_ha": 5.92,
+        "loss_ha": 0.0,
+        "comparable_pixels": 9995,
+        "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."
+      }
+    }
+  ],
+  "metadata": {
+    "schema_version": 1,
+    "method": "exact-count-fractions-local-8-connected-100px-1km-v1",
+    "connectivity": 8,
+    "sampling_m": 10,
+    "count_bands": [
+      "y2019_water_count",
+      "y2019_valid_count",
+      "y2024_water_count",
+      "y2024_valid_count"
+    ],
+    "count_encoding": "exact-water-and-valid-observation-counts-zero-valid-is-nodata",
+    "count_receipt": {
+      "schema_version": 1,
+      "asset": "COPERNICUS/S2_SR_HARMONIZED",
+      "quality_asset": "GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED",
+      "boundary_asset": "WM/geoLab/geoBoundaries/600/ADM1",
+      "boundary_filter": {
+        "shapeGroup": "ECU",
+        "shapeName": "Napo"
+      },
+      "boundary": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -77.07005023370188,
+                -1.0117655709645517
+              ],
+              [
+                -77.04568572155252,
+                -0.9128448803826174
+              ],
+              [
+                -77.14488288092357,
+                -0.8918023506981467
+              ],
+              [
+                -77.20600821971271,
+                -0.8109722563448816
+              ],
+              [
+                -77.11262125520068,
+                -0.7163278375300924
+              ],
+              [
+                -77.15109885142854,
+                -0.6966632098980674
+              ],
+              [
+                -77.2684534626377,
+                -0.8313325176850682
+              ],
+              [
+                -77.33279830749008,
+                -0.8497173816111725
+              ],
+              [
+                -77.38324862200723,
+                -0.8866967220367552
+              ],
+              [
+                -77.45100909167634,
+                -0.9042254149671213
+              ],
+              [
+                -77.51813195093278,
+                -0.946551208204098
+              ],
+              [
+                -77.54528786676816,
+                -0.8910443054833208
+              ],
+              [
+                -77.51364163157464,
+                -0.8131616538330966
+              ],
+              [
+                -77.53630280774235,
+                -0.7945672500941219
+              ],
+              [
+                -77.49440504223456,
+                -0.6966632112550496
+              ],
+              [
+                -77.5367308420985,
+                -0.6158598014642461
+              ],
+              [
+                -77.57349614554275,
+                -0.6049573401847348
+              ],
+              [
+                -77.61424339973239,
+                -0.5380708310184148
+              ],
+              [
+                -77.51505512874637,
+                -0.48526615578906124
+              ],
+              [
+                -77.43843886698278,
+                -0.517960238978011
+              ],
+              [
+                -77.38602660326035,
+                -0.4899481536008503
+              ],
+              [
+                -77.35916944053845,
+                -0.42701242990671323
+              ],
+              [
+                -77.31873432325919,
+                -0.40919835588213954
+              ],
+              [
+                -77.3222614335062,
+                -0.3613521775513325
+              ],
+              [
+                -77.2534932430759,
+                -0.30739260165902077
+              ],
+              [
+                -77.26759733150557,
+                -0.22231736795518195
+              ],
+              [
+                -77.29175678749874,
+                -0.18447748049090987
+              ],
+              [
+                -77.27593583918794,
+                -0.1355254607935475
+              ],
+              [
+                -77.29577886162183,
+                -0.0526263250132461
+              ],
+              [
+                -77.36309789956923,
+                -0.14150509647063272
+              ],
+              [
+                -77.45067467158448,
+                -0.12975985836201806
+              ],
+              [
+                -77.43805984521232,
+                -0.06595904844996765
+              ],
+              [
+                -77.47479839211572,
+                -0.015892256082353316
+              ],
+              [
+                -77.58433178167219,
+                -0.09603117631507747
+              ],
+              [
+                -77.63952209330078,
+                -0.07347704917496502
+              ],
+              [
+                -77.77451684130185,
+                -0.06578509548960489
+              ],
+              [
+                -77.78049208537927,
+                0.027115790314367897
+              ],
+              [
+                -77.84331187278981,
+                0.03163734171901898
+              ],
+              [
+                -77.85781733403057,
+                -0.004601804129225696
+              ],
+              [
+                -77.94130506188407,
+                -0.049397927095191876
+              ],
+              [
+                -77.92960889452102,
+                -0.09058219805593462
+              ],
+              [
+                -78.00999311838638,
+                -0.13745180478748695
+              ],
+              [
+                -78.04284775851136,
+                -0.1393959877470918
+              ],
+              [
+                -78.10408904114725,
+                -0.19383709986967276
+              ],
+              [
+                -78.1427806529147,
+                -0.16350629198357367
+              ],
+              [
+                -78.19177279203548,
+                -0.21949924869089213
+              ],
+              [
+                -78.18555679555116,
+                -0.28257770947377414
+              ],
+              [
+                -78.21393449893773,
+                -0.35870345346890525
+              ],
+              [
+                -78.2489295618582,
+                -0.3991430874522986
+              ],
+              [
+                -78.23940494400549,
+                -0.4638803072280969
+              ],
+              [
+                -78.28378191048554,
+                -0.5686735880528648
+              ],
+              [
+                -78.33758538236118,
+                -0.6586894690601919
+              ],
+              [
+                -78.41349264818676,
+                -0.7109501598633303
+              ],
+              [
+                -78.39253492708768,
+                -0.7463821699233842
+              ],
+              [
+                -78.39474663052157,
+                -0.8474700159384083
+              ],
+              [
+                -78.42534048140443,
+                -0.8961455283926647
+              ],
+              [
+                -78.4105675503407,
+                -0.9940138948030548
+              ],
+              [
+                -78.33311293390919,
+                -1.035470119720845
+              ],
+              [
+                -78.34322620667734,
+                -1.1044925504730725
+              ],
+              [
+                -78.2989116607764,
+                -1.1417483727427535
+              ],
+              [
+                -78.22443573914127,
+                -1.1412355817834325
+              ],
+              [
+                -78.12174259248044,
+                -1.220406875514752
+              ],
+              [
+                -78.0644074914387,
+                -1.2411729212557687
+              ],
+              [
+                -77.95100811214007,
+                -1.2062759940512282
+              ],
+              [
+                -77.89115356846263,
+                -1.2411194236985668
+              ],
+              [
+                -77.68978503160363,
+                -1.1436434869564835
+              ],
+              [
+                -77.59479277467422,
+                -1.1336238981358806
+              ],
+              [
+                -77.56516207725899,
+                -1.1528381735909348
+              ],
+              [
+                -77.40911138216725,
+                -1.0801547885397533
+              ],
+              [
+                -77.35977590326767,
+                -1.0999487377158785
+              ],
+              [
+                -77.33473806749805,
+                -1.0677986216175606
+              ],
+              [
+                -77.23767231683837,
+                -1.0532218115511753
+              ],
+              [
+                -77.21543927659123,
+                -1.0279878014053614
+              ],
+              [
+                -77.07005023370188,
+                -1.0117655709645517
+              ]
+            ]
+          ]
+        },
+        "id": "0001000000000000024e",
+        "properties": {
+          "shapeGroup": "ECU",
+          "shapeID": "780006B95371609522575",
+          "shapeName": "Napo",
+          "shapeType": "ADM1"
+        }
+      },
+      "area_m2": 12750626696.802513,
+      "bounds": {
+        "geodesic": false,
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -77.96546,
+              -1.24118
+            ],
+            [
+              -77.50556999999999,
+              -1.24118
+            ],
+            [
+              -77.50556999999999,
+              -0.8169066666666666
+            ],
+            [
+              -77.96546,
+              -0.8169066666666666
+            ],
+            [
+              -77.96546,
+              -1.24118
+            ]
+          ]
+        ]
+      },
+      "scenes": [
+        {
+          "acquired_ms": [
+            1546875806000,
+            1546875791000,
+            1548603808000,
+            1550331809000,
+            1550331795000,
+            1550331807000,
+            1551627811000,
+            1551627809000,
+            1558107815000,
+            1558539805000,
+            1558971816000,
+            1558971802000,
+            1558971814000,
+            1559403819000,
+            1561131816000,
+            1561131823000,
+            1562859822348,
+            1562859820232,
+            1567179817274,
+            1567179803012,
+            1567179815155,
+            1567179800430,
+            1569771813930,
+            1569771811810,
+            1570203798840,
+            1570635797762,
+            1571931814725,
+            1573659815642,
+            1573659813525,
+            1573659798823,
+            1575819807730,
+            1575819805607
+          ],
+          "joined_count": 32,
+          "period": [
+            "2019-01-01",
+            "2020-01-01"
+          ],
+          "scene_ids": [
+            "20190107T153611_20190107T153741_T18MTD",
+            "20190107T153611_20190107T153741_T18MTE",
+            "20190127T153621_20190127T153743_T18MTD",
+            "20190216T153621_20190216T153615_T17MRU",
+            "20190216T153621_20190216T153615_T17MRV",
+            "20190216T153621_20190216T153615_T18MTD",
+            "20190303T153619_20190303T153700_T17MRU",
+            "20190303T153619_20190303T153700_T18MTD",
+            "20190517T153621_20190517T153622_T18MTD",
+            "20190522T153629_20190522T153627_T18MTE",
+            "20190527T153621_20190527T153622_T17MRU",
+            "20190527T153621_20190527T153622_T17MRV",
+            "20190527T153621_20190527T153622_T18MTD",
+            "20190601T153629_20190601T153627_T18MTD",
+            "20190621T153629_20190621T153627_T17MRU",
+            "20190621T153629_20190621T154333_T17MRU",
+            "20190711T153629_20190711T153627_T17MRU",
+            "20190711T153629_20190711T153627_T18MTD",
+            "20190830T153619_20190830T153912_T17MRU",
+            "20190830T153619_20190830T153912_T17MRV",
+            "20190830T153619_20190830T153912_T18MTD",
+            "20190830T153619_20190830T153912_T18MTE",
+            "20190929T153619_20190929T154216_T17MRU",
+            "20190929T153619_20190929T154216_T18MTD",
+            "20191004T153621_20191004T153621_T18MTE",
+            "20191009T153619_20191009T154232_T18MTE",
+            "20191024T153621_20191024T153622_T18MTD",
+            "20191113T153621_20191113T153740_T17MRU",
+            "20191113T153621_20191113T153740_T18MTD",
+            "20191113T153621_20191113T153740_T18MTE",
+            "20191208T153619_20191208T154047_T17MRU",
+            "20191208T153619_20191208T154047_T18MTD"
+          ],
+          "year": 2019
+        },
+        {
+          "acquired_ms": [
+            1706283812191,
+            1706283797935,
+            1706283810072,
+            1706283795353,
+            1711035814668,
+            1711035801514,
+            1711035812550,
+            1711035800107,
+            1713195814546,
+            1713195812432,
+            1713195797737,
+            1713627800075,
+            1719243816721,
+            1719243802472,
+            1719243799901,
+            1719675799811,
+            1723131814210,
+            1723131799954,
+            1723131812084,
+            1723131797364,
+            1725291814322,
+            1725291799619,
+            1726155812635,
+            1726155811349,
+            1727883812595,
+            1727883797898,
+            1728747812105,
+            1728747809988,
+            1728747795269,
+            1731339806445,
+            1733067814835,
+            1733067812721
+          ],
+          "joined_count": 32,
+          "period": [
+            "2024-01-01",
+            "2025-01-01"
+          ],
+          "scene_ids": [
+            "20240126T153629_20240126T153623_T17MRU",
+            "20240126T153629_20240126T153623_T17MRV",
+            "20240126T153629_20240126T153623_T18MTD",
+            "20240126T153629_20240126T153623_T18MTE",
+            "20240321T153631_20240321T154310_T17MRU",
+            "20240321T153631_20240321T154310_T17MRV",
+            "20240321T153631_20240321T154310_T18MTD",
+            "20240321T153631_20240321T154310_T18MTE",
+            "20240415T153629_20240415T153626_T17MRU",
+            "20240415T153629_20240415T153626_T18MTD",
+            "20240415T153629_20240415T153626_T18MTE",
+            "20240420T153631_20240420T154258_T18MTE",
+            "20240624T153629_20240624T153744_T17MRU",
+            "20240624T153629_20240624T153744_T17MRV",
+            "20240624T153629_20240624T153744_T18MTE",
+            "20240629T153631_20240629T153628_T18MTE",
+            "20240808T153631_20240808T153803_T17MRU",
+            "20240808T153631_20240808T153803_T17MRV",
+            "20240808T153631_20240808T153803_T18MTD",
+            "20240808T153631_20240808T153803_T18MTE",
+            "20240902T153629_20240902T153628_T18MTD",
+            "20240902T153629_20240902T153628_T18MTE",
+            "20240912T153629_20240912T153626_T17MRU",
+            "20240912T153629_20240912T153626_T18MTD",
+            "20241002T153629_20241002T153644_T18MTD",
+            "20241002T153629_20241002T153644_T18MTE",
+            "20241012T153629_20241012T154017_T17MRU",
+            "20241012T153629_20241012T154017_T18MTD",
+            "20241012T153629_20241012T154017_T18MTE",
+            "20241111T153619_20241111T153851_T18MTD",
+            "20241201T153629_20241201T153626_T17MRU",
+            "20241201T153629_20241201T153626_T18MTD"
+          ],
+          "year": 2024
+        }
+      ],
+      "years": [
+        2019,
+        2024
+      ],
+      "periods": [
+        [
+          "2019-01-01",
+          "2020-01-01"
+        ],
+        [
+          "2024-01-01",
+          "2025-01-01"
+        ]
+      ],
+      "bands": [
+        "B4",
+        "B3",
+        "B2",
+        "B8"
+      ],
+      "clear_threshold": 0.65,
+      "min_observations": 10,
+      "rgb_min_observations": 3,
+      "scene_selection": {
+        "mode": "quarter-cloud-ranked-per-block",
+        "max_per_quarter": 8
+      },
+      "processing_grid": {
+        "bbox": [
+          -78.42535,
+          -1.24118,
+          -77.04568,
+          0.03164
+        ],
+        "columns": 3,
+        "rows": 3
+      },
+      "processing_block": {
+        "id": 7,
+        "bbox": [
+          -77.96546,
+          -1.24118,
+          -77.50556999999999,
+          -0.8169066666666666
+        ]
+      },
+      "excluded_scl": [
+        0,
+        1,
+        3,
+        8,
+        9,
+        10,
+        11
+      ],
+      "water_formula": "(B3-B8)/(B3+B8)",
+      "water_threshold": 0.2,
+      "change_threshold": 0.5,
+      "water_frequency_min": 0.5,
+      "min_connected_pixels": 100,
+      "screening_cell_m": 1000,
+      "min_cell_change_ha": 1,
+      "export_crs": "EPSG:3857",
+      "export_transform": [
+        10,
+        0,
+        0,
+        0,
+        -10,
+        0
+      ],
+      "export_bands": [
+        "y2019_R",
+        "y2019_G",
+        "y2019_B",
+        "y2019_A",
+        "y2024_R",
+        "y2024_G",
+        "y2024_B",
+        "y2024_A"
+      ],
+      "display": {
+        "min": 0,
+        "max": 0.3,
+        "gamma": 1.2
+      },
+      "method": "joint-four-band-qa-annual-median-rgb-scene-level-ndwi-frequency",
+      "scope": "province-napo-incremental-blocks-not-entire-river-basin",
+      "export_requested_at": "2026-09-30T19:59:58.554Z",
+      "product": "water-observation-counts",
+      "count_bands": [
+        "y2019_water_count",
+        "y2019_valid_count",
+        "y2024_water_count",
+        "y2024_valid_count"
+      ],
+      "count_dtype": "uint8",
+      "count_encoding": "exact-water-and-valid-observation-counts-zero-valid-is-nodata"
+    },
+    "receipt_sha256": "e2336a7e9fc7fc70e30e39573f0f0cae4ba57a4fba6adb77b439ffbdad10f24b",
+    "rgb_receipt_sha256": "8188ea646af4594c224283f6ce8ef4491864f51c8c15e7fe24557be2500ebb3c",
+    "input_chunks": [
+      {
+        "name": "napo_block7_water_counts_2019_2024-0000000000-0000000000.tif",
+        "sha256": "af68763a05ca1e8384919fb3fd3ab118ccebbe2664725dc82e3924f98dad89f6",
+        "size_bytes": 5809047
+      },
+      {
+        "name": "napo_block7_water_counts_2019_2024-0000000000-0000004096.tif",
+        "sha256": "051d9db60e7d20cb5177380590cfa4869e897269d8207d2ae416b1204bd09cd1",
+        "size_bytes": 2239560
+      },
+      {
+        "name": "napo_block7_water_counts_2019_2024-0000004096-0000000000.tif",
+        "sha256": "aab50e327a4621242260ede001d2735fb82e1c94b57bcfeb8adc0a38889ae435",
+        "size_bytes": 283019
+      }
+    ],
+    "comparable_pixels": 5329345,
+    "retained_pixels": {
+      "gain": 7592,
+      "loss": 8354
+    },
+    "builder_sha256": "2a8de0c3ac587ee8dc03f0d2477ce512409e76aca81cf32f1305d55794cf88db",
+    "built_at": "2026-10-01T14:22:50.690585+00:00"
+  }
+}

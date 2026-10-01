@@ -211,8 +211,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", nargs="+", required=True, type=Path)
     parser.add_argument("--receipt", required=True, type=Path)
-    parser.add_argument("--candidates", type=Path, help="Optional actual screening export; omitted means explicitly pending, not zero candidates")
+    parser.add_argument("--candidates", type=Path, help="Deprecated: use build_napo_river_changes.py with matching exact counts instead")
     args = parser.parse_args()
+    if args.candidates is not None:
+        parser.error("Build RGB without --candidates, then use build_napo_river_changes.py; candidate provenance requires matching count exports")
     config = json.loads((ROOT / "data/rivers/napo-config.json").read_text(encoding="utf-8"))
     try:
         result = build_bundle(args.inputs, args.receipt, args.candidates, ROOT, config)

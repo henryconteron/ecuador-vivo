@@ -25,7 +25,7 @@ import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
 import { mountNapoImagery } from "./map/imagery.js?v=20260930-5";
 import { mountNapoSpectral } from "./map/spectral.js?v=20260930-8";
 import { mountNapoSpectralMap } from "./map/spectral-map.js?v=20260930-8";
-import { mountNapoRivers } from "./map/rivers.js?v=20260930-9";
+import { mountNapoRivers } from "./map/rivers.js?v=20261001-1";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,

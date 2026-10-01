@@ -61,8 +61,19 @@ No equivale a 32 observaciones útiles en todos los píxeles.
   Se solicitó cancelar la tarea del bloque tras llegar al cuarto intento
   automático sin resultado verificado. No se declara un error concreto de
   ese intento sin su diagnóstico final. La siguiente mejora del cribado debe
-  exportar frecuencia/observaciones y calcular componentes/celdas localmente,
+  exportar conteos de agua/observaciones y calcular componentes/celdas localmente,
   evitando repetir la vectorización costosa en Earth Engine.
+
+**Resultado local verificado el 1 de octubre de 2026:** la exportación de
+conteos `7SPEIOXTE6V3SJMH5Q455C7Q`,
+[snapshot del cálculo](https://code.earthengine.google.com/249686ea4d7665fce92b92e26d7d8b46),
+produjo tres chunks GeoTIFF (8.331.626 bytes) y su recibo. Las adquisiciones,
+QA, límite y bloque coinciden con el RGB. Python obtuvo 5.329.345 píxeles
+comparables y **24 celdas candidatas sin revisar**; el estado actual de cribado
+es `ready`. Ese estado certifica integridad técnica, no validación científica
+de cada señal. No se volvió a exportar RGB ni se lanzaron los otros ocho bloques.
+No se dispone de una lectura final del cómputo/cuota de esta tarea: no se
+infieren horas EECU a partir del tamaño del archivo o de su hora de creación.
 
 La primera ejecución reducida no creó tareas porque `merge` modificó los
 índices de adquisición. Se corrigió preservando el ID original antes de
@@ -96,13 +107,26 @@ No se usa IA, superresolución, enfoque artificial ni relleno de huecos.
 5. Frecuencia en la muestra anual = observaciones candidatas de agua / observaciones válidas seleccionadas.
    Es frecuencia entre adquisiciones seleccionadas, **no** porcentaje de días inundados.
    Exigir al menos 10 observaciones válidas en ambos años.
+   Exportar cuatro bandas `uint8`: agua/válidas 2019 y agua/válidas 2024.
+   Son conteos exactos, no frecuencias redondeadas ni clasificación del RGB.
+   Cero agua con ≥10 observaciones útiles es un dato válido; cero observaciones
+   es falta de datos. El procesador rechaza un bloque sin apoyo comparable:
+   no lo convierte en una colección observada vacía.
 6. Diferencia absoluta de frecuencia ≥ 0,5 (50 puntos porcentuales), con
    frecuencia ≥ 0,5 en al menos un año.
 7. Componentes conectados de al menos 100 píxeles (aprox. 1 ha), ocho vecinos,
    por separado para aumento y disminución.
+   Calculados localmente con SciPy, uniendo chunks en su rejilla original
+   antes de etiquetar; no se remuestrea ni rellenan huecos. La diferencia de
+   fracciones usa productos cruzados enteros para evitar redondeo del umbral.
+   Un componente puede seguir truncado en el borde del bloque provincial;
+   no se ha verificado su continuidad con bloques todavía sin procesar.
 8. Agrupar en celdas Web Mercator de 1 km y retener las que acumulan ≥ 1 ha
    aproximada de señales. El marcador es el **centro de la celda**, no la
    posición exacta de una ribera ni el nombre de un río.
+   Al abrirlo se muestra el contorno de la celda y su porcentaje de superficie
+   con comparación válida. Ese porcentaje describe cobertura, no confianza
+   del clasificador; tampoco es porcentaje de días con agua.
 
 Los umbrales 0,2 / 0,5 / 10 / 100 / 1 ha son **decisiones de cribado del
 proyecto**, no valores universales ni parámetros cuya precisión se haya
@@ -126,20 +150,25 @@ explícita. Ausencia de marcador no significa ausencia de cambios/actividades.
 
 1. Ejecutar `scripts/export_napo_rivers_gee.js`. Si no devuelve exactamente
    una entidad Napo o falla la consulta de adquisiciones, no se crean tareas.
-2. Descargar **todos** los chunks GeoTIFF `napo_block7_rgb10_2019_2024*`,
-   el recibo y el GeoJSON de candidatos a `data/raw/rivers/` (ignorada por Git).
-   Conservar también una colección vacía válida: no inventar puntos.
+   `exportMode = 'water-counts'` crea solo conteos y recibo; para reproducir
+   las imágenes, elegir `'rgb'` en una ejecución separada. No repetir las
+   exportaciones que ya estén descargadas/verificadas.
+2. Descargar **todos** los chunks GeoTIFF de cada producto y su recibo a
+   `data/raw/rivers/` (ignorada por Git). Los candidatos se generan en Python,
+   no mediante vectorización en Earth Engine.
 3. Dependencias: `requirements-dev.txt` y `requirements-landcover.txt`.
 4. Ejecutar:
 
 ```powershell
 $riverChunks = Get-ChildItem -LiteralPath 'data/raw/rivers' -Filter 'napo_block7_rgb10_2019_2024*.tif'
-python scripts/build_napo_rivers.py --inputs $riverChunks.FullName --receipt data/raw/rivers/napo_block7_rgb10_2019_2024_receipt.geojson --candidates data/raw/rivers/napo_block7_water_candidates_2019_2024.geojson
+python scripts/build_napo_rivers.py --inputs $riverChunks.FullName --receipt data/raw/rivers/napo_block7_rgb10_2019_2024_receipt.geojson
+$napoCountChunks = Get-ChildItem -LiteralPath 'data/raw/rivers' -Filter 'napo_block7_water_counts_2019_2024-*.tif'
+python scripts/build_napo_river_changes.py --inputs $napoCountChunks.FullName --receipt data/raw/rivers/napo_block7_water_counts_2019_2024_receipt.geojson
 pnpm run check:rivers
 python -m unittest discover -s tests
 ```
 
-Si solo terminó RGB, omitir `--candidates`: se habilitan las imágenes reales,
+Si solo terminó RGB, no ejecutar el procesador de cambios: se habilitan las imágenes reales,
 pero `candidate_status: pending`, `candidate_count: null` y marcadores deshabilitados.
 Esto no equivale a una colección vacía observada ni a ausencia de cambios.
 
@@ -157,6 +186,15 @@ El manifiesto conserva recibo y SHA-256 por chunk, tesela y GeoJSON. La
 interfaz carga solo las teselas visibles, compara años en la misma posición
 y retira la capa si falla una tesela. Marcadores opcionales y leyenda reactiva.
 RGB byte es una visualización, **no** una API de reflectancia o valores NDWI.
+
+`screening` conserva el recibo de conteos, SHA-256 de inputs y procesador,
+apoyo comparable y método. El procesador verifica la integridad del RGB,
+escenas coincidentes, conteos coherentes, cuadrícula nativa, cobertura de
+chunks y límites antes de actualizar candidatos/manifiesto; no modifica
+las teselas existentes. Una discrepancia del área provincial ≤1 m² se tolera
+solo por redondeo de la reducción de Earth Engine, con geometría exactamente
+igual. En una interrupción durante publicación, SHA-256 impide mostrar una
+colección que no corresponda al manifiesto.
 
 ## Lo más útil después en Earth Engine
 
@@ -182,6 +220,8 @@ revisión visual fechada y campo; no convertir una señal en una acusación.
   Remote Sensing, 17(7), 1425–1432. [DOI:10.1080/01431169608948714](https://doi.org/10.1080/01431169608948714).
   Referencia de la fórmula, no validación de umbrales del atlas.
 - [Exportación, proyección y alineación](https://developers.google.com/earth-engine/guides/exporting_images).
+- [Suma de observaciones por banda en Earth Engine](https://developers.google.com/earth-engine/apidocs/ee-imagecollection-sum).
+- [Componentes y conectividad en SciPy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.label.html).
 - [Cuota de niveles no comerciales](https://developers.google.com/earth-engine/guides/noncommercial_tiers):
   Community ofrece 150 horas EECU mensuales. El nivel y saldo efectivo del
   proyecto deben comprobarse; este documento no certifica cuota restante.

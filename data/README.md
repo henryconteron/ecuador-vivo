@@ -60,3 +60,10 @@ ni clasificaciones automáticas de minería o contaminación. Métodos:
 Napo a 10 m. `pending` no publica observaciones; `ready` requiere los chunks
 reales, recibo, teselas y GeoJSON de señales candidatas verificados. No es
 la cuenca internacional ni solo Jatunyacu. [Método](../documentation/napo-rivers.md).
+
+El bloque 7 dispone de RGB real y 24 celdas de cribado sin revisar. La
+procedencia `screening` conserva el recibo de conteos, inventario de chunks,
+SHA-256, versión del procesador y apoyo comparable. Los GeoTIFF de conteos
+permanecen en `raw/rivers/`, fuera de Git; la colección pública no atribuye
+causas ni certifica migración de ríos. RGB puede estar listo mientras el
+cribado está pendiente: esos estados no son equivalentes.

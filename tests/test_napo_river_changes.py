@@ -86,6 +86,7 @@ class ChangeTests(unittest.TestCase):
             manifest_path = public / "napo-manifest.json"
             manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
             count_receipt = copy.deepcopy(receipt)
+            count_receipt["area_m2"] += 0.001  # harmless reduction rounding, same exact geometry
             count_receipt.update(product="water-observation-counts", count_bands=changes.COUNT_BANDS, count_dtype="uint8", count_encoding=changes.ENCODING)
             receipt_path = root / "receipt.geojson"
             def write_receipt():
@@ -106,8 +107,23 @@ class ChangeTests(unittest.TestCase):
             self.assertEqual(result["candidate_status"], "ready")
             previous = manifest_path.read_bytes()
             previous_cells = (public / "napo-candidates.geojson").read_bytes()
+            self.assertNotIn(b"\r\n", previous_cells)  # Git eol=lf must not change the recorded SHA on Windows.
             with self.assertRaises(ValueError):
                 changes.build_changes(paths[:1], receipt_path, root, config)
+            with self.assertRaises(ValueError):
+                changes.build_changes([paths[0], paths[0]], receipt_path, root, config)
+            count_receipt["area_m2"] += 2
+            write_receipt()
+            with self.assertRaises(ValueError):
+                changes.build_changes(paths, receipt_path, root, config)
+            count_receipt["area_m2"] -= 2
+            write_receipt()
+            with rasterio.open(paths[0], "r+") as source:
+                source.transform = from_origin(west, north, 30, 30)
+            with self.assertRaises(ValueError):
+                changes.build_changes(paths, receipt_path, root, config)
+            with rasterio.open(paths[0], "r+") as source:
+                source.transform = from_origin(west, north, 10, 10)
             count_receipt["scenes"][0]["scene_ids"][0] = "different-scene"
             write_receipt()
             with self.assertRaises(ValueError):

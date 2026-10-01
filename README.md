@@ -63,9 +63,10 @@ the Andes*. La sismicidad reciente se consulta mediante el servicio FDSN del USG
 - mapa topográfico principal y mapa de calles alternativo;
 - pipeline provincial **Napo a 10 m**, primer bloque Tena–Archidona verificado:
   392 teselas reales (aprox. 67 MB, carga solo del área visible), comparación
-  2019/2024 y cobertura parcial declarada. Marcadores exploratorios aún pendientes
-  y deshabilitados. Exportación de Earth Engine por teselas
-  y cribado exploratorio de cambios de agua. Solo se habilita con archivos
+  2019/2024 y cobertura parcial declarada. 24 celdas candidatas de cambios en
+  frecuencia de agua, sin revisar, activables por separado. Recibos con las
+  mismas adquisiciones para RGB y conteos; componentes/celdas calculados en
+  Python sin remuestrear. Solo se habilita con archivos
   descargados y verificados; el manifiesto indica si están pendientes. No es
   inventario de todos los ríos ni detector de minería/contaminación.
   [Método y siguientes pasos](documentation/napo-rivers.md);

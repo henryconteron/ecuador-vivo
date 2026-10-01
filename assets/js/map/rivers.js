@@ -49,12 +49,32 @@ export function validateRiverManifest(manifest, config) {
     urls.add(row.url);
   }
   for (const url of urls) if (!urls.has(url.replace(/\/(2019|2024)\//, (_, year) => `/${year === "2019" ? "2024" : "2019"}/`))) throw new Error("Unpaired provincial tile");
+  if (manifest.candidate_status === "ready") {
+    const s = manifest.screening, r = s?.count_receipt;
+    if (s?.schema_version !== 1 || s.method !== "exact-count-fractions-local-8-connected-100px-1km-v1" || s.connectivity !== 8 || s.sampling_m !== 10 ||
+        !hash(s.receipt_sha256) || !hash(s.builder_sha256) || s.rgb_receipt_sha256 !== manifest.receipt_sha256 || !Number.isFinite(Date.parse(s.built_at)) ||
+        !Number.isSafeInteger(s.comparable_pixels) || s.comparable_pixels < 1 || s.comparable_pixels > config.max_pixels ||
+        ![s.retained_pixels?.gain, s.retained_pixels?.loss].every(x => Number.isSafeInteger(x) && x >= 0) ||
+        s.retained_pixels.gain + s.retained_pixels.loss > s.comparable_pixels ||
+        !Array.isArray(s.input_chunks) || !s.input_chunks.length || s.input_chunks.length > 100 ||
+        new Set(s.input_chunks.map(row => row.name)).size !== s.input_chunks.length ||
+        s.input_chunks.some(row => typeof row.name !== "string" || !/^[\w.-]+\.tif$/.test(row.name) || !hash(row.sha256) || !Number.isSafeInteger(row.size_bytes) || row.size_bytes < 1) ||
+        !same(s.count_bands, ["y2019_water_count", "y2019_valid_count", "y2024_water_count", "y2024_valid_count"]) ||
+        s.count_encoding !== "exact-water-and-valid-observation-counts-zero-valid-is-nodata" || r?.product !== "water-observation-counts" ||
+        r.count_dtype !== "uint8" || !same(r.count_bands, s.count_bands) || r.count_encoding !== s.count_encoding) throw new Error("Missing exact-count screening provenance");
+    for (const key of Object.keys(config).filter(key => !["file_dimensions", "max_pixels", "attribution"].includes(key))) {
+      if (!same(r[key], receipt[key])) throw new Error(`Screening/RGB method mismatch: ${key}`);
+    }
+    for (const key of ["scenes", "processing_block", "boundary"]) if (!same(r[key], receipt[key])) throw new Error(`Screening/RGB observations mismatch: ${key}`);
+    if (!Number.isFinite(r.area_m2) || Math.abs(r.area_m2 - receipt.area_m2) > 1 || !Number.isFinite(Date.parse(r.export_requested_at))) throw new Error("Screening province/date mismatch");
+  }
   return manifest;
 }
 
 export function validateRiverCandidates(collection, manifest) {
   if (collection?.type !== "FeatureCollection" || !Array.isArray(collection.features) || collection.features.length !== manifest.candidate_count) throw new Error("Invalid screening count");
   const cells = new Set();
+  if (manifest.screening && JSON.stringify(collection.metadata) !== JSON.stringify(manifest.screening)) throw new Error("Screening metadata changed");
   for (const feature of collection.features) {
     const p = feature.properties, c = feature.geometry?.coordinates;
     if (feature.geometry?.type !== "Point" || !Array.isArray(c) || c.length !== 2 || c.some(x => !Number.isFinite(x)) || c[0] < -79 || c[0] > -76 || c[1] < -2 || c[1] > 1 ||
@@ -62,6 +82,13 @@ export function validateRiverCandidates(collection, manifest) {
         p.min_observations !== 10 || p.water_threshold !== 0.2 || p.change_threshold !== 0.5 || !Number.isSafeInteger(p.cell_id) || cells.has(p.cell_id) ||
         [p.gain_ha, p.loss_ha].some(x => !Number.isFinite(x) || x < 0 || x > 100.001) || p.gain_ha + p.loss_ha < 0.9999) throw new Error("Invalid screening cell");
     cells.add(p.cell_id);
+    if (manifest.screening) {
+      const x = 6378137 * c[0] * Math.PI / 180;
+      const y = 6378137 * Math.log(Math.tan(Math.PI / 4 + c[1] * Math.PI / 360));
+      const column = Math.floor(x / 1000), row = Math.floor(-y / 1000);
+      if (p.cell_id !== column + row * 100000 || Math.abs(x - (column + 0.5) * 1000) > 0.01 || Math.abs(y + (row + 0.5) * 1000) > 0.01 ||
+          !Number.isSafeInteger(p.comparable_pixels) || p.comparable_pixels > 10000 || p.comparable_pixels < Math.round((p.gain_ha + p.loss_ha) * 100)) throw new Error("Invalid cell centre/support");
+    }
     if (manifest.display_bounds) {
       const [southwest, northeast] = manifest.display_bounds, margin = 0.015;
       if (c[0] < southwest[1] - margin || c[0] > northeast[1] + margin || c[1] < southwest[0] - margin || c[1] > northeast[0] + margin) throw new Error("Screening candidate outside displayed block");
@@ -74,12 +101,13 @@ export function mountNapoRivers({L, map, t, language, onChange, onActivate, focu
   const find = id => document.getElementById(id);
   const toggle = find("rivers-toggle"), signals = find("rivers-signals"), time = find("rivers-time"), split = find("rivers-split");
   const toolbar = find("rivers-toolbar"), divider = find("rivers-divider");
-  let manifest, candidates, layers = [], markers, state = "loading", active = false, failed = false;
+  let manifest, candidates, layers = [], markers, cellOutline, state = "loading", active = false, failed = false, popupVisible = false;
   const params = new URLSearchParams(window.location.search);
   time.value = params.get("view") === "rivers" && ["2019", "2024"].includes(params.get("year")) ? params.get("year") : "compare";
   const initialSplit = Number(params.get("split"));
   split.value = params.has("split") && Number.isFinite(initialSplit) ? String(Math.max(0, Math.min(100, initialSplit))) : "50";
   const number = value => new Intl.NumberFormat(language(), {maximumFractionDigits: 1}).format(value);
+  const areaNumber = value => new Intl.NumberFormat(language(), {maximumFractionDigits: 2}).format(value);
   map.createPane("napo-rivers"); map.getPane("napo-rivers").style.zIndex = "310";
   map.getPane("napo-rivers").style.pointerEvents = "none";
   function syncUrl() {
@@ -99,7 +127,7 @@ export function mountNapoRivers({L, map, t, language, onChange, onActivate, focu
   }
   function render() {
     toggle.disabled = !manifest; signals.disabled = !manifest || !active || !candidates;
-    toolbar.hidden = !active; divider.hidden = !active || time.value !== "compare";
+    toolbar.hidden = !active; divider.hidden = !active || time.value !== "compare" || popupVisible;
     find("rivers-swipe").hidden = time.value !== "compare";
     find("rivers-status").textContent = t(`rivers.${state}`);
     find("rivers-scope").textContent = `${manifest ? `${t("rivers.block")} ${manifest.receipt.processing_block.id} / 0–8 · ` : ""}${t(map.getZoom() > 14 ? "rivers.zoomLimit" : "rivers.scope")}`;
@@ -112,20 +140,49 @@ export function mountNapoRivers({L, map, t, language, onChange, onActivate, focu
     layers.forEach(layer => map.removeLayer(layer)); layers = [];
     if (markers) map.removeLayer(markers);
     markers = undefined;
+    popupVisible = false;
+    if (cellOutline) map.removeLayer(cellOutline); cellOutline = undefined;
   }
   function renderMarkers() {
+    if (cellOutline) map.removeLayer(cellOutline); cellOutline = undefined;
     if (markers) map.removeLayer(markers);
     markers = undefined;
-    if (!active || !signals.checked || !candidates) return;
+    if (!active || !signals.checked || !candidates) { render(); onChange(); return; }
     markers = L.geoJSON(candidates, {pointToLayer: (_, latlng) => L.circleMarker(latlng, {radius: 7, color: "#ffb15f", fillColor: "#171e20", fillOpacity: 0.9, weight: 2}),
       onEachFeature: (feature, layer) => {
         const p = feature.properties, card = document.createElement("div");
-        const title = document.createElement("strong"), copy = document.createElement("p"), counts = document.createElement("p"), caution = document.createElement("p"), link = document.createElement("a");
+        const title = document.createElement("strong"), copy = document.createElement("p"), counts = document.createElement("p"), support = document.createElement("p"), caution = document.createElement("p"), link = document.createElement("a"), zoom = document.createElement("button");
         title.textContent = t("rivers.candidateTitle"); copy.textContent = t("rivers.candidateCopy");
-        counts.textContent = `2019 ↔ 2024 · ${t("rivers.gain")}: ${number(p.gain_ha)} ha · ${t("rivers.loss")}: ${number(p.loss_ha)} ha`;
+        counts.textContent = `2019 ↔ 2024 · ${t("rivers.gain")}: ${areaNumber(p.gain_ha)} ha · ${t("rivers.loss")}: ${areaNumber(p.loss_ha)} ha`;
         caution.textContent = t("rivers.caution"); link.textContent = t("rivers.method");
+        support.textContent = `${t("rivers.support")}: ${number(p.comparable_pixels / 100)}% · ${t("rivers.minimumSupport")}`;
+        zoom.type = "button"; zoom.textContent = t("rivers.inspectCell");
+        const centre = L.CRS.EPSG3857.project(layer.getLatLng());
+        const bounds = L.latLngBounds(L.CRS.EPSG3857.unproject(L.point(centre.x - 500, centre.y - 500)), L.CRS.EPSG3857.unproject(L.point(centre.x + 500, centre.y + 500)));
+        zoom.addEventListener("click", () => {
+          layer.closePopup();
+          map.once("moveend", () => { if (active && signals.checked) layer.openPopup(); });
+          map.fitBounds(bounds, {padding: [45, 45], maxZoom: 14});
+        });
         link.href = "https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-rivers.md"; link.target = "_blank"; link.rel = "noopener noreferrer";
-        card.append(title, copy, counts, caution, link); layer.bindPopup(card);
+        card.append(title, copy, counts, support, caution, zoom, link);
+        layer.bindPopup(card, {maxHeight: 260, autoPanPaddingTopLeft: [16, 100], autoPanPaddingBottomRight: [16, 65]});
+        layer.on("add", () => {
+          const element = layer.getElement();
+          if (!element) return;
+          element.setAttribute("role", "button"); element.setAttribute("tabindex", "0");
+          element.setAttribute("aria-label", `${t("rivers.candidateTitle")} · ${p.cell_id}`);
+          element.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); event.stopPropagation(); layer.openPopup(); }
+            if (event.key === "Escape") { event.stopPropagation(); layer.closePopup(); }
+          });
+        });
+        layer.on("popupopen", () => {
+          popupVisible = true; render();
+          if (cellOutline) map.removeLayer(cellOutline);
+          cellOutline = L.rectangle(bounds, {color: "#ffb15f", weight: 1, dashArray: "5 5", fill: false, interactive: false}).addTo(map);
+        });
+        layer.on("popupclose", () => { if (cellOutline) map.removeLayer(cellOutline); cellOutline = undefined; popupVisible = false; render(); });
       }}).addTo(map);
     render(); onChange();
   }

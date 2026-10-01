@@ -7,6 +7,7 @@ import argparse
 from contextlib import ExitStack
 from datetime import datetime, timezone
 import json
+import math
 from pathlib import Path
 import tempfile
 
@@ -67,11 +68,14 @@ def aggregate_cells(gain, loss, valid, transform):
         if sum(counts.values()) < 100:
             continue
         lon, lat = project("EPSG:3857", "EPSG:4326", [(x + 0.5) * 1000], [-(y + 0.5) * 1000])
+        col, row = round((x * 1000 - transform.c) / 10), round((transform.f + y * 1000) / 10)
+        support = int(valid[max(0, row):min(valid.shape[0], row + 100), max(0, col):min(valid.shape[1], col + 100)].sum())
         features.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": [lon[0], lat[0]]},
                          "properties": {"cell_id": x + y * 100000, "kind": "water-frequency-change-candidate", "status": "unreviewed",
                             "years": [2019, 2024], "sampling_m": 10, "screening_cell_m": 1000, "min_observations": 10,
                             "water_threshold": 0.2, "change_threshold": 0.5,
                             "gain_ha": counts["gain_pixels"] / 100, "loss_ha": counts["loss_pixels"] / 100,
+                            "comparable_pixels": support,
                             "warning": "Cell centroid, not a river location or cause. Review clouds, shadows, seasons and water level."}})
     return validate_candidates({"type": "FeatureCollection", "features": features})
 
@@ -106,9 +110,13 @@ def build_changes(inputs, receipt_path, output_root, config):
     if manifest.get("status") != "ready" or manifest.get("config") != config:
         raise ValueError("Matching verified RGB bundle required")
     validate_receipt(manifest["receipt"], config)
-    for key in ["scenes", "processing_block", "boundary", "area_m2"]:
+    for key in ["scenes", "processing_block", "boundary"]:
         if receipt[key] != manifest["receipt"][key]:
             raise ValueError(f"Count/RGB observations differ: {key}")
+    # GEE area reductions may differ in the last floating-point digits. Keep
+    # exact geometry equality above; allow at most 1 m², not a different border.
+    if not math.isclose(receipt["area_m2"], manifest["receipt"]["area_m2"], rel_tol=0, abs_tol=1):
+        raise ValueError("Count/RGB provincial area differs")
     if not manifest.get("tiles"):
         raise ValueError("Missing RGB tile inventory")
     for tile in manifest["tiles"]:
@@ -173,11 +181,11 @@ def build_changes(inputs, receipt_path, output_root, config):
     with tempfile.TemporaryDirectory(prefix="napo-screening-", dir=public) as folder:
         stage = Path(folder)
         candidate_path = stage / "candidates.geojson"
-        candidate_path.write_text(json.dumps(collection, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        candidate_path.write_text(json.dumps(collection, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
         manifest.update(candidate_status="ready", candidate_count=len(collection["features"]),
                         candidates_sha256=digest(candidate_path), screening=metadata)
         staged_manifest = stage / "manifest.json"
-        staged_manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        staged_manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
         candidate_path.replace(public / "napo-candidates.geojson")
         staged_manifest.replace(manifest_path)
     return manifest
