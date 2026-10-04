@@ -1,0 +1,33 @@
+{
+  "source": "Instituto de Investigación Geológico y Energético (IIGE)",
+  "retrieved": "2026-10-04T21:08:17.858258+00:00",
+  "terms": "https://geoportal.geoenergia.gob.ec/",
+  "bbox": [
+    -78.1,
+    -1.2,
+    -77.6,
+    -0.7
+  ],
+  "crs": "OGC:CRS84",
+  "selection": "Whole polygons intersecting the Tena–Archidona study window; not clipped, not a province boundary.",
+  "map_scale": "Geologia General: not established from service metadata. Sheet index: 1:100000 sheets, not geological units.",
+  "status": "source-snapshot-not-independently-validated",
+  "files": [
+    {
+      "id": "tena-units",
+      "path": "data/geology/tena-units.geojson",
+      "count": 56,
+      "query": "https://capas.geoenergia.gob.ec/arcgis/rest/services/Geologia_General/MapServer/0/query?where=1%3D1&geometry=-78.1%2C-1.2%2C-77.6%2C-0.7&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson",
+      "sha256": "0492f19851b6c75ed2559cd2f94a7fe5466d3c226c0e40df9de74f6b9cc8c55e",
+      "bytes": 934509
+    },
+    {
+      "id": "tena-sheets",
+      "path": "data/geology/tena-sheets.geojson",
+      "count": 4,
+      "query": "https://capas.geoenergia.gob.ec/arcgis/rest/services/Cartas_Geologicas_100K/MapServer/0/query?where=1%3D1&geometry=-78.1%2C-1.2%2C-77.6%2C-0.7&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=%2A&outSR=4326&f=geojson",
+      "sha256": "4bd1d71dd17afef86ff866f4dc657ccf56513ca2ea6663556a6d85b7a5dfb02e",
+      "bytes": 3682
+    }
+  ]
+}

@@ -41,7 +41,7 @@ export function screenClip(imageRect, mapRect, position, side) {
   return side === "earlier" ? `inset(0 ${100 - cut}% 0 0)` : `inset(0 0 0 ${cut}%)`;
 }
 
-export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate = () => {}, focus}) {
+export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate = () => {}, canActivate = () => true, focus}) {
   const find = id => document.getElementById(id);
   const toggle = find("spectral-map-toggle"), controls = find("spectral-map-settings"), toolbar = find("spectral-map-toolbar");
   const modeSelect = find("spectral-map-mode"), quickSelect = find("spectral-map-quick-mode");
@@ -155,7 +155,7 @@ export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate 
     if (window.matchMedia("(max-width: 64rem)").matches) map.getContainer().scrollIntoView({block: "start"});
   }
   function activate({mode = view.mode, river = view.river} = {}) {
-    if (!manifest) return false;
+    if (!manifest || !canActivate()) return false;
     view.mode = SPECTRAL_MODES.includes(mode) ? mode : "rgb";
     if (view.mode === "change") view.compare = false;
     onActivate(); toggle.checked = true; goToArea(river); syncUrl(); void draw();
@@ -185,7 +185,7 @@ export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate 
   map.on("zoomend", () => { if (clipFrame) cancelAnimationFrame(clipFrame); clipFrame = undefined; clip(); });
   map.on("moveend zoomend", render);
   window.addEventListener("popstate", () => {
-    view = normalizeSpectralView(new URLSearchParams(window.location.search)); toggle.checked = Boolean(manifest && view.enabled); void draw();
+    view = normalizeSpectralView(new URLSearchParams(window.location.search)); toggle.checked = Boolean(manifest && view.enabled && canActivate()); void draw();
   });
   async function load() {
     try {
@@ -196,7 +196,7 @@ export function mountNapoSpectralMap({L, map, t, language, onChange, onActivate 
       config = primaryConfig; settings = extraConfig; manifest = validateSpectralManifest(primary, config, grid);
       if (manifest) extended = validateSpectralExplorer(extra, settings, manifest);
       state = manifest ? "ready" : "pending";
-    } catch { manifest = undefined; state = "error"; }
+    } catch (error) { console.warn("Spectral explorer bundle could not be validated", error); manifest = undefined; state = "error"; }
     render(); onChange();
     if (manifest && view.enabled) activate();
   }

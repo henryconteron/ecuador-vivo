@@ -1,5 +1,14 @@
 # Registro de cambios
 
+## 2026-10-04 — Sistemas independientes, geología y cuaderno de rocas
+
+- Aislamiento real de capas por sistema y combinación explícita; preferencias de capas conservadas al volver al apartado.
+- Geología IIGE regional y selección Tena–Archidona con integridad, procedencia, descarga y límites de escala visibles.
+- Comparación privada de GeoJSON, validación básica y propuestas públicas separadas para revisión.
+- Lección bilingüe de rocas recuperada del feed, ejercicios y ficha descargable.
+- Dos estudios abiertos de Napo incorporados con DOI y licencia documentada; filtro de acceso y descubrimiento bibliográfico manual sin publicación automática.
+- Símbolo vectorial Ecuador Vivo compartido por las páginas del portal.
+
 ## Sin publicar — 2026-10-01
 
 - Muestra fija depurada 31/32 auditada y ejecutada en GEE: RGB y conteos

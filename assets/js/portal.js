@@ -1,5 +1,13 @@
 // Shared language/navigation; independent of live data or external services.
 const supported = new Set(["es", "en"]);
+// A symbolic Andes/river mark, not a scientific diagram or a territorial boundary.
+document.querySelectorAll(".portal-mark,.brand-mark").forEach(mark => {
+  const image = document.createElement("img"); image.src = "assets/images/ecuador-vivo-mark.svg"; image.alt = ""; image.width = 40; image.height = 40;
+  mark.replaceChildren(image); mark.setAttribute("aria-hidden", "true");
+});
+if (!document.querySelector('link[rel="icon"]')) {
+  const icon = document.createElement("link"); icon.rel = "icon"; icon.type = "image/svg+xml"; icon.href = "assets/images/ecuador-vivo-mark.svg"; document.head.append(icon);
+}
 const storedLanguage = () => { try { return localStorage.getItem("atlas-language"); } catch { return null; } };
 let language = new URLSearchParams(location.search).get("lang") || storedLanguage() || "es";
 if (!supported.has(language)) language = "es";

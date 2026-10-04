@@ -124,3 +124,7 @@ por la licencia del código salvo indicación posterior.
 
 Los videos, voces, subtítulos y piezas editoriales conservados en la integración no adquieren automáticamente la licencia MIT del software ni una licencia abierta de datos. El video nacional utiliza una toma de voz sintética cuyo registro exige uso no comercial y atribución `Voz: elevenlabs.io`. Sus condiciones y las de los datos USGS se identifican en `data/cases/memoria-sismica-1900-2025/case.json`. Solicitar autorización específica para reutilizaciones no amparadas por esas condiciones.
 
+# Selección geológica IIGE · 2026-10-04
+
+Los datos de `data/geology/` proceden del Instituto de Investigación Geológico y Energético, descargados el 4 de octubre de 2026. Están sujetos a las [condiciones del IIGE](https://geoportal.geoenergia.gob.ec/), no a la licencia MIT. Conservar autoría, fecha y límites de la selección. No implica respaldo oficial. Consultas y huellas en `data/geology/manifest.json`; detalles en `documentation/geologia-y-aportes.md`.
+

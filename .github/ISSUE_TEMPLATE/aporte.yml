@@ -1,0 +1,40 @@
+name: Proponer datos o un estudio / Propose data or a study
+description: Propuesta pública para revisión editorial, no publicación automática.
+title: "[Aporte] "
+body:
+  - type: markdown
+    attributes:
+      value: "Esta propuesta será pública en GitHub. No incluyas datos personales, coordenadas sensibles ni archivos sin permiso. La revisión no equivale a validación científica. / This proposal is public. Do not include personal data, sensitive locations or files without permission. Editorial review is not scientific validation."
+  - type: input
+    id: source
+    attributes:
+      label: Fuente original o DOI / Original source or DOI
+      description: Enlace estable al estudio o repositorio; no a una copia sin autorización.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Qué aporta a Ecuador / Relevance to Ecuador
+      description: Tema, lugar, fechas, autoría y relación con las capas o lecciones del atlas.
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: Acceso y licencia / Access and license
+      description: Acceso abierto no significa permiso ilimitado. Enlaza la licencia y la versión disponible.
+    validations:
+      required: true
+  - type: textarea
+    id: spatial
+    attributes:
+      label: Datos espaciales / Spatial data
+      description: Si corresponde, formato, CRS, escala o resolución, incertidumbre y método de georreferenciación. No ocultar limitaciones.
+  - type: textarea
+    id: limits
+    attributes:
+      label: Límites y comprobaciones / Limitations and checks
+      description: Qué se observó, qué se interpreta y qué todavía no se ha verificado.
+    validations:
+      required: true

@@ -4,6 +4,99 @@
   "scope": "Studies about Ecuador already connected to the site's content. Not an exhaustive review or automatic global feed.",
   "records": [
     {
+      "id": "huatatoca-2025-shunku-rumi",
+      "title": "Unveiling the Igneous Geodiversity of the Shunku Rumi Geosite for Geoeducation and Geotourism Actions in the Napo Sumaco UNESCO Global Geopark (Ecuador)",
+      "authors": "Huatatoca-Mamallacta, S.; Simbaña-Tasiguano, M.; Granja-Guato, D.; Espín, R.; De Lima, L.; Cisneros, P.; Salgado-Revelo, A.; Almeida, E.; Tana, A.",
+      "year": 2025,
+      "type": {
+        "es": "Artículo científico · acceso abierto",
+        "en": "Research article · open access"
+      },
+      "topics": [
+        "earth"
+      ],
+      "territories": [
+        "ecuador",
+        "napo"
+      ],
+      "scope": {
+        "es": "Geositio Shunku Rumi, batolito de Abitagua, Napo.",
+        "en": "Shunku Rumi geosite, Abitagua batholith, Napo."
+      },
+      "summary": {
+        "es": "Estudio de rocas ígneas que combina observación de campo, petrografía y geoquímica, con aplicaciones educativas. Sirve como lectura local para contrastar cómo una descripción se convierte en una interpretación.",
+        "en": "An igneous-rock study combining field observations, petrography and geochemistry with educational applications. Local reading on how description supports interpretation."
+      },
+      "limits": {
+        "es": "Estudio de un geositio, no mapa completo de Napo. No se han digitalizado sus figuras ni convertido sus interpretaciones en límites cartográficos del atlas.",
+        "en": "A geosite study, not a complete map of Napo. Its figures have not been digitized or its interpretations converted into atlas boundaries."
+      },
+      "doi": "10.3390/geosciences15110419",
+      "url": "https://www.mdpi.com/2076-3263/15/11/419",
+      "venue": "Geosciences 15(11), 419",
+      "citation": "Huatatoca-Mamallacta et al. (2025). Unveiling the Igneous Geodiversity of the Shunku Rumi Geosite for Geoeducation and Geotourism Actions in the Napo Sumaco UNESCO Global Geopark (Ecuador). Geosciences, 15(11), 419. https://doi.org/10.3390/geosciences15110419",
+      "access": "open",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "checked": "2026-10-04",
+      "status": "source-linked-editorial-summary",
+      "verification": {
+        "es": "DOI, autoría y licencia CC BY 4.0 contrastados con el registro Crossref de la editorial; resumen de pertinencia, no revisión científica independiente. El acceso al texto puede depender de la disponibilidad de la editorial.",
+        "en": "DOI, authors and CC BY 4.0 license checked against the publisher's Crossref record; relevance summary, not independent scientific review. Full-text access depends on publisher availability."
+      },
+      "related": [
+        "iige-geology"
+      ],
+      "reading": "rocks.html#napo"
+    },
+    {
+      "id": "vera-2026-jatunyacu-rocks",
+      "title": "Petrographic and Geochemical Evidence from the Jatunyacu River Outcrop, Central Abitagua Batholith, Ecuadorian Amazon: Preliminary Constraints on Magmatic Evolution and Arc Affinity",
+      "authors": "Vera-Jaramillo, C.; Guzmán, O.; Vera, D.; Correa-Jaramillo, C.; Coral, C.; Gonzalez, R.; Campos, C.; Soto Luzuriaga, J. E.",
+      "year": 2026,
+      "type": {
+        "es": "Artículo científico · acceso abierto",
+        "en": "Research article · open access"
+      },
+      "topics": [
+        "earth"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena"
+      ],
+      "scope": {
+        "es": "Afloramiento del río Jatunyacu, sector central del batolito de Abitagua.",
+        "en": "Jatunyacu River outcrop, central Abitagua batholith."
+      },
+      "summary": {
+        "es": "Investigación petrográfica y geoquímica sobre un afloramiento local. Conecta las observaciones de rocas con análisis de laboratorio y discute restricciones preliminares sobre su evolución magmática.",
+        "en": "Petrographic and geochemical research on a local outcrop. Connects rock observations with laboratory analysis and discusses preliminary constraints on magmatic evolution."
+      },
+      "limits": {
+        "es": "La afinidad magmática es una interpretación del estudio. No explica por sí sola cambios actuales del río ni impactos de minería. No extrapolar la muestra a toda la cuenca.",
+        "en": "Magmatic affinity is the study's interpretation. It does not by itself explain present river changes or mining impacts. Do not extrapolate the sample to the whole basin."
+      },
+      "doi": "10.3390/geosciences16060215",
+      "url": "https://www.mdpi.com/2076-3263/16/6/215",
+      "venue": "Geosciences 16(6), 215",
+      "citation": "Vera-Jaramillo et al. (2026). Petrographic and Geochemical Evidence from the Jatunyacu River Outcrop, Central Abitagua Batholith, Ecuadorian Amazon: Preliminary Constraints on Magmatic Evolution and Arc Affinity. Geosciences, 16(6), 215. https://doi.org/10.3390/geosciences16060215",
+      "access": "open",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "checked": "2026-10-04",
+      "status": "source-linked-editorial-summary",
+      "verification": {
+        "es": "DOI, autoría y licencia CC BY 4.0 contrastados con el registro Crossref de la editorial; resumen de pertinencia, no revisión científica independiente. El acceso al texto puede depender de la disponibilidad de la editorial.",
+        "en": "DOI, authors and CC BY 4.0 license checked against the publisher's Crossref record; relevance summary, not independent scientific review. Full-text access depends on publisher availability."
+      },
+      "related": [
+        "iige-geology"
+      ],
+      "reading": "rocks.html#napo"
+    },
+    {
       "id": "maap-230",
       "title": "MAAP #230: Mining in the Ecuadorian Amazon, Central Sector — Napo Province",
       "authors": "Fundación EcoCiencia / Amazon Conservation · MAAP",

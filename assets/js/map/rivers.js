@@ -106,7 +106,7 @@ export function validateRiverCandidates(collection, manifest) {
   return collection;
 }
 
-export function mountNapoRivers({L, map, t, language, onChange, onActivate, focus}) {
+export function mountNapoRivers({L, map, t, language, onChange, onActivate, canActivate = () => true, focus}) {
   const find = id => document.getElementById(id);
   const observations = mountRiverObservations({t, language});
   const toggle = find("rivers-toggle"), signals = find("rivers-signals"), time = find("rivers-time"), split = find("rivers-split");
@@ -242,7 +242,7 @@ export function mountNapoRivers({L, map, t, language, onChange, onActivate, focu
     layers.forEach(layer => layer.addTo(map)); state = "visible"; renderMarkers(); render(); onChange();
   }
   function setEnabled(enabled, fit = false) {
-    active = Boolean(enabled && manifest); toggle.checked = active;
+    active = Boolean(enabled && manifest && canActivate()); toggle.checked = active;
     if (!active) selectedCell = null;
     if (active) { onActivate(); focus(); if (fit) map.fitBounds(manifest.display_bounds, {padding: [20, 20]}); }
     state = manifest ? active ? "visible" : "ready" : state;

@@ -54,7 +54,9 @@ import {
   STATION_SOURCE,
   stationMarkerOptions,
 } from "./map/stations.js";
-import { ATLAS_SYSTEMS, contentBelongsToSystem, normalizeAtlasSystem } from "./map/systems.js";
+import { ATLAS_SYSTEMS, contentBelongsToSelection, createSystemScope, normalizeAtlasSystem } from "./map/systems.js";
+import {mountGeology} from "./map/geology.js";
+import {mountLocalData} from "./map/local-data.js";
 import { normalizeThermalDate, thermalDateRange, THERMAL_SOURCE, thermalWmsOptions } from "./map/thermal.js";
 import { catalogKey, createTextTools, normalize } from "./map/utils.js";
 
@@ -344,7 +346,10 @@ function initializeAtlas() {
   let selectedFeature = null;
   let selectedPoint = null;
   let placeMode = false;
-  let activeSystem = normalizeAtlasSystem(urlParameters.get("system"));
+  let activeSystem = normalizeAtlasSystem(urlParameters.get("system") || (["spectral", "rivers"].includes(urlParameters.get("view")) ? "water" : "earth"));
+  let combinedSystems = (urlParameters.get("combine") || "").split(",").filter(value => ATLAS_SYSTEMS.includes(value));
+  let applySystemScope = () => {};
+  const systemAllowed = owners => contentBelongsToSelection(owners, activeSystem, combinedSystems);
   let basinState = "off";
   let basinTileErrors = 0;
   let basinLookupState = "idle";
@@ -368,6 +373,8 @@ function initializeAtlas() {
   let napoSpectral;
   let napoSpectralMap;
   let napoRivers;
+  let geology;
+  let localData;
   let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
@@ -656,7 +663,11 @@ function initializeAtlas() {
       if (count) count.textContent = t(isActive ? "systems.active" : count.dataset.systemCountKey);
     });
     elements.systemContent.forEach((section) => {
-      section.hidden = !contentBelongsToSystem(section.dataset.systemContent, activeSystem);
+      section.hidden = !systemAllowed(section.dataset.systemContent);
+    });
+    document.querySelectorAll("[data-combine-system]").forEach(control => {
+      control.checked = combinedSystems.includes(control.value);
+      control.closest("label").hidden = control.value === activeSystem;
     });
     elements.systemEyebrow.textContent = t(`systems.${activeSystem}Eyebrow`);
     elements.systemIntroTitle.textContent = t(`systems.${activeSystem}Title`);
@@ -669,6 +680,8 @@ function initializeAtlas() {
       const nextUrl = new URL(window.location.href);
       if (activeSystem === "earth") nextUrl.searchParams.delete("system");
       else nextUrl.searchParams.set("system", activeSystem);
+      if (combinedSystems.length) nextUrl.searchParams.set("combine", combinedSystems.join(","));
+      else nextUrl.searchParams.delete("combine");
       window.history.pushState({ system: activeSystem }, "", nextUrl);
     }
   }
@@ -677,6 +690,8 @@ function initializeAtlas() {
     const nextSystem = normalizeAtlasSystem(system);
     if (nextSystem === activeSystem && options?.updateUrl) return;
     activeSystem = nextSystem;
+    combinedSystems = options?.updateUrl ? [] : (new URLSearchParams(location.search).get("combine") || "").split(",").filter(value => ATLAS_SYSTEMS.includes(value));
+    applySystemScope(activeSystem, combinedSystems);
     renderSystemView(options);
   }
 
@@ -1033,6 +1048,8 @@ function initializeAtlas() {
       "spectral-map": napoSpectralMap?.isActive() ?? false,
       rivers: napoRivers?.isActive() ?? false,
       earthquakes: map.hasLayer(earthquakeLayer),
+      geology: geology?.isActive() ?? false,
+      local: localData?.isActive() ?? false,
     };
     let visibleSections = 0;
     elements.legendSections.forEach((section) => {
@@ -1300,6 +1317,7 @@ function initializeAtlas() {
     );
     if (earthquakeCatalog.length > 0) sources.add("USGS");
     if (map.hasLayer(hillshadeLayer)) sources.add("Esri World Hillshade");
+    if (geology?.isActive()) sources.add("IIGE");
     if (map.hasLayer(basinLayer)) sources.add("INAMHI / MAATE");
     if (map.hasLayer(stationLayer)) sources.add("INAMHI Red Hidrometeorológica");
     if (map.hasLayer(thermalLayer)) sources.add("NASA FIRMS / GIBS");
@@ -1368,7 +1386,7 @@ function initializeAtlas() {
 
     if (evidenceResult.status === "fulfilled") {
       evidenceCatalog = evidenceResult.value;
-      elements.evidenceToggle.checked = evidenceCatalog.length > 0 && !["water", "sky"].includes(guidedTour);
+      elements.evidenceToggle.checked = elements.evidenceToggle.checked && evidenceCatalog.length > 0 && systemAllowed("earth");
       renderEvidence();
     } else {
       console.error(evidenceResult.reason);
@@ -1863,13 +1881,25 @@ function initializeAtlas() {
     focus: () => setRegionFocus("napo", {updateUrl: true})});
   napoImagery = mountNapoImagery({t, language: () => i18n?.language ?? "es"});
   napoSpectralMap = mountNapoSpectralMap({L, map, t, language: () => i18n?.language ?? "es",
+    canActivate: () => systemAllowed("life water"),
     onActivate: () => napoRivers?.setEnabled(false),
     onChange: () => { updateLegendVisibility(); updateSourceCount(); napoSpectral?.render(); },
     focus: () => setRegionFocus("napo", {fit: false, updateUrl: regionFocus !== "napo"})});
   napoSpectral = mountNapoSpectral({t, language: () => i18n?.language ?? "es", onExploreMap: options => napoSpectralMap.activate(options), canExploreMap: () => napoSpectralMap.isReady()});
   napoRivers = mountNapoRivers({L, map, t, language: () => i18n?.language ?? "es",
+    canActivate: () => systemAllowed("water life"),
     onChange: () => { updateLegendVisibility(); updateSourceCount(); }, onActivate: () => napoSpectralMap.deactivate(),
     focus: () => setRegionFocus("napo", {fit: false, updateUrl: regionFocus !== "napo"})});
+  geology = mountGeology({L, map, language: () => i18n.language, onChange: () => { updateLegendVisibility(); updateSourceCount(); }});
+  localData = mountLocalData({L, map, language: () => i18n.language, owner: () => activeSystem, allowed: systemAllowed,
+    onChange: () => { renderSystemView(); updateLegendVisibility(); }});
+  applySystemScope = createSystemScope([...document.querySelectorAll('.layer-switch input[type="checkbox"]')]);
+  document.querySelectorAll("[data-combine-system]").forEach(control => control.addEventListener("change", () => {
+    combinedSystems = [...document.querySelectorAll("[data-combine-system]:checked")].map(input => input.value).filter(value => value !== activeSystem);
+    applySystemScope(activeSystem, combinedSystems, false);
+    renderSystemView({updateUrl: true});
+  }));
+  applySystemScope(activeSystem, combinedSystems);
   renderSystemView();
   loadAtlasData();
   loadEarthquakeData();

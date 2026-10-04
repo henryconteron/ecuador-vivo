@@ -4,6 +4,79 @@
   "note": "Catalog metadata reviewed against repository manifests and source documentation; not field validation.",
   "records": [
     {
+      "id": "iige-geology",
+      "title": {
+        "es": "Geología IIGE · región y Tena–Archidona",
+        "en": "IIGE geology · regional and Tena–Archidona"
+      },
+      "publisher": "Instituto de Investigación Geológico y Energético",
+      "format": "WMS · GeoJSON",
+      "access": "derivative",
+      "topics": [
+        "earth"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "period": {
+        "es": "Consulta y descarga: 2026-10-04; edades y versiones cartográficas heterogéneas.",
+        "en": "Consulted/downloaded: 2026-10-04; heterogeneous geological ages and map editions."
+      },
+      "resolution": {
+        "es": "Unidades: escala no establecida por los metadatos consultados. Índice de hojas: 1:100 000.",
+        "en": "Units: scale not established by consulted metadata. Sheet index: 1:100,000."
+      },
+      "scope": {
+        "es": "Servicio regional y selección espacial de 56 polígonos y 4 hojas alrededor de Tena–Archidona. No es un recorte provincial.",
+        "en": "Regional service and spatial selection of 56 polygons and 4 sheets around Tena–Archidona. Not a provincial clip."
+      },
+      "summary": {
+        "es": "Unidades geológicas y hojas de referencia, vinculadas a sus atributos originales y descargas verificables. La capa regional es externa; la selección local se conserva con huellas SHA-256.",
+        "en": "Geological units and reference sheets with original attributes and verifiable downloads. Regional layer is external; local selection is preserved with SHA-256 hashes."
+      },
+      "limits": {
+        "es": "Polígonos completos intersectados, no recortados. Colores locales no oficiales. La hoja Tena figura En revisión; no sirve para decisiones prediales ni certifica geología de un punto.",
+        "en": "Whole intersecting polygons, not clipped. Local colors are not official. Tena sheet is marked Under review; unsuitable for parcel decisions or certifying point geology."
+      },
+      "license": {
+        "es": "Condiciones de uso del IIGE; atribuir institución y fecha, sin aparentar respaldo oficial. No se relicencia como MIT.",
+        "en": "IIGE terms; credit institution and date, without implying official endorsement. Not relicensed as MIT."
+      },
+      "source_url": "https://geoportal.geoenergia.gob.ec/",
+      "viewer": "explore.html?system=earth&focus=napo",
+      "method": "documentation/geologia-y-aportes.md",
+      "files": [
+        {
+          "href": "data/geology/tena-units.geojson",
+          "label": {
+            "es": "Unidades GeoJSON",
+            "en": "Units GeoJSON"
+          }
+        },
+        {
+          "href": "data/geology/tena-sheets.geojson",
+          "label": {
+            "es": "Hojas GeoJSON",
+            "en": "Sheets GeoJSON"
+          }
+        },
+        {
+          "href": "data/geology/manifest.json",
+          "label": {
+            "es": "Procedencia y huellas",
+            "en": "Provenance and hashes"
+          }
+        }
+      ],
+      "related": [
+        "huatatoca-2025-shunku-rumi",
+        "vera-2026-jatunyacu-rocks"
+      ]
+    },
+    {
       "id": "memoria-sismica",
       "title": {
         "es": "Memoria sísmica · archivo del video",

@@ -75,6 +75,7 @@ async function bootCatalog() {
     detail.append(node("p",library ? `${value(record.type)} · ${record.year}` : `${record.publisher} · ${record.format}`,"eyebrow"));
     const heading = node("h2",value(record.title)); heading.id = "catalog-detail-title"; detail.setAttribute("aria-labelledby",heading.id); detail.append(heading,node("p",value(record.summary)));
     if (library) {
+      detail.append(node("p", record.access === "open" ? say("Acceso abierto documentado · ", "Documented open access · ") + record.license : say("Acceso: consultar la fuente; esta ficha aún no documenta una licencia abierta.", "Access: consult the source; this record does not yet document an open license."), "catalog-warning"));
       detail.append(fieldList([[say("Autoría","Authors"),record.authors],[say("Publicación","Publication"),record.venue],[say("Territorio","Territory"),record.scope]]));
       detail.append(link(record.url,say("Leer la fuente original ↗","Read the original source ↗"),"button"));
       detail.append(node("h3",say("Qué respalda esta ficha","What this record supports")),node("p",value(record.verification),"catalog-warning"));

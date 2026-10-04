@@ -10,6 +10,15 @@
 - [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas.
 - [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
 - [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): historias y ejercicios.
+- [Cuaderno de rocas](https://henryconteron.github.io/ecuador-vivo/rocks.html): observación, ejercicios y ficha descargable, en español e inglés.
+
+### Geología y aportes — octubre de 2026
+
+Cada sistema del visor desactiva las capas ajenas. «Combinar con otros sistemas» permite habilitar otros controles sin encender sus capas automáticamente. La leyenda sigue únicamente las capas activas.
+
+La integración IIGE incluye un servicio regional externo y una selección reproducible de 56 polígonos y cuatro hojas que intersectan la ventana Tena–Archidona. La escala de las unidades no está documentada en el servicio; el índice de hojas es 1:100 000 y Tena figura «En revisión». Consultar [fuentes, método, límites y condiciones](documentation/geologia-y-aportes.md).
+
+Se pueden comparar archivos GeoJSON WGS84 localmente (hasta 10 MB), sin publicarlos. No hay todavía georreferenciador de imágenes, reproyección ni publicación automática de aportes. Las propuestas de datos y estudios pasan por revisión en GitHub. El descubrimiento bibliográfico genera candidatos privados o un artefacto de revisión manual; nunca agrega estudios automáticamente a la biblioteca pública.
 
 ### Organización y preservación
 

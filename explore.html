@@ -122,6 +122,13 @@
           <details class="legend" open>
             <summary data-i18n="legend.title">Leyenda</summary>
             <p id="legend-empty" class="legend-empty" data-i18n="legend.empty" hidden>No hay capas temáticas activas.</p>
+            <section id="geology-legend" data-legend-layer="geology" hidden>
+              <strong data-es="Geología · IIGE" data-en="Geology · IIGE">Geología · IIGE</strong>
+              <p id="geology-legend-service" hidden><a href="https://capas.geoenergia.gob.ec/arcgis/rest/services/Geologia_General/MapServer/legend" target="_blank" rel="noopener noreferrer" data-es="Leyenda oficial del servicio ↗" data-en="Official service legend ↗">Leyenda oficial del servicio ↗</a></p>
+              <div id="geology-legend-units" class="geology-legend-units" hidden></div>
+              <p id="geology-legend-sheets" hidden data-es="- - Hojas 1:100 000 (índice, no unidades)" data-en="- - 1:100,000 sheets (index, not units)">- - Hojas 1:100 000 (índice, no unidades)</p>
+            </section>
+            <p id="local-legend" data-legend-layer="local" style="border-left:4px solid #ce5cdb;padding-left:.5rem" hidden></p>
             <section class="legend-section" data-legend-layer="faults">
               <div class="legend-items" data-i18n-aria="legend.movementAria" aria-label="Tipos de movimiento">
                 <span><i class="reverse"></i><span data-i18n="movement.inversa">Inversa</span></span>
@@ -254,6 +261,15 @@
               <button type="button" data-system="risk" aria-pressed="false" aria-describedby="system-note"><i aria-hidden="true">△</i><span data-i18n="systems.risk">Riesgo</span><small data-system-count-key="systems.oneLayer" data-i18n="systems.oneLayer">1 capa</small></button>
             </div>
             <p id="system-note" class="system-note" role="status" data-i18n="systems.earthNote">La primera mirada conecta tectónica, sismicidad y relieve.</p>
+            <details class="system-combine">
+              <summary data-i18n="systems.combine">Combinar con otros sistemas</summary>
+              <p data-i18n="systems.combineHelp">Solo se muestran las capas del apartado elegido. Marca otro sistema para habilitar sus controles; después activa las capas que necesites. Cambiar de apartado reinicia la combinación.</p>
+              <label><input type="checkbox" data-combine-system value="earth"><span data-i18n="systems.earth">Tierra</span></label>
+              <label><input type="checkbox" data-combine-system value="water"><span data-i18n="systems.water">Agua</span></label>
+              <label><input type="checkbox" data-combine-system value="sky"><span data-i18n="systems.sky">Cielo</span></label>
+              <label><input type="checkbox" data-combine-system value="life"><span data-i18n="systems.life">Vida</span></label>
+              <label><input type="checkbox" data-combine-system value="risk"><span data-i18n="systems.risk">Riesgo</span></label>
+            </details>
           </section>
 
           <section class="summary-grid" data-system-content="earth" data-i18n-aria="summary.aria" aria-label="Resumen del catálogo">
@@ -265,6 +281,18 @@
 
           <section class="layer-panel" aria-labelledby="layers-title">
             <div class="section-heading"><h2 id="layers-title" data-i18n="systems.earthLayers">Capas de Tierra</h2></div>
+            <div class="now-layer-card" data-system-content="earth">
+              <label class="layer-switch"><span><strong data-es="Geología regional · IIGE" data-en="Regional geology · IIGE">Geología regional · IIGE</strong><small data-es="Servicio oficial externo · cobertura según la fuente" data-en="External official service · source-defined coverage">Servicio oficial externo · cobertura según la fuente</small></span><input id="geology-toggle" type="checkbox"><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <p id="geology-service-status" role="status"></p>
+              <label class="layer-switch"><span data-es="Unidades de Tena–Archidona · copia conservada" data-en="Tena–Archidona units · preserved snapshot">Unidades de Tena–Archidona · copia conservada</span><input id="geology-local-toggle" type="checkbox" disabled><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <label class="layer-switch"><span data-es="Índice de hojas geológicas 1:100 000" data-en="1:100,000 geological sheet index">Índice de hojas geológicas 1:100 000</span><input id="geology-sheets-toggle" type="checkbox" disabled><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <label><span data-es="Opacidad geológica" data-en="Geological opacity">Opacidad geológica</span><input id="geology-opacity" type="range" min="0" max="1" step=".05" value=".65"></label>
+              <p id="geology-status" role="status"></p>
+              <p class="layer-caution" data-es="Polígonos completos que intersectan una ventana, no un recorte provincial. Colores locales de lectura, no la simbología oficial. No interpretar a escala predial. Tena figura «En revisión» en el índice del IIGE consultado." data-en="Whole polygons intersecting a study window, not a provincial clip. Local display colors, not official symbology. Not suitable for parcel-scale interpretation. Tena is marked ‘Under review’ in the consulted IIGE index.">Polígonos completos que intersectan una ventana, no un recorte provincial. Colores locales de lectura, no la simbología oficial. No interpretar a escala predial. Tena figura «En revisión» en el índice del IIGE consultado.</p>
+              <button id="geology-focus" type="button" data-es="Ir a Tena–Archidona" data-en="Go to Tena–Archidona">Ir a Tena–Archidona</button>
+              <a class="official-source-link" href="data/geology/tena-units.geojson" download data-es="Descargar unidades GeoJSON" data-en="Download units GeoJSON">Descargar unidades GeoJSON</a>
+              <a class="official-source-link" href="documentation/geologia-y-aportes.md" data-es="Fuente, fecha, método y límites ↗" data-en="Source, date, method and limits ↗">Fuente, fecha, método y límites ↗</a>
+            </div>
             <div id="basin-layer-card" class="now-layer-card basin-layer-card" data-system-content="water" hidden>
               <div class="now-layer-heading"><span data-i18n="basins.badge">Territorio y agua</span><small>INAMHI · MAATE</small></div>
               <label class="layer-switch" for="basin-toggle">
@@ -326,7 +354,7 @@
             </label>
             <label class="layer-switch" for="evidence-toggle" data-system-content="earth">
               <span><strong data-i18n="layers.evidence">Indicadores geomorfológicos</strong><small data-i18n="layers.evidenceHint">Escarpes, facetas y drenajes desplazados</small></span>
-              <input id="evidence-toggle" type="checkbox" disabled />
+              <input id="evidence-toggle" type="checkbox" checked disabled />
               <span class="switch-track" aria-hidden="true"><span></span></span>
             </label>
             <div id="precipitation-layer-card" class="now-layer-card precipitation-layer-card" data-system-content="water sky" hidden>
@@ -568,6 +596,19 @@
             <a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-data-strategy.md" target="_blank" rel="noopener noreferrer" data-i18n="spatial.research">Fuentes evaluadas para Napo y plan de mejora ↗</a>
           </details>
           <details class="source-network">
+            <summary data-es="Comparar mi información" data-en="Compare my data">Comparar mi información</summary>
+            <p data-es="Abre un GeoJSON en este navegador y compáralo con las capas del atlas. El archivo no se envía ni se publica; se pierde al recargar. El mapa base sigue consultando servicios externos." data-en="Open a GeoJSON in this browser and compare it with atlas layers. The file is neither uploaded nor published; it is lost on reload. The basemap still requests external services.">Abre un GeoJSON en este navegador y compáralo con las capas del atlas. El archivo no se envía ni se publica; se pierde al recargar. El mapa base sigue consultando servicios externos.</p>
+            <label for="local-file" data-es="GeoJSON WGS84 · longitud, latitud · máximo 10 MB" data-en="WGS84 GeoJSON · longitude, latitude · maximum 10 MB">GeoJSON WGS84 · longitud, latitud · máximo 10 MB</label>
+            <input id="local-file" type="file" accept=".geojson,.json,application/geo+json">
+            <label class="layer-switch" data-system-content="earth water sky life risk"><span data-es="Mostrar mi capa local" data-en="Show my local layer">Mostrar mi capa local</span><input id="local-toggle" type="checkbox" disabled><span class="switch-track" aria-hidden="true"><span></span></span></label>
+            <p id="local-status" role="status"></p>
+            <label><span data-es="Opacidad de mi capa" data-en="My layer opacity">Opacidad de mi capa</span><input id="local-opacity" type="range" min="0" max="1" step=".05" value="1"></label>
+            <button id="local-fit" type="button" data-es="Acercar a mi capa" data-en="Zoom to my layer">Acercar a mi capa</button>
+            <button id="local-remove" type="button" data-es="Retirar archivo local" data-en="Remove local file">Retirar archivo local</button>
+            <p data-es="Esto no georreferencia imágenes ni reproyecta UTM. Exporta primero a GeoJSON WGS84 desde tu SIG. Validar el formato no valida el contenido científico." data-en="This does not georeference images or reproject UTM. Export WGS84 GeoJSON from your GIS first. Format validation does not validate scientific content.">Esto no georreferencia imágenes ni reproyecta UTM. Exporta primero a GeoJSON WGS84 desde tu SIG. Validar el formato no valida el contenido científico.</p>
+            <a href="https://github.com/henryconteron/ecuador-vivo/issues/new?template=aporte.yml" target="_blank" rel="noopener noreferrer" data-es="Proponer datos o un estudio para revisión ↗" data-en="Propose data or a study for review ↗">Proponer datos o un estudio para revisión ↗</a>
+          </details>
+          <details class="source-network">
             <summary><span data-i18n="sourcesNetwork.title">Red de datos</span><span id="source-network-badge">—</span></summary>
             <p data-i18n="sourcesNetwork.copy">Cada servicio conserva su institución, método de acceso y estado antes de convertirse en una capa.</p>
             <ul id="source-network-list"></ul>
@@ -682,6 +723,6 @@
     <script src="assets/js/i18n.js?v=20261004"></script>
     <script type="module" src="assets/js/portal.js?v=20261004"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="assets/js/map.js?v=20261001-4"></script>
+    <script type="module" src="assets/js/map.js?v=20261004-geology"></script>
   </body>
 </html>
