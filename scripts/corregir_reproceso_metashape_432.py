@@ -11,7 +11,7 @@ from docx import Document
 from docx.enum.text import WD_COLOR_INDEX
 
 
-ROOT = Path(r"C:\Users\JHONY CONTERON\OneDrive\Documentos\GitHub\fallas-ecuador")
+ROOT = Path(__file__).resolve().parents[1]
 MANUSCRIPT_DIR = ROOT / "output" / "porotoyacu_nube_definitiva_20260923" / "manuscrito"
 SOURCE = MANUSCRIPT_DIR / "Manuscript_Conteron_etal_2026_UNIFICADO_FOTOGRAMETRIA_AMARILLO.docx"
 OUTPUT = MANUSCRIPT_DIR / "Manuscript_Conteron_etal_2026_FOTOGRAMETRIA_432_VERIFICADA.docx"

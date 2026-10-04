@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Laboratorio de cambios fluviales de Napo: escenas Sentinel-2 de 2019, 2024 y 2026, comparación de detectores y límites científicos." />
+  <title>Ríos bajo la lupa · Ecuador Vivo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="assets/css/fluvial.css?v=20261002-1" />
+</head>
+<body>
+  <a class="skip" href="#fluvial-map" data-lab-text="skip">Ir al mapa</a>
+  <header class="lab-header"><a class="brand" href="./">EV · Ecuador Vivo</a><nav><a href="#fluvial-map" data-lab-text="viewMap">Ver mapa</a><a href="explore.html?system=water&focus=napo" data-lab-text="back">Volver al atlas</a><button type="button" id="lab-language" aria-label="Switch to English">EN</button></nav></header>
+  <main>
+    <section class="intro"><span class="eyebrow" data-lab-text="eyebrow">Napo · laboratorio de cambios fluviales</span>
+      <h1 data-lab-text="title">¿Desapareció el agua… o dejó de verla el satélite?</h1>
+      <p data-lab-text="lead">Una señal puede cambiar por agua poco profunda, sedimentos, sombras o por un cauce que se mueve. Compara cuatro detectores sobre las mismas escenas reales; observa primero, interpreta después.</p>
+      <p data-lab-text="scope">Cuatro ventanas locales, no toda Napo ni sus cuencas. Tres escenas de julio/agosto: 2019, 2024 y 2026. No son una serie suficiente para medir sequías, caudal ni duración de periodos secos.</p>
+    </section>
+    <noscript><p class="noscript">Este laboratorio necesita JavaScript para cargar y verificar los datos numéricos. Las fuentes y los límites siguen disponibles abajo.</p></noscript>
+    <section class="workbench" aria-label="Laboratorio interactivo">
+      <aside class="controls">
+        <label><span data-lab-text="region">Tramo de exploración</span><select id="lab-region"><option value="tena">Tena</option><option value="jatunyacu">Jatunyacu</option><option value="napo">Napo</option><option value="misahualli">Misahuallí</option></select></label>
+        <label><span data-lab-text="signal">Qué quieres observar</span><select id="lab-mode">
+          <option value="rgb">RGB</option><option value="ndwi">NDWI</option><option value="mndwi">MNDWI</option><option value="aweinsh">AWEI · nsh</option><option value="aweish">AWEI · sh</option>
+          <option value="agreement" data-lab-text="agreement">Coincidencia entre detectores</option><option value="transition" data-lab-text="transition">Cambios candidatos de agua</option>
+          <option value="ndti" data-lab-text="ndti">Contraste rojo/verde · NDTI</option><option value="red" data-lab-text="red">Reflectancia roja del agua candidata</option>
+          <option value="ndvi" data-lab-text="ndvi">Vegetación · NDVI</option><option value="vegetationChange" data-lab-text="vegetationChange">Diferencia de NDVI</option>
+        </select></label>
+        <div class="row"><label><span data-lab-text="earlier">Antes</span><select id="lab-earlier"><option value="2019-07-11">11 jul 2019</option><option value="2024-08-08">08 ago 2024</option></select></label><label><span data-lab-text="later">Después</span><select id="lab-later"><option value="2024-08-08">08 ago 2024</option><option value="2026-07-29" selected>29 jul 2026</option></select></label></div>
+        <label><span data-lab-text="swipe">Desliza para comparar fechas</span><input id="lab-split" type="range" min="0" max="100" value="50" /></label>
+        <button id="lab-fit" type="button" data-lab-text="fit">Ver el tramo completo</button>
+        <button id="lab-inspect-center" type="button" data-lab-text="inspectCenter">Consultar el centro visible</button>
+        <p class="note wide" id="lab-explanation"></p>
+        <details class="wide"><summary data-lab-text="thresholds">Prueba la sensibilidad del detector</summary><p class="note" data-lab-text="thresholdNote">Umbrales exploratorios, no calibrados para Napo. Un cambio de umbral modifica el resultado, no el río. Coincidencia no significa exactitud.</p><div id="lab-thresholds"></div><button type="button" id="lab-reset" data-lab-text="reset">Restablecer a cero</button></details>
+        <p id="lab-status" class="status wide" role="status" aria-live="polite" data-lab-text="loading">Verificando la procedencia…</p>
+        <details class="wide" id="lab-inspector-panel"><summary data-lab-text="inspectorTitle">Consultar un píxel · valores numéricos</summary><div class="readout" id="lab-inspector" role="status" data-lab-text="inspect">Haz clic en la imagen para consultar valores numéricos de ambas fechas. No se miden desde los colores.</div></details>
+      </aside>
+      <div class="map-wrap"><div id="fluvial-map" tabindex="0" aria-label="Mapa de comparación de los ríos"></div><div class="dates"><span id="lab-date-a"></span><span id="lab-date-b"></span></div><div id="lab-cut" class="cut"></div><div class="legend" id="lab-legend" aria-live="polite"></div></div>
+    </section>
+    <section class="next-steps"><p class="benchmark" data-lab-text="pending">Ganador local: pendiente. La clasificación multibanda y su evaluación requieren referencias independientes. SCL no se usa como verdad de campo.</p><h2 data-lab-text="readTitle">Tres preguntas distintas, tres líneas de evidencia</h2><div class="cards">
+      <article class="card"><span class="badge" data-lab-text="candidate">Exploratorio</span><h2 data-lab-text="waterTitle">¿Dónde vemos agua?</h2><p data-lab-text="waterCopy">Los detectores proponen agua superficial. Sus desacuerdos quedan visibles; los huecos no cuentan como cauce seco. Menor superficie de agua no es una medición de caudal.</p></article>
+      <article class="card"><span class="badge" data-lab-text="candidate">Exploratorio</span><h2 data-lab-text="sedimentTitle">¿Cambió la señal del agua?</h2><p data-lab-text="sedimentCopy">NDTI y reflectancia roja ayudan a explorar cambios ópticos dentro del agua candidata. Sin calibración local no damos NTU, mg/L ni concentraciones de mercurio. Agua poco profunda y efectos atmosféricos también pueden alterar la señal.</p></article>
+      <article class="card"><span class="badge" data-lab-text="needsEvidence">Necesita contraste independiente</span><h2 data-lab-text="miningTitle">¿Qué produjo el cambio?</h2><p data-lab-text="miningCopy">Buscar terreno removido, pozas y pérdida de vegetación; revisar lluvia y nivel del río; comparar aguas arriba y abajo. Ni el color del agua ni NDVI identifican por sí solos minería, ilegalidad o su causa.</p></article>
+    </div></section>
+    <section class="sources"><h2 data-lab-text="sources">Fuentes, datos y reproducción</h2><p data-lab-text="resolution">Comparación a 20 m: B2/B3/B4/B8 se agregan desde 10 m; B11/B12 son nativas de 20 m. Ampliar no crea detalle. La máscara conservadora puede descartar agua real bajo sombras.</p><ul id="lab-sources"></ul><p><a href="data/fluvial/manifest.json" data-lab-text="manifest">Procedencia y SHA-256 (JSON)</a> · <a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/fluvial-lab.md" target="_blank" rel="noopener noreferrer" data-lab-text="method">Método, evaluación y siguientes pasos</a></p><p data-lab-text="datesNote">Las escenas se escogieron por cobertura útil local, no por magnitud de cambio. Julio/agosto no garantiza condiciones hidrológicas iguales. 2019 no es un estado prístino y 2026 no es una composición anual ni una imagen en vivo.</p></section>
+  </main>
+  <footer>Modified Copernicus Sentinel data (2019, 2024, 2026) · Earth Search / Element 84 · Henry P. Conteron Moreta</footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script type="module" src="assets/js/fluvial-lab.js?v=20261002-1"></script>
+</body>
+</html>

@@ -1,3 +1,8 @@
 # Keep reproducibility manifests and geospatial JSON byte-stable in every checkout.
 *.json text eol=lf
 *.geojson text eol=lf
+
+# Frozen case inputs retain original bytes (including original line endings).
+/data/cases/** -text
+/assets/media/** -text
+/data/fluvial/*.stac.json -text

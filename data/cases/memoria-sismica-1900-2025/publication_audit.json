@@ -1,0 +1,72 @@
+{
+  "checked_at_utc": "2026-10-02T19:21:55.843684+00:00",
+  "credit": "Henry Conteron, ingeniero en geociencias e investigador independiente",
+  "snapshot_checks": {
+    "unique_ids": true,
+    "valid_utc_dates": true,
+    "within_regional_window": true,
+    "valid_magnitudes": true,
+    "depth_unknown_or_within_service_range": true
+  },
+  "records": 2661,
+  "depth_counts": {
+    "shallow": 1752,
+    "intermediate": 908,
+    "deep": 0,
+    "unknown": 1
+  },
+  "depth_max_km": 254.0,
+  "magnitude_types": {
+    "mb": 2158,
+    "mw": 194,
+    "mww": 102,
+    "mwc": 85,
+    "md": 43,
+    "mwr": 32,
+    "mwb": 21,
+    "ms": 16,
+    "ml": 9,
+    "mB": 1
+  },
+  "original_csv_sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb",
+  "snapshot_matches_rendered_csv": true,
+  "live_historical_check": {
+    "source": "https://earthquake.usgs.gov/fdsnws/event/1/count?minlatitude=-5.5&maxlatitude=2.5&minlongitude=-83&maxlongitude=-74.5&starttime=1900-01-01T00%3A00%3A00Z&endtime=2025-12-31T23%3A59%3A59.999Z&minmagnitude=4&eventtype=earthquake",
+    "records": 2661,
+    "checks": {
+      "unique_ids": true,
+      "valid_utc_dates": true,
+      "within_regional_window": true,
+      "valid_magnitudes": true,
+      "depth_unknown_or_within_service_range": true
+    },
+    "scientific_values_match_snapshot": true,
+    "depth_counts": {
+      "shallow": 1752,
+      "intermediate": 908,
+      "deep": 0,
+      "unknown": 1
+    },
+    "depth_max_km": 254.0
+  },
+  "separate_2026_check": {
+    "source": "https://earthquake.usgs.gov/fdsnws/event/1/query?minlatitude=-5.5&maxlatitude=2.5&minlongitude=-83&maxlongitude=-74.5&starttime=2026-01-01T00%3A00%3A00Z&endtime=2026-10-02T19%3A22%3A00Z&minmagnitude=4&eventtype=earthquake&format=geojson&orderby=time&limit=2000",
+    "cutoff_utc": "2026-10-02T19:22:00Z",
+    "regional_records_returned": 42,
+    "example_with_ecuador_place": {
+      "id": "us7000thr4",
+      "time_utc": "2026-09-15T23:45:06.526000+00:00",
+      "magnitude": 4.5,
+      "magnitude_type": "mb",
+      "place": "12 km WNW of Palora, Ecuador",
+      "coordinates": [
+        -78.06,
+        -1.6399,
+        155.75
+      ],
+      "source": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000thr4"
+    },
+    "included_in_video": false,
+    "note": "Regional rectangle and M >= 4; place label used only to choose an example, not a political-boundary count."
+  }
+}

@@ -1,0 +1,3125 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-10-04",
+  "mode": "read_only_audit_no_deletion",
+  "roots": {
+    "atlas": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador",
+    "monitor": "C:/Users/JHONY CONTERON/monitor-sismos"
+  },
+  "inventory_scope": "Exact local paths under the two requested projects only. Directory byte counts are logical sizes, not guaranteed disk-space recovery. Concurrent migration may create additional matching files after snapshot.",
+  "decision_summary": {
+    "high_confidence_render_candidates": 9,
+    "high_confidence_render_bytes": 46299012,
+    "optional_asr_runtime_bytes": 422712832,
+    "python_cache_bytes": 1463698,
+    "duplicate_groups": 187,
+    "duplicate_additional_bytes": 439783369,
+    "warning": "Do not add all categories: duplicate groups and migrated copies overlap with other categories."
+  },
+  "prerequisites": [
+    "Parent should copy verified masters, original audio, scientific inputs, citations and code into the unified project before removing old paths.",
+    "Check file size and SHA-256 source versus destination for EVERY migrated final/source file, including ignored and untracked files; Git alone does not back these up.",
+    "Run migrated relevant tests using only unified-root paths, then capture updated verification log.",
+    "Use exact leaf-file removal only for render candidates. Do not recursively delete old artifact folders solely because version number is old.",
+    "Old monitor-sismos project cannot yet be deleted: ignored artifacts and absolute-path dependencies identified below remain."
+  ],
+  "preserve_masters": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 9694184,
+      "sha256": "e55995c04220dbff72331d6a651a9e4b4a6526a057c97a74a87271d10880a3e7",
+      "status": "preserve_final_export_publication_mapping_not_independently_confirmed"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/rio_doce_desde_el_espacio_v9.mp4",
+      "bytes": 30384863,
+      "sha256": "50c9ee77fe693f953eaba0d9fb136c5dae3658eb482f07e86b6146ad722eef7b",
+      "status": "preserve_latest_available_render_in_progress_not_published"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v5/ondas_profundidad_3d_voz_provisional_v5.mp4",
+      "bytes": 64603142,
+      "sha256": "50e04fb52e0a805c90bb247d256e43b270acd477c79f071a69568e93c7cf0ede",
+      "status": "preserve_latest_available_render_in_progress_not_published"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/napo_1900_2026_fallas_3d_maqueta_sin_voz_v5.mp4",
+      "bytes": 5200723,
+      "sha256": "5d270750615d5fc561e98490b0e40cb245e507a1624c9ddb275ac808f96a839c",
+      "status": "preserve_latest_available_render_in_progress_not_published"
+    }
+  ],
+  "preserve_materials": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6",
+      "reason": "Final reel, original ElevenLabs audio, timing, captions, exact frozen USGS dataset and publication audit. Only its silent intermediate MP4 is an immediate render candidate."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9",
+      "reason": "Current paused river video, USGS original, original per-scene voices, subtitles, script, metadata and source hashes. Preserve all until self-contained."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6",
+      "reason": "Scientific imagery, bands/masks, native GeoTIFFs, threshold_values.npz and motion_evidence.json still loaded by v9. Not an expendable video-only folder."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8",
+      "reason": "Reusable original narration/timing and code dependency. No recursive cleanup until unique voices preserved and dependency rewired."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica",
+      "reason": "Ongoing series, not a published old draft: v10 script split into episodes, v11 plate/stress/fault work, depth/3D animations, Tena/Napo episode and Nororiente 1987 script. Preserve all unique scripts, audio, sources and latest renders."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/output/porotoyacu_nube_definitiva_20260923",
+      "reason": "Unique photogrammetry deliverables: manuscripts, rasters, validation, profiles, figures and processing scripts. Not generic temporary output. No content cleanup within this audit."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/output/conceptos-ecuador-vivo-20261004",
+      "reason": "Three approved visual concepts and prompts."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/rivers-next/original-bundle",
+      "reason": "Documented only local original pre-promotion bundle; do not classify entire tmp as disposable. Move into organized archive after verified copy."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw",
+      "reason": "Scientific source rasters and export receipts. Ignore status is not deletion authorization; duplicated rasters need canonical path rewiring before removal."
+    }
+  ],
+  "render_candidates": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 2327324,
+      "sha256": "b1a7bbaf0403c3bcb75d0ef9654e6f5227fbd89637168ece40a29e3f84b0a381",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 3274336,
+      "sha256": "03c86991bdb6c1be1846356ce03e2312528a3f392b908d01d102b8885c1f6810",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v3/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 6332622,
+      "sha256": "d6e61e46a2314565e62b2c552b200bc1287635dccc594339c21d94ad3e4bc04a",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v3/visual_sin_audio.mp4",
+      "bytes": 4248095,
+      "sha256": "e54017e8d55f0f0d61268cb4f9eca3075bdae13efb907de645c6d6f66e5dac8b",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 7019337,
+      "sha256": "02cb0acaf71cad2e1761dfa364311ff9b00ce86a833ab2098e2df1e2881175af",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4/visual_sin_audio.mp4",
+      "bytes": 4386050,
+      "sha256": "6f98204ec8c853d5126b82de2d4173282c526812ee031a1f76a1218e2ada1984",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5/andes_pulso_reel_1900_2025.mp4",
+      "bytes": 7141803,
+      "sha256": "513283ba45daffce7f936a9416e4debc7ef94e6810be1207e70e2e835220b647",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5/visual_sin_audio.mp4",
+      "bytes": 4508516,
+      "sha256": "bb09fed7013cd0eb1042237a75ac9a2168c0489094204516d978ca72c87e86b3",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Previous rendered edit of national reel, superseded by audited v6. Preserve non-video unique source/audio/script files separately; do not remove parent folder.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/visual_sin_audio.mp4",
+      "bytes": 7060929,
+      "sha256": "3fe288a78a57e62085e910d4a66d7b288d2ff7ad51a9dac69a133aaf85aa8004",
+      "status": "candidate_after_master_verification",
+      "confidence": "high",
+      "reason": "Intermediate silent render: final MP4 plus original narration, renderer and timing survive.",
+      "recovery": "Regenerate from preserved inputs and code; bit-for-bit recovery not guaranteed unless kept in Recycle Bin or backup."
+    }
+  ],
+  "optional_regenerable_runtimes": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/asr_models",
+      "bytes": 147884043,
+      "files": 7,
+      "status": "regenerable_optional_runtime_candidate",
+      "recovery": "ASR alignment unavailable until faster-whisper 1.2.1 dependencies/model restored. Existing original voices, transcripts and final videos unaffected."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/asr_runtime",
+      "bytes": 274828789,
+      "files": 3695,
+      "status": "regenerable_optional_runtime_candidate",
+      "recovery": "ASR alignment unavailable until faster-whisper 1.2.1 dependencies/model restored. Existing original voices, transcripts and final videos unaffected."
+    }
+  ],
+  "python_cache_candidates": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/__pycache__",
+      "bytes": 975315,
+      "files": 53,
+      "status": "regenerable_cache_only",
+      "recovery": "Python regenerates bytecode from preserved .py sources; safe after active interpreter use ends."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/tests/__pycache__",
+      "bytes": 210124,
+      "files": 24,
+      "status": "regenerable_cache_only",
+      "recovery": "Python regenerates bytecode from preserved .py sources; safe after active interpreter use ends."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/output/porotoyacu_nube_definitiva_20260923/scripts/__pycache__",
+      "bytes": 10351,
+      "files": 1,
+      "status": "regenerable_cache_only",
+      "recovery": "Python regenerates bytecode from preserved .py sources; safe after active interpreter use ends."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/scripts/__pycache__",
+      "bytes": 175959,
+      "files": 11,
+      "status": "regenerable_cache_only",
+      "recovery": "Python regenerates bytecode from preserved .py sources; safe after active interpreter use ends."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tests/__pycache__",
+      "bytes": 91949,
+      "files": 8,
+      "status": "regenerable_cache_only",
+      "recovery": "Python regenerates bytecode from preserved .py sources; safe after active interpreter use ends."
+    }
+  ],
+  "blocked_previous_renders": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/que_le_paso_al_rio_v8.mp4",
+      "bytes": 38820006,
+      "sha256": "da834a76c9efa0cac71c56f166dd21d7158f1885adbe2b3a8328b51418dfaedb",
+      "status": "blocked_by_current_verifier",
+      "required_change": "Keep SHA-256 as historical provenance, change previous_renders checks to distinguish retired non-input renders from required scientific sources; do not weaken required input checks."
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/rios_mirar_no_es_medir_v6_vista_previa.mp4",
+      "bytes": 13212105,
+      "sha256": "359f0963f01f89c0e1f31111e0d668ca1a22f0a04cec3a2a2447b0415efd164d",
+      "status": "blocked_by_current_verifier",
+      "required_change": "Keep SHA-256 as historical provenance, change previous_renders checks to distinguish retired non-input renders from required scientific sources; do not weaken required input checks."
+    }
+  ],
+  "dependency_findings": [
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/reel_river_satellite_story.py",
+      "detail": "EVIDENCE points at artifacts/rios_historia_v6; prepare() records old v6/v8 render hashes and copies matching v8 voices; Design and verification open scientific images from v6.",
+      "target": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6"
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/verify_river_satellite_story.py",
+      "detail": "Opens sources_manifest.previous_renders absolute Windows paths and validates their SHA-256; therefore deleting only old MP4s breaks current verification.",
+      "target": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/sources_manifest.json"
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/tests/test_river_satellite_story.py",
+      "detail": "test_sources_and_previous_renders requires old-render files, rather than merely storing historical hashes. Must migrate explicitly."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/reel_river_satellite_story.py",
+      "detail": "Imports reel_river_motion plus reel_rivers_documentary, which import earlier renderer modules. Keep source code even after deleting obsolete renders."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/reel_napo_indices.py",
+      "detail": "PREVIOUS_EVIDENCE reads rios_napo_indices_v2 and output v3 holds byte-identical source TIFFs. Canonical dedup requires updating load/copy paths and manifests."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/prepare_depth_episode.py",
+      "detail": "Reads national reel v6 USGS snapshot; rewire to a canonical frozen case dataset rather than deleting the input copy prematurely."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/monitor-sismos/tests/test_depth_script_v7.py",
+      "detail": "Checks preserved v5 depth render, v6 provisional voice and national v6 snapshot. Latest v10/v11 scripts are not substitute source assets."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/scripts/promote_napo_river_sample.mjs",
+      "detail": "tmp/rivers-next holds original-bundle recovery and staged recipes; archive proven backup before removing scratch staging."
+    },
+    {
+      "source": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/scripts/corregir_reproceso_metashape_432.py",
+      "detail": "References output/porotoyacu_nube_definitiva_20260923/manuscrito. Preserve this separate active work in a clearly labeled local-only section."
+    }
+  ],
+  "non_final_video_inventory": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/andes_pulso_ecuador_1900_2026.mp4",
+      "bytes": 1879588,
+      "sha256": "3a8f3a77cf65a3fde2d6beb6db1751dbb1aa853741aa14b8703d23d68e93d926",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/visual_sin_audio.mp4",
+      "bytes": 19459626,
+      "sha256": "e6d12942074188f486112d3f2d00c8bade3ef5208bf0b2941202cc84cf3cfa0c",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/visual_sin_audio.mp4",
+      "bytes": 26327176,
+      "sha256": "f0f670281eefe776d3c44968ae76c9ec986ee7971650fcfa98ec8f97c55418af",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/el_rio_que_desaparece_v5_vista_previa.mp4",
+      "bytes": 14975365,
+      "sha256": "2ff230b19e534d259b9cbd73af599d73f0117d96db0a7f3740d2c0c6c0e11ed7",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/el_rio_que_desaparece_v5_visual_sin_voz.mp4",
+      "bytes": 10231435,
+      "sha256": "a0ada64f7ea6f44ca27bda84d29161332e2ec5549e2c9eb8f3d5ad5a7b2f3046",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/rios_mirar_no_es_medir_v6_visual_sin_voz.mp4",
+      "bytes": 9129383,
+      "sha256": "a9aaeb2d286f0a43bc78bd3cfc6f61b1814cb73f54706c2dba02b86af6fc7e8f",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/rios_napo_2019_2024_2026_vista_previa.mp4",
+      "bytes": 17308349,
+      "sha256": "c8a9a335d46da3aabba98db72c3edf4de26bbe010c9d332931bfcd6e0e0bf182",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/rios_napo_2019_2024_2026_visual_sin_voz.mp4",
+      "bytes": 12457467,
+      "sha256": "d77c78814caae38855ba7ce054b22ccf3462d03bc27a876dfd77def2883adea0",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/rios_napo_metodos_v4_vista_previa.mp4",
+      "bytes": 18338267,
+      "sha256": "329d6c337b533939743e950b982a1565aab0146701d53b94dc75940687ab2304",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/rios_napo_metodos_v4_visual_sin_voz.mp4",
+      "bytes": 12483974,
+      "sha256": "ae96225a1c963a35216af5fc659e048ebb3b3441d9e47ea4c1707b396fd3714d",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_ndwi_2026/ndwi_napo_2019_2026_vista_previa.mp4",
+      "bytes": 12437093,
+      "sha256": "537410b7092f1106b072533487bc3f2c0725ab76798a9542d73ea3d37bb1cce9",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_ndwi_2026/ndwi_napo_visual_sin_voz.mp4",
+      "bytes": 10030880,
+      "sha256": "796acd26920b9cfa2ced194764d92032d2d54c03031ac48c5ebbca2b82825108",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/piedemonte_3d_voz_provisional_v3.mp4",
+      "bytes": 611410,
+      "sha256": "f65540a3d719c42437e95d07d1e2e57788ec06d8a7e6a8526fe956fdb091fdaf",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/profundidad_danos_cortes_3d_maqueta_sin_voz_v2.mp4",
+      "bytes": 12667283,
+      "sha256": "a2da2f9c700ae4ee32a1671082494fa13d02da29e826682ce6bd7181436eb34b",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/profundidad_danos_maqueta_sin_voz_v1.mp4",
+      "bytes": 7650128,
+      "sha256": "19be53c47065cc601dcbcf6ed54f6a27dfc566f1e205c18ba1e38ed45a3845cf",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/profundidad_danos_voz_provisional_v3.mp4",
+      "bytes": 14703423,
+      "sha256": "b00e7d49b79ba40e2a487c036ee4db28129730b783f8d43ba98cde51d25becd3",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v4/avance_bolivia_3d_v4.mp4",
+      "bytes": 3382777,
+      "sha256": "369aed299a5eb72b49193da747262a96d3ea856d666f994ccdb7893f06f8571a",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v4/profundidad_casos_reales_3d_voz_provisional_v4.mp4",
+      "bytes": 37483118,
+      "sha256": "8c07b61fad65633dac56cc6e353277e996dd1715bc58ab1cd84fdf6012a2fefa",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v5/avance_ondas_3d_v5.mp4",
+      "bytes": 17423259,
+      "sha256": "bbede5b6562fb4da8cb8105a4dd2b1f5a1859fb2485e7985e096ac619166e15b",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/napo_historia_2026_maqueta_sin_voz_v3.mp4",
+      "bytes": 2808489,
+      "sha256": "b79c9af4edb1a1f51577ebd1b7cd7169389d8a8f2c6034434acffcc9ffcb7bbf",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/napo_mapa_tena_fallas_maqueta_sin_voz_v4.mp4",
+      "bytes": 2609891,
+      "sha256": "a2c2f8933a756b9935edb53e6d26bbfc46d413c514f34196717c16308ac89a36",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/napo_tena_maqueta_sin_voz_v2.mp4",
+      "bytes": 1885834,
+      "sha256": "0b97a8bdf30b7cb1ce3a220d8778404b78e238e2b262e89748f250f8148733b8",
+      "status": "retain_pending_dependency_and_editorial_review"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/napo_tena_maqueta_sin_voz.mp4",
+      "bytes": 1946720,
+      "sha256": "b6e331f892602f5aa3ad9ae9f0c53a8521038e36e4d622a9cbd65b4ed4fddce5",
+      "status": "retain_pending_dependency_and_editorial_review"
+    }
+  ],
+  "duplicate_groups": [
+    {
+      "sha256": "000c9b1b4b703636111e49f67fad9f53c59098e79f8bee6bc75d592e7cdfae98",
+      "bytes_each": 163675,
+      "additional_copy_bytes": 163675,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "01ceb54a51a2710e356788ea40280c97617dec29788a2b713cb7c7c77fa58a54",
+      "bytes_each": 216492,
+      "additional_copy_bytes": 432984,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "0315ae2942dcf2c5820c9fea17381a6a6f6b0fe486ff4077d175a670096d660d",
+      "bytes_each": 175931,
+      "additional_copy_bytes": 351862,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "051d9db60e7d20cb5177380590cfa4869e897269d8207d2ae416b1204bd09cd1",
+      "bytes_each": 2239560,
+      "additional_copy_bytes": 2239560,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_water_counts_2019_2024-0000000000-0000004096.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_water_counts_2019_2024-0000000000-0000004096.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "05aabe553e6656e3f6ed806e6b8bb78661e1314918740302ee2f6fc01c4b4263",
+      "bytes_each": 184701,
+      "additional_copy_bytes": 369402,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "05f373992712bff441bd487cf672d0f797ce1b24c39f487f34527d3959dab3d5",
+      "bytes_each": 185024,
+      "additional_copy_bytes": 370048,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "06f21663c2b59009d9254e69c29d2a930ea5530bbdd32220561c712e6a928e6f",
+      "bytes_each": 125871,
+      "additional_copy_bytes": 125871,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/threshold_values.npz",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/threshold_values.npz"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "0a63337506ac7e3a71b2baf0bf630f7db1354691d0d9b4636edd098ebc6b1bf0",
+      "bytes_each": 189550,
+      "additional_copy_bytes": 379100,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "0af41b115eb2c64e5060fd287ab40960d98848a737b3b7dcd2050a5bc8d947a2",
+      "bytes_each": 2237262,
+      "additional_copy_bytes": 2237262,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_recent.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_recent.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "0cf968c1db05b43895dcaef748712918fbe13641d624f03ca89f2069fd6763cb",
+      "bytes_each": 1661262,
+      "additional_copy_bytes": 1661262,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_comparelimits.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_comparelimits.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "10cb2b4100c653c3812cc66b1762d180d81375a58b2fbc1912f5b06940c24e46",
+      "bytes_each": 1755726,
+      "additional_copy_bytes": 1755726,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_color.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_color.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "17e219d368c030d15e21540f0e087c353d9d921d21e5722158bdf36cf3f83d77",
+      "bytes_each": 2393554,
+      "additional_copy_bytes": 7180662,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2A_T17MRU_20240808T153803_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2A_T17MRU_20240808T153803_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2A_T17MRU_20240808T153803_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2A_T17MRU_20240808T153803_L2A-tena.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "1909fa3b02076bb64201e6fee70385116a1007b7e50f022604d7470fbe041114",
+      "bytes_each": 166480,
+      "additional_copy_bytes": 332960,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "1af6b9717a9ba559a3e030c1f3f2366e6a664bdbd27557416b076a6b36802a98",
+      "bytes_each": 154726,
+      "additional_copy_bytes": 154726,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "1f0b96131a1f2748f497ed2a7ebdd382885b09685cc3efcc24f5c9a723a96d3a",
+      "bytes_each": 197413,
+      "additional_copy_bytes": 394826,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "24351ae8212b32680b18ae757987a42efd0c3e03e2c96d6163f1e7a374ebae00",
+      "bytes_each": 143136,
+      "additional_copy_bytes": 143136,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_causality.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_causality.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "25fe0b8fb4628557167a4a966de81ac303c397c32902cc1b2920261b4a553521",
+      "bytes_each": 189612,
+      "additional_copy_bytes": 379224,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "26671a97b3fb34b0d5e1edf492f46663d8fc0da132f5d05806bb5a9ede0fd928",
+      "bytes_each": 14603372,
+      "additional_copy_bytes": 14603372,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v7/lectura_guion_voz_provisional_v7_corregido.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v7/lectura_guion_voz_provisional_v7.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "287d42ff65948b9c2f77adeb4e2653b15d252b2a65f5ff8f6a1447762a27e898",
+      "bytes_each": 2034510,
+      "additional_copy_bytes": 2034510,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_zoom.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_zoom.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "28c4bf93de1cf9ed4839c45e741b122e732c7fcf897ac6ec44a9c42f3683d14f",
+      "bytes_each": 5034601,
+      "additional_copy_bytes": 5034601,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_rgb10_2019_2024-0000004096-0000000000.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_rgb10_2019_2024-0000004096-0000000000.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2905bee7e87d25be52d469416813bf94064bb973c1046cc25b672ba33f4e4342",
+      "bytes_each": 156094,
+      "additional_copy_bytes": 156094,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2958ca8a1e54816a8c09e53bfc002aa4b9dc39a05d3e97613c078cf584247ef1",
+      "bytes_each": 79365,
+      "additional_copy_bytes": 396825,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/jatunyacu_detail_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_detail_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_detail_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2019_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2a9ec487ce0f61a99b04c56bb89d9ac9356eb5949d357bd52c6c18efc8a4e74f",
+      "bytes_each": 196140,
+      "additional_copy_bytes": 196140,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2ae70cb7e8f1fb0dd4dac508ac7a7078a2a10188e93f5dabbf545be0304f3965",
+      "bytes_each": 372439,
+      "additional_copy_bytes": 372439,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/qa_hold_2025.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/qa_year_2025.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2af15194993cdd09f759343ff4ea5762a85227d74c3d320c30159f38c4497328",
+      "bytes_each": 2347458,
+      "additional_copy_bytes": 7042374,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2C_T17MRU_20260729T153626_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2C_T17MRU_20260729T153626_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2C_T17MRU_20260729T153626_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2C_T17MRU_20260729T153626_L2A-jatunyacu.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2b23ae8b77cccc56023db7e80c1eda2e4bbac61dbd001a1b9d609118ebbeeb7e",
+      "bytes_each": 2232924,
+      "additional_copy_bytes": 6698772,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2B_17MRU_20190711_0_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2B_17MRU_20190711_0_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2B_17MRU_20190711_0_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2B_17MRU_20190711_0_L2A-jatunyacu.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2bbd8e163d3c95eec81bcedc1ff71c58d74f4eaa9459d5ff35e18a1a770380db",
+      "bytes_each": 2303485,
+      "additional_copy_bytes": 2303485,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/selection_2024.json",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/selection_2024.json"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "2d986d11c4dd33c7aa80a477d7fca7d45fadbfa433a7b6b6a0531a82fb866fe6",
+      "bytes_each": 109728,
+      "additional_copy_bytes": 109728,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_color.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_color.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "31f3e55c77df94891bf0b39457544ff9d54bef7fa318ec54f16eec9bcf3e010d",
+      "bytes_each": 184149,
+      "additional_copy_bytes": 368298,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "3359b190747bbca33d41a3e16a10919ff6064620555ce67b9877d8a92a7bb6a8",
+      "bytes_each": 179556,
+      "additional_copy_bytes": 179556,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "342a5e71b2122816b2b5e77044b5106db086bd0f9d2f10ec9ed370fbb272f8df",
+      "bytes_each": 1990968,
+      "additional_copy_bytes": 5972904,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2A_T17MRU_20240808T153803_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2A_T17MRU_20240808T153803_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2A_T17MRU_20240808T153803_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2A_T17MRU_20240808T153803_L2A-misahualli.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "34e60b7c2a7bcee1d4702bcf49a37607a5ee88741a17ed614a7d9bb8db919c81",
+      "bytes_each": 124848,
+      "additional_copy_bytes": 124848,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_index.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_index.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "3554deb420cf9020a6448cb59266bf693c82f4ea28fc7606a27cd83dbc97b2b3",
+      "bytes_each": 1592142,
+      "additional_copy_bytes": 1592142,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_middle.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_middle.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "39e733b3cafaf9a4e924f60358c35729498e4f58affa9a9755d865ea5b7766cc",
+      "bytes_each": 210660,
+      "additional_copy_bytes": 421320,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "3ed1035ef53a49ad7d67be4a498f12d48002a97734a87b89c8c1c0e81ad0eb63",
+      "bytes_each": 1797198,
+      "additional_copy_bytes": 1797198,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_sensor.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_sensor.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "40eaff8741423f58dfc5209161794119e302939e7c4042bc26a39be3eed5d609",
+      "bytes_each": 138096,
+      "additional_copy_bytes": 138096,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_answer.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_answer.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "41141265d5edff02bf562cecf2b89b36433e941535e3c31d937576d058725542",
+      "bytes_each": 189717,
+      "additional_copy_bytes": 189717,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "436edf8eebb6620e0a751f32ab610abab849e0370ed9ca13a45d163f9ed46d4b",
+      "bytes_each": 69632,
+      "additional_copy_bytes": 69632,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/codificado_cierre.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/codificado_cierre.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "445ae610f790499cb1e936eab040edfaaf87a80cbcf1f7a6f0e299412ee25e9a",
+      "bytes_each": 1695822,
+      "additional_copy_bytes": 1695822,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_chemistry.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_chemistry.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "459cf2201e52e87e74c9d76e46e88b27c40006357eac8c52c8092c6c387ee7ce",
+      "bytes_each": 273664,
+      "additional_copy_bytes": 1094656,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "45b8915a6f4d9a15690a656c1564cf06bb579a85a80dde3ef8f6912bf51db335",
+      "bytes_each": 33025288,
+      "additional_copy_bytes": 33025288,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/S2C_T17MRU_20260729T153626_L2A_indices20m.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/S2C_T17MRU_20260729T153626_L2A_indices20m.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "47e2b07420c0208824c01753ec9994731b0f67871cb4ab10ac04bde95276bc92",
+      "bytes_each": 213380,
+      "additional_copy_bytes": 426760,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4a04600d43b195f2f7c020c375aebff2e6ea6121e4f0b01344986e9a27663979",
+      "bytes_each": 178562,
+      "additional_copy_bytes": 178562,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4a69c04794a2429f5179ee18c97c0b75cbcae76463850d082bc257c301117210",
+      "bytes_each": 170460,
+      "additional_copy_bytes": 340920,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4abd072199802bfe0b901ea523e593b754f90f8b80b6b9959cf741d011369356",
+      "bytes_each": 103824,
+      "additional_copy_bytes": 103824,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_comparelimits.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_comparelimits.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4af42c965e21d05930dc3c713abd6f8f53bace99e9ec0f7ce1223ca1f8c16e1a",
+      "bytes_each": 204016,
+      "additional_copy_bytes": 204016,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4b1f843e8f066910e43e4c3d33c8e471fa15e552b0017a946104321e7d6a2856",
+      "bytes_each": 146305,
+      "additional_copy_bytes": 292610,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4bf29a3e1f9508ce8a3aa22111a639166932440b99c9ca55235a9798102a248f",
+      "bytes_each": 268661,
+      "additional_copy_bytes": 1074644,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4c59dc66f9e00df23379d5407ad4b413ebe5dbf60ee2c860b85c0eaec9156320",
+      "bytes_each": 2399194,
+      "additional_copy_bytes": 7197582,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2C_T17MRU_20260729T153626_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2C_T17MRU_20260729T153626_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2C_T17MRU_20260729T153626_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2C_T17MRU_20260729T153626_L2A-tena.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4c5cb9c6bdd9b756a502482c932dfde9ff2ad1003f5160eb0f3cc8ed2fbc6188",
+      "bytes_each": 69307,
+      "additional_copy_bytes": 138614,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2024_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4ef91f21bc39744e78da83d895969e78c4276efb2bf0fc5788709b80e93128f7",
+      "bytes_each": 120096,
+      "additional_copy_bytes": 120096,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_bands.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_bands.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "4f486e8eeb778029526f336e7906cc2dc15c845f93a4a02dff8c53c0732ec280",
+      "bytes_each": 181034,
+      "additional_copy_bytes": 362068,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "50f7e01bd821fc3d5717c7ccc110e4332a1b7cb70651faae16ca8fdb276c75e3",
+      "bytes_each": 1847886,
+      "additional_copy_bytes": 1847886,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_rulemove.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_rulemove.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "51163d3d9f23d8ad3be4bc6cae4fe784ae30a9b91ae2c63f19ccad0724bc5c38",
+      "bytes_each": 190361,
+      "additional_copy_bytes": 190361,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "517a963cc3854d049d24f6a40cfe1f2e42e2ea10cbcb98a177eaf7de1f1520f2",
+      "bytes_each": 198737,
+      "additional_copy_bytes": 397474,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "527de5507c811ccbce9c8e15503381b530bab839d6616a7ecdd12462de004b7e",
+      "bytes_each": 1804110,
+      "additional_copy_bytes": 1804110,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_response.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_response.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "538f3e40b80f9c734bb8729de9d113b4e0209a41ed5f03f2ba38ab798cc52363",
+      "bytes_each": 70649,
+      "additional_copy_bytes": 141298,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2026_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "53b29579b19d491080b4e361cd78965e732c13780f43aa45da26e7bdbf51ee4a",
+      "bytes_each": 205551,
+      "additional_copy_bytes": 822204,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "54e65bb898f8c5392a9a23f513d13eaafde84baa7a852d97eee7b5545a2f0ce4",
+      "bytes_each": 189743,
+      "additional_copy_bytes": 379486,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "54f983a2348c4ec613a3321ced5d85188da96fd2c590530c8ee435ad1d65859e",
+      "bytes_each": 29823628,
+      "additional_copy_bytes": 29823628,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/S2B_17MRU_20190711_0_L2A_indices20m.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/S2B_17MRU_20190711_0_L2A_indices20m.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "569e74da59458299e8b5fd02fe0b4b009aa1db2dc1eb72971c585b02f7d3f6a6",
+      "bytes_each": 165575,
+      "additional_copy_bytes": 331150,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "5762612b53724dcf703c0c60e1e0c0b054e792093a0813dc8017a05d4e7606dd",
+      "bytes_each": 197691,
+      "additional_copy_bytes": 197691,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "59c28290d4833d68d65280179c2dabb57c344ef6dc04d119591ab6b914d0d8a5",
+      "bytes_each": 1986126,
+      "additional_copy_bytes": 1986126,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_time.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_time.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "5a9f78c24486d8556724f9257ccb878f114bccb59e77025a62fecb4c3f731e80",
+      "bytes_each": 105408,
+      "additional_copy_bytes": 105408,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_validate.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_validate.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "5b2a776d36a065412b78594c606ac1cd4e5a75721aa2e83bc7a4ab2809e93b2c",
+      "bytes_each": 189134,
+      "additional_copy_bytes": 378268,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "5fb843356f37b56d5bb776bb0674b51f9a7c22b25acb4c4a7abe28107c17c33c",
+      "bytes_each": 82796,
+      "additional_copy_bytes": 413980,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/jatunyacu_detail_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_detail_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_detail_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6474f85948d436227bf5cb09901eb457f858051f4bea93bb9f0b7dd41c1c1261",
+      "bytes_each": 2209614,
+      "additional_copy_bytes": 2209614,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_answer.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_answer.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6548a0121af32dfe4977a0794c0bbffdb6ddc517558f471d7e06331a047bf427",
+      "bytes_each": 207654,
+      "additional_copy_bytes": 415308,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "663c69f4f9975ad87b37f273bb611b904e1848936859dbbce0e4b7ba90973eab",
+      "bytes_each": 2336442,
+      "additional_copy_bytes": 7009326,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2C_T17MRU_20260729T153626_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2C_T17MRU_20260729T153626_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2C_T17MRU_20260729T153626_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2C_T17MRU_20260729T153626_L2A-napo.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "66d704aefc7b9f92919c7e3e9f26f52dce04fe449f44800d63b2eac90ba42cfc",
+      "bytes_each": 124560,
+      "additional_copy_bytes": 124560,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_contrast.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_contrast.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "67e060e31b10ab1622a2ad6e0cb4ed6d2b553cb667cdaa600d6ad5a08921fa99",
+      "bytes_each": 1997646,
+      "additional_copy_bytes": 1997646,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_index.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_index.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "680b2e51e3ed3682151f61f25fa9f53fb4d70d2bce169ed0d94814b0a97277c4",
+      "bytes_each": 238054,
+      "additional_copy_bytes": 952216,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6845caa41fb9a4aae364dcbe8bfcd11461df42b3af4057be3f8984d2d0161ff4",
+      "bytes_each": 162872,
+      "additional_copy_bytes": 325744,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6876d02ecbcaa78b2c2758c61e9deb214ed25b4e36f685160e04e92ec1c55581",
+      "bytes_each": 210198,
+      "additional_copy_bytes": 420396,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "689b5a67b52071e9e512e4db438f7dd0c3e8078d723c7e6386774483ffd96997",
+      "bytes_each": 157056,
+      "additional_copy_bytes": 157056,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/qa_end_0.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/qa_end_0.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "68dd8fcfc5f7b5c843f0ebda9e906458d5d425d66cfef21466cb061750a08e71",
+      "bytes_each": 160707,
+      "additional_copy_bytes": 321414,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6b401ffcec95bc393128c49d9c9d49a3bf30b94217e9e53663071df10451bf1b",
+      "bytes_each": 155788,
+      "additional_copy_bytes": 311576,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6c77cec3621c84e12b11fdcdfe37c164cdffa749a1ed3b2354aae37e47fc8d47",
+      "bytes_each": 248042,
+      "additional_copy_bytes": 248042,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "6e745d6436e016f45dcbc212b0dac666f3100bb3893155d0175c3f2e68bb70c6",
+      "bytes_each": 1744206,
+      "additional_copy_bytes": 1744206,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_cloud.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_cloud.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "7264c8b999ff1cab884f064f6291beda2a91dc7953ad010eedf311e3c68e57af",
+      "bytes_each": 203582,
+      "additional_copy_bytes": 407164,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "72a1d653e60b2bf4edec11bc48a5ad1cf7bb26ac086e4e00bceff377112c3cfd",
+      "bytes_each": 152126,
+      "additional_copy_bytes": 304252,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "73f0cb3216c41baf7cb14b3cd03ac0398dbecc1776b88f11d14eaacf616d4ac2",
+      "bytes_each": 221028,
+      "additional_copy_bytes": 442056,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "74dd04cf8e87016d8702a3159d522f2aa85a68d7a1540e5a00845345425d74d4",
+      "bytes_each": 188540,
+      "additional_copy_bytes": 377080,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "75f8971fadb16f74b619c7b0dec7db5766891111367f1b11aad10f3985a26e88",
+      "bytes_each": 161621,
+      "additional_copy_bytes": 161621,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "761df9fa6506eec33706ef0cdc77c27041675bc227ee45ddf4bb20870c23ed3e",
+      "bytes_each": 188404,
+      "additional_copy_bytes": 188404,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "7711f099df41c385efc63dc9d26fa73e79407f76d4c43d421415cdf23ebf22ef",
+      "bytes_each": 371236,
+      "additional_copy_bytes": 371236,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/qa_hold_2025.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/qa_year_2025.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "780255262cc96e07e6c00de48af1d8c9b625d249f6829019dbcb3b68aa5824d1",
+      "bytes_each": 99504,
+      "additional_copy_bytes": 99504,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_middle.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_middle.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "7862ed0ebfe56d358c52d40903ca21f76990e412fb3d59a50f363fb8ca06fb1b",
+      "bytes_each": 195135,
+      "additional_copy_bytes": 390270,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "78e28af1b2f42ba0835a39820bf0ba4473ac593b1ce687962149f673a9bb70c1",
+      "bytes_each": 84335,
+      "additional_copy_bytes": 84335,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/usb000s27f_verified_v2.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/usb000s27f_verified.geojson"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "7a6e91a3bfe51b7ec075a66cc15b9c0e93dcbcec6564b5fc4fb450c25144906d",
+      "bytes_each": 1834062,
+      "additional_copy_bytes": 1834062,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_first.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_first.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8097864e08faeedc97457ba03380235bd222871e439d58176948638a952d4c8c",
+      "bytes_each": 204409,
+      "additional_copy_bytes": 408818,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "828aefa407cc0669c75e613c6eae8332767c19c0e21885386fae874eef4e1bef",
+      "bytes_each": 69966,
+      "additional_copy_bytes": 139932,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2019_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "83c49b0099462e868cd2ad343be6508e7c38478a0d17581e6a2f35f3c08f0d77",
+      "bytes_each": 170767,
+      "additional_copy_bytes": 341534,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8406af6a66a6e19cf8b01dd1b1afccd5085722bdecafbdc03ca5925e043ae94d",
+      "bytes_each": 154046,
+      "additional_copy_bytes": 308092,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8478d549ec5f286a104c00df362ea85f60525fd61c1bcce4814964c642242cb6",
+      "bytes_each": 439466,
+      "additional_copy_bytes": 439466,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/assets/images/education/fault-trace-plane-photo.jpg",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/assets/images/education/salcedo-yambo.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "86d5b2186255a28dea7db0a0fb1dbc28670a0c6120bd26939828dc4080755e63",
+      "bytes_each": 178326,
+      "additional_copy_bytes": 356652,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "87c905f6ffb1e8809fd8b7eaa6cb2fe531bb1e56ecc4fdb20f25d954d566e900",
+      "bytes_each": 1686606,
+      "additional_copy_bytes": 1686606,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_validate.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_validate.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8c9939749ad5668dced3823669f13acab10c6d2e005bf679beb6e84372d37f7e",
+      "bytes_each": 201606,
+      "additional_copy_bytes": 806424,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8caafa4421f46826ac66eac50a687b8b70ab26712664fde5b48a0c8395e6598a",
+      "bytes_each": 69960,
+      "additional_copy_bytes": 139920,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/manifest.json",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/manifest.json",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/manifest.json"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8cf19180b19b9a9998f76f1feee9bf88b69d141287a9d213e3455f20c1b2d5c8",
+      "bytes_each": 2066441,
+      "additional_copy_bytes": 12398646,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/cases/memoria-sismica-1900-2025/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v3/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5/usgs_snapshot.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/usgs_snapshot.geojson"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "8fa13bdc2a4007cb2d9e9bde8ba83a9221b615830ba2c713f33d28fe95930013",
+      "bytes_each": 232800,
+      "additional_copy_bytes": 931200,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "90d4e66e87d4cb0ae10ddd5057cd7c613b4f0b639d16282da443038ba4af68b5",
+      "bytes_each": 112320,
+      "additional_copy_bytes": 112320,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_sensor.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_sensor.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "921519f1475211d94d7526a99aca3809663f7a05d2ac27463049b6e6fb7f355f",
+      "bytes_each": 2351734,
+      "additional_copy_bytes": 7055202,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2A_T17MRU_20240808T153803_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2A_T17MRU_20240808T153803_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2A_T17MRU_20240808T153803_L2A-jatunyacu.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2A_T17MRU_20240808T153803_L2A-jatunyacu.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "92d12b71fddcb53ba1b67fca0fbe123340976777b4840436ec105073c809422a",
+      "bytes_each": 197799,
+      "additional_copy_bytes": 395598,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "941104e4e62adec68d65c36cf7715396e273df6ca69ee1c944eb0744f8c8da8c",
+      "bytes_each": 81766,
+      "additional_copy_bytes": 408830,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/jatunyacu_detail_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_detail_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_detail_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_detail_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_detail_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_detail_2024_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "94ce73045852b93a7fda7aefbb2cfcb1f63414039da507d8498660492ffd09e6",
+      "bytes_each": 879020,
+      "additional_copy_bytes": 879020,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v7/avance_guion_voz_provisional_v7_corregido.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v7/avance_guion_voz_provisional_v7.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "95dd4a1694e3aa311e4109f5151608a6fbb93bdd53613ff2ade3f92c717cdfa3",
+      "bytes_each": 215090,
+      "additional_copy_bytes": 430180,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "96506ba00b31b19059068dc60a7014d1265338134bb3bd9abe3df80375da780a",
+      "bytes_each": 179332,
+      "additional_copy_bytes": 358664,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "979488daa77d7579d5cb1511144973de3f8d6225059df0d19293b72dda3b738f",
+      "bytes_each": 115488,
+      "additional_copy_bytes": 115488,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_rulemove.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_rulemove.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "98148526173199f6f285eb29feee51bfb81661d63631996785d4ef273e8c7468",
+      "bytes_each": 168499,
+      "additional_copy_bytes": 336998,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9b549fa4001837ce519e096605b01f0cdc5ff15f1db38f5fd547f1f877cda2b8",
+      "bytes_each": 200898,
+      "additional_copy_bytes": 200898,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9b89b649ed2c525e2afbd0a48814b7acdf043727b77703e312404e7d1f0ab4e6",
+      "bytes_each": 176518,
+      "additional_copy_bytes": 176518,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9bba34e7fdfc7c1f7c3c7e360ec5e4482902812b713c8ac396745ee0dd9cb91a",
+      "bytes_each": 187491,
+      "additional_copy_bytes": 187491,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9be82d80eaeee3e3b15c67b5d704bee4def08a19b7ca649b40796dabe46aaac3",
+      "bytes_each": 198517,
+      "additional_copy_bytes": 397034,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9d4e13bc46a1200da3367f247f2aa1af033ae501cb373ad550ef0f7d1659b480",
+      "bytes_each": 168769,
+      "additional_copy_bytes": 337538,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "9e57351b9cbaf9d249587e07cb4cc58ff93dd91f49313957f9df069b40e87e05",
+      "bytes_each": 248047,
+      "additional_copy_bytes": 496094,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a0b6107f543c631826d9ad07603aeb9830a16f2fa485f41a1d78ff702f686691",
+      "bytes_each": 152443,
+      "additional_copy_bytes": 152443,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a27fa86d523e53177073f1d56659c4b36914a187c1e7ff5614c40feff350a8f9",
+      "bytes_each": 182502,
+      "additional_copy_bytes": 182502,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/portada_borrador_v3.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/qa_v3_pregunta_2026.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a57d7855c221de84f733cac8a1d84d052ef443c2ff7ec94fb281b818d1f40020",
+      "bytes_each": 1751118,
+      "additional_copy_bytes": 1751118,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_pools.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_pools.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a83c719a74675fa179eafa86bd337f71868a257cbba57e60d94b93071f9bae97",
+      "bytes_each": 253641,
+      "additional_copy_bytes": 1014564,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a917f4be1d552f8847b961aaf9b7416660e75d1dbf0f80fe6ba0439117117301",
+      "bytes_each": 230068,
+      "additional_copy_bytes": 920272,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2019_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "a96c3a85f53e012193afc6fb3d522d7c7cfc8118c38988c85ac49e0d78bdee61",
+      "bytes_each": 170815,
+      "additional_copy_bytes": 341630,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2026_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "aab50e327a4621242260ede001d2735fb82e1c94b57bcfeb8adc0a38889ae435",
+      "bytes_each": 283019,
+      "additional_copy_bytes": 283019,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_water_counts_2019_2024-0000004096-0000000000.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_water_counts_2019_2024-0000004096-0000000000.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ac01ffcad66c60fffb8ee0e2f29c76feeeb6a5f28c019740fb4c0de545469039",
+      "bytes_each": 2290254,
+      "additional_copy_bytes": 2290254,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_causality.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_causality.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ad18e846fddefdbdcf371214583b58c58165a1761df533378ea0d54055a81ad8",
+      "bytes_each": 132210,
+      "additional_copy_bytes": 132210,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/source_classification.html",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/source_v2_depth_classes.html"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ae8c2ff074a25ba9e5bfbc53101342f04d3ab7594bb28f9c8b4167533a4e0036",
+      "bytes_each": 190693,
+      "additional_copy_bytes": 381386,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "af0d75ea144b6baff8d24d44dc3f87455d89328c8663eacb8a46190c5c759b0d",
+      "bytes_each": 173965,
+      "additional_copy_bytes": 347930,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "af68763a05ca1e8384919fb3fd3ab118ccebbe2664725dc82e3924f98dad89f6",
+      "bytes_each": 5809047,
+      "additional_copy_bytes": 5809047,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_water_counts_2019_2024-0000000000-0000000000.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_water_counts_2019_2024-0000000000-0000000000.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b06db9ffb89b971c4c0cd68823e1c2ffda3cc9afd85929310889fadc83be4d85",
+      "bytes_each": 1890424,
+      "additional_copy_bytes": 5671272,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2B_17MRU_20190711_0_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2B_17MRU_20190711_0_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2B_17MRU_20190711_0_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2B_17MRU_20190711_0_L2A-misahualli.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b0f0b4270eca099fcecc5d5d1665c88f182befb3a46589793ab1e3a60bd78b70",
+      "bytes_each": 119232,
+      "additional_copy_bytes": 119232,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_rulezero.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_rulezero.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b1cc5fd69105cdd560de922f665292d477ec15b1f5625b6c8118eada03d9f284",
+      "bytes_each": 109008,
+      "additional_copy_bytes": 109008,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_cloud.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_cloud.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b22a111ff7fc2b011a5653cd6409cde79b3803cd031da0052d5d2e76ea0f4985",
+      "bytes_each": 153769,
+      "additional_copy_bytes": 307538,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b2d12df23056d7c10ecd84f56ab4b935b4d832f3c61794c8a6ae6529ec4b6277",
+      "bytes_each": 186950,
+      "additional_copy_bytes": 373900,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b4484fbeba4bcf6a93faf5e0060c201e4191808fa0e6a235f2d5da0f1456b674",
+      "bytes_each": 147609,
+      "additional_copy_bytes": 295218,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b790dbdadff19a9d731c10c87e5691916c3d5d3db938ea81f2ff646cf1aa5ff0",
+      "bytes_each": 95573994,
+      "additional_copy_bytes": 95573994,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_rgb10_2019_2024-0000000000-0000000000.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_rgb10_2019_2024-0000000000-0000000000.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "b9b634f8746601f9e69f01035347f3eaae2e27675d8ea99435ee8e9829d653fe",
+      "bytes_each": 1955142,
+      "additional_copy_bytes": 5865426,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/assets/media/andes-pulso/memoria-sismica-1900-2025/voz_elevenlabs_original.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4/voz_elevenlabs_original.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5/voz_elevenlabs_original.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/voz_elevenlabs_original.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "bd35e995796b3840d31392f9ca36b3766dc1c183745a0aeed80bf7fb750a1836",
+      "bytes_each": 105984,
+      "additional_copy_bytes": 105984,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_chemistry.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_chemistry.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "be42bdce2ad4c01f31b0c2690e7752bd43c4f8a86a4c00a679b117dc2817de41",
+      "bytes_each": 235849,
+      "additional_copy_bytes": 235849,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/portada_borrador_v4.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/01_napo/qa_v4_mapa_historico.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c20776eee10f6cfaee51ddbc7bb382516f54b3a75ef3a15cab3b601b27e97e29",
+      "bytes_each": 21435585,
+      "additional_copy_bytes": 21435585,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_dedup_6283cb911fc0_rgb10_2019_2024-0000000000-0000004096.tif",
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/rivers/napo_block7_rgb10_2019_2024-0000000000-0000004096.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c3abe087204bc81debbf1ae5c57888bbef2795fa2dd111f1d4956d72e06a3bb2",
+      "bytes_each": 33038562,
+      "additional_copy_bytes": 33038562,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/S2A_T17MRU_20240808T153803_L2A_indices20m.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/S2A_T17MRU_20240808T153803_L2A_indices20m.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c445a5ef4913bb9def3203b0f47538f13d5cfda37af32ab344dd75264a6362e0",
+      "bytes_each": 204510,
+      "additional_copy_bytes": 409020,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_aweish.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_aweish.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c7979a4030181298416b0f6de6d715a44dbc36c9bc9fc3da0850f52f21a1aa16",
+      "bytes_each": 181779,
+      "additional_copy_bytes": 363558,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c8374bb0782fdcc646c30fc15618e72261b617afc85a99ed83f18de758ae9312",
+      "bytes_each": 176357,
+      "additional_copy_bytes": 352714,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c97b1a5ddb81a8779e8894bb4f7b8382484032bb6ff2cfd0e406c1ac8d0b1472",
+      "bytes_each": 242186,
+      "additional_copy_bytes": 968744,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2024_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "c9b1ea25b4ed02722e011e2702270152fb6e82dab4180b0d080d7a7c0dae0ba9",
+      "bytes_each": 1921614,
+      "additional_copy_bytes": 1921614,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_bands.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_bands.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "caa8942c0b9e05103968db4dc1b9e0ae5b374f3880f4930c0571e4bb6f2df825",
+      "bytes_each": 1993038,
+      "additional_copy_bytes": 1993038,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_contrast.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_contrast.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "cb65356b504d120941b7236e1ab8ba61543402e757458ece9e05c0de69ed3f21",
+      "bytes_each": 200454,
+      "additional_copy_bytes": 400908,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "cc1b64574fc24f3fbdfbccab7991e6ce90891f6ee43a6167b06715cb87908f8b",
+      "bytes_each": 181963,
+      "additional_copy_bytes": 181963,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "cfdc0834ae059ccf07da79a07a8420af88cce603d4c91f07b7ba5f7a528d6360",
+      "bytes_each": 204182,
+      "additional_copy_bytes": 408364,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb",
+      "bytes_each": 279704,
+      "additional_copy_bytes": 1678224,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/cases/memoria-sismica-1900-2025/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v3/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5/catalog.csv",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/catalog.csv"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d346ec373463c3a467cb7a7f81ece98c556918b3cb27e7def78e9808f32d6004",
+      "bytes_each": 204759,
+      "additional_copy_bytes": 204759,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d6f117196df5db012934dade74d658eed1c5945eb2f3ceed7ea0f83db8e25dec",
+      "bytes_each": 187802,
+      "additional_copy_bytes": 375604,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d712b46a212e7dd276f1931b7b1c2353bb795def5727bf24fbbda7ed98a94954",
+      "bytes_each": 169072,
+      "additional_copy_bytes": 169072,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d8a2772170f81c7b3ab7bc5b4ca327c2efa48ab25a3bcc25bce995e4522151ab",
+      "bytes_each": 1907790,
+      "additional_copy_bytes": 1907790,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_rulezero.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_rulezero.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d8c60211c43b16553415f41cc3d9862e84f72957664a1d8061eb00ca9cacea00",
+      "bytes_each": 139824,
+      "additional_copy_bytes": 139824,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_recent.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_recent.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "d9d8df9f3ace51e108280662094d642dea0bd1ee9a2498809edacb1f851f4fd0",
+      "bytes_each": 153490,
+      "additional_copy_bytes": 153490,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "dcc4843dd72535af319f6489f545578b78eeba93d2f79ff48067acaa505efdc8",
+      "bytes_each": 231175,
+      "additional_copy_bytes": 924700,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/napo_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/napo_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2024_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "dde1ec4d9b5537c661d514e26e9ad6e9a5758633aae3fc00bfbda67cc971f95b",
+      "bytes_each": 2529020,
+      "additional_copy_bytes": 2529020,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/comparacion_jatunyacu_indices_2019_2024_2026.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/comparacion_jatunyacu_indices_2019_2024_2026.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "de80080611ad5462c9972ba7a699e952ba3303c654e2f2d1c603049f49313d77",
+      "bytes_each": 1996028,
+      "additional_copy_bytes": 5988084,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2C_T17MRU_20260729T153626_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2C_T17MRU_20260729T153626_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2C_T17MRU_20260729T153626_L2A-misahualli.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2C_T17MRU_20260729T153626_L2A-misahualli.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "deb8ac8d6885fc8950359e5b5c4e549aa68b080d5e95010aa29b7a16459a900b",
+      "bytes_each": 124128,
+      "additional_copy_bytes": 124128,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_time.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_time.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "df0f3d9c300f58ebf7cab4a4c4588ae5f3731602da980120fd7cc7ee2f54d887",
+      "bytes_each": 178481,
+      "additional_copy_bytes": 356962,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "df605c81b1b43fab9227a0fc63d319b2f8b20576e43bc412f9dcf04430ea668c",
+      "bytes_each": 185345,
+      "additional_copy_bytes": 370690,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e0c44c781fde08e2b427f15df0843ad195b731bbf4dfc550f80254483cc10e9c",
+      "bytes_each": 127152,
+      "additional_copy_bytes": 127152,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_zoom.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_zoom.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e25ff68b87440d936311b7127774a7d04e324b6db6fb3f64719207b1e15acdf2",
+      "bytes_each": 196090,
+      "additional_copy_bytes": 784360,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/misahualli_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/misahualli_2024_rgb.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2024_rgb.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e55995c04220dbff72331d6a651a9e4b4a6526a057c97a74a87271d10880a3e7",
+      "bytes_each": 9694184,
+      "additional_copy_bytes": 9694184,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/assets/media/andes-pulso/memoria-sismica-1900-2025/andes_pulso_reel_1900_2025.mp4",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/andes_pulso_reel_1900_2025.mp4"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e59de74920c80c9a7efde62c6d48e8b0a900faf382180f99b7a4838dbcf453a6",
+      "bytes_each": 149712,
+      "additional_copy_bytes": 299424,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e5c90ec232bfa55b2e710b2facb7d459644164c944c768537e2ab05afae86ce6",
+      "bytes_each": 114768,
+      "additional_copy_bytes": 114768,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_pixel.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_pixel.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e67b3a7424a33f32f40e0c3616c593a55d95de854d7840629d60aec859d38b83",
+      "bytes_each": 114624,
+      "additional_copy_bytes": 114624,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_first.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_first.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e6aaea0560af1e5d7e1695f9c7ed636f6f5a3d7f515c697002baac766fa90429",
+      "bytes_each": 2336208,
+      "additional_copy_bytes": 7008624,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2A_T17MRU_20240808T153803_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2A_T17MRU_20240808T153803_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2A_T17MRU_20240808T153803_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2A_T17MRU_20240808T153803_L2A-napo.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e7b3120ea45d96784f1acbeebcc2c8698b247976bb4f71c57ce5e083a3126747",
+      "bytes_each": 197718,
+      "additional_copy_bytes": 395436,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2026_aweinsh.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2026_aweinsh.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e8a86f389528bac5847380bd606afbfaa51fd741200e137a8a9eae0416e14301",
+      "bytes_each": 162297,
+      "additional_copy_bytes": 324594,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "e9f476f62c354b9a00ee945e53135edcc565d72c72920d86d497df5fa15032c6",
+      "bytes_each": 179289,
+      "additional_copy_bytes": 179289,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "eec850b435d19aaec96a0809fb767be8b064fb6a708731ce91bb073216436b20",
+      "bytes_each": 189206,
+      "additional_copy_bytes": 189206,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/jatunyacu_2024_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/jatunyacu_2024_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ef5e73a1a8c7fc2701b970a63d46a3d993257505d5e9b1ea0d2a073ac931dd5d",
+      "bytes_each": 187223,
+      "additional_copy_bytes": 187223,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ef8d07f5c21e59aa8738b80df7775d19f5abac18aa7ba8fb84fc7dfaa2208369",
+      "bytes_each": 204160,
+      "additional_copy_bytes": 408320,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2024_ndvi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2024_ndvi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f0ef3ec45ba06a3627c69418329e52449e861d038ef7a4045618391825145887",
+      "bytes_each": 112752,
+      "additional_copy_bytes": 112752,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_response.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_response.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f3166689afa01096de2b944c2f0eedb8216984d19675bf9137c00f9b22c2554f",
+      "bytes_each": 163336,
+      "additional_copy_bytes": 326672,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/misahualli_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/misahualli_2026_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/misahualli_2026_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f31ccbc7d4538b13e2b8650707d76ec54d19024c4ced728fa0329e4120f05dbc",
+      "bytes_each": 464853,
+      "additional_copy_bytes": 464853,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/assets/media/andes-pulso/memoria-sismica-1900-2025/portada.jpg",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/portada.jpg"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f4f9d8fba228200f0899c5172ed823a5035d4596f870c92d2dfd53e6cbbb7e7b",
+      "bytes_each": 183991,
+      "additional_copy_bytes": 183991,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2/tena_2019_mndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3/tena_2019_mndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f54bf169b9099a84910457b57de1b4f91b9168db7c4e858cdae72d89bcc99a8e",
+      "bytes_each": 2132006,
+      "additional_copy_bytes": 6396018,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2B_17MRU_20190711_0_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2B_17MRU_20190711_0_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2B_17MRU_20190711_0_L2A-tena.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2B_17MRU_20190711_0_L2A-tena.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f6569496cabb8673e0534f4835a455bd46d91eab097aadb73d41ee390b9a923e",
+      "bytes_each": 1836366,
+      "additional_copy_bytes": 1836366,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_pixel.wav",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_pixel.wav"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f656a2bd1e09b216654308e4b5db1e1cc314e2bc1eaef70b1ca852b8615177ff",
+      "bytes_each": 169326,
+      "additional_copy_bytes": 338652,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/napo_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/napo_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/napo_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f79af81a1b226300a918bd722f8b804927659aa16056848e6ebab2bf633d699e",
+      "bytes_each": 111035,
+      "additional_copy_bytes": 222070,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/us20005j32_verified_v2.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/us20005j32_verified.geojson",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v4/sources/pedernales.json"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "f97625a1245c6fc86a1fcaf1f5114685903895152d9c674e24914eef2cf26c57",
+      "bytes_each": 109440,
+      "additional_copy_bytes": 109440,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/voz_pools.mp3",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8/voz_pools.mp3"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "fb9008ca994ef0a9cf1e2111061d548745590e26bccbfc1c72cfeab37b78e3d2",
+      "bytes_each": 179051,
+      "additional_copy_bytes": 358102,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/jatunyacu_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/jatunyacu_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/jatunyacu_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "fe267a9b0a8e67a67cc374a7e26a7ecb2e8a472cf6a8929b9aaa7c96f99f8fcf",
+      "bytes_each": 187303,
+      "additional_copy_bytes": 374606,
+      "paths": [
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/tena_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/tena_2019_ndwi.png",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/tena_2019_ndwi.png"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    },
+    {
+      "sha256": "ff070a34b9e2cd45629055f530e7153e8d365d53514d93afee800893d2fe8d9b",
+      "bytes_each": 2093770,
+      "additional_copy_bytes": 6281310,
+      "paths": [
+        "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/data/raw/fluvial/S2B_17MRU_20190711_0_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5/S2B_17MRU_20190711_0_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6/S2B_17MRU_20190711_0_L2A-napo.tif",
+        "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4/S2B_17MRU_20190711_0_L2A-napo.tif"
+      ],
+      "status": "byte_identical_not_automatically_safe_to_delete",
+      "canonical_selection": "Keep active published/current-case input first; rewire all scripts/manifests to one canonical path or preserve aliases before removing another path."
+    }
+  ],
+  "critical_file_checksums": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/audio_cues.json",
+      "bytes": 432,
+      "sha256": "da237c16536e010d08951794640d5029cb82068ced6012111177ddc325742c8b"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/audio_transcript.json",
+      "bytes": 43559,
+      "sha256": "07461b5724c374ae78db06efdf02ea2a779c8526709a5bce7095a5f3813ca24e"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/catalog.csv",
+      "bytes": 279704,
+      "sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/descripcion_instagram.txt",
+      "bytes": 1989,
+      "sha256": "284d2d401e10c445679c9c9a606d461bf989943de89574e4dc2d3364544e6752"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/descripcion_tiktok.txt",
+      "bytes": 1367,
+      "sha256": "47a816b157e449374724660d521c02dd6bcc2775d804e153d44c312980a32235"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/EDICION_DINAMICA.md",
+      "bytes": 2774,
+      "sha256": "b543990370ab159b548eeddf9ef83ac78bcd71bb0b14de968575bba0387fe3ad"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/encoded_verification.json",
+      "bytes": 605,
+      "sha256": "544d901a08f2b3905d147a463ed75d3e1d7406c0b1804d484153006bb266ac74"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/FUENTES_Y_PUBLICACION.md",
+      "bytes": 5312,
+      "sha256": "2ecb1494b0fb83cd33dc0070cde4b950a3aa7d84a6b717bb799b9cccff990c37"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/guion_elevenlabs_mapa_primero.txt",
+      "bytes": 1700,
+      "sha256": "f452dcd01d4fde501f6a0ab3d92d53bae4008216c07b20e0be6d35fe4d69c19f"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/manifest.json",
+      "bytes": 3238,
+      "sha256": "e77de54e04018294cb741bc1d3337ca9c4043061ae6d0f37986422de79175db5"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/publication_audit.json",
+      "bytes": 2477,
+      "sha256": "6c925fe3e6958bf8850b7a0a9893cd17ac23d1cfa5ef92ed4118f0d05ef9a3c7"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/subtitulos.json",
+      "bytes": 34805,
+      "sha256": "c98f92f416393819f7edb25e04f896a990433493b94a9b875aace0bd6edd29de"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/subtitulos.srt",
+      "bytes": 3880,
+      "sha256": "396c547516f17a28de9f1185bc1c2b97e84645cdb64ac917d9de8ececb95c413"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/usgs_snapshot.geojson",
+      "bytes": 2066441,
+      "sha256": "8cf19180b19b9a9998f76f1feee9bf88b69d141287a9d213e3455f20c1b2d5c8"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/video_metadata.json",
+      "bytes": 16920,
+      "sha256": "7a4e16b80bb6be56c62e5e2b5b9aa26cb476c5186b5429aab05382bb039628f8"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6/voz_elevenlabs_original.mp3",
+      "bytes": 1955142,
+      "sha256": "b9b634f8746601f9e69f01035347f3eaae2e27675d8ea99435ee8e9829d653fe"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/GUION_PARA_GRABAR.md",
+      "bytes": 8885,
+      "sha256": "47ef483d83e48f84fc9ab128be7baf682e537578b1520753e8114b75904db02f"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/narration.json",
+      "bytes": 8198,
+      "sha256": "fa09de9ddc5e41fa2036bb2ae54e27ec7cfac7ad6cc046925c3504e0d0ea5bff"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/sources_manifest.json",
+      "bytes": 4029,
+      "sha256": "16e2996d44a259085421908f961f3fadf2666ead8d5fa620fdc06f6b0dffb045"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/subtitulos_es.srt",
+      "bytes": 13871,
+      "sha256": "6f3ebe474bf9ad2c23a695bc7f970321d5f04210ec50f205989b1d81f9dba8a2"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_answer.json",
+      "bytes": 4427,
+      "sha256": "049acea582d6c7325ae641370f1b572b302d8a41227127233fc6d4a60dc3e1ae"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_bands.json",
+      "bytes": 4224,
+      "sha256": "ac19af77fee394f9594cbac06d806d90ade2bcbf2966cf9b4e12d419d615e7cf"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_causality.json",
+      "bytes": 4463,
+      "sha256": "04a7e3ab321dda4c173346d9c88064493f1bc8541aadc4314e02dba390d9e355"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_chemistry.json",
+      "bytes": 3274,
+      "sha256": "9e92f67c844aaee9f692d303142833a8bdb050e1bcc589f4f5ed63d75d7c54a4"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_cloud.json",
+      "bytes": 4373,
+      "sha256": "b8b941690ef1adc9be4a18484312616eb70b25b84dfcf8a506c5a8b4220ea3f3"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_color.json",
+      "bytes": 3536,
+      "sha256": "8a3855156575879d4704efb50d5d3885c7b5eac6e764fc3882caf87dbb538e58"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_comparelimits.json",
+      "bytes": 3454,
+      "sha256": "55a838e75b823de01d413f0ed412a3fb273c728b15b96039456a190e5028a024"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_contrast.json",
+      "bytes": 3828,
+      "sha256": "b216b8d3fa1654870347a6e854cdbcc6db805ea8178538cca8e2934cc02f0a66"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_creditsv9.json",
+      "bytes": 4379,
+      "sha256": "d6a352390cc493afb114cf14571181683997fd264f38b679e05626423a47a4cc"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_docecallback.json",
+      "bytes": 4112,
+      "sha256": "6226787e985f507aab50553be32f3dd0d2aa9d0c8d45902c5c8e568125a8b92a"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_doceevent.json",
+      "bytes": 4321,
+      "sha256": "92758ea603e6415cf767111407e85e0467a0505346b8ff390a1d131ed0189683"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_docepair.json",
+      "bytes": 4057,
+      "sha256": "c104491e36e3dcdfdeab41d46e4468763e53680754391570fc5439f7c5ccfe1d"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_docestudy.json",
+      "bytes": 4163,
+      "sha256": "f274317c6836f2158ed37b558b54fd292ae2bbcee70e704900d974f1e20b3a23"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_first.json",
+      "bytes": 4213,
+      "sha256": "744091dda36fc9ba68d98b51d3f0be308fc84afa3ae58fe7b3fe5eadde94132b"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_index.json",
+      "bytes": 3902,
+      "sha256": "939d29a3926577b3d05e8df3743100f402e6239d989ec293878e7363263185b5"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_levelv9.json",
+      "bytes": 5016,
+      "sha256": "b6701c5f844c7235e8bf695c3923c03382a29a55f7c033dde395f49cfdd3c229"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_middle.json",
+      "bytes": 3363,
+      "sha256": "a686172a4ad8dc7fbcdf7a3ed0f716c1fdbbae8993e06de52acee8cada5f5972"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_pixel.json",
+      "bytes": 3481,
+      "sha256": "bceda534f6ab6045422506a20a7997f7c6214ce29bff62643fde5adcf7283fd6"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_pools.json",
+      "bytes": 3646,
+      "sha256": "c45c85506e27e11aec21bc30106b184389889796c597428e301f7a5c9699dd53"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_recent.json",
+      "bytes": 3684,
+      "sha256": "193320f1ad32fa4f64f54ae493cad5c6b577dd9b9b1b24f1e1cd044c4c5bb77d"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_response.json",
+      "bytes": 4133,
+      "sha256": "be036be604c14cf4eee436c2f6f9036faf23165fcb5137f6655f7647e7184a2e"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_rulemove.json",
+      "bytes": 3714,
+      "sha256": "07e36ebe332c94351228c8cc5b6826be839a4a34af33e2083fc26fcfc4b87ab3"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_rulezero.json",
+      "bytes": 4055,
+      "sha256": "0b79a74c35f7a9aadf5e37aa80b519a8e612b7e6c3a0555f3cfdbf353626c810"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_sedimentlight.json",
+      "bytes": 4517,
+      "sha256": "d9bde31baf813dc6c189864edb0295461dc8c35a65711de91146d9f2ab488afa"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_sensor.json",
+      "bytes": 3615,
+      "sha256": "426e818174e48199895ec8df410432db9d5bfcb6b6f8779a3b01a17365d07911"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_time.json",
+      "bytes": 4086,
+      "sha256": "79b27bd8c700cd5bbffcfff63143e4ef4ff9bf8875433eb5d848561ac86de8e5"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_twoquestions.json",
+      "bytes": 4803,
+      "sha256": "9ec203f08c213b7933139a2512165a8e30ebcc5172c749cccd5e58b08d6bb172"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_validate.json",
+      "bytes": 3130,
+      "sha256": "44fad98fa9b001a384706fe428a5d1c533f5c0bb41e4f81e19679d87e8217715"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/times_zoom.json",
+      "bytes": 4240,
+      "sha256": "56392cf889c35fa2b43f059af6744de788e7b8e17c29cd69eac76ed3c72b2fec"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/verification.json",
+      "bytes": 4707,
+      "sha256": "7d9ca49917cf15f362c06ddf82f40a4487fa17635c43361f6f1471ec893ca067"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/video_metadata.json",
+      "bytes": 29538,
+      "sha256": "3b395ab4ea0a3fde6e398904c424cf6ed8513cc7227e62011156c6b9a170bca7"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/sources/Brazil-Dam2.jpg",
+      "bytes": 6102336,
+      "sha256": "d6a749fdaf76fb49ca6d4cdcdb89a5a6db674d4ca6cd923ad23e391c11abcda1"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9/sources/doce-usgs.zip",
+      "bytes": 5976997,
+      "sha256": "202d8e37d26280e4bf98176897ac61b6d19bbf490419031b0def967311f7434f"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/02_me_parto_en_dos.txt",
+      "bytes": 2433,
+      "sha256": "4ff26128fc21085b685f2da08133d3cd19f122df6af82ea103aad6bcb5226dd2"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/03_que_llega_hasta_mi.txt",
+      "bytes": 2351,
+      "sha256": "6933493bb347c7292be1902ddd3ec02dce641cd0d634d0f8212191cd2de7ef8e"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/04_dos_casas.txt",
+      "bytes": 2340,
+      "sha256": "5c33808328a772940562f087c60087140106978fdfc66ad1d139ff1bc6722502"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/05_profundidad_bolivia.txt",
+      "bytes": 2980,
+      "sha256": "f80f0293ddc4871a196c37729bc3aed423942bf45cd698f2a0979f2ff13d86e2"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/06_magnitud_e_intensidad.txt",
+      "bytes": 2767,
+      "sha256": "3f9862e40656552b280e1250bd3f867518a790fe4b1ff5aa4b862ca752a40bbf"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/07_piedemonte_y_conciencia.txt",
+      "bytes": 2633,
+      "sha256": "262fd598f5ae2a831a4017ae80c2045e13901c142ce86c9660d19232afc3a746"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/DURACIONES_Y_CONTROL_V10.md",
+      "bytes": 2611,
+      "sha256": "2bd9ba1784b31922e54f6d5c1735a397c7f8443cef756ce809d9bab88043c8ee"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/GUION_Y_PLAN_VISUAL_V10.md",
+      "bytes": 42650,
+      "sha256": "b6a497e0b27b0c285b210f223183c71d12bd3eb677de03ae9bf7f563d5a047bc"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v10/NOTAS_Y_FUENTES_V10.md",
+      "bytes": 13440,
+      "sha256": "6debfc8e91178487e5abe62fe9f4f29b9f8ec8a0f8adcb369197e7599c63aa13"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v11/02_locucion_v11.txt",
+      "bytes": 3481,
+      "sha256": "f7bbac32d5682959fb57ddca0bbf95b075ee2fa4bd5ca988c0abfd9d855c79ab"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v11/EPISODIO_02_PLACAS_ESFUERZOS_Y_FALLAS.md",
+      "bytes": 8797,
+      "sha256": "53294f03bc1d7c963fae32002cd010d0ce0e1a6a3c3b174c0c42796ff8d0d9b5"
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica/00_profundidad_danos/v11/VIABILIDAD_PERFIL_IGEPN.md",
+      "bytes": 7826,
+      "sha256": "4bade6e1e6755711d344975f0379e0c47e53bf3ce682d8552e2a8a48a9ec3c63"
+    }
+  ],
+  "directory_inventory": [
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/asr_models",
+      "bytes": 147884043,
+      "files": 7
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/asr_runtime",
+      "bytes": 274828789,
+      "files": 3695
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025",
+      "bytes": 7264142,
+      "files": 23
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v2",
+      "bytes": 9126975,
+      "files": 32
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v3",
+      "bytes": 23924918,
+      "files": 50
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v4",
+      "bytes": 19856219,
+      "files": 34
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v5",
+      "bytes": 20125014,
+      "files": 35
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/reel_ecuador_1900_2025_v6",
+      "bytes": 26761575,
+      "files": 60
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_doce_v9",
+      "bytes": 135611955,
+      "files": 157
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_documental_v8",
+      "bytes": 153320485,
+      "files": 196
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v5",
+      "bytes": 85378294,
+      "files": 199
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_historia_v6",
+      "bytes": 80191167,
+      "files": 198
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v2",
+      "bytes": 160393687,
+      "files": 130
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_indices_v3",
+      "bytes": 114610398,
+      "files": 74
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_metodos_v4",
+      "bytes": 98427618,
+      "files": 209
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/rios_napo_ndwi_2026",
+      "bytes": 287716891,
+      "files": 79
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/river_voice_runtime",
+      "bytes": 6120223,
+      "files": 391
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/monitor-sismos/artifacts/serie_memoria_sismica",
+      "bytes": 438641294,
+      "files": 503
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/output/conceptos-ecuador-vivo-20261004",
+      "bytes": 5528092,
+      "files": 4
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/output/porotoyacu_nube_definitiva_20260923",
+      "bytes": 93832923,
+      "files": 109
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/docx_qa_432",
+      "bytes": 7159851,
+      "files": 51
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/pdfs",
+      "bytes": 2414096,
+      "files": 15
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/rivers-next",
+      "bytes": 134388096,
+      "files": 793
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/rivers-proof",
+      "bytes": 781234,
+      "files": 7
+    },
+    {
+      "path": "C:/Users/JHONY CONTERON/OneDrive/Documentos/GitHub/fallas-ecuador/tmp/spectral-proof",
+      "bytes": 358975,
+      "files": 3
+    }
+  ],
+  "asr_restore_metadata": {
+    "script": "C:/Users/JHONY CONTERON/monitor-sismos/align_reel_audio.py",
+    "model": "Systran/faster-whisper-base",
+    "revision": "ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66",
+    "packages": [
+      "anyio-4.15.1.dist-info",
+      "av-19.0.0.dist-info",
+      "certifi-2026.7.22.dist-info",
+      "click-8.5.0.dist-info",
+      "colorama-0.4.6.dist-info",
+      "ctranslate2-4.8.2.dist-info",
+      "faster_whisper-1.2.1.dist-info",
+      "filelock-4.0.9.dist-info",
+      "flatbuffers-25.12.19.dist-info",
+      "fsspec-2026.9.0.dist-info",
+      "h11-0.16.0.dist-info",
+      "hf_xet-1.6.0.dist-info",
+      "httpcore-1.0.9.dist-info",
+      "httpx-0.28.1.dist-info",
+      "huggingface_hub-1.33.0.dist-info",
+      "idna-3.20.dist-info",
+      "numpy-2.5.3.dist-info",
+      "onnxruntime-1.30.0.dist-info",
+      "packaging-26.3.dist-info",
+      "protobuf-7.36.2.dist-info",
+      "pyyaml-6.0.3.dist-info",
+      "tokenizers-0.23.2.dist-info",
+      "tqdm-4.70.1.dist-info",
+      "typing_extensions-4.16.0.dist-info"
+    ]
+  },
+  "proposed_layout": {
+    "data/cases/memoria-sismica-1900-2025/": "Frozen public USGS snapshot, CSV, manifest, methodology and citation/license metadata.",
+    "assets/media/andes-pulso/memoria-sismica-1900-2025/": "Final published/master MP4 and selected poster, not silent intermediate or superseded versions.",
+    "production/andes-pulso/scripts/": "Original render/preparation/verification scripts with portable configurable project-relative inputs.",
+    "production/andes-pulso/masters/": "Local-only original narration/timings, final masters and scientific evidence not suitable for direct Git distribution.",
+    "production/andes-pulso/en-curso/rio-doce/": "Paused v9 + canonical Ecuador v6 evidence; retain current input references until portable migration completes.",
+    "production/andes-pulso/en-curso/memoria-sismica/": "Depth/plates/faults v10/v11, Napo/Tena, Nororiente 1987 scripts and validated animation resources.",
+    "production/fotogrametria/porotoyacu/": "Preserved local research outputs and manuscripts; no automatic public upload.",
+    "documentation/migration/": "Checksums, old-to-new path map, actual deletion log and restore instructions.",
+    ".cache/": "Optional regenerable ASR/environment files; not source data and not checked into Git."
+  },
+  "recovery_note": "If a superseded MP4 is permanently deleted after preserving master+inputs, source-based regeneration is possible but the exact old binary is not guaranteed. Keep exact old hashes as editorial history. Scientific source files and unique audio should not be deleted just because a final export exists."
+}

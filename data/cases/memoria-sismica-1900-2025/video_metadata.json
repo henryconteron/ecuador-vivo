@@ -1,0 +1,922 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "frames": 3785,
+  "duration_seconds": 126.16666666666667,
+  "codec": "H.264",
+  "pixel_format": "yuv420p",
+  "audio": "AAC \u00b7 user-supplied ElevenLabs narration \u00b7 Emilio",
+  "audio_source_sha256": "b9b634f8746601f9e69f01035347f3eaae2e27675d8ea99435ee8e9829d653fe",
+  "audio_source_duration_seconds": 121.1559375,
+  "audio_speed": 1,
+  "audio_cuts": 0,
+  "video_sha256": "e55995c04220dbff72331d6a651a9e4b4a6526a057c97a74a87271d10880a3e7",
+  "csv_sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb",
+  "scenes": [
+    {
+      "kind": "year",
+      "year": 1900,
+      "start_frame": 0,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1901,
+      "start_frame": 7,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1902,
+      "start_frame": 14,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1903,
+      "start_frame": 22,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1904,
+      "start_frame": 29,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1905,
+      "start_frame": 37,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1906,
+      "start_frame": 44,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1907,
+      "start_frame": 52,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1908,
+      "start_frame": 59,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1909,
+      "start_frame": 67,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1910,
+      "start_frame": 74,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1911,
+      "start_frame": 81,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1912,
+      "start_frame": 89,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1913,
+      "start_frame": 96,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1914,
+      "start_frame": 104,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1915,
+      "start_frame": 111,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1916,
+      "start_frame": 119,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1917,
+      "start_frame": 126,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1918,
+      "start_frame": 134,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1919,
+      "start_frame": 141,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1920,
+      "start_frame": 149,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1921,
+      "start_frame": 156,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1922,
+      "start_frame": 163,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1923,
+      "start_frame": 171,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1924,
+      "start_frame": 178,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1925,
+      "start_frame": 186,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1926,
+      "start_frame": 193,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1927,
+      "start_frame": 201,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1928,
+      "start_frame": 208,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1929,
+      "start_frame": 216,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1930,
+      "start_frame": 223,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1931,
+      "start_frame": 231,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1932,
+      "start_frame": 238,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1933,
+      "start_frame": 245,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1934,
+      "start_frame": 253,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1935,
+      "start_frame": 260,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1936,
+      "start_frame": 268,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1937,
+      "start_frame": 275,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1938,
+      "start_frame": 283,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1939,
+      "start_frame": 290,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1940,
+      "start_frame": 298,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1941,
+      "start_frame": 305,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1942,
+      "start_frame": 313,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1943,
+      "start_frame": 320,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1944,
+      "start_frame": 327,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1945,
+      "start_frame": 335,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1946,
+      "start_frame": 342,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1947,
+      "start_frame": 350,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1948,
+      "start_frame": 357,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1949,
+      "start_frame": 365,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1950,
+      "start_frame": 372,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1951,
+      "start_frame": 380,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1952,
+      "start_frame": 387,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1953,
+      "start_frame": 394,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1954,
+      "start_frame": 402,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1955,
+      "start_frame": 409,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1956,
+      "start_frame": 417,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1957,
+      "start_frame": 424,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1958,
+      "start_frame": 432,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1959,
+      "start_frame": 439,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1960,
+      "start_frame": 447,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1961,
+      "start_frame": 454,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1962,
+      "start_frame": 462,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1963,
+      "start_frame": 469,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1964,
+      "start_frame": 476,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1965,
+      "start_frame": 484,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1966,
+      "start_frame": 491,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1967,
+      "start_frame": 499,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1968,
+      "start_frame": 506,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1969,
+      "start_frame": 514,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1970,
+      "start_frame": 521,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1971,
+      "start_frame": 529,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1972,
+      "start_frame": 536,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1973,
+      "start_frame": 544,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1974,
+      "start_frame": 551,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1975,
+      "start_frame": 558,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1976,
+      "start_frame": 566,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1977,
+      "start_frame": 573,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1978,
+      "start_frame": 581,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1979,
+      "start_frame": 588,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1980,
+      "start_frame": 596,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1981,
+      "start_frame": 603,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1982,
+      "start_frame": 611,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1983,
+      "start_frame": 618,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1984,
+      "start_frame": 626,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1985,
+      "start_frame": 633,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1986,
+      "start_frame": 640,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1987,
+      "start_frame": 648,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1988,
+      "start_frame": 655,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1989,
+      "start_frame": 663,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1990,
+      "start_frame": 670,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1991,
+      "start_frame": 678,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1992,
+      "start_frame": 685,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1993,
+      "start_frame": 693,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1994,
+      "start_frame": 700,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1995,
+      "start_frame": 707,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1996,
+      "start_frame": 715,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1997,
+      "start_frame": 722,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 1998,
+      "start_frame": 730,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 1999,
+      "start_frame": 737,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2000,
+      "start_frame": 745,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2001,
+      "start_frame": 752,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2002,
+      "start_frame": 760,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2003,
+      "start_frame": 767,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2004,
+      "start_frame": 775,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2005,
+      "start_frame": 782,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2006,
+      "start_frame": 789,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2007,
+      "start_frame": 797,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2008,
+      "start_frame": 804,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2009,
+      "start_frame": 812,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2010,
+      "start_frame": 819,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2011,
+      "start_frame": 827,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2012,
+      "start_frame": 834,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2013,
+      "start_frame": 842,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2014,
+      "start_frame": 849,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2015,
+      "start_frame": 857,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2016,
+      "start_frame": 864,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2017,
+      "start_frame": 871,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2018,
+      "start_frame": 879,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2019,
+      "start_frame": 886,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2020,
+      "start_frame": 894,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2021,
+      "start_frame": 901,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2022,
+      "start_frame": 909,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2023,
+      "start_frame": 916,
+      "frames": 8
+    },
+    {
+      "kind": "year",
+      "year": 2024,
+      "start_frame": 924,
+      "frames": 7
+    },
+    {
+      "kind": "year",
+      "year": 2025,
+      "start_frame": 931,
+      "frames": 8
+    },
+    {
+      "kind": "hold",
+      "year": 2025,
+      "start_frame": 939,
+      "frames": 478
+    },
+    {
+      "kind": "guide",
+      "year": null,
+      "start_frame": 1417,
+      "frames": 550
+    },
+    {
+      "kind": "depth",
+      "year": null,
+      "start_frame": 1967,
+      "frames": 468
+    },
+    {
+      "kind": "profile",
+      "year": null,
+      "start_frame": 2435,
+      "frames": 720
+    },
+    {
+      "kind": "action",
+      "year": null,
+      "start_frame": 3155,
+      "frames": 393
+    },
+    {
+      "kind": "end",
+      "year": null,
+      "start_frame": 3548,
+      "frames": 237
+    }
+  ],
+  "depth_counts": {
+    "shallow": 1752,
+    "intermediate": 908,
+    "deep": 0,
+    "unknown": 1
+  },
+  "depth_max_km": 254.0,
+  "credit": "Henry Conteron, ingeniero en geociencias e investigador independiente",
+  "version": 6,
+  "opening": "map-first",
+  "audio_cues": {
+    "scope_start": 14.3,
+    "archive_complete": 31.31,
+    "guide_start": 47.22,
+    "depth_start": 65.57,
+    "profile_start": 81.17,
+    "action_start": 105.17,
+    "end_start": 118.28,
+    "method": "Local speech recognition with word timestamps, checked against the supplied script and FFmpeg-detected pauses. Cuts placed in pauses before each topic; approximate editorial alignment. The continuous original audio is not cut or retimed."
+  },
+  "dynamic_edit": true,
+  "burned_in_captions": true,
+  "subtitle_timing": "Local word timestamps, approximate; displayed spelling checked against script",
+  "caption_box": [
+    90,
+    1430,
+    930,
+    1590
+  ],
+  "scientific_motion": "None: no symbol pulsing or movement, fixed coordinates, depth and magnitude scales",
+  "qa_samples": [
+    {
+      "second": 1,
+      "label": "gancho"
+    },
+    {
+      "second": 35,
+      "label": "advertencia"
+    },
+    {
+      "second": 51.7,
+      "label": "epicentro"
+    },
+    {
+      "second": 54.7,
+      "label": "magnitud"
+    },
+    {
+      "second": 56.6,
+      "label": "no_danos"
+    },
+    {
+      "second": 60.7,
+      "label": "color_claro"
+    },
+    {
+      "second": 62.6,
+      "label": "color_oscuro"
+    },
+    {
+      "second": 72,
+      "label": "hipocentro"
+    },
+    {
+      "second": 74.7,
+      "label": "epicentro_esquema"
+    },
+    {
+      "second": 78.5,
+      "label": "flecha_profundidad"
+    },
+    {
+      "second": 86,
+      "label": "perfil_oeste"
+    },
+    {
+      "second": 90,
+      "label": "perfil_norte"
+    },
+    {
+      "second": 97.7,
+      "label": "maximo"
+    },
+    {
+      "second": 103,
+      "label": "sin_profundidad"
+    },
+    {
+      "second": 110,
+      "label": "no_prediccion"
+    },
+    {
+      "second": 114.4,
+      "label": "conversa"
+    },
+    {
+      "second": 115.9,
+      "label": "practica"
+    },
+    {
+      "second": 117.4,
+      "label": "kit"
+    },
+    {
+      "second": 120,
+      "label": "mensaje_final"
+    },
+    {
+      "second": 124,
+      "label": "fuentes"
+    }
+  ]
+}

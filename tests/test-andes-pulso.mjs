@@ -1,0 +1,62 @@
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { normalizeSnapshot, filterEvents, pageEvents, depthGroup, summarizeEvents, eventURL, CASE_BASE, SNAPSHOT_SHA256 } from "../assets/js/andes-pulso.js";
+
+const root = fileURLToPath(new URL("../", import.meta.url));
+const base = path.join(root, CASE_BASE);
+const record = JSON.parse(readFileSync(path.join(base, "case.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(path.join(base, "manifest.json"), "utf8"));
+const snapshotBytes = readFileSync(path.join(base, "usgs_snapshot.geojson"));
+const snapshot = JSON.parse(snapshotBytes);
+const sha = (buffer) => createHash("sha256").update(buffer).digest("hex");
+assert.equal(sha(snapshotBytes), SNAPSHOT_SHA256);
+assert.equal(manifest.snapshot_sha256, SNAPSHOT_SHA256);
+for (const [name, file] of Object.entries(record.files)) {
+  const bytes = readFileSync(path.join(base, file.path));
+  assert.equal(bytes.length, file.bytes, `${name}: bytes`);
+  assert.equal(sha(bytes), file.sha256, `${name}: SHA-256`);
+}
+for (const [name, file] of Object.entries(record.media)) {
+  const bytes = readFileSync(path.join(root, file.path));
+  assert.equal(bytes.length, file.bytes, `${name}: bytes`);
+  assert.equal(sha(bytes), file.sha256, `${name}: SHA-256`);
+}
+assert.equal(record.rights.excluded_from_code_license, true);
+assert.equal(record.social_links.every((link) => link.exact_edition_match === "not-verified"), true);
+const events = normalizeSnapshot(snapshot);
+assert.equal(events.length, 2661);
+assert.equal(events.length, record.record_count);
+assert.equal(events.at(-1).year, 1901);
+assert.equal(events[0].year, 2025);
+assert.deepEqual(summarizeEvents(events), { count: 2661, shallow: 1752, intermediate: 908, deep: 0, unknown: 1, maxDepth: 254 });
+assert.equal(depthGroup(null), "unknown");
+assert.equal(depthGroup(0), "shallow");
+assert.equal(depthGroup(70), "intermediate");
+assert.equal(depthGroup(300), "deep");
+assert.equal(filterEvents(events).length, 2661);
+assert.equal(filterEvents(events, {search: "US20005J32"})[0].magnitude, 7.8);
+assert.ok(filterEvents(events, {from: 2016, to: 2016, magnitude: 7}).every((event) => event.year === 2016 && event.magnitude >= 7));
+assert.equal(filterEvents(events, {search: "no-such-earthquake-identifier"}).length, 0);
+assert.equal(pageEvents(events, -1).page, 0);
+assert.equal(pageEvents(events, 1000).page, 133);
+assert.equal(pageEvents(events, 133).rows.length, 1);
+assert.deepEqual(pageEvents([], 100), {rows: [], page: 0, pages: 1});
+assert.match(eventURL("<script>/"), /^https:\/\/earthquake\.usgs\.gov\/earthquakes\/eventpage\/%3Cscript%3E%2F$/);
+assert.throws(() => normalizeSnapshot({type: "FeatureCollection", features: [snapshot.features[0], snapshot.features[0]]}), /Invalid event/);
+assert.throws(() => normalizeSnapshot({type: "FeatureCollection", features: [{...snapshot.features[0], geometry: {type: "Point", coordinates: [-90, -1, null]}}]}), /Invalid event/);
+const html = readFileSync(path.join(root, "andes-pulso.html"), "utf8");
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+assert.equal(new Set(ids).size, ids.length, "No duplicate HTML IDs");
+for (const match of html.matchAll(/href="#([^"]+)"/g)) assert.ok(ids.includes(match[1]), `Missing anchor ${match[1]}`);
+for (const match of html.matchAll(/(?:href|src|poster)="((?:data\/cases|assets\/media|assets\/js\/andes|assets\/css\/andes)[^"]+)"/g)) assert.ok(existsSync(path.join(root, match[1])), `Missing local file ${match[1]}`);
+assert.ok(html.includes("data-portal-language"));
+assert.ok(html.includes("data-en="));
+assert.ok(!html.includes("autoplay"));
+assert.ok(!html.includes("iframe"), "No automatic social embeds");
+const js = readFileSync(path.join(root, "assets/js/andes-pulso.js"), "utf8");
+assert.ok(!js.includes("innerHTML"), "Untrusted catalog text uses textContent");
+assert.ok(!js.includes("fdsnws/event/1/query"), "Case must not refresh from live data");
+console.log("Andes Pulso: 17 preserved files/media verified; 2,661 records, filters, pagination, provenance and safety tests passed.");

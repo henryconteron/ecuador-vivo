@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "four-editorial-windows-not-province-or-basin",
+  "api": "https://earth-search.aws.element84.com/v1",
+  "scenes": [
+    {"collection": "sentinel-2-l2a", "id": "S2B_17MRU_20190711_0_L2A", "date": "2019-07-11"},
+    {"collection": "sentinel-2-c1-l2a", "id": "S2A_T17MRU_20240808T153803_L2A", "date": "2024-08-08"},
+    {"collection": "sentinel-2-c1-l2a", "id": "S2C_T17MRU_20260729T153626_L2A", "date": "2026-07-29"}
+  ],
+  "regions": [
+    {"id": "tena", "name": "Tena", "bbox": [-77.84, -1.025, -77.78, -0.965]},
+    {"id": "jatunyacu", "name": "Jatunyacu", "bbox": [-77.865, -1.095, -77.805, -1.035]},
+    {"id": "napo", "name": "Napo", "bbox": [-77.775, -1.07, -77.715, -1.01]},
+    {"id": "misahualli", "name": "Misahuallí", "bbox": [-77.695, -1.06, -77.64, -1.005]}
+  ],
+  "bands": ["B2", "B3", "B4", "B8", "B11", "B12", "valid"],
+  "native_crs": "EPSG:32717",
+  "sampling_m": 20,
+  "accepted_scl": [4, 5, 6],
+  "qa": "conservative-scl-and-six-finite-nonnegative-reflectances-positive-ratio-denominators",
+  "display_crs": "EPSG:3857",
+  "resampling": "nearest",
+  "encoding": "band-major-float32-little-endian-gzip",
+  "thresholds": {"ndwi": 0, "mndwi": 0, "aweinsh": 0, "aweish": 0},
+  "threshold_status": "exploratory-not-locally-calibrated",
+  "formulas": {
+    "ndwi": "(B3-B8)/(B3+B8)",
+    "mndwi": "(B3-B11)/(B3+B11)",
+    "aweinsh": "4*(B3-B11)-0.25*B8-2.75*B12",
+    "aweish": "B2+2.5*B3-1.5*(B8+B11)-0.25*B12",
+    "ndti": "(B4-B3)/(B4+B3)",
+    "ndvi": "(B8-B4)/(B8+B4)"
+  },
+  "references": [
+    {"title": "Sentinel-2: bandas y resolución · Copernicus / Google", "url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED"},
+    {"title": "NDWI · McFeeters (1996)", "url": "https://doi.org/10.1080/01431169608948714"},
+    {"title": "MNDWI · Xu (2006)", "url": "https://doi.org/10.1080/01431160600589179"},
+    {"title": "AWEI · Feyisa et al. (2014)", "url": "https://doi.org/10.1016/j.rse.2013.08.029"},
+    {"title": "Comparación de detectores · Kirby et al. (2024)", "url": "https://doi.org/10.1016/j.rsase.2024.101367"},
+    {"title": "Agua poco profunda y cauces secos · Cavallo et al. (2025)", "url": "https://doi.org/10.1016/j.jhydrol.2025.133416"},
+    {"title": "Sedimentos y minería amazónica · Lobo et al. (2018)", "url": "https://www.intechopen.com/chapters/62698"},
+    {"title": "NDTI rojo/verde · Water (2025), tabla de índices", "url": "https://www.mdpi.com/2073-4441/17/15/2195"},
+    {"title": "Minería aluvial y sedimentos · Dethier et al. (2023)", "url": "https://www.nature.com/articles/s41586-023-06309-9"}
+  ]
+}

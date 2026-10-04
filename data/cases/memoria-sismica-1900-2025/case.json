@@ -1,0 +1,51 @@
+{
+  "id": "memoria-sismica-1900-2025",
+  "version": "v6",
+  "title": {"es": "Memoria sísmica: Ecuador y entorno regional, 1900–2025", "en": "Seismic memory: Ecuador and regional surroundings, 1900–2025"},
+  "author": "Henry Conteron",
+  "series": "Andes Pulso",
+  "integration_date": "2026-10-04",
+  "state": "preserved-local-final",
+  "source_project": "monitor-sismos",
+  "source_artifact": "artifacts/reel_ecuador_1900_2025_v6",
+  "source": "https://earthquake.usgs.gov/fdsnws/event/1/",
+  "snapshot_downloaded_at": "2026-10-02T16:50:22.869856+00:00",
+  "record_count": 2661,
+  "query": {"start": "1900-01-01T00:00:00Z", "end": "2025-12-31T23:59:59.999Z", "minimum_magnitude": 4, "bounds_west_south_east_north": [-83, -5.5, -74.5, 2.5], "boundary_type": "regional-rectangle", "excludes_galapagos": true},
+  "files": {
+    "snapshot": {"path": "usgs_snapshot.geojson", "bytes": 2066441, "sha256": "8cf19180b19b9a9998f76f1feee9bf88b69d141287a9d213e3455f20c1b2d5c8"},
+    "csv": {"path": "catalog.csv", "bytes": 279704, "sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb"},
+    "query_manifest": {"path": "manifest.json", "bytes": 3238, "sha256": "e77de54e04018294cb741bc1d3337ca9c4043061ae6d0f37986422de79175db5"},
+    "audit": {"path": "publication_audit.json", "bytes": 2477, "sha256": "6c925fe3e6958bf8850b7a0a9893cd17ac23d1cfa5ef92ed4118f0d05ef9a3c7"},
+    "video_metadata": {"path": "video_metadata.json", "bytes": 16920, "sha256": "7a4e16b80bb6be56c62e5e2b5b9aa26cb476c5186b5429aab05382bb039628f8"},
+    "script": {"path": "guion_elevenlabs_mapa_primero.txt", "bytes": 1700, "sha256": "f452dcd01d4fde501f6a0ab3d92d53bae4008216c07b20e0be6d35fe4d69c19f"},
+    "captions": {"path": "subtitulos.srt", "bytes": 3880, "sha256": "396c547516f17a28de9f1185bc1c2b97e84645cdb64ac917d9de8ececb95c413"},
+    "caption_metadata": {"path": "subtitulos.json", "bytes": 34805, "sha256": "c98f92f416393819f7edb25e04f896a990433493b94a9b875aace0bd6edd29de"},
+    "audio_cues": {"path": "audio_cues.json", "bytes": 432, "sha256": "da237c16536e010d08951794640d5029cb82068ced6012111177ddc325742c8b"},
+    "encoding_audit": {"path": "encoded_verification.json", "bytes": 605, "sha256": "544d901a08f2b3905d147a463ed75d3e1d7406c0b1804d484153006bb266ac74"},
+    "publication_notes": {"path": "FUENTES_Y_PUBLICACION.md", "bytes": 5312, "sha256": "2ecb1494b0fb83cd33dc0070cde4b950a3aa7d84a6b717bb799b9cccff990c37"},
+    "instagram_caption": {"path": "descripcion_instagram.txt", "bytes": 1989, "sha256": "284d2d401e10c445679c9c9a606d461bf989943de89574e4dc2d3364544e6752"},
+    "tiktok_caption": {"path": "descripcion_tiktok.txt", "bytes": 1367, "sha256": "47a816b157e449374724660d521c02dd6bcc2775d804e153d44c312980a32235"},
+    "edition_notes": {"path": "EDICION_DINAMICA.md", "bytes": 2774, "sha256": "b543990370ab159b548eeddf9ef83ac78bcd71bb0b14de968575bba0387fe3ad"}
+  },
+  "media": {
+    "video": {"path": "assets/media/andes-pulso/memoria-sismica-1900-2025/andes_pulso_reel_1900_2025.mp4", "bytes": 9694184, "sha256": "e55995c04220dbff72331d6a651a9e4b4a6526a057c97a74a87271d10880a3e7", "language": "es", "duration_seconds": 126.16666666666667, "width": 1080, "height": 1920, "fps": 30},
+    "poster": {"path": "assets/media/andes-pulso/memoria-sismica-1900-2025/portada.jpg", "bytes": 464853, "sha256": "f31ccbc7d4538b13e2b8650707d76ec54d19024c4ced728fa0329e4120f05dbc"},
+    "voice_master": {"path": "assets/media/andes-pulso/memoria-sismica-1900-2025/voz_elevenlabs_original.mp3", "bytes": 1955142, "sha256": "b9b634f8746601f9e69f01035347f3eaae2e27675d8ea99435ee8e9829d653fe"}
+  },
+  "rights": {
+    "data_attribution": "U.S. Geological Survey (USGS), Earthquake Catalog; preserve contributing network credits in original GeoJSON.",
+    "data_notice": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "video_license": "No open license granted; noncommercial educational publication only for the preserved voice take.",
+    "voice_credit": "Voz: elevenlabs.io",
+    "synthetic_voice": true,
+    "voice_plan_at_creation_reported_by_author": "free",
+    "excluded_from_code_license": true
+  },
+  "social_links": [
+    {"url": "https://www.instagram.com/reel/DeAUmHNTp7R/", "provided_by": "author", "exact_edition_match": "not-verified"},
+    {"url": "https://www.tiktok.com/@elgeocientifico/video/7692168484624780564", "provided_by": "author", "exact_edition_match": "not-verified"}
+  ],
+  "limitations": ["Not a political-boundary selection and excludes Galápagos.", "Incomplete historical catalog; annual counts are not directly comparable.", "Original heterogeneous magnitude types, not homogenized to Mw.", "Unknown depth is not zero depth.", "No inference of fault assignment, intensity, damage, risk or prediction."],
+  "version_policy": "Preserve this snapshot byte-for-byte. A corrected or extended catalog requires a new identified case version."
+}

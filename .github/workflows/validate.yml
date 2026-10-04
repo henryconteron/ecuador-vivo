@@ -31,3 +31,5 @@ jobs:
       - run: python scripts/build_napo_spectral.py --help
       - run: python scripts/build_napo_rivers.py --help
       - run: python scripts/build_napo_river_changes.py --help
+      - run: python scripts/build_fluvial_lab.py --help
+      - run: python scripts/evaluate_fluvial_methods.py --help

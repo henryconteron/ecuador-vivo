@@ -8,7 +8,7 @@ for (const story of ["earth", "water", "sky"]) {
   assert.match(markup, new RegExp(`id="choice-${story}"[^>]*role="tab"[^>]*aria-controls="story-${story}"`), `Missing accessible story choice: ${story}`);
   assert.match(markup, new RegExp(`id="story-${story}"[^>]*role="tabpanel"[^>]*aria-labelledby="choice-${story}"[^>]*data-story-panel="${story}"`), `Missing story panel: ${story}`);
   const tourLink = [...markup.matchAll(/<a\b[^>]*data-story-map[^>]*>/g)].some((match) =>
-    match[0].includes(`href="./?system=${story}&amp;tour=${story}"`));
+    match[0].includes(`href="explore.html?system=${story}&amp;tour=${story}"`));
   assert.ok(tourLink, `Missing guided atlas link: ${story}`);
 }
 

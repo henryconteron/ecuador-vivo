@@ -1,0 +1,15 @@
+{
+  "type": "FeatureCollection",
+  "name": "independent_manual_references_empty_template",
+  "metadata": {
+    "status": "empty-not-observations",
+    "required_properties": ["sample_id", "group_id", "region", "date", "class", "role", "independent_reference", "reference_type", "evidence_uri", "reference_acquired_at", "observer"],
+    "classes": ["water_shallow", "water_deep", "sediment", "vegetation"],
+    "roles": ["train", "test"],
+    "reference_types": ["field", "drone", "high-resolution-image"],
+    "minimum_train_test_separation_m": 200,
+    "maximum_reference_time_gap_hours": 24,
+    "warning": "Do not generate labels from SCL, NDWI or other detectors being evaluated. Points must be independent, dated observations. Empty template fails evaluation deliberately."
+  },
+  "features": []
+}

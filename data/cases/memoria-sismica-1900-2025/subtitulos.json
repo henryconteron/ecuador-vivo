@@ -1,0 +1,1741 @@
+{
+  "method": "Local word timestamps; approximately aligned, spelling reviewed against script",
+  "box": [
+    90,
+    1430,
+    930,
+    1590
+  ],
+  "groups": [
+    {
+      "start": 0.0,
+      "end": 1.7,
+      "words": [
+        {
+          "start": 0.0,
+          "end": 0.28,
+          "text": "Mira"
+        },
+        {
+          "start": 0.28,
+          "end": 0.54,
+          "text": "cómo"
+        },
+        {
+          "start": 0.54,
+          "end": 0.74,
+          "text": "se"
+        },
+        {
+          "start": 0.74,
+          "end": 0.98,
+          "text": "llena"
+        },
+        {
+          "start": 0.98,
+          "end": 1.2,
+          "text": "este"
+        },
+        {
+          "start": 1.2,
+          "end": 1.46,
+          "text": "mapa."
+        }
+      ],
+      "text": "Mira cómo se llena este mapa."
+    },
+    {
+      "start": 2.32,
+      "end": 4.58,
+      "words": [
+        {
+          "start": 2.32,
+          "end": 2.66,
+          "text": "Son"
+        },
+        {
+          "start": 2.66,
+          "end": 3.18,
+          "text": "sismos"
+        },
+        {
+          "start": 3.18,
+          "end": 3.88,
+          "text": "registrados"
+        },
+        {
+          "start": 3.88,
+          "end": 4.22,
+          "text": "a"
+        },
+        {
+          "start": 4.22,
+          "end": 4.32,
+          "text": "lo"
+        },
+        {
+          "start": 4.32,
+          "end": 4.58,
+          "text": "largo"
+        }
+      ],
+      "text": "Son sismos registrados a lo largo"
+    },
+    {
+      "start": 4.58,
+      "end": 5.62,
+      "words": [
+        {
+          "start": 4.58,
+          "end": 4.72,
+          "text": "de"
+        },
+        {
+          "start": 4.72,
+          "end": 4.86,
+          "text": "más"
+        },
+        {
+          "start": 4.86,
+          "end": 4.98,
+          "text": "de"
+        },
+        {
+          "start": 4.98,
+          "end": 5.1,
+          "text": "un"
+        },
+        {
+          "start": 5.1,
+          "end": 5.38,
+          "text": "siglo."
+        }
+      ],
+      "text": "de más de un siglo."
+    },
+    {
+      "start": 6.46,
+      "end": 7.2,
+      "words": [
+        {
+          "start": 6.46,
+          "end": 6.68,
+          "text": "Pero"
+        },
+        {
+          "start": 6.68,
+          "end": 6.96,
+          "text": "ojo,"
+        }
+      ],
+      "text": "Pero ojo,"
+    },
+    {
+      "start": 7.42,
+      "end": 8.76,
+      "words": [
+        {
+          "start": 7.42,
+          "end": 7.52,
+          "text": "no"
+        },
+        {
+          "start": 7.52,
+          "end": 7.76,
+          "text": "están"
+        },
+        {
+          "start": 7.76,
+          "end": 8.2,
+          "text": "ocurriendo"
+        },
+        {
+          "start": 8.2,
+          "end": 8.52,
+          "text": "ahora,"
+        }
+      ],
+      "text": "no están ocurriendo ahora,"
+    },
+    {
+      "start": 9.0,
+      "end": 10.200000000000001,
+      "words": [
+        {
+          "start": 9.0,
+          "end": 9.1,
+          "text": "ni"
+        },
+        {
+          "start": 9.1,
+          "end": 9.46,
+          "text": "todos"
+        },
+        {
+          "start": 9.46,
+          "end": 9.66,
+          "text": "a"
+        },
+        {
+          "start": 9.66,
+          "end": 9.72,
+          "text": "la"
+        },
+        {
+          "start": 9.72,
+          "end": 9.96,
+          "text": "vez."
+        }
+      ],
+      "text": "ni todos a la vez."
+    },
+    {
+      "start": 10.98,
+      "end": 12.38,
+      "words": [
+        {
+          "start": 10.98,
+          "end": 11.32,
+          "text": "Estamos"
+        },
+        {
+          "start": 11.32,
+          "end": 11.62,
+          "text": "viendo"
+        },
+        {
+          "start": 11.62,
+          "end": 11.82,
+          "text": "el"
+        },
+        {
+          "start": 11.82,
+          "end": 12.14,
+          "text": "pasado,"
+        }
+      ],
+      "text": "Estamos viendo el pasado,"
+    },
+    {
+      "start": 12.74,
+      "end": 13.86,
+      "words": [
+        {
+          "start": 12.74,
+          "end": 13.02,
+          "text": "año"
+        },
+        {
+          "start": 13.02,
+          "end": 13.3,
+          "text": "por"
+        },
+        {
+          "start": 13.3,
+          "end": 13.62,
+          "text": "año."
+        }
+      ],
+      "text": "año por año."
+    },
+    {
+      "start": 14.78,
+      "end": 16.14,
+      "words": [
+        {
+          "start": 14.78,
+          "end": 15.12,
+          "text": "Esta"
+        },
+        {
+          "start": 15.12,
+          "end": 15.58,
+          "text": "selección"
+        },
+        {
+          "start": 15.58,
+          "end": 16.14,
+          "text": "reúne"
+        }
+      ],
+      "text": "Esta selección reúne"
+    },
+    {
+      "start": 16.14,
+      "end": 18.919999999999998,
+      "words": [
+        {
+          "start": 16.14,
+          "end": 17.8,
+          "text": "2661"
+        },
+        {
+          "start": 17.8,
+          "end": 18.68,
+          "text": "registros,"
+        }
+      ],
+      "text": "2661 registros,"
+    },
+    {
+      "start": 19.14,
+      "end": 21.819999999999997,
+      "words": [
+        {
+          "start": 19.14,
+          "end": 19.32,
+          "text": "desde"
+        },
+        {
+          "start": 19.32,
+          "end": 19.86,
+          "text": "1900"
+        },
+        {
+          "start": 19.86,
+          "end": 20.72,
+          "text": "hasta"
+        },
+        {
+          "start": 20.72,
+          "end": 21.58,
+          "text": "2025,"
+        }
+      ],
+      "text": "desde 1900 hasta 2025,"
+    },
+    {
+      "start": 22.28,
+      "end": 23.94,
+      "words": [
+        {
+          "start": 22.28,
+          "end": 22.36,
+          "text": "con"
+        },
+        {
+          "start": 22.36,
+          "end": 22.82,
+          "text": "magnitud"
+        },
+        {
+          "start": 22.82,
+          "end": 23.22,
+          "text": "4"
+        },
+        {
+          "start": 23.22,
+          "end": 23.6,
+          "text": "o"
+        },
+        {
+          "start": 23.6,
+          "end": 23.94,
+          "text": "mayor."
+        }
+      ],
+      "text": "con magnitud 4 o mayor."
+    },
+    {
+      "start": 23.94,
+      "end": 26.459999999999997,
+      "words": [
+        {
+          "start": 23.94,
+          "end": 25.12,
+          "text": "Incluye"
+        },
+        {
+          "start": 25.12,
+          "end": 25.66,
+          "text": "Ecuador"
+        },
+        {
+          "start": 25.66,
+          "end": 26.22,
+          "text": "continental,"
+        }
+      ],
+      "text": "Incluye Ecuador continental,"
+    },
+    {
+      "start": 26.7,
+      "end": 29.22,
+      "words": [
+        {
+          "start": 26.7,
+          "end": 26.98,
+          "text": "el"
+        },
+        {
+          "start": 26.98,
+          "end": 27.3,
+          "text": "océano"
+        },
+        {
+          "start": 27.3,
+          "end": 27.82,
+          "text": "cercano"
+        },
+        {
+          "start": 27.82,
+          "end": 28.14,
+          "text": "y"
+        },
+        {
+          "start": 28.14,
+          "end": 28.46,
+          "text": "zonas"
+        },
+        {
+          "start": 28.46,
+          "end": 28.98,
+          "text": "vecinas,"
+        }
+      ],
+      "text": "el océano cercano y zonas vecinas,"
+    },
+    {
+      "start": 29.54,
+      "end": 31.24,
+      "words": [
+        {
+          "start": 29.54,
+          "end": 29.74,
+          "text": "no"
+        },
+        {
+          "start": 29.74,
+          "end": 30.26,
+          "text": "incluye"
+        },
+        {
+          "start": 30.26,
+          "end": 31.0,
+          "text": "Galápagos."
+        }
+      ],
+      "text": "no incluye Galápagos."
+    },
+    {
+      "start": 31.6,
+      "end": 33.6,
+      "words": [
+        {
+          "start": 31.6,
+          "end": 31.78,
+          "text": "¿Más"
+        },
+        {
+          "start": 31.78,
+          "end": 32.16,
+          "text": "puntos"
+        },
+        {
+          "start": 32.16,
+          "end": 32.66,
+          "text": "significa"
+        },
+        {
+          "start": 32.66,
+          "end": 32.96,
+          "text": "más"
+        },
+        {
+          "start": 32.96,
+          "end": 33.36,
+          "text": "peligro?"
+        }
+      ],
+      "text": "¿Más puntos significa más peligro?"
+    },
+    {
+      "start": 34.32,
+      "end": 35.980000000000004,
+      "words": [
+        {
+          "start": 34.32,
+          "end": 34.56,
+          "text": "No"
+        },
+        {
+          "start": 34.56,
+          "end": 34.94,
+          "text": "podemos"
+        },
+        {
+          "start": 34.94,
+          "end": 35.46,
+          "text": "concluir"
+        },
+        {
+          "start": 35.46,
+          "end": 35.74,
+          "text": "eso."
+        }
+      ],
+      "text": "No podemos concluir eso."
+    },
+    {
+      "start": 36.32,
+      "end": 38.7,
+      "words": [
+        {
+          "start": 36.32,
+          "end": 36.54,
+          "text": "El"
+        },
+        {
+          "start": 36.54,
+          "end": 36.92,
+          "text": "archivo"
+        },
+        {
+          "start": 36.92,
+          "end": 37.36,
+          "text": "histórico"
+        },
+        {
+          "start": 37.36,
+          "end": 37.54,
+          "text": "es"
+        },
+        {
+          "start": 37.54,
+          "end": 38.22,
+          "text": "incompleto"
+        },
+        {
+          "start": 38.22,
+          "end": 38.7,
+          "text": "y"
+        }
+      ],
+      "text": "El archivo histórico es incompleto y"
+    },
+    {
+      "start": 38.7,
+      "end": 40.8,
+      "words": [
+        {
+          "start": 38.7,
+          "end": 39.02,
+          "text": "nuestra"
+        },
+        {
+          "start": 39.02,
+          "end": 39.44,
+          "text": "capacidad"
+        },
+        {
+          "start": 39.44,
+          "end": 39.68,
+          "text": "de"
+        },
+        {
+          "start": 39.68,
+          "end": 40.04,
+          "text": "observar"
+        },
+        {
+          "start": 40.04,
+          "end": 40.24,
+          "text": "los"
+        },
+        {
+          "start": 40.24,
+          "end": 40.8,
+          "text": "sismos"
+        }
+      ],
+      "text": "nuestra capacidad de observar los sismos"
+    },
+    {
+      "start": 40.8,
+      "end": 41.64,
+      "words": [
+        {
+          "start": 40.8,
+          "end": 40.9,
+          "text": "ha"
+        },
+        {
+          "start": 40.9,
+          "end": 41.4,
+          "text": "cambiado."
+        }
+      ],
+      "text": "ha cambiado."
+    },
+    {
+      "start": 42.12,
+      "end": 44.04,
+      "words": [
+        {
+          "start": 42.12,
+          "end": 42.7,
+          "text": "Registrar"
+        },
+        {
+          "start": 42.7,
+          "end": 42.88,
+          "text": "más"
+        },
+        {
+          "start": 42.88,
+          "end": 43.12,
+          "text": "no"
+        },
+        {
+          "start": 43.12,
+          "end": 43.56,
+          "text": "significa"
+        },
+        {
+          "start": 43.56,
+          "end": 43.9,
+          "text": "por"
+        },
+        {
+          "start": 43.9,
+          "end": 44.04,
+          "text": "sí"
+        }
+      ],
+      "text": "Registrar más no significa por sí"
+    },
+    {
+      "start": 44.04,
+      "end": 45.56,
+      "words": [
+        {
+          "start": 44.04,
+          "end": 44.28,
+          "text": "solo"
+        },
+        {
+          "start": 44.28,
+          "end": 44.8,
+          "text": "que"
+        },
+        {
+          "start": 44.8,
+          "end": 44.92,
+          "text": "la"
+        },
+        {
+          "start": 44.92,
+          "end": 45.2,
+          "text": "tierra"
+        },
+        {
+          "start": 45.2,
+          "end": 45.42,
+          "text": "se"
+        },
+        {
+          "start": 45.42,
+          "end": 45.56,
+          "text": "haya"
+        }
+      ],
+      "text": "solo que la tierra se haya"
+    },
+    {
+      "start": 45.56,
+      "end": 47.1,
+      "words": [
+        {
+          "start": 45.56,
+          "end": 45.96,
+          "text": "vuelto"
+        },
+        {
+          "start": 45.96,
+          "end": 46.22,
+          "text": "más"
+        },
+        {
+          "start": 46.22,
+          "end": 46.86,
+          "text": "peligrosa."
+        }
+      ],
+      "text": "vuelto más peligrosa."
+    },
+    {
+      "start": 47.54,
+      "end": 48.32,
+      "words": [
+        {
+          "start": 47.54,
+          "end": 47.76,
+          "text": "Ahora"
+        },
+        {
+          "start": 47.76,
+          "end": 48.08,
+          "text": "sí,"
+        }
+      ],
+      "text": "Ahora sí,"
+    },
+    {
+      "start": 48.6,
+      "end": 49.9,
+      "words": [
+        {
+          "start": 48.6,
+          "end": 49.18,
+          "text": "aprendamos"
+        },
+        {
+          "start": 49.18,
+          "end": 49.36,
+          "text": "a"
+        },
+        {
+          "start": 49.36,
+          "end": 49.9,
+          "text": "leerlos."
+        }
+      ],
+      "text": "aprendamos a leerlos."
+    },
+    {
+      "start": 49.9,
+      "end": 52.72,
+      "words": [
+        {
+          "start": 49.9,
+          "end": 50.76,
+          "text": "La"
+        },
+        {
+          "start": 50.76,
+          "end": 51.16,
+          "text": "posición"
+        },
+        {
+          "start": 51.16,
+          "end": 51.66,
+          "text": "marca"
+        },
+        {
+          "start": 51.66,
+          "end": 51.9,
+          "text": "el"
+        },
+        {
+          "start": 51.9,
+          "end": 52.48,
+          "text": "epicentro."
+        }
+      ],
+      "text": "La posición marca el epicentro."
+    },
+    {
+      "start": 53.0,
+      "end": 55.760000000000005,
+      "words": [
+        {
+          "start": 53.0,
+          "end": 53.3,
+          "text": "Un"
+        },
+        {
+          "start": 53.3,
+          "end": 53.64,
+          "text": "círculo"
+        },
+        {
+          "start": 53.64,
+          "end": 53.94,
+          "text": "mayor"
+        },
+        {
+          "start": 53.94,
+          "end": 54.52,
+          "text": "representa"
+        },
+        {
+          "start": 54.52,
+          "end": 55.04,
+          "text": "mayor"
+        },
+        {
+          "start": 55.04,
+          "end": 55.52,
+          "text": "magnitud,"
+        }
+      ],
+      "text": "Un círculo mayor representa mayor magnitud,"
+    },
+    {
+      "start": 55.92,
+      "end": 57.54,
+      "words": [
+        {
+          "start": 55.92,
+          "end": 56.14,
+          "text": "no"
+        },
+        {
+          "start": 56.14,
+          "end": 56.32,
+          "text": "un"
+        },
+        {
+          "start": 56.32,
+          "end": 56.44,
+          "text": "área"
+        },
+        {
+          "start": 56.44,
+          "end": 56.8,
+          "text": "mayor"
+        },
+        {
+          "start": 56.8,
+          "end": 57.0,
+          "text": "de"
+        },
+        {
+          "start": 57.0,
+          "end": 57.3,
+          "text": "daños."
+        }
+      ],
+      "text": "no un área mayor de daños."
+    },
+    {
+      "start": 57.98,
+      "end": 59.74,
+      "words": [
+        {
+          "start": 57.98,
+          "end": 58.1,
+          "text": "Y"
+        },
+        {
+          "start": 58.1,
+          "end": 58.2,
+          "text": "el"
+        },
+        {
+          "start": 58.2,
+          "end": 58.38,
+          "text": "color"
+        },
+        {
+          "start": 58.38,
+          "end": 58.82,
+          "text": "muestra"
+        },
+        {
+          "start": 58.82,
+          "end": 58.96,
+          "text": "la"
+        },
+        {
+          "start": 58.96,
+          "end": 59.5,
+          "text": "profundidad."
+        }
+      ],
+      "text": "Y el color muestra la profundidad."
+    },
+    {
+      "start": 60.02,
+      "end": 61.34,
+      "words": [
+        {
+          "start": 60.02,
+          "end": 60.22,
+          "text": "Claro,"
+        },
+        {
+          "start": 60.5,
+          "end": 60.58,
+          "text": "más"
+        },
+        {
+          "start": 60.58,
+          "end": 61.1,
+          "text": "superficial,"
+        }
+      ],
+      "text": "Claro, más superficial,"
+    },
+    {
+      "start": 61.64,
+      "end": 63.28,
+      "words": [
+        {
+          "start": 61.64,
+          "end": 62.02,
+          "text": "oscuro,"
+        },
+        {
+          "start": 62.36,
+          "end": 62.48,
+          "text": "más"
+        },
+        {
+          "start": 62.48,
+          "end": 63.04,
+          "text": "profundo."
+        }
+      ],
+      "text": "oscuro, más profundo."
+    },
+    {
+      "start": 63.74,
+      "end": 65.39999999999999,
+      "words": [
+        {
+          "start": 63.74,
+          "end": 63.92,
+          "text": "No"
+        },
+        {
+          "start": 63.92,
+          "end": 64.08,
+          "text": "es"
+        },
+        {
+          "start": 64.08,
+          "end": 64.2,
+          "text": "un"
+        },
+        {
+          "start": 64.2,
+          "end": 64.68,
+          "text": "semáforo"
+        },
+        {
+          "start": 64.68,
+          "end": 64.78,
+          "text": "de"
+        },
+        {
+          "start": 64.78,
+          "end": 65.16,
+          "text": "peligro."
+        }
+      ],
+      "text": "No es un semáforo de peligro."
+    },
+    {
+      "start": 65.9,
+      "end": 67.06,
+      "words": [
+        {
+          "start": 65.9,
+          "end": 66.18,
+          "text": "Aquí"
+        },
+        {
+          "start": 66.18,
+          "end": 66.46,
+          "text": "está"
+        },
+        {
+          "start": 66.46,
+          "end": 66.62,
+          "text": "lo"
+        },
+        {
+          "start": 66.62,
+          "end": 66.74,
+          "text": "que"
+        },
+        {
+          "start": 66.74,
+          "end": 66.9,
+          "text": "el"
+        },
+        {
+          "start": 66.9,
+          "end": 67.06,
+          "text": "mapa"
+        }
+      ],
+      "text": "Aquí está lo que el mapa"
+    },
+    {
+      "start": 67.06,
+      "end": 68.46,
+      "words": [
+        {
+          "start": 67.06,
+          "end": 67.32,
+          "text": "no"
+        },
+        {
+          "start": 67.32,
+          "end": 67.7,
+          "text": "muestra"
+        },
+        {
+          "start": 67.7,
+          "end": 68.22,
+          "text": "directamente."
+        }
+      ],
+      "text": "no muestra directamente."
+    },
+    {
+      "start": 69.14,
+      "end": 71.66,
+      "words": [
+        {
+          "start": 69.14,
+          "end": 69.32,
+          "text": "El"
+        },
+        {
+          "start": 69.32,
+          "end": 69.68,
+          "text": "sismo"
+        },
+        {
+          "start": 69.68,
+          "end": 70.3,
+          "text": "empieza"
+        },
+        {
+          "start": 70.3,
+          "end": 70.64,
+          "text": "bajo"
+        },
+        {
+          "start": 70.64,
+          "end": 70.76,
+          "text": "la"
+        },
+        {
+          "start": 70.76,
+          "end": 71.42,
+          "text": "superficie,"
+        }
+      ],
+      "text": "El sismo empieza bajo la superficie,"
+    },
+    {
+      "start": 71.66,
+      "end": 72.74,
+      "words": [
+        {
+          "start": 71.66,
+          "end": 71.78,
+          "text": "en"
+        },
+        {
+          "start": 71.78,
+          "end": 71.88,
+          "text": "el"
+        },
+        {
+          "start": 71.88,
+          "end": 72.5,
+          "text": "hipocentro."
+        }
+      ],
+      "text": "en el hipocentro."
+    },
+    {
+      "start": 73.32,
+      "end": 74.92,
+      "words": [
+        {
+          "start": 73.32,
+          "end": 73.54,
+          "text": "El"
+        },
+        {
+          "start": 73.54,
+          "end": 74.08,
+          "text": "epicentro"
+        },
+        {
+          "start": 74.08,
+          "end": 74.3,
+          "text": "es"
+        },
+        {
+          "start": 74.3,
+          "end": 74.42,
+          "text": "el"
+        },
+        {
+          "start": 74.42,
+          "end": 74.62,
+          "text": "punto"
+        },
+        {
+          "start": 74.62,
+          "end": 74.92,
+          "text": "que"
+        }
+      ],
+      "text": "El epicentro es el punto que"
+    },
+    {
+      "start": 74.92,
+      "end": 76.17999999999999,
+      "words": [
+        {
+          "start": 74.92,
+          "end": 75.14,
+          "text": "queda"
+        },
+        {
+          "start": 75.14,
+          "end": 75.48,
+          "text": "justo"
+        },
+        {
+          "start": 75.48,
+          "end": 75.94,
+          "text": "encima."
+        }
+      ],
+      "text": "queda justo encima."
+    },
+    {
+      "start": 76.64,
+      "end": 78.96,
+      "words": [
+        {
+          "start": 76.64,
+          "end": 77.34,
+          "text": "La"
+        },
+        {
+          "start": 77.34,
+          "end": 77.88,
+          "text": "profundidad"
+        },
+        {
+          "start": 77.88,
+          "end": 78.12,
+          "text": "nos"
+        },
+        {
+          "start": 78.12,
+          "end": 78.3,
+          "text": "dice"
+        },
+        {
+          "start": 78.3,
+          "end": 78.64,
+          "text": "qué"
+        },
+        {
+          "start": 78.64,
+          "end": 78.96,
+          "text": "tan"
+        }
+      ],
+      "text": "La profundidad nos dice qué tan"
+    },
+    {
+      "start": 78.96,
+      "end": 80.89999999999999,
+      "words": [
+        {
+          "start": 78.96,
+          "end": 79.38,
+          "text": "abajo"
+        },
+        {
+          "start": 79.38,
+          "end": 80.0,
+          "text": "comienza"
+        },
+        {
+          "start": 80.0,
+          "end": 80.16,
+          "text": "la"
+        },
+        {
+          "start": 80.16,
+          "end": 80.66,
+          "text": "ruptura."
+        }
+      ],
+      "text": "abajo comienza la ruptura."
+    },
+    {
+      "start": 81.6,
+      "end": 82.82,
+      "words": [
+        {
+          "start": 81.6,
+          "end": 81.8,
+          "text": "Al"
+        },
+        {
+          "start": 81.8,
+          "end": 82.14,
+          "text": "mirarlos"
+        },
+        {
+          "start": 82.14,
+          "end": 82.34,
+          "text": "de"
+        },
+        {
+          "start": 82.34,
+          "end": 82.58,
+          "text": "lado,"
+        }
+      ],
+      "text": "Al mirarlos de lado,"
+    },
+    {
+      "start": 82.88,
+      "end": 84.24,
+      "words": [
+        {
+          "start": 82.88,
+          "end": 83.08,
+          "text": "esa"
+        },
+        {
+          "start": 83.08,
+          "end": 83.56,
+          "text": "dimensión"
+        },
+        {
+          "start": 83.56,
+          "end": 84.0,
+          "text": "aparece."
+        }
+      ],
+      "text": "esa dimensión aparece."
+    },
+    {
+      "start": 85.14,
+      "end": 86.86,
+      "words": [
+        {
+          "start": 85.14,
+          "end": 85.74,
+          "text": "Proyectamos"
+        },
+        {
+          "start": 85.74,
+          "end": 86.08,
+          "text": "toda"
+        },
+        {
+          "start": 86.08,
+          "end": 86.3,
+          "text": "la"
+        },
+        {
+          "start": 86.3,
+          "end": 86.62,
+          "text": "región,"
+        }
+      ],
+      "text": "Proyectamos toda la región,"
+    },
+    {
+      "start": 87.38,
+      "end": 89.34,
+      "words": [
+        {
+          "start": 87.38,
+          "end": 87.48,
+          "text": "de"
+        },
+        {
+          "start": 87.48,
+          "end": 87.9,
+          "text": "oeste"
+        },
+        {
+          "start": 87.9,
+          "end": 88.36,
+          "text": "a"
+        },
+        {
+          "start": 88.36,
+          "end": 88.7,
+          "text": "este"
+        },
+        {
+          "start": 88.7,
+          "end": 89.22,
+          "text": "y"
+        },
+        {
+          "start": 89.22,
+          "end": 89.34,
+          "text": "de"
+        }
+      ],
+      "text": "de oeste a este y de"
+    },
+    {
+      "start": 89.34,
+      "end": 90.22,
+      "words": [
+        {
+          "start": 89.34,
+          "end": 89.52,
+          "text": "sur"
+        },
+        {
+          "start": 89.52,
+          "end": 89.68,
+          "text": "a"
+        },
+        {
+          "start": 89.68,
+          "end": 89.98,
+          "text": "norte."
+        }
+      ],
+      "text": "sur a norte."
+    },
+    {
+      "start": 90.96,
+      "end": 92.64,
+      "words": [
+        {
+          "start": 90.96,
+          "end": 91.08,
+          "text": "No"
+        },
+        {
+          "start": 91.08,
+          "end": 91.28,
+          "text": "son"
+        },
+        {
+          "start": 91.28,
+          "end": 91.74,
+          "text": "cortes"
+        },
+        {
+          "start": 91.74,
+          "end": 91.86,
+          "text": "de"
+        },
+        {
+          "start": 91.86,
+          "end": 92.04,
+          "text": "una"
+        },
+        {
+          "start": 92.04,
+          "end": 92.4,
+          "text": "falla."
+        }
+      ],
+      "text": "No son cortes de una falla."
+    },
+    {
+      "start": 93.28,
+      "end": 95.8,
+      "words": [
+        {
+          "start": 93.28,
+          "end": 93.52,
+          "text": "En"
+        },
+        {
+          "start": 93.52,
+          "end": 93.72,
+          "text": "esta"
+        },
+        {
+          "start": 93.72,
+          "end": 94.2,
+          "text": "selección,"
+        },
+        {
+          "start": 94.6,
+          "end": 94.76,
+          "text": "la"
+        },
+        {
+          "start": 94.76,
+          "end": 95.28,
+          "text": "profundidad"
+        },
+        {
+          "start": 95.28,
+          "end": 95.8,
+          "text": "máxima"
+        }
+      ],
+      "text": "En esta selección, la profundidad máxima"
+    },
+    {
+      "start": 95.8,
+      "end": 97.08,
+      "words": [
+        {
+          "start": 95.8,
+          "end": 96.38,
+          "text": "reportada"
+        },
+        {
+          "start": 96.38,
+          "end": 96.96,
+          "text": "es"
+        },
+        {
+          "start": 96.96,
+          "end": 97.08,
+          "text": "de"
+        }
+      ],
+      "text": "reportada es de"
+    },
+    {
+      "start": 97.08,
+      "end": 99.39999999999999,
+      "words": [
+        {
+          "start": 97.08,
+          "end": 98.66,
+          "text": "254"
+        },
+        {
+          "start": 98.66,
+          "end": 99.16,
+          "text": "kilómetros."
+        }
+      ],
+      "text": "254 kilómetros."
+    },
+    {
+      "start": 99.82,
+      "end": 102.14,
+      "words": [
+        {
+          "start": 99.82,
+          "end": 100.28,
+          "text": "Un"
+        },
+        {
+          "start": 100.28,
+          "end": 100.78,
+          "text": "registro"
+        },
+        {
+          "start": 100.78,
+          "end": 101.0,
+          "text": "no"
+        },
+        {
+          "start": 101.0,
+          "end": 101.3,
+          "text": "tiene"
+        },
+        {
+          "start": 101.3,
+          "end": 101.9,
+          "text": "profundidad."
+        }
+      ],
+      "text": "Un registro no tiene profundidad."
+    },
+    {
+      "start": 102.54,
+      "end": 104.36,
+      "words": [
+        {
+          "start": 102.54,
+          "end": 102.72,
+          "text": "No"
+        },
+        {
+          "start": 102.72,
+          "end": 102.84,
+          "text": "la"
+        },
+        {
+          "start": 102.84,
+          "end": 103.4,
+          "text": "inventamos"
+        },
+        {
+          "start": 103.4,
+          "end": 103.78,
+          "text": "ni"
+        },
+        {
+          "start": 103.78,
+          "end": 103.92,
+          "text": "lo"
+        },
+        {
+          "start": 103.92,
+          "end": 104.36,
+          "text": "colocamos"
+        }
+      ],
+      "text": "No la inventamos ni lo colocamos"
+    },
+    {
+      "start": 104.36,
+      "end": 104.97999999999999,
+      "words": [
+        {
+          "start": 104.36,
+          "end": 104.5,
+          "text": "a"
+        },
+        {
+          "start": 104.5,
+          "end": 104.74,
+          "text": "cero."
+        }
+      ],
+      "text": "a cero."
+    },
+    {
+      "start": 105.61999999999999,
+      "end": 107.06,
+      "words": [
+        {
+          "start": 105.61999999999999,
+          "end": 105.96,
+          "text": "Entonces,"
+        },
+        {
+          "start": 106.38,
+          "end": 106.64,
+          "text": "¿para"
+        },
+        {
+          "start": 106.64,
+          "end": 106.78,
+          "text": "qué"
+        },
+        {
+          "start": 106.78,
+          "end": 107.06,
+          "text": "sirve"
+        }
+      ],
+      "text": "Entonces, ¿para qué sirve"
+    },
+    {
+      "start": 107.06,
+      "end": 108.16,
+      "words": [
+        {
+          "start": 107.06,
+          "end": 107.34,
+          "text": "conocer"
+        },
+        {
+          "start": 107.34,
+          "end": 107.62,
+          "text": "esta"
+        },
+        {
+          "start": 107.62,
+          "end": 107.92,
+          "text": "historia?"
+        }
+      ],
+      "text": "conocer esta historia?"
+    },
+    {
+      "start": 108.96,
+      "end": 110.94,
+      "words": [
+        {
+          "start": 108.96,
+          "end": 109.12,
+          "text": "No"
+        },
+        {
+          "start": 109.12,
+          "end": 109.34,
+          "text": "para"
+        },
+        {
+          "start": 109.34,
+          "end": 109.7,
+          "text": "adivinar"
+        },
+        {
+          "start": 109.7,
+          "end": 109.86,
+          "text": "el"
+        },
+        {
+          "start": 109.86,
+          "end": 110.18,
+          "text": "próximo"
+        },
+        {
+          "start": 110.18,
+          "end": 110.7,
+          "text": "terremoto,"
+        }
+      ],
+      "text": "No para adivinar el próximo terremoto,"
+    },
+    {
+      "start": 111.22,
+      "end": 113.58,
+      "words": [
+        {
+          "start": 111.22,
+          "end": 111.34,
+          "text": "para"
+        },
+        {
+          "start": 111.34,
+          "end": 111.7,
+          "text": "entender"
+        },
+        {
+          "start": 111.7,
+          "end": 112.06,
+          "text": "nuestro"
+        },
+        {
+          "start": 112.06,
+          "end": 112.44,
+          "text": "entorno"
+        },
+        {
+          "start": 112.44,
+          "end": 112.76,
+          "text": "y"
+        },
+        {
+          "start": 112.76,
+          "end": 113.34,
+          "text": "prepararnos,"
+        }
+      ],
+      "text": "para entender nuestro entorno y prepararnos,"
+    },
+    {
+      "start": 113.94,
+      "end": 115.08,
+      "words": [
+        {
+          "start": 113.94,
+          "end": 114.36,
+          "text": "conversar"
+        },
+        {
+          "start": 114.36,
+          "end": 114.46,
+          "text": "en"
+        },
+        {
+          "start": 114.46,
+          "end": 114.84,
+          "text": "familia,"
+        }
+      ],
+      "text": "conversar en familia,"
+    },
+    {
+      "start": 115.4,
+      "end": 117.22,
+      "words": [
+        {
+          "start": 115.4,
+          "end": 115.76,
+          "text": "practicar"
+        },
+        {
+          "start": 115.76,
+          "end": 116.36,
+          "text": "simulacros"
+        },
+        {
+          "start": 116.36,
+          "end": 116.66,
+          "text": "y"
+        },
+        {
+          "start": 116.66,
+          "end": 116.86,
+          "text": "tener"
+        },
+        {
+          "start": 116.86,
+          "end": 117.06,
+          "text": "un"
+        },
+        {
+          "start": 117.06,
+          "end": 117.22,
+          "text": "kit"
+        }
+      ],
+      "text": "practicar simulacros y tener un kit"
+    },
+    {
+      "start": 117.22,
+      "end": 118.22,
+      "words": [
+        {
+          "start": 117.22,
+          "end": 117.44,
+          "text": "de"
+        },
+        {
+          "start": 117.44,
+          "end": 117.98,
+          "text": "emergencia."
+        }
+      ],
+      "text": "de emergencia."
+    },
+    {
+      "start": 118.5,
+      "end": 120.8,
+      "words": [
+        {
+          "start": 118.5,
+          "end": 118.6,
+          "text": "La"
+        },
+        {
+          "start": 118.6,
+          "end": 118.84,
+          "text": "tierra"
+        },
+        {
+          "start": 118.84,
+          "end": 119.04,
+          "text": "se"
+        },
+        {
+          "start": 119.04,
+          "end": 119.38,
+          "text": "mueve,"
+        },
+        {
+          "start": 119.76,
+          "end": 120.22,
+          "text": "prepararnos"
+        },
+        {
+          "start": 120.22,
+          "end": 120.56,
+          "text": "importa."
+        }
+      ],
+      "text": "La tierra se mueve, prepararnos importa."
+    }
+  ]
+}

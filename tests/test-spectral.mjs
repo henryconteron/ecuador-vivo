@@ -56,7 +56,7 @@ for (const options of [{failure: true}, {badSize: true}]) {
   await assert.rejects(loadSpectralPair(rows, {width: 4, height: 4, createImage: mockImage(options)}));
 }
 await assert.rejects(loadSpectralPair([], {width: 4, height: 4}));
-const markup = fs.readFileSync("index.html", "utf8");
+const markup = fs.readFileSync("explore.html", "utf8");
 for (const id of ["spectral-launch", "spectral-dialog", "spectral-focus", "spectral-slider", "spectral-stage"]) {
   assert.equal([...markup.matchAll(new RegExp(`id="${id}"`, "g"))].length, 1);
 }

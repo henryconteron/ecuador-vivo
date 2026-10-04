@@ -1,0 +1,10 @@
+{
+  "scope_start": 14.30,
+  "archive_complete": 31.31,
+  "guide_start": 47.22,
+  "depth_start": 65.57,
+  "profile_start": 81.17,
+  "action_start": 105.17,
+  "end_start": 118.28,
+  "method": "Local speech recognition with word timestamps, checked against the supplied script and FFmpeg-detected pauses. Cuts placed in pauses before each topic; approximate editorial alignment. The continuous original audio is not cut or retimed."
+}

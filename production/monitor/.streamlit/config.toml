@@ -1,0 +1,18 @@
+[theme]
+base = "dark"
+primaryColor = "#E4B454"
+backgroundColor = "#171811"
+secondaryBackgroundColor = "#24251B"
+textColor = "#EEE5D3"
+linkColor = "#9FCBB9"
+blueColor = "#85C2E2"
+blueBackgroundColor = "#213641"
+blueTextColor = "#C4E5F5"
+font = "sans-serif"
+
+[server]
+headless = true
+maxUploadSize = 10
+
+[browser]
+gatherUsageStats = false

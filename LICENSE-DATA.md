@@ -120,3 +120,7 @@ Los derivados conservan condiciones y atribución de sus fuentes, no MIT.
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor
 científico. Se incluyen únicamente para probar la interfaz y quedan cubiertos
 por la licencia del código salvo indicación posterior.
+# Medios audiovisuales de Andes Pulso
+
+Los videos, voces, subtítulos y piezas editoriales conservados en la integración no adquieren automáticamente la licencia MIT del software ni una licencia abierta de datos. El video nacional utiliza una toma de voz sintética cuyo registro exige uso no comercial y atribución `Voz: elevenlabs.io`. Sus condiciones y las de los datos USGS se identifican en `data/cases/memoria-sismica-1900-2025/case.json`. Solicitar autorización específica para reutilizaciones no amparadas por esas condiciones.
+

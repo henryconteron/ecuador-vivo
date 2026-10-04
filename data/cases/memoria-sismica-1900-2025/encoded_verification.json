@@ -1,0 +1,25 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30.0,
+  "duration_seconds": 126.17,
+  "codec": "h264",
+  "decoded_frames": 3785,
+  "full_decode_errors": 0,
+  "video_sha256": "e55995c04220dbff72331d6a651a9e4b4a6526a057c97a74a87271d10880a3e7",
+  "audio": {
+    "present": true,
+    "decoded_duration_seconds": 126.1866875,
+    "peak_pcm": 16701,
+    "scene_checks": [
+      "guide",
+      "depth",
+      "profile",
+      "action",
+      "end"
+    ],
+    "source_pcm_correlation": 0.9999854417446296,
+    "source_duration_seconds": 121.1559375,
+    "original_take_preserved": true
+  }
+}

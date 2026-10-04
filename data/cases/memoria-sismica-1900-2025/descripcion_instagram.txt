@@ -1,0 +1,29 @@
+Mira cómo se llena el mapa: más de un siglo de sismos. 🌎 | Voz: elevenlabs.io
+
+2661 registros del catálogo USGS entre 1900 y 2025, con magnitud reportada M ≥ 4. La selección abarca Ecuador continental, el océano cercano y zonas vecinas de Colombia y Perú. Sin Galápagos. 2026 no está incluido.
+
+📍 Posición: epicentro estimado.
+⭕ Tamaño: magnitud, NO área de daños.
+🎨 Color: profundidad en kilómetros, NO un semáforo de peligro.
+Los puntos se acumulan año por año: no son sismos actuales ni simultáneos.
+
+Las vistas laterales proyectan toda la región: no son cortes de una falla ni un modelo de las placas. En esta selección, la profundidad máxima reportada es 254 km; un registro sin profundidad se conserva en gris y se excluye de los perfiles, sin inventarle un valor.
+
+El catálogo histórico es incompleto y la capacidad de registrar sismos ha cambiado. Más puntos no demuestra más peligro. Son estimaciones revisables, con distintos tipos de magnitud originales, no todos Mw. La magnitud y la profundidad no bastan para describir el daño local. Este video NO predice terremotos.
+
+Conocer esta historia sirve para aprender y prepararnos: conversar en familia, practicar simulacros y tener un kit de emergencia.
+
+¿Ya tienen un plan familiar? Guarda y comparte este video para abrir esa conversación.
+
+Henry Conteron, ingeniero en geociencias e investigador independiente.
+Andes Pulso · Mapa y animación propios.
+Voz generada con IA: ElevenLabs · Emilio · elevenlabs.io.
+Inspiración visual: @notasdeungeologo; sin reutilizar su video ni audio.
+
+Fuentes: USGS y guía de preparación del IG-EPN.
+https://earthquake.usgs.gov/fdsnws/event/1/
+https://igepn.edu.ec/que-hacer-ante/un-sismo
+Mapa base: Natural Earth, dominio público.
+Descarga: 02/10/2026. Fechas UTC. Ventana: 83°–74,5° O; 5,5° S–2,5° N, no fronteras políticas. 1900 inicia la consulta, no los sismos del país.
+
+#Ecuador #Sismos #Geociencias #ConcienciaSismica #AndesPulso

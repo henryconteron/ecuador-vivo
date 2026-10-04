@@ -192,7 +192,7 @@ export function mountNapoRivers({L, map, t, language, onChange, onActivate, focu
         const bounds = L.latLngBounds(L.CRS.EPSG3857.unproject(L.point(centre.x - 500, centre.y - 500)), L.CRS.EPSG3857.unproject(L.point(centre.x + 500, centre.y + 500)));
         cellLayers.set(p.cell_id, {layer, bounds});
         zoom.addEventListener("click", () => inspectCell(p.cell_id));
-        link.href = "https://github.com/henryconteron/fallas-ecuador/blob/main/documentation/napo-rivers.md"; link.target = "_blank"; link.rel = "noopener noreferrer";
+        link.href = "https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-rivers.md"; link.target = "_blank"; link.rel = "noopener noreferrer";
         card.append(title, copy, counts, support, caution, zoom, link);
         layer.bindPopup(card, {maxHeight: 260, autoPanPaddingTopLeft: [16, 100], autoPanPaddingBottomRight: [16, 65]});
         layer.on("add", () => {

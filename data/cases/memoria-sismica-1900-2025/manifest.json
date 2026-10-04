@@ -1,0 +1,78 @@
+{
+  "source": "https://earthquake.usgs.gov/fdsnws/event/1/",
+  "query": {
+    "minlatitude": -5.5,
+    "maxlatitude": 2.5,
+    "minlongitude": -83,
+    "maxlongitude": -74.5,
+    "starttime": "1900-01-01T00:00:00Z",
+    "endtime": "2025-12-31T23:59:59.999Z",
+    "minmagnitude": 4,
+    "eventtype": "earthquake"
+  },
+  "downloaded_at_utc": "2026-10-02T16:50:22.869856+00:00",
+  "count_url": "https://earthquake.usgs.gov/fdsnws/event/1/count?minlatitude=-5.5&maxlatitude=2.5&minlongitude=-83&maxlongitude=-74.5&starttime=1900-01-01T00%3A00%3A00Z&endtime=2025-12-31T23%3A59%3A59.999Z&minmagnitude=4&eventtype=earthquake",
+  "page_urls": [
+    "https://earthquake.usgs.gov/fdsnws/event/1/query?minlatitude=-5.5&maxlatitude=2.5&minlongitude=-83&maxlongitude=-74.5&starttime=1900-01-01T00%3A00%3A00Z&endtime=2025-12-31T23%3A59%3A59.999Z&minmagnitude=4&eventtype=earthquake&format=geojson&orderby=time-asc&limit=2000&offset=1",
+    "https://earthquake.usgs.gov/fdsnws/event/1/query?minlatitude=-5.5&maxlatitude=2.5&minlongitude=-83&maxlongitude=-74.5&starttime=1900-01-01T00%3A00%3A00Z&endtime=2025-12-31T23%3A59%3A59.999Z&minmagnitude=4&eventtype=earthquake&format=geojson&orderby=time-asc&limit=2000&offset=2001"
+  ],
+  "reported_count": 2661,
+  "exported_count": 2661,
+  "checks": {
+    "unique_ids": true,
+    "valid_utc_dates": true,
+    "within_regional_window": true,
+    "valid_magnitudes": true,
+    "depth_unknown_or_within_service_range": true
+  },
+  "spotchecks": [
+    {
+      "id": "official19060131153610_30",
+      "date_utc": "1906-01-31T15:36:10+00:00",
+      "magnitude": 8.8,
+      "magnitude_type": "mw",
+      "longitude": -79.369,
+      "latitude": 0.955,
+      "depth_km": 20.0,
+      "source": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=official19060131153610_30"
+    },
+    {
+      "id": "us20005j32",
+      "date_utc": "2016-04-16T23:58:36.980000+00:00",
+      "magnitude": 7.8,
+      "magnitude_type": "mww",
+      "longitude": -79.9218,
+      "latitude": 0.3819,
+      "depth_km": 20.59,
+      "source": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid=us20005j32"
+    }
+  ],
+  "unknown_depth_count": 1,
+  "negative_depth_count": 0,
+  "magnitude_types": {
+    "mb": 2158,
+    "mw": 194,
+    "mww": 102,
+    "mwc": 85,
+    "md": 43,
+    "mwr": 32,
+    "mwb": 21,
+    "ms": 16,
+    "ml": 9,
+    "mB": 1
+  },
+  "earliest_utc": "1901-01-07T00:29:00+00:00",
+  "latest_utc": "2025-12-19T21:59:54.472000+00:00",
+  "snapshot_sha256": "8cf19180b19b9a9998f76f1feee9bf88b69d141287a9d213e3455f20c1b2d5c8",
+  "csv_sha256": "d0988e3c79933d862cdaf9e69fbfe73778d8f73e89aa8281f37882928b59ebbb",
+  "first": 1900,
+  "last": 2025,
+  "minimum": 4,
+  "limitations": [
+    "Regional rectangle, not Ecuador-only or a political-boundary selection; excludes Galápagos.",
+    "Historical catalog is incomplete; annual counts are not comparable without completeness analysis.",
+    "Original USGS magnitude types retained, not homogenized to Mw.",
+    "Historical locations, depths and magnitudes are estimates that can be revised.",
+    "No intensity, damage, fault assignment or prediction is inferred."
+  ]
+}

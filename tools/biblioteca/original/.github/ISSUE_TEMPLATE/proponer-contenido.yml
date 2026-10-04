@@ -1,0 +1,58 @@
+name: Proponer contenido
+description: Sugiere un artículo, preprint, conjunto de datos o video científico para revisión.
+title: "[Propuesta] "
+labels: ["propuesta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por contribuir. Incluye la fuente original; una propuesta no se publica automáticamente.
+  - type: input
+    id: url
+    attributes:
+      label: Enlace original
+      description: DOI, página del editor, repositorio académico o video del autor/institución.
+      placeholder: https://doi.org/...
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Tipo de contenido
+      options:
+        - Artículo científico
+        - Preprint
+        - Conjunto de datos
+        - Video o conferencia
+        - Recurso institucional
+    validations:
+      required: true
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Tema principal
+      options:
+        - Tectónica activa
+        - Paleosismología
+        - Geología minera
+        - Volcanología
+        - Geomorfología
+        - Geofísica
+        - Hidrogeología
+        - Otro
+    validations:
+      required: true
+  - type: textarea
+    id: relevance
+    attributes:
+      label: ¿Por qué debería incorporarse?
+      description: Explica brevemente su relevancia geológica.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Verificación
+      options:
+        - label: Confirmo que el enlace corresponde a la fuente original o a un repositorio legítimo.
+          required: true

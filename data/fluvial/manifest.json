@@ -1,0 +1,1330 @@
+{
+  "schema_version": 1,
+  "status": "exploratory-not-field-validated",
+  "built_at": "2026-10-03T04:39:26.857395+00:00",
+  "config": {
+    "schema_version": 1,
+    "scope": "four-editorial-windows-not-province-or-basin",
+    "api": "https://earth-search.aws.element84.com/v1",
+    "scenes": [
+      {
+        "collection": "sentinel-2-l2a",
+        "id": "S2B_17MRU_20190711_0_L2A",
+        "date": "2019-07-11"
+      },
+      {
+        "collection": "sentinel-2-c1-l2a",
+        "id": "S2A_T17MRU_20240808T153803_L2A",
+        "date": "2024-08-08"
+      },
+      {
+        "collection": "sentinel-2-c1-l2a",
+        "id": "S2C_T17MRU_20260729T153626_L2A",
+        "date": "2026-07-29"
+      }
+    ],
+    "regions": [
+      {
+        "id": "tena",
+        "name": "Tena",
+        "bbox": [
+          -77.84,
+          -1.025,
+          -77.78,
+          -0.965
+        ]
+      },
+      {
+        "id": "jatunyacu",
+        "name": "Jatunyacu",
+        "bbox": [
+          -77.865,
+          -1.095,
+          -77.805,
+          -1.035
+        ]
+      },
+      {
+        "id": "napo",
+        "name": "Napo",
+        "bbox": [
+          -77.775,
+          -1.07,
+          -77.715,
+          -1.01
+        ]
+      },
+      {
+        "id": "misahualli",
+        "name": "Misahuallí",
+        "bbox": [
+          -77.695,
+          -1.06,
+          -77.64,
+          -1.005
+        ]
+      }
+    ],
+    "bands": [
+      "B2",
+      "B3",
+      "B4",
+      "B8",
+      "B11",
+      "B12",
+      "valid"
+    ],
+    "native_crs": "EPSG:32717",
+    "sampling_m": 20,
+    "accepted_scl": [
+      4,
+      5,
+      6
+    ],
+    "qa": "conservative-scl-and-six-finite-nonnegative-reflectances-positive-ratio-denominators",
+    "display_crs": "EPSG:3857",
+    "resampling": "nearest",
+    "encoding": "band-major-float32-little-endian-gzip",
+    "thresholds": {
+      "ndwi": 0,
+      "mndwi": 0,
+      "aweinsh": 0,
+      "aweish": 0
+    },
+    "threshold_status": "exploratory-not-locally-calibrated",
+    "formulas": {
+      "ndwi": "(B3-B8)/(B3+B8)",
+      "mndwi": "(B3-B11)/(B3+B11)",
+      "aweinsh": "4*(B3-B11)-0.25*B8-2.75*B12",
+      "aweish": "B2+2.5*B3-1.5*(B8+B11)-0.25*B12",
+      "ndti": "(B4-B3)/(B4+B3)",
+      "ndvi": "(B8-B4)/(B8+B4)"
+    },
+    "references": [
+      {
+        "title": "Sentinel-2: bandas y resolución · Copernicus / Google",
+        "url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED"
+      },
+      {
+        "title": "NDWI · McFeeters (1996)",
+        "url": "https://doi.org/10.1080/01431169608948714"
+      },
+      {
+        "title": "MNDWI · Xu (2006)",
+        "url": "https://doi.org/10.1080/01431160600589179"
+      },
+      {
+        "title": "AWEI · Feyisa et al. (2014)",
+        "url": "https://doi.org/10.1016/j.rse.2013.08.029"
+      },
+      {
+        "title": "Comparación de detectores · Kirby et al. (2024)",
+        "url": "https://doi.org/10.1016/j.rsase.2024.101367"
+      },
+      {
+        "title": "Agua poco profunda y cauces secos · Cavallo et al. (2025)",
+        "url": "https://doi.org/10.1016/j.jhydrol.2025.133416"
+      },
+      {
+        "title": "Sedimentos y minería amazónica · Lobo et al. (2018)",
+        "url": "https://www.intechopen.com/chapters/62698"
+      },
+      {
+        "title": "NDTI rojo/verde · Water (2025), tabla de índices",
+        "url": "https://www.mdpi.com/2073-4441/17/15/2195"
+      },
+      {
+        "title": "Minería aluvial y sedimentos · Dethier et al. (2023)",
+        "url": "https://www.nature.com/articles/s41586-023-06309-9"
+      }
+    ]
+  },
+  "builder_sha256": "af1a1dc7375d1c4def8b5eaf02ee313a4c7f38be7a8182e90655c9027c325001",
+  "science_sha256": "b9b03ee373dc004f226e50d17354b3aaf03e89654a79e6dd73fd169b14cdb8f3",
+  "benchmark": {
+    "status": "pending-independent-references",
+    "winner": null
+  },
+  "regions": [
+    {
+      "id": "tena",
+      "name": "Tena",
+      "bbox": [
+        -77.84,
+        -1.025,
+        -77.78,
+        -0.965
+      ],
+      "scenes": [
+        {
+          "collection": "sentinel-2-l2a",
+          "id": "S2B_17MRU_20190711_0_L2A",
+          "date": "2019-07-11",
+          "acquired_at": "2019-07-11T15:43:42.348000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-l2a/items/S2B_17MRU_20190711_0_L2A",
+          "stac_file": "data/fluvial/S2B_17MRU_20190711_0_L2A.stac.json",
+          "stac_sha256": "f76e34f29c1b43667815a642267035be92b5f6be3a4e2237170d6c5b285e4559",
+          "url": "data/fluvial/tena-2019-07-11.bin.gz",
+          "sha256": "ab0998693736fcd0da4ea5d179ba05a7e28b6987db8bfdf307d4816e480ba9e0",
+          "size_bytes": 1486938,
+          "decoded_bytes": 3132864,
+          "native_usable_pixels": 100032,
+          "web_usable_pixels": 100032,
+          "native_file": "S2B_17MRU_20190711_0_L2A-tena.tif",
+          "native_sha256": "f54bf169b9099a84910457b57de1b4f91b9168db7c4e858cdae72d89bcc99a8e",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "16eb11c65c0047432f759b9b1736932d4da5323f299afbe328375cd38d9098d0",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "e6fdc1c4526facfb1316b167d82706e27da1d90880b72a4d59d383b059cd8ce9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "90622333ac81da8a437475d5855cae1367e014ff2cc77c42a011b308e747bf42",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "92bf0487f806dfd8edee594440fc6d3ace57d90cd8dcd686e77dae63154aa725",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "f883a0f68796168ed7ab295b59a2a90f66d0e1846e1acf2f6f1a8e3ee3670cec",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "39ee71121f21bbfbb4b14359ee0096b29ba0419b6d65ecbf19021637c371d987",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/SCL.tif",
+          "scl_raw_sha256": "2d5d957fef6060d07e71a178f3ad07ebf1a97a65c5d13e44e6cfb1a530b79cb2",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "54f983a2348c4ec613a3321ced5d85188da96fd2c590530c8ee435ad1d65859e",
+            "crop_file": "S2B_17MRU_20190711_0_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2A_T17MRU_20240808T153803_L2A",
+          "date": "2024-08-08",
+          "acquired_at": "2024-08-08T15:43:34.210000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2A_T17MRU_20240808T153803_L2A",
+          "stac_file": "data/fluvial/S2A_T17MRU_20240808T153803_L2A.stac.json",
+          "stac_sha256": "a01ad280528e2134f2ce231eef9f6f76210e7a6e95df1f19a385dc01715951d7",
+          "url": "data/fluvial/tena-2024-08-08.bin.gz",
+          "sha256": "acd61632dcf042e4a013395ba6f7cb6f35eaad0e88b85589ec098b27a4b2aeab",
+          "size_bytes": 1629948,
+          "decoded_bytes": 3132864,
+          "native_usable_pixels": 111180,
+          "web_usable_pixels": 111180,
+          "native_file": "S2A_T17MRU_20240808T153803_L2A-tena.tif",
+          "native_sha256": "17e219d368c030d15e21540f0e087c353d9d921d21e5722158bdf36cf3f83d77",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "1eb7a6132997b7509bbceab2e7398867b74ec5f1d100e91182c6b3c5237c84cd",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "782f1719e64aa795806259ee3984d70288f79160c0e372c4c3bc21bdf5edddaa",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "647e74d3e96e13bc3e7ac58e9a2781b4b752c2d1b998b8d986503dabacf8630f",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "7d085ee33659d8f7cf635aba0f1d23a671313e475d13e00e56d6ebe69801d8e2",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "abdd349e677cfe5a4984e71933e27717e96c2a88f07fc8c1122316493f1276fe",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "3e829aa0a907a8a94bc401c85fc20c4a8fd3eaf032c8076726661e3067de4bc2",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/SCL.tif",
+          "scl_raw_sha256": "213513df66dde238bf3c1b6219141ced071705702e91b54745a02fb594a77845",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "c3abe087204bc81debbf1ae5c57888bbef2795fa2dd111f1d4956d72e06a3bb2",
+            "crop_file": "S2A_T17MRU_20240808T153803_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2C_T17MRU_20260729T153626_L2A",
+          "date": "2026-07-29",
+          "acquired_at": "2026-07-29T15:43:34.966000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T17MRU_20260729T153626_L2A",
+          "stac_file": "data/fluvial/S2C_T17MRU_20260729T153626_L2A.stac.json",
+          "stac_sha256": "8b6e7e523c41bc293068d252831a953e0978be27744645b7c25376a4cfee3a55",
+          "url": "data/fluvial/tena-2026-07-29.bin.gz",
+          "sha256": "2fe18fe8519b5c410c27e91a93e593c09be508266beb778ad31553bf8fdeb1ab",
+          "size_bytes": 1643157,
+          "decoded_bytes": 3132864,
+          "native_usable_pixels": 111286,
+          "web_usable_pixels": 111286,
+          "native_file": "S2C_T17MRU_20260729T153626_L2A-tena.tif",
+          "native_sha256": "4c59dc66f9e00df23379d5407ad4b413ebe5dbf60ee2c860b85c0eaec9156320",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "5c987a37fdc8d97eeb58772afa8466622ddc6a407043d1650aea76c2af870526",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "29b33bf8318e88a06176c76f8512394671c892a494dda06d6c9b7977e5d58af9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "834a9e9262c94eddc89843eb02c45d0cdf17d753e8810b45a9cbe21801afd434",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "543e57aab7ded0f2ccaab025d07e2f097666684e67f93248bc75f4c2901cd873",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "58085a18cb0fce8276ddeb92e2d9df9e19a3713f5229cfeed46e33353dad8e4d",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "b739f1f38c974256a1021e97916c3ca67ffea664e60c208593aa7119834fa34f",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/SCL.tif",
+          "scl_raw_sha256": "db0b79d67bbb0c36ec2cd8c9938cb7c662f6ed7ee7cc1a29d140cecd4d724a32",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "45b8915a6f4d9a15690a656c1564cf06bb579a85a80dde3ef8f6912bf51db335",
+            "crop_file": "S2C_T17MRU_20260729T153626_L2A_indices20m.tif"
+          }
+        }
+      ],
+      "width": 336,
+      "height": 333,
+      "web_extent": [
+        -8665127.970405746,
+        -114121.57874499015,
+        -8658408.323012782,
+        -107416.9439886623
+      ],
+      "web_transform": [
+        19.99895057429759,
+        0.0,
+        -8665127.970405746,
+        0.0,
+        -20.134038307290854,
+        -107416.9439886623
+      ],
+      "native_transform": [
+        20.0,
+        0.0,
+        851740.0,
+        0.0,
+        -20.0,
+        9893180.0
+      ],
+      "web_common_pixels": 99780
+    },
+    {
+      "id": "jatunyacu",
+      "name": "Jatunyacu",
+      "bbox": [
+        -77.865,
+        -1.095,
+        -77.805,
+        -1.035
+      ],
+      "scenes": [
+        {
+          "collection": "sentinel-2-l2a",
+          "id": "S2B_17MRU_20190711_0_L2A",
+          "date": "2019-07-11",
+          "acquired_at": "2019-07-11T15:43:42.348000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-l2a/items/S2B_17MRU_20190711_0_L2A",
+          "stac_file": "data/fluvial/S2B_17MRU_20190711_0_L2A.stac.json",
+          "stac_sha256": "f76e34f29c1b43667815a642267035be92b5f6be3a4e2237170d6c5b285e4559",
+          "url": "data/fluvial/jatunyacu-2019-07-11.bin.gz",
+          "sha256": "935f8a43eb996493d5683f8ca23da7c0a6b4f16064e39e098fcfd8cb8aa02b1e",
+          "size_bytes": 1470609,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 109137,
+          "web_usable_pixels": 109137,
+          "native_file": "S2B_17MRU_20190711_0_L2A-jatunyacu.tif",
+          "native_sha256": "2b23ae8b77cccc56023db7e80c1eda2e4bbac61dbd001a1b9d609118ebbeeb7e",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "16eb11c65c0047432f759b9b1736932d4da5323f299afbe328375cd38d9098d0",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "e6fdc1c4526facfb1316b167d82706e27da1d90880b72a4d59d383b059cd8ce9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "90622333ac81da8a437475d5855cae1367e014ff2cc77c42a011b308e747bf42",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "92bf0487f806dfd8edee594440fc6d3ace57d90cd8dcd686e77dae63154aa725",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "f883a0f68796168ed7ab295b59a2a90f66d0e1846e1acf2f6f1a8e3ee3670cec",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "caebd0a4aa1234af781b3ed80001710f3c5de6dce0fae2486a97a15203da27ec",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/SCL.tif",
+          "scl_raw_sha256": "e43353c6ea30e3df70beea67ba9d3ed34fa6646321f9e7f4882c81e8a24c5766",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "54f983a2348c4ec613a3321ced5d85188da96fd2c590530c8ee435ad1d65859e",
+            "crop_file": "S2B_17MRU_20190711_0_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2A_T17MRU_20240808T153803_L2A",
+          "date": "2024-08-08",
+          "acquired_at": "2024-08-08T15:43:34.210000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2A_T17MRU_20240808T153803_L2A",
+          "stac_file": "data/fluvial/S2A_T17MRU_20240808T153803_L2A.stac.json",
+          "stac_sha256": "a01ad280528e2134f2ce231eef9f6f76210e7a6e95df1f19a385dc01715951d7",
+          "url": "data/fluvial/jatunyacu-2024-08-08.bin.gz",
+          "sha256": "d49a348ade1025663e421b02a57249d11236bb0d87cb0f6d6cee2ee7f09efafd",
+          "size_bytes": 1583564,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 110796,
+          "web_usable_pixels": 110796,
+          "native_file": "S2A_T17MRU_20240808T153803_L2A-jatunyacu.tif",
+          "native_sha256": "921519f1475211d94d7526a99aca3809663f7a05d2ac27463049b6e6fb7f355f",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "1eb7a6132997b7509bbceab2e7398867b74ec5f1d100e91182c6b3c5237c84cd",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "782f1719e64aa795806259ee3984d70288f79160c0e372c4c3bc21bdf5edddaa",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "647e74d3e96e13bc3e7ac58e9a2781b4b752c2d1b998b8d986503dabacf8630f",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "7d085ee33659d8f7cf635aba0f1d23a671313e475d13e00e56d6ebe69801d8e2",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "abdd349e677cfe5a4984e71933e27717e96c2a88f07fc8c1122316493f1276fe",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "835cad9bec12b7a6726625a431759de1cb9322318fa470529ad96575474da81f",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/SCL.tif",
+          "scl_raw_sha256": "8d778bd4d0d1d7fc9d906f9379c38d17cb31caea86fd704bf2f381b90d75e300",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "c3abe087204bc81debbf1ae5c57888bbef2795fa2dd111f1d4956d72e06a3bb2",
+            "crop_file": "S2A_T17MRU_20240808T153803_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2C_T17MRU_20260729T153626_L2A",
+          "date": "2026-07-29",
+          "acquired_at": "2026-07-29T15:43:34.966000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T17MRU_20260729T153626_L2A",
+          "stac_file": "data/fluvial/S2C_T17MRU_20260729T153626_L2A.stac.json",
+          "stac_sha256": "8b6e7e523c41bc293068d252831a953e0978be27744645b7c25376a4cfee3a55",
+          "url": "data/fluvial/jatunyacu-2026-07-29.bin.gz",
+          "sha256": "06c3b28553a3f29beb1b1aa1f3b5daff38ee9c29891ca45516bfb9728f64a255",
+          "size_bytes": 1589307,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 110511,
+          "web_usable_pixels": 110511,
+          "native_file": "S2C_T17MRU_20260729T153626_L2A-jatunyacu.tif",
+          "native_sha256": "2af15194993cdd09f759343ff4ea5762a85227d74c3d320c30159f38c4497328",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "5c987a37fdc8d97eeb58772afa8466622ddc6a407043d1650aea76c2af870526",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "29b33bf8318e88a06176c76f8512394671c892a494dda06d6c9b7977e5d58af9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "834a9e9262c94eddc89843eb02c45d0cdf17d753e8810b45a9cbe21801afd434",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "543e57aab7ded0f2ccaab025d07e2f097666684e67f93248bc75f4c2901cd873",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "58085a18cb0fce8276ddeb92e2d9df9e19a3713f5229cfeed46e33353dad8e4d",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "51bb8d13a6f7fbbc350ec0648054082d936cf4e798871554455446deda238f19",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/SCL.tif",
+          "scl_raw_sha256": "3e8174a1c1af3cd3a036dcaeb15dfe4b57a3c65cc24a81226582e6ff30ce2bb7",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "45b8915a6f4d9a15690a656c1564cf06bb579a85a80dde3ef8f6912bf51db335",
+            "crop_file": "S2C_T17MRU_20260729T153626_L2A_indices20m.tif"
+          }
+        }
+      ],
+      "width": 336,
+      "height": 334,
+      "web_extent": [
+        -8667917.841006186,
+        -121929.31020935031,
+        -8661197.4631766,
+        -115203.84659715879
+      ],
+      "web_transform": [
+        20.00112449281317,
+        0.0,
+        -8667917.841006186,
+        0.0,
+        -20.136118599375823,
+        -115203.84659715879
+      ],
+      "native_transform": [
+        20.0,
+        0.0,
+        848940.0,
+        0.0,
+        -20.0,
+        9885440.0
+      ],
+      "web_common_pixels": 107360
+    },
+    {
+      "id": "napo",
+      "name": "Napo",
+      "bbox": [
+        -77.775,
+        -1.07,
+        -77.715,
+        -1.01
+      ],
+      "scenes": [
+        {
+          "collection": "sentinel-2-l2a",
+          "id": "S2B_17MRU_20190711_0_L2A",
+          "date": "2019-07-11",
+          "acquired_at": "2019-07-11T15:43:42.348000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-l2a/items/S2B_17MRU_20190711_0_L2A",
+          "stac_file": "data/fluvial/S2B_17MRU_20190711_0_L2A.stac.json",
+          "stac_sha256": "f76e34f29c1b43667815a642267035be92b5f6be3a4e2237170d6c5b285e4559",
+          "url": "data/fluvial/napo-2019-07-11.bin.gz",
+          "sha256": "5d601cecec48314795f65588b462b9e86ee5e048173639d4891d927eed512cb9",
+          "size_bytes": 1423076,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 100450,
+          "web_usable_pixels": 100450,
+          "native_file": "S2B_17MRU_20190711_0_L2A-napo.tif",
+          "native_sha256": "ff070a34b9e2cd45629055f530e7153e8d365d53514d93afee800893d2fe8d9b",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "16eb11c65c0047432f759b9b1736932d4da5323f299afbe328375cd38d9098d0",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "e6fdc1c4526facfb1316b167d82706e27da1d90880b72a4d59d383b059cd8ce9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "90622333ac81da8a437475d5855cae1367e014ff2cc77c42a011b308e747bf42",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "92bf0487f806dfd8edee594440fc6d3ace57d90cd8dcd686e77dae63154aa725",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "f883a0f68796168ed7ab295b59a2a90f66d0e1846e1acf2f6f1a8e3ee3670cec",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "89cb6451ab7bf515d8b1d5bccebdb2f6cb1d40138a294c0305285303730504ee",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/SCL.tif",
+          "scl_raw_sha256": "b9ba1bdf130cb4268c830df1f9995026224381dbab0e938e723647faa56ca1aa",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "54f983a2348c4ec613a3321ced5d85188da96fd2c590530c8ee435ad1d65859e",
+            "crop_file": "S2B_17MRU_20190711_0_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2A_T17MRU_20240808T153803_L2A",
+          "date": "2024-08-08",
+          "acquired_at": "2024-08-08T15:43:34.210000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2A_T17MRU_20240808T153803_L2A",
+          "stac_file": "data/fluvial/S2A_T17MRU_20240808T153803_L2A.stac.json",
+          "stac_sha256": "a01ad280528e2134f2ce231eef9f6f76210e7a6e95df1f19a385dc01715951d7",
+          "url": "data/fluvial/napo-2024-08-08.bin.gz",
+          "sha256": "91935f74d5a0339ec27bd15fb13272a43bca78418584e93041e346f0a38b9156",
+          "size_bytes": 1522776,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 111811,
+          "web_usable_pixels": 111811,
+          "native_file": "S2A_T17MRU_20240808T153803_L2A-napo.tif",
+          "native_sha256": "e6aaea0560af1e5d7e1695f9c7ed636f6f5a3d7f515c697002baac766fa90429",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "1eb7a6132997b7509bbceab2e7398867b74ec5f1d100e91182c6b3c5237c84cd",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "782f1719e64aa795806259ee3984d70288f79160c0e372c4c3bc21bdf5edddaa",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "647e74d3e96e13bc3e7ac58e9a2781b4b752c2d1b998b8d986503dabacf8630f",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "7d085ee33659d8f7cf635aba0f1d23a671313e475d13e00e56d6ebe69801d8e2",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "abdd349e677cfe5a4984e71933e27717e96c2a88f07fc8c1122316493f1276fe",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "8866a8ea410a7ee4b503017836dceac41adba3aa961fc37ffee875c5ea3a2a04",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/SCL.tif",
+          "scl_raw_sha256": "1963b2d282e0323668ced7845f58a1cc87b81db46c68e053859502be736508b1",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "c3abe087204bc81debbf1ae5c57888bbef2795fa2dd111f1d4956d72e06a3bb2",
+            "crop_file": "S2A_T17MRU_20240808T153803_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2C_T17MRU_20260729T153626_L2A",
+          "date": "2026-07-29",
+          "acquired_at": "2026-07-29T15:43:34.966000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T17MRU_20260729T153626_L2A",
+          "stac_file": "data/fluvial/S2C_T17MRU_20260729T153626_L2A.stac.json",
+          "stac_sha256": "8b6e7e523c41bc293068d252831a953e0978be27744645b7c25376a4cfee3a55",
+          "url": "data/fluvial/napo-2026-07-29.bin.gz",
+          "sha256": "047cb9ead25a58873a537b6ed5d922fc6914e9160d91fc5f3b7862b915f87fa3",
+          "size_bytes": 1534893,
+          "decoded_bytes": 3142272,
+          "native_usable_pixels": 111671,
+          "web_usable_pixels": 111671,
+          "native_file": "S2C_T17MRU_20260729T153626_L2A-napo.tif",
+          "native_sha256": "663c69f4f9975ad87b37f273bb611b904e1848936859dbbce0e4b7ba90973eab",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "5c987a37fdc8d97eeb58772afa8466622ddc6a407043d1650aea76c2af870526",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "29b33bf8318e88a06176c76f8512394671c892a494dda06d6c9b7977e5d58af9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "834a9e9262c94eddc89843eb02c45d0cdf17d753e8810b45a9cbe21801afd434",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "543e57aab7ded0f2ccaab025d07e2f097666684e67f93248bc75f4c2901cd873",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "58085a18cb0fce8276ddeb92e2d9df9e19a3713f5229cfeed46e33353dad8e4d",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "919b3b8f3d084b4f99d0da55aa07648d78857e9f241311572b5df0f73f7590b5",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/SCL.tif",
+          "scl_raw_sha256": "1bb1c31fd9e50977526a5f6320d65f294ea6ecdf22fdcfa776f9a3fcc8028003",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "45b8915a6f4d9a15690a656c1564cf06bb579a85a80dde3ef8f6912bf51db335",
+            "crop_file": "S2C_T17MRU_20260729T153626_L2A_indices20m.tif"
+          }
+        }
+      ],
+      "width": 336,
+      "height": 334,
+      "web_extent": [
+        -8657890.539626902,
+        -119142.82037331919,
+        -8651170.78197359,
+        -112417.9763250754
+      ],
+      "web_transform": [
+        19.999278730097494,
+        0.0,
+        -8657890.539626902,
+        0.0,
+        -20.13426361749637,
+        -112417.9763250754
+      ],
+      "native_transform": [
+        20.0,
+        0.0,
+        858980.0,
+        0.0,
+        -20.0,
+        9888200.0
+      ],
+      "web_common_pixels": 100063
+    },
+    {
+      "id": "misahualli",
+      "name": "Misahuallí",
+      "bbox": [
+        -77.695,
+        -1.06,
+        -77.64,
+        -1.005
+      ],
+      "scenes": [
+        {
+          "collection": "sentinel-2-l2a",
+          "id": "S2B_17MRU_20190711_0_L2A",
+          "date": "2019-07-11",
+          "acquired_at": "2019-07-11T15:43:42.348000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-l2a/items/S2B_17MRU_20190711_0_L2A",
+          "stac_file": "data/fluvial/S2B_17MRU_20190711_0_L2A.stac.json",
+          "stac_sha256": "f76e34f29c1b43667815a642267035be92b5f6be3a4e2237170d6c5b285e4559",
+          "url": "data/fluvial/misahualli-2019-07-11.bin.gz",
+          "sha256": "7605acc1ebfcc2472c01f992624af397135a842173ac91488dea6989926f1f06",
+          "size_bytes": 1261871,
+          "decoded_bytes": 2638944,
+          "native_usable_pixels": 90546,
+          "web_usable_pixels": 90546,
+          "native_file": "S2B_17MRU_20190711_0_L2A-misahualli.tif",
+          "native_sha256": "b06db9ffb89b971c4c0cd68823e1c2ffda3cc9afd85929310889fadc83be4d85",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "16eb11c65c0047432f759b9b1736932d4da5323f299afbe328375cd38d9098d0",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "e6fdc1c4526facfb1316b167d82706e27da1d90880b72a4d59d383b059cd8ce9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "90622333ac81da8a437475d5855cae1367e014ff2cc77c42a011b308e747bf42",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "92bf0487f806dfd8edee594440fc6d3ace57d90cd8dcd686e77dae63154aa725",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "f883a0f68796168ed7ab295b59a2a90f66d0e1846e1acf2f6f1a8e3ee3670cec",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": 0,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "ced6850378aed5b9beb85a9a68c39db1f0f43e6455086b8c6a0938349e3f5fe5",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/17/M/RU/2019/7/S2B_17MRU_20190711_0_L2A/SCL.tif",
+          "scl_raw_sha256": "464fa7002d4c176d1696faf1253c688ac2569213c457750135d81a1700a0266c",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "54f983a2348c4ec613a3321ced5d85188da96fd2c590530c8ee435ad1d65859e",
+            "crop_file": "S2B_17MRU_20190711_0_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2A_T17MRU_20240808T153803_L2A",
+          "date": "2024-08-08",
+          "acquired_at": "2024-08-08T15:43:34.210000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2A_T17MRU_20240808T153803_L2A",
+          "stac_file": "data/fluvial/S2A_T17MRU_20240808T153803_L2A.stac.json",
+          "stac_sha256": "a01ad280528e2134f2ce231eef9f6f76210e7a6e95df1f19a385dc01715951d7",
+          "url": "data/fluvial/misahualli-2024-08-08.bin.gz",
+          "sha256": "75753aff808b52fbaefc734f81fd79a3c5d1be22965917be3802e43941b6ec9d",
+          "size_bytes": 1311034,
+          "decoded_bytes": 2638944,
+          "native_usable_pixels": 93212,
+          "web_usable_pixels": 93212,
+          "native_file": "S2A_T17MRU_20240808T153803_L2A-misahualli.tif",
+          "native_sha256": "342a5e71b2122816b2b5e77044b5106db086bd0f9d2f10ec9ed370fbb272f8df",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "1eb7a6132997b7509bbceab2e7398867b74ec5f1d100e91182c6b3c5237c84cd",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "782f1719e64aa795806259ee3984d70288f79160c0e372c4c3bc21bdf5edddaa",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "647e74d3e96e13bc3e7ac58e9a2781b4b752c2d1b998b8d986503dabacf8630f",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "7d085ee33659d8f7cf635aba0f1d23a671313e475d13e00e56d6ebe69801d8e2",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "abdd349e677cfe5a4984e71933e27717e96c2a88f07fc8c1122316493f1276fe",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "eb5071e95a211585b7604347c1ad0fbe4d4e2026fb4745d3da0f80840ce0ca22",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2024/8/S2A_T17MRU_20240808T153803_L2A/SCL.tif",
+          "scl_raw_sha256": "4bd9b08de4b42bd88513e57b5404125dacf2dda6e7ad96dee48aa5752bcdaae4",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "c3abe087204bc81debbf1ae5c57888bbef2795fa2dd111f1d4956d72e06a3bb2",
+            "crop_file": "S2A_T17MRU_20240808T153803_L2A_indices20m.tif"
+          }
+        },
+        {
+          "collection": "sentinel-2-c1-l2a",
+          "id": "S2C_T17MRU_20260729T153626_L2A",
+          "date": "2026-07-29",
+          "acquired_at": "2026-07-29T15:43:34.966000Z",
+          "stac_url": "https://earth-search.aws.element84.com/v1/collections/sentinel-2-c1-l2a/items/S2C_T17MRU_20260729T153626_L2A",
+          "stac_file": "data/fluvial/S2C_T17MRU_20260729T153626_L2A.stac.json",
+          "stac_sha256": "8b6e7e523c41bc293068d252831a953e0978be27744645b7c25376a4cfee3a55",
+          "url": "data/fluvial/misahualli-2026-07-29.bin.gz",
+          "sha256": "09e241a3e8d9cec398feac20621d74e7fab3025023d1aa638e1990427fb20324",
+          "size_bytes": 1335086,
+          "decoded_bytes": 2638944,
+          "native_usable_pixels": 93468,
+          "web_usable_pixels": 93468,
+          "native_file": "S2C_T17MRU_20260729T153626_L2A-misahualli.tif",
+          "native_sha256": "de80080611ad5462c9972ba7a699e952ba3303c654e2f2d1c603049f49313d77",
+          "radiometry": [
+            {
+              "band": "B2",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B02.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "5c987a37fdc8d97eeb58772afa8466622ddc6a407043d1650aea76c2af870526",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B3",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B03.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "29b33bf8318e88a06176c76f8512394671c892a494dda06d6c9b7977e5d58af9",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B4",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B04.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "834a9e9262c94eddc89843eb02c45d0cdf17d753e8810b45a9cbe21801afd434",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B8",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B08.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 10,
+              "aggregation": "aligned-2x2-mean",
+              "raw_array_sha256": "543e57aab7ded0f2ccaab025d07e2f097666684e67f93248bc75f4c2901cd873",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B11",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B11.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "58085a18cb0fce8276ddeb92e2d9df9e19a3713f5229cfeed46e33353dad8e4d",
+              "reused_parent_crop": true
+            },
+            {
+              "band": "B12",
+              "url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/B12.tif",
+              "scale": 0.0001,
+              "offset": -0.1,
+              "native_m": 20,
+              "aggregation": "none",
+              "raw_array_sha256": "fb8f1f895d27538f1f58ad24b8302111ace9692a6d64c497a34548211ef12ae5",
+              "reused_parent_crop": false
+            }
+          ],
+          "scl_url": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/17/M/RU/2026/7/S2C_T17MRU_20260729T153626_L2A/SCL.tif",
+          "scl_raw_sha256": "455a209ee38531b346f4e5535528482bd2b5a276db79881506edca5824c526f4",
+          "reused_parent": {
+            "manifest_sha256": "b9ca7d07fa9c86b6a49b5dba572744060fc7fb7a2670c225c2627546561001a5",
+            "crop_sha256": "45b8915a6f4d9a15690a656c1564cf06bb579a85a80dde3ef8f6912bf51db335",
+            "crop_file": "S2C_T17MRU_20260729T153626_L2A_indices20m.tif"
+          }
+        }
+      ],
+      "width": 308,
+      "height": 306,
+      "web_extent": [
+        -8648980.725132715,
+        -118027.0736503185,
+        -8642821.344017493,
+        -111866.37714141721
+      ],
+      "web_transform": [
+        19.997990633838796,
+        0.0,
+        -8648980.725132715,
+        0.0,
+        -20.132995127128417,
+        -111866.37714141721
+      ],
+      "native_transform": [
+        20.0,
+        0.0,
+        867900.0,
+        0.0,
+        -20.0,
+        9888740.0
+      ],
+      "web_common_pixels": 89866
+    }
+  ]
+}

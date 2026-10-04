@@ -23,7 +23,7 @@ assert.equal(screenClip({left: -100, width: 100}, {left: 0, width: 100}, 50, "ea
 assert.equal(screenClip({left: 100, width: 100}, {left: 0, width: 100}, 50, "later"), "inset(0 0 0 0%)");
 
 // Test-only DOM/Leaflet doubles: lifecycle, stale loads and failures, not scientific observations.
-const markup = fs.readFileSync("index.html", "utf8");
+const markup = fs.readFileSync("explore.html", "utf8");
 class Element {
   constructor() {this.style = {}; this.dataset = {}; this.handlers = {}; this.attributes = {}; this.checked = false; this.value = "";}
   addEventListener(name, callback) {this.handlers[name] = callback;}

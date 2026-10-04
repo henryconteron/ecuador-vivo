@@ -24,7 +24,7 @@ const context = vm.createContext({
 
 vm.runInContext(fs.readFileSync("assets/js/i18n.js", "utf8"), context);
 
-const markup = ["index.html", "learn.html"]
+const markup = ["explore.html", "learn.html"]
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
 const runtimeSource = ["assets/js/learn.js", "assets/js/map.js", "assets/js/map/landcover.js", "assets/js/map/imagery.js", "assets/js/map/spectral.js", "assets/js/map/spectral-map.js", "assets/js/map/rivers.js", "assets/js/map/rivers-observations.js"]

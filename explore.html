@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ecuador Vivo, un atlas interactivo para comprender cómo se conectan las Ciencias de la Tierra." />
+    <title>Ecuador Vivo | Atlas de una Tierra en movimiento</title>
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="preconnect" href="https://tile.openstreetmap.org" />
+    <link rel="preconnect" href="https://tile.opentopomap.org" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/css/styles.css?v=20261001-4" />
+    <link rel="stylesheet" href="assets/css/portal-bridge.css?v=20261004" />
+  </head>
+  <body data-page="map">
+    <a class="skip-link" href="#map" data-i18n="skip.map">Ir directamente al mapa</a>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" data-i18n-aria="brand.homeAria" aria-label="Inicio de Ecuador Vivo">
+          <span class="brand-mark" aria-hidden="true">EV</span>
+          <span class="brand-copy">
+            <strong data-i18n="brand.name">Ecuador Vivo</strong>
+            <small data-i18n="brand.subtitle">Atlas de una Tierra en movimiento</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" data-i18n-aria="nav.aria" aria-label="Navegación principal">
+          <a class="is-active" href="explore.html" data-keep-lang aria-current="page" data-i18n="nav.map">Explorar</a>
+          <a href="datos.html" data-keep-lang data-es="Datos" data-en="Data">Datos</a>
+          <a href="andes-pulso.html" data-keep-lang>Andes Pulso</a>
+          <a href="biblioteca.html" data-keep-lang data-es="Biblioteca" data-en="Library">Biblioteca</a>
+          <a href="learn.html" data-keep-lang data-i18n="nav.learn">Aprender</a>
+        </nav>
+
+        <div class="header-actions">
+          <span class="project-status" data-i18n-aria="status.development" aria-label="Proyecto en desarrollo">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status-full" data-i18n="status.development">Proyecto en desarrollo</span>
+            <span class="status-short">Beta</span>
+          </span>
+          <button class="language-toggle" type="button" data-language-toggle aria-label="Switch to English">EN</button>
+          <button class="share-toggle" type="button" data-share-atlas data-i18n="share.button" data-i18n-aria="share.aria">Compartir</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="map-panel" data-i18n-aria="map.panelAria" aria-label="Mapa de los sistemas naturales del Ecuador">
+          <div class="map-title">
+            <div class="map-context">
+              <span class="map-region" data-i18n="map.region">Ecuador continental</span>
+              <span id="data-mode" class="data-mode" hidden data-i18n="status.synthetic">Datos sintéticos</span>
+            </div>
+            <div class="map-actions">
+              <div class="basemap-switch" role="group" data-i18n-aria="basemap.aria" aria-label="Seleccionar mapa base">
+                <button class="is-active" data-basemap="topographic" type="button" aria-pressed="true">
+                  <span class="basemap-icon relief-icon" aria-hidden="true"></span><span data-i18n="basemap.topographic">Topográfico</span>
+                </button>
+                <button data-basemap="streets" type="button" aria-pressed="false">
+                  <span class="basemap-icon street-icon" aria-hidden="true"></span><span data-i18n="basemap.streets">Calles</span>
+                </button>
+              </div>
+              <button id="reset-view" class="reset-view" type="button" data-i18n-title="map.reset">
+                <span aria-hidden="true">↗</span><span class="reset-label" data-i18n="map.reset">Restablecer vista</span>
+              </button>
+              <button id="explain-place" class="explain-place-button" type="button" aria-pressed="false">
+                <span class="explain-place-icon" aria-hidden="true">◎</span><span class="reset-label" data-i18n="place.action">Explícame este lugar</span>
+              </button>
+              <button id="expand-map" type="button" aria-pressed="false" aria-label="Ampliar visor" data-i18n-aria="map.expand"><span aria-hidden="true">⛶</span><span class="reset-label" data-i18n="map.expand">Ampliar visor</span></button>
+            </div>
+          </div>
+
+          <div id="map" tabindex="0" data-i18n-aria="map.aria" aria-label="Mapa interactivo del Ecuador continental"></div>
+          <div id="spectral-map-divider" class="spectral-map-divider" aria-hidden="true" hidden><span>2019 │ 2024</span></div>
+          <div id="rivers-divider" class="spectral-map-divider" aria-hidden="true" hidden><span>2019 │ 2024</span></div>
+          <section id="rivers-toolbar" class="spectral-map-toolbar" aria-label="Imágenes provinciales" data-i18n-aria="rivers.toolbar" hidden>
+            <header><strong data-i18n="rivers.title">Napo · detalle a 10 m</strong><button id="rivers-hide" type="button" data-i18n="spectralMap.hide">Ocultar</button></header>
+            <label><span data-i18n="spectralMap.time">Modo temporal</span><select id="rivers-time" aria-label="Modo temporal provincial" data-i18n-aria="rivers.time"><option value="compare">2019 ↔ 2024</option><option value="2019">2019</option><option value="2024">2024</option></select></label>
+            <div id="rivers-swipe"><label for="rivers-split" data-i18n="spectral.slider">Mover el límite entre los años</label><input id="rivers-split" type="range" min="0" max="100" step="1" value="50" /></div>
+            <button id="rivers-fit" type="button" data-i18n="rivers.fit">Ver cobertura disponible</button><small id="rivers-scope"></small>
+            <button id="rivers-observations-open" type="button" data-i18n="rivers.observationOpen" disabled>¿Qué fechas estamos comparando?</button>
+            <details class="rivers-review">
+              <summary data-i18n="rivers.navigate">Recorrer celdas candidatas</summary>
+              <label for="rivers-cell" data-i18n="rivers.cellLabel">Celda · señal total aproximada</label>
+              <select id="rivers-cell" aria-describedby="rivers-cell-position" disabled></select>
+              <div class="rivers-navigation"><button id="rivers-previous" type="button" data-i18n="rivers.previous" disabled>Anterior</button><button id="rivers-next" type="button" data-i18n="rivers.next" disabled>Siguiente</button></div>
+              <button id="rivers-inspect" type="button" data-i18n="rivers.inspectCell" disabled>Explorar esta celda a 10 m</button>
+              <small id="rivers-cell-position" role="status"></small>
+              <small data-i18n="rivers.shareCell">Selecciona una celda y usa «Compartir» en la cabecera. El enlace reabre esa celda y conserva el año y el corte.</small>
+            </details>
+            <details class="rivers-review">
+              <summary data-i18n="rivers.reviewGuide">Antes de sacar conclusiones</summary>
+              <ol><li data-i18n="rivers.reviewImages">Alterna ambos años y recorre la celda: el marcador es su centro, no el punto exacto del cambio.</li><li data-i18n="rivers.reviewDates">Estos RGB son medianas de una muestra anual, no fotos de una misma fecha. Para comprobar cambios, revisa escenas fechadas y condiciones hidrológicas comparables.</li><li data-i18n="rivers.reviewArtifacts">Descarta nubes, sombras y huecos; compara el nivel del agua y la estacionalidad. Más zoom no crea detalle por debajo de 10 m.</li><li data-i18n="rivers.reviewEvidence">Contrasta con otra fecha o sensor y evidencia de campo antes de atribuir una causa. Explorar una celda no cambia su estado «sin revisar».</li></ol>
+              <a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="rivers.method">Método, cobertura y límites ↗</a>
+            </details>
+          </section>
+          <section id="spectral-map-toolbar" class="spectral-map-toolbar" data-i18n-aria="spectralMap.toolbar" aria-label="Controles satelitales del visor" hidden>
+            <header><strong id="spectral-map-title"></strong><button id="spectral-map-hide" type="button" data-i18n="spectralMap.hide">Ocultar</button></header>
+            <label><span data-i18n="spectral.chooseMode">Elegir señal espectral</span><select id="spectral-map-quick-mode" data-i18n-aria="spectral.chooseMode" aria-label="Elegir señal espectral">
+              <option value="rgb" data-i18n="spectral.rgb">Imagen RGB</option><option value="ndvi" data-i18n="spectral.ndvi">Vegetación · NDVI</option><option value="mndwi" data-i18n="spectral.mndwi">Señal de agua · MNDWI</option><option value="ndmi" data-i18n="spectral.ndmi">Humedad · NDMI</option><option value="change" data-i18n="spectral.change">Diferencia de NDVI</option><option value="quality" data-i18n="spectral.quality">Observaciones útiles</option>
+            </select></label>
+            <label><span data-i18n="spectralMap.time">Modo temporal</span><select id="spectral-map-time" data-i18n-aria="spectralMap.time" aria-label="Modo temporal"><option value="compare" data-i18n="spectralMap.pair">2019 ↔ 2024</option><option value="2019">2019</option><option value="2024">2024</option></select></label>
+            <div id="spectral-map-compare-controls"><label for="spectral-map-split" data-i18n="spectral.slider">Mover el límite entre los años</label><div class="spectral-map-years"><span>2019</span><span>2024</span></div><input id="spectral-map-split" type="range" min="0" max="100" step="1" value="50" /></div>
+            <small id="spectral-map-scope"></small>
+          </section>
+          <div id="map-error" class="map-error" role="alert" hidden>
+            <strong data-i18n="errors.mapUnavailable">El mapa no está disponible</strong>
+            <p data-i18n="errors.checkConnection">Comprueba la conexión y vuelve a cargar la página.</p>
+          </div>
+          <section id="place-explainer" class="place-explainer" aria-labelledby="place-title" hidden>
+            <header>
+              <div>
+                <p class="eyebrow" data-i18n="place.eyebrow">Lectura del territorio</p>
+                <h2 id="place-title" data-i18n="place.title">¿Qué cuenta este lugar?</h2>
+              </div>
+              <button id="close-place-explainer" type="button" data-i18n-aria="place.close" aria-label="Cerrar lectura del lugar">×</button>
+            </header>
+            <p id="place-instruction" class="place-instruction" data-i18n="place.instruction">Selecciona un punto del mapa para conectar las evidencias disponibles.</p>
+            <div id="place-results" class="place-results"></div>
+            <p class="place-caution" data-i18n="place.caution">Las distancias son aproximadas. La cercanía espacial no demuestra una relación causal ni equivale a un análisis de amenaza.</p>
+          </section>
+          <details class="legend" open>
+            <summary data-i18n="legend.title">Leyenda</summary>
+            <p id="legend-empty" class="legend-empty" data-i18n="legend.empty" hidden>No hay capas temáticas activas.</p>
+            <section class="legend-section" data-legend-layer="faults">
+              <div class="legend-items" data-i18n-aria="legend.movementAria" aria-label="Tipos de movimiento">
+                <span><i class="reverse"></i><span data-i18n="movement.inversa">Inversa</span></span>
+                <span><i class="normal"></i><span data-i18n="movement.normal">Normal</span></span>
+                <span><i class="dextral"></i><span data-i18n="movement.dextral">Dextral</span></span>
+                <span><i class="sinistral"></i><span data-i18n="movement.sinestral">Sinestral</span></span>
+                <span><i class="unknown"></i><span data-i18n="movement.desconocido">No determinado</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="evidence" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.evidence">Indicadores geomorfológicos</p>
+              <div class="legend-items evidence-legend" data-i18n-aria="legend.evidenceAria" aria-label="Tipos de indicadores geomorfológicos">
+                <span><i class="evidence-symbol scarp"></i><span data-i18n="evidence.escarpe">Escarpe de falla</span></span>
+                <span><i class="evidence-symbol facet"></i><span data-i18n="evidence.faceta_triangular">Faceta triangular</span></span>
+                <span><i class="evidence-symbol stream"></i><span data-i18n="evidence.drenaje_desplazado">Drenaje desplazado</span></span>
+                <span><i class="evidence-symbol sag"></i><span data-i18n="evidence.laguna_sag">Laguna de hundimiento</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="precipitation" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.precipitation">Tasa de precipitación</p>
+              <div class="precipitation-legend" data-i18n-aria="legend.precipitationAria" aria-label="Tasa de precipitación de menor a mayor">
+                <span class="precipitation-ramp" aria-hidden="true"></span>
+                <span><span data-i18n="precipitation.lower">Menor</span><span data-i18n="precipitation.higher">Mayor</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="air-temperature" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.airTemperature">Temperatura del aire diurna</p>
+              <div class="air-temperature-legend" data-i18n-aria="legend.airTemperatureAria" aria-label="Temperatura del aire en grados Celsius de menor a mayor">
+                <span aria-hidden="true"></span>
+                <div><small>−73 °C</small><small>−13 °C</small><small>47 °C</small></div>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="cloud-fraction" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.cloudFraction">Fracción de nube diurna</p>
+              <div class="cloud-fraction-legend" data-i18n-aria="legend.cloudFractionAria" aria-label="Porcentaje de cobertura nubosa de menor a mayor">
+                <span aria-hidden="true"></span>
+                <div><small>0%</small><small>50%</small><small>100%</small></div>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="basins" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.basins">Cuencas hidrográficas</p>
+              <div class="legend-items basin-legend" data-i18n-aria="legend.basinsAria" aria-label="Límites de cuencas hidrográficas">
+                <span><i class="basin-symbol" aria-hidden="true"></i><span data-i18n="basins.boundaries">Límite de cuenca</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="stations" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.stations">Estaciones en transmisión</p>
+              <div class="legend-items station-legend" data-i18n-aria="legend.stationsAria" aria-label="Tipos de estaciones hidrometeorológicas">
+                <span><i class="station-symbol meteorological" aria-hidden="true"></i><span data-i18n="stations.meteorological">Meteorológica</span></span>
+                <span><i class="station-symbol hydrological" aria-hidden="true"></i><span data-i18n="stations.hydrological">Hidrológica</span></span>
+                <span><i class="station-symbol mixed" aria-hidden="true"></i><span data-i18n="stations.mixed">Hidro-meteorológica</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="flood" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.flood">Inundación observada</p>
+              <div class="legend-items flood-legend" data-i18n-aria="legend.floodAria" aria-label="Clases del producto satelital de inundación">
+                <span><i class="flood-symbol surface-water"></i><span data-i18n="flood.surfaceWater">Agua superficial</span></span>
+                <span><i class="flood-symbol recurring"></i><span data-i18n="flood.recurring">Inundación recurrente</span></span>
+                <span><i class="flood-symbol detected"></i><span data-i18n="flood.detected">Inundación detectada</span></span>
+                <span><i class="flood-symbol insufficient"></i><span data-i18n="flood.insufficient">Datos insuficientes</span></span>
+              </div>
+            </section>
+            <section class="legend-section" data-legend-layer="thermal" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.thermal">Observación térmica</p>
+              <div class="legend-items thermal-legend"><span><i class="thermal-symbol"></i><span data-i18n="thermal.detection">Anomalía detectada por VIIRS</span></span></div>
+            </section>
+            <section class="legend-section" data-legend-layer="landcover" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p id="landcover-legend-year" class="legend-subtitle" data-i18n="landcover.title">Cobertura del suelo · Napo</p>
+              <div id="landcover-legend" class="legend-items landcover-legend"></div>
+            </section>
+            <section class="legend-section spectral-map-legend" data-legend-layer="spectral-map" hidden>
+              <div class="legend-divider" aria-hidden="true"></div><p id="spectral-map-legend-title" class="legend-subtitle"></p>
+              <div id="spectral-map-legend-scale"><div id="spectral-map-gradient"></div><p id="spectral-map-ticks"><span id="spectral-map-min"></span><span id="spectral-map-mid"></span><span id="spectral-map-max"></span></p></div>
+              <p id="spectral-map-legend-note"></p><small data-i18n="spectralMap.legendCaution">Escalas fijas. No midas valores desde el color ni interpretes los huecos como terreno.</small>
+            </section>
+            <section class="legend-section" data-legend-layer="rivers" hidden>
+              <div class="legend-divider" aria-hidden="true"></div><p class="legend-subtitle" data-i18n="rivers.title">Napo · detalle a 10 m</p>
+              <p id="rivers-legend-year">2019 ↔ 2024</p><small data-i18n="rivers.scope">Bloque de Napo · RGB de muestra anual · 10 m. Cobertura parcial, no toda la provincia ni toda la cuenca.</small>
+              <small data-i18n="rivers.noData">Donde aparece el mapa base no hay imagen satelital comparable o está fuera de Napo. No interpretes ese fondo como un cambio del paisaje.</small>
+              <p id="rivers-marker-legend" hidden><span style="color:#ffb15f" aria-hidden="true">●</span> <span data-i18n="rivers.candidateTitle">Cambio de agua · candidato sin revisar</span></p>
+            </section>
+            <section class="legend-section" data-legend-layer="earthquakes" hidden>
+              <div class="legend-divider" aria-hidden="true"></div>
+              <p class="legend-subtitle" data-i18n="legend.earthquakes">Sismos por profundidad</p>
+              <div class="legend-items earthquake-legend" data-i18n-aria="legend.depthAria" aria-label="Profundidad de los sismos">
+                <span><i class="earthquake-depth shallow"></i><span data-i18n="earthquakes.shallow">0–30 km</span></span>
+                <span><i class="earthquake-depth intermediate"></i><span data-i18n="earthquakes.intermediate">30–70 km</span></span>
+                <span><i class="earthquake-depth deep"></i><span data-i18n="earthquakes.deep">70–300 km</span></span>
+                <span><i class="earthquake-depth very-deep"></i><span data-i18n="earthquakes.veryDeep">Más de 300 km</span></span>
+              </div>
+            </section>
+          </details>
+        </section>
+
+        <aside class="sidebar" data-i18n-aria="sidebar.aria" aria-label="Explorador, catálogo y filtros">
+          <section class="regional-focus" aria-labelledby="focus-title">
+            <h2 id="focus-title" data-i18n="focus.title">Desde Ecuador hasta tu territorio</h2>
+            <div role="group" data-i18n-aria="focus.choose" aria-label="Elegir zona de exploración">
+              <button type="button" data-region-focus="ecuador" aria-pressed="true" data-i18n="focus.ecuador">Ecuador</button>
+              <button type="button" data-region-focus="napo" aria-pressed="false" data-i18n="focus.napo">Tena–Archidona</button>
+            </div>
+            <p id="focus-note" data-i18n="focus.note" hidden>Encuadre de exploración de Napo, no límite administrativo. Cambia la vista, no filtra los catálogos.</p>
+          </section>
+          <section class="intro">
+            <p id="system-eyebrow" class="eyebrow" data-i18n="intro.eyebrow">Ecuador Vivo · Tierra</p>
+            <h1 id="system-intro-title" data-i18n="intro.title">Todo paisaje es una historia en movimiento</h1>
+            <p id="system-intro-copy" data-i18n="intro.copy">Comenzamos bajo tus pies: fallas, sismos y formas del relieve. Después conectaremos agua, atmósfera y vida.</p>
+            <a class="learn-link" href="learn.html" data-system-content="earth"><span data-i18n="intro.learn">Aprende a leer el paisaje</span><span aria-hidden="true">↗</span></a>
+          </section>
+
+          <section class="system-explorer" aria-labelledby="systems-title">
+            <div class="section-heading">
+              <h2 id="systems-title" data-i18n="systems.title">Sistemas del atlas</h2>
+              <span data-i18n="systems.phase">Fundación</span>
+            </div>
+            <div class="system-grid" role="navigation" data-i18n-aria="systems.aria" aria-label="Sistemas naturales del atlas">
+              <button class="is-active" type="button" data-system="earth" aria-pressed="true" aria-describedby="system-note"><i aria-hidden="true">◒</i><span data-i18n="systems.earth">Tierra</span><small data-system-count-key="systems.fourLayers" data-i18n="systems.active">Activo</small></button>
+              <button type="button" data-system="water" aria-pressed="false" aria-describedby="system-note"><i aria-hidden="true">≋</i><span data-i18n="systems.water">Agua</span><small data-system-count-key="systems.fiveLayers" data-i18n="systems.fiveLayers">5 capas</small></button>
+              <button type="button" data-system="sky" aria-pressed="false" aria-describedby="system-note"><i aria-hidden="true">⌁</i><span data-i18n="systems.sky">Cielo</span><small data-system-count-key="systems.threeLayers" data-i18n="systems.threeLayers">3 capas</small></button>
+              <button type="button" data-system="life" aria-pressed="false" aria-describedby="system-note"><i aria-hidden="true">✦</i><span data-i18n="systems.life">Vida</span><small data-system-count-key="systems.threeLayers" data-i18n="systems.threeLayers">3 capas</small></button>
+              <button type="button" data-system="risk" aria-pressed="false" aria-describedby="system-note"><i aria-hidden="true">△</i><span data-i18n="systems.risk">Riesgo</span><small data-system-count-key="systems.oneLayer" data-i18n="systems.oneLayer">1 capa</small></button>
+            </div>
+            <p id="system-note" class="system-note" role="status" data-i18n="systems.earthNote">La primera mirada conecta tectónica, sismicidad y relieve.</p>
+          </section>
+
+          <section class="summary-grid" data-system-content="earth" data-i18n-aria="summary.aria" aria-label="Resumen del catálogo">
+            <article><strong id="fault-count">0</strong><span data-i18n="summary.faults">trazas visibles</span></article>
+            <article><strong id="evidence-count">0</strong><span data-i18n="summary.evidence">formas del relieve</span></article>
+            <article><strong id="earthquake-count">—</strong><span data-i18n="summary.earthquakes">sismos M ≥ 3</span></article>
+            <article><strong id="source-count">0</strong><span data-i18n="summary.sources">fuentes citadas</span></article>
+          </section>
+
+          <section class="layer-panel" aria-labelledby="layers-title">
+            <div class="section-heading"><h2 id="layers-title" data-i18n="systems.earthLayers">Capas de Tierra</h2></div>
+            <div id="basin-layer-card" class="now-layer-card basin-layer-card" data-system-content="water" hidden>
+              <div class="now-layer-heading"><span data-i18n="basins.badge">Territorio y agua</span><small>INAMHI · MAATE</small></div>
+              <label class="layer-switch" for="basin-toggle">
+                <span><strong data-i18n="layers.basins">Cuencas hidrográficas</strong><small data-i18n="layers.basinsHint">30 unidades publicadas en el geoservicio nacional</small></span>
+                <input id="basin-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <label class="basin-opacity-control" for="basin-opacity">
+                <span data-i18n="basins.opacity">Opacidad</span>
+                <span class="thermal-opacity-row"><input id="basin-opacity" type="range" min="15" max="75" value="34" step="1" disabled /><output id="basin-opacity-value" for="basin-opacity">34%</output></span>
+              </label>
+              <p id="basin-status" class="layer-status" role="status" data-i18n="basins.off">Activa la capa para seguir el territorio que drena hacia un mismo cauce.</p>
+              <details class="thermal-story basin-story">
+                <summary data-i18n="basins.question">¿Por qué la lluvia se interpreta por cuencas?</summary>
+                <p data-i18n="basins.answer">Porque el relieve dirige el agua hacia una red común. Una tormenta aguas arriba puede influir río abajo, aunque la lluvia local sea menor.</p>
+                <a href="https://geoservicios.inamhi.gob.ec/catalogue/#/dataset/8" target="_blank" rel="noopener noreferrer"><span data-i18n="basins.openSource">Abrir ficha en INAMHI</span><span aria-hidden="true">↗</span></a>
+              </details>
+              <p class="layer-caution basin-metadata-note" data-i18n="basins.metadataCaution">La ficha pública no especifica licencia, escala ni método de elaboración. El atlas consulta el servicio sin redistribuir las geometrías.</p>
+            </div>
+            <div id="station-layer-card" class="now-layer-card station-layer-card" data-system-content="water" hidden>
+              <div class="now-layer-heading"><span data-i18n="stations.badge">La cuenca toma el pulso</span><small data-i18n="stations.network">INAMHI · Red nacional</small></div>
+              <label class="layer-switch" for="station-toggle">
+                <span><strong data-i18n="layers.stations">Estaciones hidrometeorológicas</strong><small data-i18n="layers.stationsHint">Puntos continentales marcados como transmitiendo</small></span>
+                <input id="station-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <label class="station-filter" for="station-category">
+                <span data-i18n="stations.filter">Tipo de estación</span>
+                <select id="station-category" disabled>
+                  <option value="all" data-i18n="stations.all">Todas</option>
+                  <option value="meteorological" data-i18n="stations.meteorologicalPlural">Meteorológicas</option>
+                  <option value="hydrological" data-i18n="stations.hydrologicalPlural">Hidrológicas</option>
+                  <option value="mixed" data-i18n="stations.mixedPlural">Hidro-meteorológicas</option>
+                </select>
+              </label>
+              <p id="station-status" class="layer-status" role="status" data-i18n="stations.loading">Preparando la red de observación…</p>
+              <p class="station-snapshot"><span data-i18n="stations.snapshot">Instantánea consultada</span> <time id="station-retrieved-at">—</time></p>
+              <details class="thermal-story station-story">
+                <summary data-i18n="stations.question">¿Una estación describe toda la cuenca?</summary>
+                <p data-i18n="stations.answer">No. Mide condiciones en un punto. Su valor crece cuando se combina con otras estaciones, satélites, relieve y conocimiento local.</p>
+                <a href="https://inamhi.gob.ec/info/visor/" target="_blank" rel="noopener noreferrer"><span data-i18n="stations.openViewer">Abrir visor oficial de INAMHI</span><span aria-hidden="true">↗</span></a>
+              </details>
+              <p class="layer-caution" data-i18n="stations.caution">El color indica el tipo de estación, no lluvia ni caudal. “Transmitiendo” es el estado informado por INAMHI al actualizar la instantánea; no garantiza una observación válida en este momento.</p>
+            </div>
+            <label class="layer-switch" for="hillshade-toggle" data-system-content="earth">
+              <span><strong data-i18n="layers.hillshade">Relieve sombreado</strong><small data-i18n="layers.hillshadeHint">Esri World Hillshade · contexto regional</small></span>
+              <input id="hillshade-toggle" type="checkbox" checked />
+              <span class="switch-track" aria-hidden="true"><span></span></span>
+            </label>
+            <label class="opacity-control" for="hillshade-opacity" data-system-content="earth">
+              <span data-i18n="layers.hillshadeOpacity">Intensidad del relieve</span>
+              <input id="hillshade-opacity" type="range" min="0" max="70" value="34" step="1" />
+              <output id="hillshade-opacity-value" for="hillshade-opacity">34%</output>
+            </label>
+            <label class="layer-switch" for="fault-toggle" data-system-content="earth">
+              <span><strong data-i18n="layers.faults">Fallas geológicas</strong><small data-i18n="layers.faultsHint">Trazas clasificadas por tipo de movimiento</small></span>
+              <input id="fault-toggle" type="checkbox" checked disabled />
+              <span class="switch-track" aria-hidden="true"><span></span></span>
+            </label>
+            <label class="layer-switch" for="evidence-toggle" data-system-content="earth">
+              <span><strong data-i18n="layers.evidence">Indicadores geomorfológicos</strong><small data-i18n="layers.evidenceHint">Escarpes, facetas y drenajes desplazados</small></span>
+              <input id="evidence-toggle" type="checkbox" disabled />
+              <span class="switch-track" aria-hidden="true"><span></span></span>
+            </label>
+            <div id="precipitation-layer-card" class="now-layer-card precipitation-layer-card" data-system-content="water sky" hidden>
+              <div class="now-layer-heading"><span data-i18n="now.badge">Ecuador ahora</span><small>NASA GPM · IMERG</small></div>
+              <label class="layer-switch" for="precipitation-toggle">
+                <span><strong data-i18n="layers.precipitation">Tasa de precipitación</strong><small data-i18n="layers.precipitationHint">IMERG · mosaico satelital diario</small></span>
+                <input id="precipitation-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <div class="thermal-controls">
+                <label for="precipitation-date"><span data-i18n="precipitation.date">Fecha satelital</span><input id="precipitation-date" type="date" disabled /></label>
+                <label for="precipitation-opacity"><span data-i18n="precipitation.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="precipitation-opacity" type="range" min="20" max="100" value="70" step="1" disabled /><output id="precipitation-opacity-value" for="precipitation-opacity">70%</output></span></label>
+              </div>
+              <p id="precipitation-status" class="layer-status" role="status" data-i18n="precipitation.off">Activa la capa para explorar la lluvia observada desde satélite.</p>
+              <details class="thermal-story precipitation-story">
+                <summary data-i18n="precipitation.question">¿Lluvia intensa significa inundación?</summary>
+                <p data-i18n="precipitation.answer">No necesariamente. También importan la duración, humedad previa, pendiente, suelos, drenaje y ocupación de la cuenca. Esta capa es contexto satelital, no una alerta.</p>
+                <a href="https://nasa-gibs.github.io/gibs-api-docs/python-usage/" target="_blank" rel="noopener noreferrer"><span data-i18n="precipitation.learnMore">Conoce el producto IMERG</span><span aria-hidden="true">↗</span></a>
+                <a href="https://inamhi.geoglows.org/apps" target="_blank" rel="noopener noreferrer"><span data-i18n="precipitation.inamhi">Consulta INAMHI–GEOGLOWS</span><span aria-hidden="true">↗</span></a>
+              </details>
+            </div>
+            <div id="air-temperature-layer-card" class="now-layer-card air-temperature-layer-card" data-system-content="sky" hidden>
+              <div class="now-layer-heading"><span data-i18n="airTemperature.badge">La atmósfera dibuja el relieve</span><small>NASA Aqua · AIRS</small></div>
+              <label class="layer-switch" for="air-temperature-toggle">
+                <span><strong data-i18n="layers.airTemperature">Temperatura del aire diurna</strong><small data-i18n="layers.airTemperatureHint">AIRS L3 · producto diario · cuadrícula de 1°</small></span>
+                <input id="air-temperature-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <div class="thermal-controls">
+                <label for="air-temperature-date"><span data-i18n="airTemperature.date">Fecha satelital</span><input id="air-temperature-date" type="date" disabled /></label>
+                <label for="air-temperature-opacity"><span data-i18n="airTemperature.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="air-temperature-opacity" type="range" min="20" max="100" value="72" step="1" disabled /><output id="air-temperature-opacity-value" for="air-temperature-opacity">72%</output></span></label>
+              </div>
+              <p id="air-temperature-status" class="layer-status" role="status" data-i18n="airTemperature.off">Activa la capa para comparar el patrón térmico regional.</p>
+              <details class="thermal-story air-temperature-story">
+                <summary data-i18n="airTemperature.question">¿Por qué los Andes aparecen más fríos?</summary>
+                <p data-i18n="airTemperature.answer">Al ascender, el aire se expande y suele enfriarse. Pero altitud no lo explica todo: nubosidad, humedad, circulación y hora de observación también importan.</p>
+                <a href="https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/AIRS_L3_Surface_Air_Temperature_Daily_Day.json" target="_blank" rel="noopener noreferrer"><span data-i18n="airTemperature.openMetadata">Abrir metadatos de NASA</span><span aria-hidden="true">↗</span></a>
+              </details>
+              <p class="layer-caution" data-i18n="airTemperature.caution">Es temperatura del aire observada durante el paso diurno del satélite, no temperatura máxima, sensación térmica ni pronóstico. Cada celda cubre aproximadamente 1°.</p>
+            </div>
+            <div id="cloud-fraction-layer-card" class="now-layer-card cloud-fraction-layer-card" data-system-content="sky" hidden>
+              <div class="now-layer-heading"><span data-i18n="cloudFraction.badge">El cielo no es un techo</span><small>NASA Aqua · MODIS</small></div>
+              <label class="layer-switch" for="cloud-fraction-toggle">
+                <span><strong data-i18n="layers.cloudFraction">Fracción de nube diurna</strong><small data-i18n="layers.cloudFractionHint">MODIS L2 · producto diario · 1 y 5 km</small></span>
+                <input id="cloud-fraction-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <div class="thermal-controls">
+                <label for="cloud-fraction-date"><span data-i18n="cloudFraction.date">Fecha satelital</span><input id="cloud-fraction-date" type="date" disabled /></label>
+                <label for="cloud-fraction-opacity"><span data-i18n="cloudFraction.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="cloud-fraction-opacity" type="range" min="20" max="100" value="68" step="1" disabled /><output id="cloud-fraction-opacity-value" for="cloud-fraction-opacity">68%</output></span></label>
+              </div>
+              <p id="cloud-fraction-status" class="layer-status" role="status" data-i18n="cloudFraction.off">Activa la capa para observar cuánto cielo cubren las nubes.</p>
+              <details class="thermal-story cloud-fraction-story">
+                <summary data-i18n="cloudFraction.question">¿Más nubes significa que está lloviendo?</summary>
+                <p data-i18n="cloudFraction.answer">No. La fracción indica qué parte de cada observación está cubierta por nubes, pero no revela por sí sola si producen lluvia ni cuánto precipita.</p>
+                <a href="https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/MODIS_Aqua_Cloud_Fraction_Day.json" target="_blank" rel="noopener noreferrer"><span data-i18n="cloudFraction.openMetadata">Abrir metadatos de NASA</span><span aria-hidden="true">↗</span></a>
+              </details>
+              <p class="layer-caution" data-i18n="cloudFraction.caution">Es una fracción de nube observada durante el paso diurno de Aqua, no un pronóstico ni una probabilidad de lluvia. Las franjas sin datos reflejan la órbita o condiciones de recuperación.</p>
+            </div>
+            <div id="flood-layer-card" class="now-layer-card flood-layer-card" data-system-content="water risk" hidden>
+              <div class="now-layer-heading"><span data-i18n="now.badge">Ecuador ahora</span><small>NASA LANCE · VIIRS</small></div>
+              <label class="layer-switch" for="flood-toggle">
+                <span><strong data-i18n="layers.flood">Inundación observada</strong><small data-i18n="layers.floodHint">VIIRS · agua superficial · ventana de 1 día</small></span>
+                <input id="flood-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <div class="thermal-controls">
+                <label for="flood-date"><span data-i18n="flood.date">Fecha satelital</span><input id="flood-date" type="date" disabled /></label>
+                <label for="flood-opacity"><span data-i18n="flood.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="flood-opacity" type="range" min="20" max="100" value="78" step="1" disabled /><output id="flood-opacity-value" for="flood-opacity">78%</output></span></label>
+              </div>
+              <p id="flood-status" class="layer-status" role="status" data-i18n="flood.off">Activa la capa para buscar agua superficial detectada por satélite.</p>
+              <details class="thermal-story flood-story">
+                <summary data-i18n="flood.question">¿Una detección confirma una emergencia?</summary>
+                <p data-i18n="flood.answer">No. Es una observación remota que puede verse afectada por nubes, sombras, vegetación o agua permanente. Debe contrastarse con reportes oficiales, estaciones y trabajo de campo.</p>
+                <a href="https://www.earthdata.nasa.gov/s3fs-public/2025-04/MCDWD_VCDWD_UserGuide_RevE_04.22.25.pdf" target="_blank" rel="noopener noreferrer"><span data-i18n="flood.learnMore">Guía del producto de inundaciones</span><span aria-hidden="true">↗</span></a>
+                <a href="https://servicios.inamhi.gob.ec/aplicaciones-web/" target="_blank" rel="noopener noreferrer"><span data-i18n="flood.inamhi">Monitoreo oficial de INAMHI</span><span aria-hidden="true">↗</span></a>
+              </details>
+            </div>
+            <div id="landcover-layer-card" class="now-layer-card" data-system-content="life" hidden>
+              <div class="now-layer-heading"><span data-i18n="landcover.badge">Tena–Archidona · historia del territorio</span><small>MapBiomas V1 · 30 m</small></div>
+              <label class="layer-switch" for="landcover-toggle">
+                <span><strong data-i18n="landcover.title">Cobertura del suelo · Napo</strong><small>2000 ↔ 2024</small></span>
+                <input id="landcover-toggle" type="checkbox" disabled />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <p id="landcover-status" class="layer-status" role="status" data-i18n="landcover.loading">Comprobando el recorte local…</p>
+              <div id="landcover-years" class="landcover-years" role="group" aria-label="Elegir año de cobertura" data-i18n-aria="landcover.chooseYear" hidden>
+                <button type="button" aria-pressed="false">2000</button><button type="button" aria-pressed="true">2024</button>
+              </div>
+              <details id="landcover-summary" class="thermal-story" hidden>
+                <summary data-i18n="landcover.compare">Comparar las mismas observaciones</summary>
+                <p id="landcover-completeness"></p><p id="landcover-change"></p>
+                <table class="landcover-table"><caption data-i18n="landcover.denominator">Porcentaje de píxeles observados en ambos años, no porcentaje del cantón.</caption><thead><tr><th scope="col" data-i18n="landcover.class">Clase</th><th scope="col">2000</th><th scope="col">2024</th></tr></thead><tbody id="landcover-table-body"></tbody></table>
+              </details>
+              <details class="thermal-story">
+                <summary data-i18n="landcover.question">Un color cambia. ¿Cambió realmente el territorio?</summary>
+                <p data-i18n="landcover.answer">El satélite observa luz; un modelo la clasifica. Un cambio de clase es una pista, no una prueba automática de deforestación. Hay que revisar imágenes, errores de clasificación y evidencia local.</p>
+              </details>
+              <div class="imagery-invitation">
+                <span class="eyebrow" data-i18n="imagery.eyebrow">Laboratorio visual · 2024</span>
+                <button id="imagery-launch" type="button" disabled data-i18n="imagery.launch">Imagen frente a interpretación ↗</button>
+                <p id="imagery-status" role="status" data-i18n="imagery.loading">Comprobando imágenes y procedencia…</p>
+              </div>
+              <p class="layer-caution" data-i18n="landcover.caution">Ventana de exploración, no límites cantonales. Los mapas son clasificaciones anuales a 30 m; no identifican propiedades ni causas del cambio.</p>
+              <a id="landcover-source" href="https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1" target="_blank" rel="noopener noreferrer" data-i18n="landcover.source">Fuente y leyenda oficial ↗</a>
+              <a class="official-source-link" href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-landcover.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Método y reproducibilidad ↗</a>
+            </div>
+            <div class="now-layer-card" data-system-content="water life" hidden>
+              <label class="layer-switch" for="rivers-toggle"><span><strong data-i18n="rivers.title">Napo · detalle a 10 m</strong><small data-i18n="rivers.hint">Cobertura provincial progresiva · bloques verificados</small></span><input id="rivers-toggle" type="checkbox" disabled /><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <p id="rivers-status" class="layer-status" role="status" data-i18n="rivers.loading">Comprobando la exportación provincial…</p>
+              <label class="spectral-compare-check" for="rivers-signals"><input id="rivers-signals" type="checkbox" disabled /><span data-i18n="rivers.signals">Señalar candidatos de cambio en agua superficial</span></label>
+              <p id="rivers-count" class="layer-status"></p>
+              <p class="layer-caution" data-i18n="rivers.noData">Donde aparece el mapa base no hay imagen satelital comparable o está fuera de Napo. No interpretes ese fondo como un cambio del paisaje.</p>
+              <p class="layer-caution" data-i18n="rivers.caution">Señales exploratorias, no cambios confirmados del cauce ni evidencia de minería o contaminación. Revisar nubes, sombras, estacionalidad y nivel del agua.</p>
+              <a class="official-source-link" href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="rivers.method">Método, cobertura y límites ↗</a>
+            </div>
+            <div class="now-layer-card spectral-invitation" data-system-content="life water" hidden>
+              <span class="eyebrow" data-i18n="spectral.eyebrow">Laboratorio espectral · Napo · 2019 ↔ 2024</span>
+              <h3 data-i18n="spectral.invitation">Un río cambia. ¿Qué nos cuenta la luz?</h3>
+              <p data-i18n="spectral.invitationCopy">Explora los ríos y el paisaje de la ventana Tena–Archidona con imágenes reales, señales de vegetación y agua, y evidencia independiente. La cobertura no abarca todavía toda Napo.</p>
+              <label class="layer-switch" for="spectral-map-toggle"><span><strong data-i18n="spectralMap.title">Imágenes e índices · Napo</strong><small data-i18n="spectralMap.hint">2019 ↔ 2024 · zoom y comparación geográfica</small></span><input id="spectral-map-toggle" type="checkbox" disabled /><span class="switch-track" aria-hidden="true"><span></span></span></label>
+              <p id="spectral-map-status" class="layer-status" role="status" data-i18n="spectral.loading">Comprobando las dos fechas y su procedencia…</p>
+              <div id="spectral-map-settings" class="spectral-map-settings" hidden>
+                <label for="spectral-map-mode"><span data-i18n="spectral.chooseMode">Elegir señal espectral</span><select id="spectral-map-mode"><option value="rgb" data-i18n="spectral.rgb">Imagen RGB</option><option value="ndvi" data-i18n="spectral.ndvi">Vegetación · NDVI</option><option value="mndwi" data-i18n="spectral.mndwi">Señal de agua · MNDWI</option><option value="ndmi" data-i18n="spectral.ndmi">Humedad · NDMI</option><option value="change" data-i18n="spectral.change">Diferencia de NDVI</option><option value="quality" data-i18n="spectral.quality">Observaciones útiles</option></select></label>
+                <label class="spectral-compare-check" for="spectral-map-compare"><input id="spectral-map-compare" type="checkbox" checked /><span data-i18n="spectralMap.compare">Comparar 2019 y 2024 en el mapa</span></label>
+                <div class="landcover-years" role="group" aria-label="Elegir año satelital" data-i18n-aria="spectralMap.chooseYear"><button type="button" data-spectral-map-year="2019" aria-pressed="false">2019</button><button type="button" data-spectral-map-year="2024" aria-pressed="true">2024</button></div>
+                <label for="spectral-map-opacity"><span data-i18n="thermal.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="spectral-map-opacity" type="range" min="20" max="100" value="100" step="1" /><output id="spectral-map-opacity-value" for="spectral-map-opacity">100%</output></span></label>
+                <div class="landcover-years"><button type="button" data-spectral-map-area="window" data-i18n="spectral.window">Tena–Archidona</button><button type="button" data-spectral-map-area="river" data-i18n="spectralMap.river">Ir al Jatunyacu</button></div>
+                <p id="spectral-map-copy" class="layer-caution"></p>
+              </div>
+              <p class="layer-caution" data-i18n="spectralMap.zoomLimit">Muestreo de trabajo: 30 m; bandas nativas de 10 / 20 m. Ampliar permite explorar, no distinguir detalles menores ni ganar resolución.</p>
+              <a class="official-source-link" href="https://www.usgs.gov/landsat-missions/normalized-difference-moisture-index" target="_blank" rel="noopener noreferrer" data-i18n="spectralMap.ndmiSource">Fundamento de NDMI · USGS ↗</a>
+              <a class="official-source-link" href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-spectral-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Método y reproducibilidad ↗</a>
+              <button id="spectral-launch" type="button" disabled data-i18n="spectral.launch">Abrir el laboratorio de ríos ↗</button>
+              <a class="official-source-link" href="rivers.html" data-i18n="fluvial.launch">Ríos bajo la lupa · escenas 2019 / 2024 / 2026 ↗</a>
+              <p id="spectral-status" class="layer-status" role="status" data-i18n="spectral.loading">Comprobando las dos fechas y su procedencia…</p>
+            </div>
+            <div id="thermal-layer-card" class="now-layer-card" data-system-content="life" hidden>
+              <div class="now-layer-heading"><span data-i18n="now.badge">Ecuador ahora</span><small>NASA GIBS</small></div>
+              <label class="layer-switch" for="thermal-toggle">
+                <span><strong data-i18n="layers.thermal">Anomalías térmicas</strong><small data-i18n="layers.thermalHint">VIIRS NOAA-20 · visualización diaria</small></span>
+                <input id="thermal-toggle" type="checkbox" />
+                <span class="switch-track" aria-hidden="true"><span></span></span>
+              </label>
+              <div class="thermal-controls">
+                <label for="thermal-date"><span data-i18n="thermal.date">Fecha satelital</span><input id="thermal-date" type="date" disabled /></label>
+                <label for="thermal-opacity"><span data-i18n="thermal.opacity">Opacidad</span><span class="thermal-opacity-row"><input id="thermal-opacity" type="range" min="20" max="100" value="88" step="1" disabled /><output id="thermal-opacity-value" for="thermal-opacity">88%</output></span></label>
+              </div>
+              <p id="thermal-status" class="layer-status" role="status" data-i18n="thermal.off">Activa la capa para consultar el día seleccionado.</p>
+              <details class="thermal-story">
+                <summary data-i18n="thermal.question">¿Un punto rojo siempre es un incendio?</summary>
+                <p data-i18n="thermal.answer">No. El sensor registra una anomalía térmica respecto a su entorno. Puede corresponder a fuego, actividad industrial, volcanismo u otra fuente de calor, y las nubes pueden ocultar detecciones.</p>
+                <a href="https://firms.modaps.eosdis.nasa.gov/active_fire/" target="_blank" rel="noopener noreferrer"><span data-i18n="thermal.learnMore">Cómo interpreta FIRMS los datos</span><span aria-hidden="true">↗</span></a>
+              </details>
+            </div>
+            <label class="layer-switch" for="earthquake-toggle" data-system-content="earth">
+              <span><strong data-i18n="layers.earthquakes">Sismicidad reciente</strong><small data-i18n="layers.earthquakesHint">USGS · consulta configurable</small></span>
+              <input id="earthquake-toggle" type="checkbox" disabled />
+              <span class="switch-track" aria-hidden="true"><span></span></span>
+            </label>
+            <fieldset id="earthquake-filters" class="seismic-filters" data-system-content="earth">
+              <legend data-i18n="earthquakes.filtersTitle">Filtrar sismicidad</legend>
+              <label for="earthquake-days">
+                <span data-i18n="earthquakes.period">Periodo</span>
+                <select id="earthquake-days">
+                  <option value="7" data-i18n="earthquakes.days7">7 días</option>
+                  <option value="30" selected data-i18n="earthquakes.days30">30 días</option>
+                  <option value="90" data-i18n="earthquakes.days90">90 días</option>
+                  <option value="365" data-i18n="earthquakes.days365">365 días</option>
+                </select>
+              </label>
+              <label for="earthquake-min-magnitude">
+                <span data-i18n="earthquakes.minimumMagnitude">Magnitud mínima</span>
+                <span class="seismic-range">
+                  <input id="earthquake-min-magnitude" type="range" min="2.5" max="6" value="3" step="0.5" />
+                  <output id="earthquake-min-magnitude-value" for="earthquake-min-magnitude">3,0</output>
+                </span>
+              </label>
+              <label for="earthquake-depth-filter">
+                <span data-i18n="earthquakes.depthFilter">Profundidad</span>
+                <select id="earthquake-depth-filter">
+                  <option value="all" data-i18n="earthquakes.allDepths">Todas</option>
+                  <option value="shallow" data-i18n="earthquakes.shallow">0–30 km</option>
+                  <option value="intermediate" data-i18n="earthquakes.intermediate">30–70 km</option>
+                  <option value="deep" data-i18n="earthquakes.deep">70–300 km</option>
+                  <option value="veryDeep" data-i18n="earthquakes.veryDeep">Más de 300 km</option>
+                </select>
+              </label>
+            </fieldset>
+            <p id="earthquake-status" class="layer-status" role="status" data-i18n="earthquakes.loading" data-system-content="earth">Consultando el catálogo del USGS…</p>
+            <a class="official-source-link" href="https://www.igepn.edu.ec/mapas/sismicidad/mapa-sismicidad-tectonica-365.html" target="_blank" rel="noopener noreferrer" data-system-content="earth">
+              <span data-i18n="layers.officialEarthquakes">Ver mapa oficial del IG-EPN</span><span aria-hidden="true">↗</span>
+            </a>
+            <p class="layer-caution" data-i18n="earthquakes.caution" data-system-content="earth">La cercanía entre un epicentro y una traza no demuestra que esa falla originó el sismo.</p>
+            <details class="earthquake-results" data-system-content="earth">
+              <summary><span data-i18n="earthquakes.listTitle">Lista accesible de sismos</span><span id="earthquake-list-count">0</span></summary>
+              <p data-i18n="earthquakes.listHint">Selecciona un evento para localizarlo y abrir su ficha en el mapa.</p>
+              <ul id="earthquake-list" data-i18n-aria="earthquakes.listAria" aria-label="Sismos que cumplen los filtros"></ul>
+            </details>
+          </section>
+
+          <section class="filters" aria-labelledby="filters-title" data-system-content="earth">
+            <div class="section-heading">
+              <h2 id="filters-title" data-i18n="filters.title">Buscar en el catálogo</h2>
+              <button id="clear-filters" class="text-button" type="button" disabled data-i18n="filters.clear">Limpiar</button>
+            </div>
+            <label for="fault-search" data-i18n="filters.searchLabel">Nombre, provincia o sistema</label>
+            <input id="fault-search" type="search" placeholder="Ej.: Pallatanga" data-i18n-placeholder="filters.searchPlaceholder" autocomplete="off" disabled />
+            <label for="movement-filter" data-i18n="filters.movementLabel">Tipo de movimiento</label>
+            <select id="movement-filter" disabled>
+              <option value="all" data-i18n="movement.all">Todos</option>
+              <option value="inversa" data-i18n="movement.inversa">Inversa</option>
+              <option value="normal" data-i18n="movement.normal">Normal</option>
+              <option value="dextral" data-i18n="movement.dextral">Dextral</option>
+              <option value="sinestral" data-i18n="movement.sinestral">Sinestral</option>
+              <option value="desconocido" data-i18n="movement.desconocido">No determinado</option>
+            </select>
+          </section>
+
+          <section class="catalog" aria-labelledby="catalog-title" data-system-content="earth">
+            <div class="section-heading"><h2 id="catalog-title" data-i18n="catalog.title">Resultados</h2><span id="result-count">0</span></div>
+            <div id="catalog-state" class="empty-state" role="status">
+              <strong data-i18n="catalog.loadingTitle">Cargando catálogo</strong><p data-i18n="catalog.loadingCopy">Estamos preparando las trazas disponibles.</p>
+            </div>
+            <ul id="fault-list" class="fault-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="method-note" data-system-content="earth">
+            <p class="eyebrow" data-i18n="responsible.eyebrow">Nota científica</p>
+            <h2 data-i18n="responsible.title">Leer el mapa con criterio</h2>
+            <p data-i18n="responsible.copy">Una forma del relieve es una pista, no una prueba aislada. Este visor es educativo y no sustituye un estudio oficial de amenaza.</p>
+          </section>
+
+          <details class="spatial-context">
+            <summary><span data-i18n="spatial.title">Resolución y límites</span><span id="spatial-count"></span></summary>
+            <p data-i18n="spatial.intro">Acercar el mapa no mejora el dato. Resolución, escala y exactitud son cosas diferentes.</p>
+            <ul id="spatial-context-list"></ul>
+            <p id="spatial-empty" data-i18n="spatial.empty" hidden>No hay capas temáticas activas para comparar.</p>
+            <a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-data-strategy.md" target="_blank" rel="noopener noreferrer" data-i18n="spatial.research">Fuentes evaluadas para Napo y plan de mejora ↗</a>
+          </details>
+          <details class="source-network">
+            <summary><span data-i18n="sourcesNetwork.title">Red de datos</span><span id="source-network-badge">—</span></summary>
+            <p data-i18n="sourcesNetwork.copy">Cada servicio conserva su institución, método de acceso y estado antes de convertirse en una capa.</p>
+            <ul id="source-network-list"></ul>
+            <a href="https://observatorioforestal.utn.edu.ec/pages/resources_geo.html" target="_blank" rel="noopener noreferrer"><span data-i18n="sourcesNetwork.directory">Directorio geoespacial de la UTN</span><span aria-hidden="true">↗</span></a>
+          </details>
+        </aside>
+      </main>
+
+      <footer><span data-i18n="footer.credit">Desarrollado por Henry P. Conteron Moreta</span><span data-i18n="footer.disciplines">Geociencias · SIG · Ecuador</span></footer>
+    </div>
+
+    <dialog id="rivers-observations" class="imagery-dialog rivers-observations" aria-labelledby="rivers-observations-title" aria-describedby="rivers-observations-lead">
+      <div class="imagery-header">
+        <div><p class="eyebrow" data-i18n="rivers.observationEyebrow">Napo · procedencia de la muestra</p><h2 id="rivers-observations-title" data-i18n="rivers.observationTitle">Dos años no son dos fotografías.</h2></div>
+        <div class="imagery-actions"><button type="button" data-language-toggle aria-label="Switch to English">EN</button><button id="rivers-observations-close" type="button" data-i18n="imagery.close" autofocus>Cerrar</button></div>
+      </div>
+      <p id="rivers-observations-lead" class="imagery-lead" data-i18n="rivers.observationLead">El visor combina una muestra de archivos de cada año. Sus fechas no son iguales y varios archivos pueden venir del mismo día. Este calendario describe la muestra seleccionada, no las observaciones útiles en cada píxel.</p>
+      <div id="rivers-observation-summary" class="rivers-observation-summary"></div>
+      <p id="rivers-observation-dedup" class="imagery-lead" data-i18n="rivers.observationDedup" hidden>La muestra se recalculó conservando un producto por adquisición y tesela, sin añadir fechas. Se eliminaron variantes, no las diferencias estacionales ni los solapamientos entre teselas. Las señales siguen sin revisar.</p>
+      <aside id="rivers-observation-variants" class="rivers-observation-warning" hidden><strong data-i18n="rivers.observationVariantTitle">Atención: variantes del mismo pase y tesela</strong><p data-i18n="rivers.observationVariantWarning">El inventario contiene productos con la misma adquisición y tesela, pero distinto procesamiento. No deben contarse automáticamente como observaciones independientes. Los resultados actuales conservan la muestra original y siguen sin validar; revisar y deduplicar antes de un nuevo cálculo.</p><code id="rivers-observation-variant-ids"></code></aside>
+      <div class="rivers-observations-layout">
+        <section><h3 data-i18n="rivers.observationCalendar">¿En qué meses hay datos?</h3><table class="rivers-observation-table"><caption data-i18n="rivers.observationCaption">Archivos / días distintos (UTC). Pulsa una cifra para ver su inventario. Cero indica ausencia en esta muestra, no ausencia en el archivo de Sentinel-2.</caption><thead><tr><th scope="col" data-i18n="rivers.observationMonth">Mes</th><th scope="col">2019</th><th scope="col">2024</th></tr></thead><tbody id="rivers-observation-calendar"></tbody></table></section>
+        <section><h3 data-i18n="rivers.observationInventory">Fechas e identificadores originales</h3><label for="rivers-observation-month" data-i18n="rivers.observationFilter">Seleccionar año y mes</label><select id="rivers-observation-month"></select><p id="rivers-observation-empty" data-i18n="rivers.observationEmpty" hidden>No hay archivos seleccionados en este mes.</p><ul id="rivers-observation-list" aria-live="polite"></ul></section>
+      </div>
+      <p class="imagery-lead" data-i18n="rivers.observationLimits">Igual número de archivos no garantiza igual estación, nivel del río ni apoyo por píxel. Esta distribución no mide lluvia, caudal ni confianza del cambio. No se han descargado aquí fotografías individuales: el visor continúa mostrando medianas anuales.</p>
+      <nav class="rivers-observation-sources" aria-label="Procedencia de observaciones" data-i18n-aria="rivers.observationSources"><a href="data/rivers/napo-manifest.json" download="napo-procedencia-10m.json" data-i18n="rivers.observationDownload">Descargar manifiesto de procedencia (JSON)</a><a id="rivers-observation-comparison" href="data/rivers/history/sample-comparison.json" download="napo-comparacion-muestras.json" data-i18n="rivers.observationComparison" hidden>Comparar resultados antes y después (JSON)</a><a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED" target="_blank" rel="noopener noreferrer" data-i18n="rivers.observationSource">Sentinel-2: fechas, productos y bandas ↗</a></nav>
+    </dialog>
+
+    <dialog id="imagery-dialog" class="imagery-dialog" aria-labelledby="imagery-title" aria-describedby="imagery-lead">
+      <div class="imagery-header">
+        <div><p class="eyebrow" data-i18n="imagery.eyebrow">Laboratorio visual · 2024</p><h2 id="imagery-title" data-i18n="imagery.title">El territorio no viene con una leyenda.</h2></div>
+        <div class="imagery-actions"><button type="button" data-language-toggle aria-label="Switch to English">EN</button><button id="imagery-close" type="button" data-i18n="imagery.close" autofocus>Cerrar</button></div>
+      </div>
+      <p id="imagery-lead" class="imagery-lead" data-i18n="imagery.lead">La imagen registra luz reflejada. El mapa organiza el paisaje en categorías. Desliza y pregunta: ¿qué puedes observar y qué estás interpretando?</p>
+      <div class="imagery-layout">
+        <figure class="imagery-figure">
+          <div class="imagery-labels"><span data-i18n="imagery.observation">Sentinel-2 · imagen</span><span data-i18n="imagery.classification">MapBiomas · clasificación</span></div>
+          <label for="imagery-slider" data-i18n="imagery.slider">Mover el límite entre imagen y clasificación</label>
+          <div class="imagery-slider-row"><input id="imagery-slider" type="range" min="0" max="100" step="1" value="50" disabled /><output id="imagery-position" for="imagery-slider"></output></div>
+          <div id="imagery-stage" class="imagery-stage" hidden>
+            <img id="imagery-observation" alt="Composición óptica Sentinel-2 de Tena–Archidona, 2024" data-i18n-alt="imagery.observationAlt" decoding="async" draggable="false" />
+            <img id="imagery-classification" alt="Clasificación MapBiomas Ecuador V1 de 2024 sobre la misma ventana" data-i18n-alt="imagery.classificationAlt" decoding="async" draggable="false" />
+            <span id="imagery-divider" class="imagery-divider" aria-hidden="true"><span>↔</span></span>
+          </div>
+          <p id="imagery-image-status" class="layer-status" role="status" data-i18n="imagery.imageLoading">Cargando las dos vistas…</p>
+          <figcaption data-i18n="imagery.caption">Norte arriba · misma extensión y cuadrícula de visualización. Las tramas grises señalan píxeles sin comparación; no se rellenan.</figcaption>
+          <details class="imagery-legend"><summary data-i18n="imagery.legend">Colores de la clasificación 2024</summary><div id="imagery-legend"></div></details>
+        </figure>
+        <aside class="imagery-reading">
+          <section><span class="imagery-step">01</span><h3 data-i18n="imagery.observeTitle">Mira antes de nombrar</h3><p data-i18n="imagery.observe">Busca texturas, corredores fluviales y manchas urbanas. Un píxel mezcla superficies: un tono verde no demuestra por sí solo qué especie, uso o estado del bosque hay allí.</p></section>
+          <section><span class="imagery-step">02</span><h3 data-i18n="imagery.questionTitle">Pon a prueba el color</h3><p data-i18n="imagery.question">¿Coinciden los bordes del mapa con lo que ves? Si no coinciden, considera nubes residuales, píxeles mixtos, fechas y errores del modelo antes de afirmar un cambio.</p></section>
+          <section><span class="imagery-step">03</span><h3 data-i18n="imagery.limitTitle">Lo que esta vista no prueba</h3><p data-i18n="imagery.limit">No es una validación independiente de MapBiomas, una medida de deforestación ni una alerta. Ambos productos son anuales, pero usan procesos e insumos distintos. Una interpretación necesita evidencia local.</p></section>
+        </aside>
+      </div>
+      <details class="imagery-method"><summary data-i18n="imagery.method">Fechas, calidad y límites: abre el método</summary>
+        <p data-i18n="imagery.period">1 enero–31 diciembre de 2024. Mediana por banda de varias adquisiciones: no es una fotografía de un día ni un mosaico libre de todo error atmosférico.</p>
+        <p data-i18n="imagery.resolution">Bandas RGB de 10 m muestreadas a 30 m y alineadas con la vista MapBiomas. Acercar o suavizar la imagen no añade detalle real. La mediana por banda puede combinar fechas distintas.</p>
+        <p data-i18n="imagery.mask">Filtro Cloud Score+ cs_cdf ≥ 0,65 y exclusión de sombras, nubes, cirros, nieve y píxeles inválidos mediante SCL. Mínimo 3 observaciones útiles por píxel; el umbral no significa «65 % de certeza».</p>
+        <ul class="imagery-quality"><li id="imagery-scenes"></li><li id="imagery-quality"></li><li id="imagery-counts"></li><li id="imagery-paired"></li></ul>
+        <p data-i18n="imagery.scope">Ventana editorial alrededor de Tena y Archidona, no límites administrativos. Los porcentajes describen cobertura de píxeles, no áreas cantonales ni exactitud temática.</p>
+        <p data-i18n="imagery.commonMask">Se reutiliza la vista MapBiomas 2024 de la comparación 2000/2024; solo se muestran píxeles válidos en ambos años y con imagen óptica útil en 2024.</p>
+        <nav class="imagery-sources" aria-label="Fuentes y método" data-i18n-aria="imagery.sources"><a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED" target="_blank" rel="noopener noreferrer">Copernicus Sentinel-2 ↗</a><a href="https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_CLOUD_SCORE_PLUS_V1_S2_HARMONIZED" target="_blank" rel="noopener noreferrer">Google Cloud Score+ ↗</a><a href="https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1" target="_blank" rel="noopener noreferrer">MapBiomas Ecuador V1 ↗</a><a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-imagery.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Método y reproducibilidad ↗</a></nav>
+        <small>Contains modified Copernicus Sentinel data (2024) · Cloud Score+ © Google (CC BY 4.0) · MapBiomas Ecuador V1 (CC BY 4.0).</small>
+      </details>
+    </dialog>
+    <dialog id="spectral-dialog" class="imagery-dialog spectral-dialog" aria-labelledby="spectral-title" aria-describedby="spectral-lead">
+      <div class="imagery-header">
+        <div><p class="eyebrow" data-i18n="spectral.eyebrow">Laboratorio espectral · Napo · 2019 ↔ 2024</p><h2 id="spectral-title" data-i18n="spectral.title">El río se mueve. La evidencia también importa.</h2></div>
+        <div class="imagery-actions"><button id="spectral-open-map" type="button" data-i18n="spectralMap.openMap">Explorar con zoom ↗</button><button type="button" data-language-toggle aria-label="Switch to English">EN</button><button id="spectral-close" type="button" data-i18n="imagery.close" autofocus>Cerrar</button></div>
+      </div>
+      <p id="spectral-lead" class="imagery-lead" data-i18n="spectral.lead">La misma ventana, dos años y tres maneras de mirar. ¿Cambió el cauce, la vegetación o la forma en que vemos el paisaje? Desliza antes de sacar conclusiones.</p>
+      <div class="spectral-controls">
+        <div class="spectral-modes" role="group" aria-label="Elegir señal espectral" data-i18n-aria="spectral.chooseMode">
+          <button type="button" data-spectral-mode="rgb" aria-pressed="true" disabled data-i18n="spectral.rgb">Imagen RGB</button>
+          <button type="button" data-spectral-mode="ndvi" aria-pressed="false" disabled data-i18n="spectral.ndvi">Vegetación · NDVI</button>
+          <button type="button" data-spectral-mode="mndwi" aria-pressed="false" disabled data-i18n="spectral.mndwi">Señal de agua · MNDWI</button>
+        </div>
+        <label for="spectral-focus"><span data-i18n="spectral.focus">Encuadre</span><select id="spectral-focus"><option value="window" data-i18n="spectral.window">Tena–Archidona</option><option value="river" data-i18n="spectral.river">Tramo inferior del Jatunyacu</option></select></label>
+      </div>
+      <p id="spectral-mode-copy" class="spectral-mode-copy"></p>
+      <div class="imagery-layout">
+        <figure class="imagery-figure spectral-figure">
+          <div class="imagery-labels"><span>2019</span><span>2024</span></div>
+          <label for="spectral-slider" data-i18n="spectral.slider">Mover el límite entre los años</label>
+          <div class="imagery-slider-row"><input id="spectral-slider" type="range" min="0" max="100" step="1" value="50" disabled /><output id="spectral-position" for="spectral-slider"></output></div>
+          <div id="spectral-stage" class="imagery-stage spectral-stage" hidden>
+            <div id="spectral-earlier" class="spectral-plane"></div><div id="spectral-later" class="spectral-plane"></div>
+            <span id="spectral-divider" class="imagery-divider" aria-hidden="true"><span>↔</span></span>
+          </div>
+          <p id="spectral-image-status" class="layer-status" role="status" data-i18n="spectral.imageLoading">Cargando el par de años…</p>
+          <figcaption><span data-i18n="spectral.caption">Norte arriba · mismos píxeles útiles en ambos años. La trama gris es ausencia de comparación, no un tipo de terreno.</span> <span id="spectral-focus-note"></span></figcaption>
+          <div id="spectral-legend" class="spectral-legend" hidden><p data-i18n="spectral.scale">Índice sin unidades · escala fija en ambos años</p><div id="spectral-gradient"></div><div class="spectral-ticks"><span>−1</span><span>0</span><span>+1</span></div></div>
+          <p id="spectral-formula" class="spectral-formula"></p>
+        </figure>
+        <aside class="imagery-reading spectral-reading">
+          <section><span class="imagery-step">01</span><h3 data-i18n="spectral.observeTitle">Sigue un borde, no solo un color</h3><p data-i18n="spectral.observe">Busca barras de sedimento, curvas del cauce y bordes de vegetación. Alterna RGB con los índices: ¿la señal cambia también en la imagen óptica?</p></section>
+          <section><span class="imagery-step">02</span><h3 data-i18n="spectral.alternativesTitle">Un cambio admite varias historias</h3><p data-i18n="spectral.alternatives">Caudal, estaciones, erosión y depósito, sedimentos, sombras y nubes residuales pueden modificar la señal. Dos composiciones anuales no reconstruyen la secuencia ni identifican por sí solas su causa.</p></section>
+          <section><span class="imagery-step">03</span><h3 data-i18n="spectral.evidenceTitle">Contrasta con evidencia independiente</h3><p data-i18n="spectral.evidence">MAAP / EcoCiencia documentan expansión minera en el Jatunyacu con imágenes de mayor resolución y drones. Su informe del 18 julio 2025 aporta contexto regional; no etiqueta nuestros píxeles ni prueba la causa de cada cambio.</p><a class="spectral-context-link" href="https://www.maapprogram.org/ecuador-mining-napo/" target="_blank" rel="noopener noreferrer" data-i18n="spectral.report">Leer el informe MAAP #230 ↗</a></section>
+        </aside>
+      </div>
+      <p class="spectral-caution" data-i18n="spectral.baseline">2019 es un registro anterior, no un estado «sin minería». Esta vista no clasifica minas, mide contaminación o mercurio, ni calcula hectáreas afectadas.</p>
+      <details class="imagery-method"><summary data-i18n="imagery.method">Fechas, calidad y límites: abre el método</summary>
+        <p data-i18n="spectral.period">Años completos: 1 enero–31 diciembre de 2019 y de 2024. Mediana anual por banda; los índices se calculan sobre esas medianas. No es una foto de un día ni la mediana de índices por escena.</p>
+        <p data-i18n="spectral.resolution">Bandas visibles e infrarrojo cercano de 10 m; infrarrojo de onda corta B11 de 20 m. Exportación conjunta a 30 m. Acercar no añade detalle. Las fechas útiles pueden distribuirse de forma desigual entre los años.</p>
+        <p data-i18n="spectral.mask">Cloud Score+ cs_cdf ≥ 0,65 y exclusiones SCL. Al menos tres observaciones con las cinco bandas ópticas válidas; solo se comparan píxeles útiles en ambos años. Ese umbral no significa «65 % de certeza».</p>
+        <ul class="imagery-quality"><li id="spectral-quality-2019"></li><li id="spectral-quality-2024"></li><li id="spectral-common"></li></ul>
+        <p data-i18n="spectral.scope">Ventana editorial, no límites cantonales ni toda la cuenca del Jatunyacu. Los porcentajes describen disponibilidad de datos, no exactitud temática ni superficie minera. La cuadrícula MapBiomas se usa solo para alinear la visualización, no como máscara o validación.</p>
+        <nav class="imagery-sources" aria-label="Fuentes y método" data-i18n-aria="imagery.sources"><a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED" target="_blank" rel="noopener noreferrer">Copernicus Sentinel-2 ↗</a><a href="https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_CLOUD_SCORE_PLUS_V1_S2_HARMONIZED" target="_blank" rel="noopener noreferrer">Google Cloud Score+ ↗</a><a href="https://www.usgs.gov/landsat-missions/landsat-normalized-difference-vegetation-index" target="_blank" rel="noopener noreferrer">NDVI · USGS ↗</a><a href="https://doi.org/10.1080/01431160600589179" target="_blank" rel="noopener noreferrer">MNDWI · Xu (2006) ↗</a><a href="https://github.com/henryconteron/ecuador-vivo/blob/main/documentation/napo-spectral-rivers.md" target="_blank" rel="noopener noreferrer" data-i18n="landcover.guide">Método y reproducibilidad ↗</a></nav>
+        <small>Modified Copernicus Sentinel data (2019, 2024), processed with Google Earth Engine; Cloud Score+ by Google, CC BY 4.0.</small>
+      </details>
+    </dialog>
+    <script src="assets/js/i18n.js?v=20261004"></script>
+    <script type="module" src="assets/js/portal.js?v=20261004"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="assets/js/map.js?v=20261001-4"></script>
+  </body>
+</html>

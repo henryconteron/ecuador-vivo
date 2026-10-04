@@ -1,0 +1,244 @@
+1
+00:00:00,000 --> 00:00:01,700
+Mira cómo se llena este mapa.
+
+2
+00:00:02,320 --> 00:00:04,580
+Son sismos registrados a lo largo
+
+3
+00:00:04,580 --> 00:00:05,620
+de más de un siglo.
+
+4
+00:00:06,460 --> 00:00:07,200
+Pero ojo,
+
+5
+00:00:07,420 --> 00:00:08,760
+no están ocurriendo ahora,
+
+6
+00:00:09,000 --> 00:00:10,200
+ni todos a la vez.
+
+7
+00:00:10,980 --> 00:00:12,380
+Estamos viendo el pasado,
+
+8
+00:00:12,740 --> 00:00:13,860
+año por año.
+
+9
+00:00:14,780 --> 00:00:16,140
+Esta selección reúne
+
+10
+00:00:16,140 --> 00:00:18,920
+2661 registros,
+
+11
+00:00:19,140 --> 00:00:21,820
+desde 1900 hasta 2025,
+
+12
+00:00:22,280 --> 00:00:23,940
+con magnitud 4 o mayor.
+
+13
+00:00:23,940 --> 00:00:26,460
+Incluye Ecuador continental,
+
+14
+00:00:26,700 --> 00:00:29,220
+el océano cercano y zonas vecinas,
+
+15
+00:00:29,540 --> 00:00:31,240
+no incluye Galápagos.
+
+16
+00:00:31,600 --> 00:00:33,600
+¿Más puntos significa más peligro?
+
+17
+00:00:34,320 --> 00:00:35,980
+No podemos concluir eso.
+
+18
+00:00:36,320 --> 00:00:38,700
+El archivo histórico es incompleto y
+
+19
+00:00:38,700 --> 00:00:40,800
+nuestra capacidad de observar los
+sismos
+
+20
+00:00:40,800 --> 00:00:41,640
+ha cambiado.
+
+21
+00:00:42,120 --> 00:00:44,040
+Registrar más no significa por sí
+
+22
+00:00:44,040 --> 00:00:45,560
+solo que la tierra se haya
+
+23
+00:00:45,560 --> 00:00:47,100
+vuelto más peligrosa.
+
+24
+00:00:47,540 --> 00:00:48,320
+Ahora sí,
+
+25
+00:00:48,600 --> 00:00:49,900
+aprendamos a leerlos.
+
+26
+00:00:49,900 --> 00:00:52,720
+La posición marca el epicentro.
+
+27
+00:00:53,000 --> 00:00:55,760
+Un círculo mayor representa mayor
+magnitud,
+
+28
+00:00:55,920 --> 00:00:57,540
+no un área mayor de daños.
+
+29
+00:00:57,980 --> 00:00:59,740
+Y el color muestra la profundidad.
+
+30
+00:01:00,020 --> 00:01:01,340
+Claro, más superficial,
+
+31
+00:01:01,640 --> 00:01:03,280
+oscuro, más profundo.
+
+32
+00:01:03,740 --> 00:01:05,400
+No es un semáforo de peligro.
+
+33
+00:01:05,900 --> 00:01:07,060
+Aquí está lo que el mapa
+
+34
+00:01:07,060 --> 00:01:08,460
+no muestra directamente.
+
+35
+00:01:09,140 --> 00:01:11,660
+El sismo empieza bajo la superficie,
+
+36
+00:01:11,660 --> 00:01:12,740
+en el hipocentro.
+
+37
+00:01:13,320 --> 00:01:14,920
+El epicentro es el punto que
+
+38
+00:01:14,920 --> 00:01:16,180
+queda justo encima.
+
+39
+00:01:16,640 --> 00:01:18,960
+La profundidad nos dice qué tan
+
+40
+00:01:18,960 --> 00:01:20,900
+abajo comienza la ruptura.
+
+41
+00:01:21,600 --> 00:01:22,820
+Al mirarlos de lado,
+
+42
+00:01:22,880 --> 00:01:24,240
+esa dimensión aparece.
+
+43
+00:01:25,140 --> 00:01:26,860
+Proyectamos toda la región,
+
+44
+00:01:27,380 --> 00:01:29,340
+de oeste a este y de
+
+45
+00:01:29,340 --> 00:01:30,220
+sur a norte.
+
+46
+00:01:30,960 --> 00:01:32,640
+No son cortes de una falla.
+
+47
+00:01:33,280 --> 00:01:35,800
+En esta selección, la profundidad
+máxima
+
+48
+00:01:35,800 --> 00:01:37,080
+reportada es de
+
+49
+00:01:37,080 --> 00:01:39,400
+254 kilómetros.
+
+50
+00:01:39,820 --> 00:01:42,140
+Un registro no tiene profundidad.
+
+51
+00:01:42,540 --> 00:01:44,360
+No la inventamos ni lo colocamos
+
+52
+00:01:44,360 --> 00:01:44,980
+a cero.
+
+53
+00:01:45,620 --> 00:01:47,060
+Entonces, ¿para qué sirve
+
+54
+00:01:47,060 --> 00:01:48,160
+conocer esta historia?
+
+55
+00:01:48,960 --> 00:01:50,940
+No para adivinar el próximo terremoto,
+
+56
+00:01:51,220 --> 00:01:53,580
+para entender nuestro entorno y
+prepararnos,
+
+57
+00:01:53,940 --> 00:01:55,080
+conversar en familia,
+
+58
+00:01:55,400 --> 00:01:57,220
+practicar simulacros y tener un kit
+
+59
+00:01:57,220 --> 00:01:58,220
+de emergencia.
+
+60
+00:01:58,500 --> 00:02:00,800
+La tierra se mueve, prepararnos
+importa.

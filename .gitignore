@@ -30,3 +30,11 @@ assets/images/raw/
 # Variables privadas
 .env
 .env.*
+
+# Producción local y preservación de la migración (no publicar)
+/_local/
+/production/artifacts/
+/production/monitor/.venv/
+/production/monitor/.streamlit/secrets.toml
+/tools/biblioteca/original/data/posts.json
+/output/conceptos-ecuador-vivo-20261004/

@@ -1,10 +1,29 @@
 # Ecuador Vivo
 
-[![Validación](https://github.com/henryconteron/fallas-ecuador/actions/workflows/validate.yml/badge.svg)](https://github.com/henryconteron/fallas-ecuador/actions/workflows/validate.yml)
-[![Sitio publicado](https://img.shields.io/badge/atlas-en%20l%C3%ADnea-0f766e)](https://henryconteron.github.io/fallas-ecuador/)
+**Un país vivo. Historias que puedes comprobar.** Atlas, repositorio de datos, casos audiovisuales y biblioteca de estudios sobre Ecuador en un mismo proyecto.
+
+## Entradas del proyecto unificado
+
+- [Inicio](https://henryconteron.github.io/ecuador-vivo/): presentación del proyecto.
+- [Explorar](https://henryconteron.github.io/ecuador-vivo/explore.html): visor de Tierra, Agua, Cielo, Vida y Riesgo.
+- [Datos](https://henryconteron.github.io/ecuador-vivo/datos.html): archivos, derivados y servicios externos, claramente diferenciados.
+- [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas.
+- [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
+- [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): historias y ejercicios.
+
+### Organización y preservación
+
+`assets/`: interfaz y medios públicos; `data/`: conjuntos y catálogos; `documentation/`: métodos y referencias; `scripts/` y `tests/`: preparación y controles; `production/monitor/`: código científico/audiovisual preservado; `tools/biblioteca/original/`: fuente del feed anterior. `_local/` conserva producción privada y respaldos, excluidos de Git. No subir entornos Python, credenciales, borradores o documentos privados.
+
+La ficha piloto conserva 2661 eventos de una ventana regional, no todos los sismos del Ecuador. La edición social exacta sigue pendiente de conciliación. MIT cubre el código, no automáticamente el video, su voz ni datos/figuras de terceros. Consultar [los derechos del caso](data/cases/memoria-sismica-1900-2025/case.json).
+
+Estado y límites del traslado: [registro de integración](documentation/integracion-20261004.md).
+
+[![Validación](https://github.com/henryconteron/ecuador-vivo/actions/workflows/validate.yml/badge.svg)](https://github.com/henryconteron/ecuador-vivo/actions/workflows/validate.yml)
+[![Sitio publicado](https://img.shields.io/badge/atlas-en%20l%C3%ADnea-0f766e)](https://henryconteron.github.io/ecuador-vivo/)
 [![Licencia](https://img.shields.io/badge/c%C3%B3digo-MIT-111827)](LICENSE)
 
-**[Abrir el atlas en línea →](https://henryconteron.github.io/fallas-ecuador/)** · **[Explorar la guía educativa →](https://henryconteron.github.io/fallas-ecuador/learn.html)**
+**[Abrir el atlas en línea →](https://henryconteron.github.io/ecuador-vivo/)** · **[Explorar la guía educativa →](https://henryconteron.github.io/ecuador-vivo/learn.html)**
 
 Documentación del proyecto: [citar el atlas](CITATION.cff) · [registro de cambios](CHANGELOG.md) ·
 [contribuir](CONTRIBUTING.md) · [seguridad y privacidad](SECURITY.md)
@@ -382,6 +401,22 @@ usar **Explícame este lugar**, una consulta WFS puntual devuelve únicamente `n
 La ficha pública consultada identifica la publicación, pero no especifica licencia, escala,
 atribución ni método de elaboración. Esta ausencia se muestra en la interfaz y limita el uso de la
 capa a visualización y consulta remota hasta que INAMHI o MAATE completen los metadatos.
+
+## Laboratorio de cambios fluviales · Napo
+
+En [Ríos bajo la lupa](https://henryconteron.github.io/ecuador-vivo/rivers.html)
+se comparan escenas reales del 11 julio 2019, 8 agosto 2024 y 29 julio 2026 en
+cuatro ventanas locales (Tena, Jatunyacu, Napo y Misahuallí), con zoom, consulta
+numérica y español/inglés. NDWI, MNDWI y dos variantes AWEI se contrastan a 20 m;
+las transiciones candidatas, desacuerdos y señales ópticas NDTI/B4 permanecen
+separados. No es un detector validado de minería ni una medición de sequía,
+caudal, contaminación o sedimentos en mg/L.
+
+La línea base multibanda y la evaluación con referencias independientes están
+implementadas, pero todavía no entrenadas/validadas en Napo. No se publica un
+ganador local. [Método, reproducción y cómo aportar referencias](documentation/fluvial-lab.md).
+`pnpm run check:fluvial` verifica fórmulas, fechas, SHA-256 y NoData de los doce
+paquetes numéricos. Los datos pesados de trabajo no se suben a Git.
 
 ## Autor
 

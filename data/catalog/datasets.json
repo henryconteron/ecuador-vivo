@@ -1,0 +1,869 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-04",
+  "note": "Catalog metadata reviewed against repository manifests and source documentation; not field validation.",
+  "records": [
+    {
+      "id": "memoria-sismica",
+      "title": {
+        "es": "Memoria sísmica · archivo del video",
+        "en": "Seismic memory · video archive"
+      },
+      "summary": {
+        "es": "Los 2661 registros conservados para el caso de Andes Pulso, sin actualización automática.",
+        "en": "The 2661 records preserved for the Andes Pulso case, without automatic updates."
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador"
+      ],
+      "publisher": "USGS · archivo Ecuador Vivo",
+      "access": "file",
+      "format": "CSV · GeoJSON",
+      "period": {
+        "es": "Consulta 1900–2025; disponible desde 1901",
+        "en": "Query 1900–2025; available since 1901"
+      },
+      "resolution": {
+        "es": "Epicentros de catálogo; incertidumbre variable por evento",
+        "en": "Catalog epicenters; uncertainty varies by event"
+      },
+      "scope": {
+        "es": "Ventana regional −83 a −74,5°; −5,5 a 2,5°. Excluye Galápagos.",
+        "en": "Regional window −83 to −74.5°; −5.5 to 2.5°. Excludes Galápagos."
+      },
+      "source_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+      "license": "USGS: consultar créditos de las redes en el GeoJSON / consult network credits in GeoJSON",
+      "citation": "USGS Earthquake Catalog. Instantánea / snapshot 2026-10-02; consulta / query 1900–2025, M ≥ 4. Ecuador Vivo, Andes Pulso, edición v6.",
+      "limits": {
+        "es": "No es un catálogo completo ni una predicción. Magnitudes heterogéneas; 1 registro sin profundidad. Ventana regional, no recorte nacional.",
+        "en": "Not a complete catalog or prediction. Heterogeneous magnitude types; 1 record without depth. Regional window, not a national clipping."
+      },
+      "viewer": "andes-pulso.html#case-map",
+      "method": "documentation/andes-pulso.md",
+      "files": [
+        {
+          "href": "data/cases/memoria-sismica-1900-2025/catalog.csv",
+          "label": {
+            "es": "Datos del video · CSV",
+            "en": "Video data · CSV"
+          },
+          "kind": "data"
+        },
+        {
+          "href": "data/cases/memoria-sismica-1900-2025/usgs_snapshot.geojson",
+          "label": {
+            "es": "Instantánea USGS · GeoJSON",
+            "en": "USGS snapshot · GeoJSON"
+          },
+          "kind": "data"
+        },
+        {
+          "href": "data/cases/memoria-sismica-1900-2025/case.json",
+          "label": {
+            "es": "Procedencia e integridad",
+            "en": "Provenance and integrity"
+          },
+          "kind": "metadata"
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "fallas-gem",
+      "title": {
+        "es": "Fallas activas",
+        "en": "Active faults"
+      },
+      "summary": {
+        "es": "145 trazas de GEM que intersectan Ecuador, con sus atributos y procedencia regional.",
+        "en": "145 GEM traces intersecting Ecuador, with original attributes and regional provenance."
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "GEM Foundation",
+      "access": "file",
+      "format": "GeoJSON",
+      "period": {
+        "es": "Versión preparada · septiembre 2026",
+        "en": "Prepared version · September 2026"
+      },
+      "resolution": {
+        "es": "Escala no documentada por traza",
+        "en": "Map scale not documented per trace"
+      },
+      "scope": {
+        "es": "Intersección con Ecuador; trazas completas, no recortadas.",
+        "en": "Intersection with Ecuador; full traces, not clipped."
+      },
+      "source_url": "https://github.com/GEMScienceTools/gem-global-active-faults",
+      "license": "CC BY-SA 4.0",
+      "citation": "Styron, R. & Pagani, M. (2020). The GEM Global Active Faults Database. https://doi.org/10.1177/8755293020944182. Subconjunto Ecuador: commit 850fd05b48841eb806d61a37043b5567f5bb99dd.",
+      "limits": {
+        "es": "No es un mapa de predicción sísmica. 77 trazas remiten a la referencia del catálogo, no a una publicación individual. Nombres repetidos no significan duplicados.",
+        "en": "Not an earthquake prediction map. 77 traces cite the catalog, not an individual publication. Repeated names do not imply duplicates."
+      },
+      "viewer": "explore.html?system=earth",
+      "method": "data/README.md",
+      "files": [
+        {
+          "href": "data/geojson/fallas.geojson",
+          "label": {
+            "es": "Descargar GeoJSON",
+            "en": "Download GeoJSON"
+          },
+          "kind": "data"
+        },
+        {
+          "href": "data/catalog-build-manifest.json",
+          "label": {
+            "es": "Manifiesto de construcción",
+            "en": "Build manifest"
+          },
+          "kind": "metadata"
+        }
+      ],
+      "related": [
+        "eguez-2003",
+        "baize-2020"
+      ]
+    },
+    {
+      "id": "napo-fluvial",
+      "title": {
+        "es": "Ríos desde el espacio",
+        "en": "Rivers from space"
+      },
+      "summary": {
+        "es": "Cuatro ventanas: Tena, Jatunyacu, Napo y Misahuallí. Compara escenas de 2019, 2024 y 2026.",
+        "en": "Four windows: Tena, Jatunyacu, Napo and Misahuallí. Compare 2019, 2024 and 2026 scenes."
+      },
+      "topics": [
+        "water",
+        "life"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena"
+      ],
+      "publisher": "Copernicus Sentinel-2 · Earth Search",
+      "access": "derivative",
+      "format": "Float32 · GZIP · JSON",
+      "period": "2019-07-11 / 2024-08-08 / 2026-07-29",
+      "resolution": {
+        "es": "Cuadrícula de 20 m; bandas originales de 10/20 m",
+        "en": "20 m grid; native 10/20 m bands"
+      },
+      "scope": {
+        "es": "Cuatro recortes editoriales, no toda la provincia ni cuencas completas.",
+        "en": "Four editorial windows, not the whole province or complete watersheds."
+      },
+      "source_url": "https://earth-search.aws.element84.com/v1",
+      "license": "Copernicus Sentinel Terms and Conditions",
+      "citation": "Contains modified Copernicus Sentinel data (2019, 2024, 2026). Earth Search STAC; adquisición, parámetros y SHA-256 en el manifiesto.",
+      "limits": {
+        "es": "NDWI, MNDWI y AWEI son señales exploratorias; los umbrales no están calibrados localmente. No atribuyen minería, contaminación ni sequía. Nubes y caudal afectan la comparación.",
+        "en": "NDWI, MNDWI and AWEI are exploratory signals; thresholds are not locally calibrated. They do not establish mining, contamination or drought. Clouds and discharge affect comparisons."
+      },
+      "image": "assets/images/spectral/napo-rgb-2024.webp",
+      "image_caption": {
+        "es": "Contexto regional: composición anual 2024 a 30 m, no una de las escenas del laboratorio.",
+        "en": "Regional context: annual 2024 composite at 30 m, not one of the lab scenes."
+      },
+      "viewer": "rivers.html?region=jatunyacu&mode=rgb&from=2019-07-11&to=2024-08-08",
+      "method": "documentation/fluvial-lab.md",
+      "files": [
+        {
+          "href": "data/fluvial/manifest.json",
+          "label": {
+            "es": "Manifiesto e inventario de archivos",
+            "en": "Manifest and file inventory"
+          },
+          "kind": "metadata"
+        },
+        {
+          "href": "data/fluvial/jatunyacu-2024-08-08.bin.gz",
+          "label": {
+            "es": "Jatunyacu 2024 · bandas Float32/GZIP",
+            "en": "Jatunyacu 2024 · Float32/GZIP bands"
+          },
+          "kind": "data"
+        },
+        {
+          "href": "data/fluvial/S2A_T17MRU_20240808T153803_L2A.stac.json",
+          "label": {
+            "es": "Escena 2024 · metadatos STAC",
+            "en": "2024 scene · STAC metadata"
+          },
+          "kind": "metadata"
+        }
+      ],
+      "related": [
+        "maap-230"
+      ]
+    },
+    {
+      "id": "mapbiomas-napo",
+      "title": {
+        "es": "Cobertura del suelo · Tena–Archidona",
+        "en": "Land cover · Tena–Archidona"
+      },
+      "summary": {
+        "es": "Dos mapas de clases y estadísticas sobre la misma cuadrícula nativa.",
+        "en": "Two class maps and statistics on the same native grid."
+      },
+      "topics": [
+        "life"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "MapBiomas Ecuador · V1.0",
+      "access": "derivative",
+      "format": "PNG · JSON",
+      "period": "2000 / 2024",
+      "resolution": "30 m",
+      "scope": {
+        "es": "Ventana rectangular Tena–Archidona; no límites cantonales.",
+        "en": "Tena–Archidona rectangular window; not canton boundaries."
+      },
+      "source_url": "https://developers.google.com/earth-engine/datasets/catalog/projects_mapbiomas-public_assets_ecuador_lulc_v1",
+      "license": "CC BY 4.0",
+      "citation": "MapBiomas Ecuador LULC V1.0 — Publisher Catalog. projects/mapbiomas-public/assets/ecuador/lulc/v1. Recorte Ecuador Vivo (2000, 2024).",
+      "limits": {
+        "es": "Las imágenes son clases coloreadas, no GeoTIFF numéricos. Cambiar de clase no prueba por sí solo deforestación o minería; considerar incertidumbre de clasificación.",
+        "en": "Images are colored classes, not numerical GeoTIFFs. Class transitions alone do not establish deforestation or mining; consider classification uncertainty."
+      },
+      "image": "assets/images/landcover/napo-v1-2024.png",
+      "image_caption": {
+        "es": "MapBiomas Ecuador V1.0 · 2024 · CC BY 4.0.",
+        "en": "MapBiomas Ecuador V1.0 · 2024 · CC BY 4.0."
+      },
+      "viewer": "explore.html?system=life&focus=napo",
+      "method": "documentation/napo-landcover.md",
+      "files": [
+        {
+          "href": "data/landcover/napo-manifest.json",
+          "label": {
+            "es": "Manifiesto y estadísticas",
+            "en": "Manifest and statistics"
+          },
+          "kind": "metadata"
+        },
+        {
+          "href": "assets/images/landcover/napo-v1-2000.png",
+          "label": {
+            "es": "Visualización 2000 · PNG",
+            "en": "2000 visualization · PNG"
+          },
+          "kind": "image"
+        },
+        {
+          "href": "assets/images/landcover/napo-v1-2024.png",
+          "label": {
+            "es": "Visualización 2024 · PNG",
+            "en": "2024 visualization · PNG"
+          },
+          "kind": "image"
+        }
+      ],
+      "related": [
+        "maap-230"
+      ]
+    },
+    {
+      "id": "napo-spectral",
+      "title": {
+        "es": "Napo: vegetación, agua y observaciones útiles",
+        "en": "Napo: vegetation, water and clear observations"
+      },
+      "summary": {
+        "es": "Composiciones anuales RGB, NDVI, MNDWI, NDMI, diferencia de NDVI y conteos de calidad.",
+        "en": "Annual RGB, NDVI, MNDWI and NDMI composites, NDVI difference and quality counts."
+      },
+      "topics": [
+        "water",
+        "life"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "Copernicus Sentinel-2 · Google Cloud Score+",
+      "access": "derivative",
+      "format": "WebP · PNG · JSON",
+      "period": "2019 / 2024",
+      "resolution": {
+        "es": "Muestreo a 30 m; entradas de 10/20 m",
+        "en": "Sampled at 30 m; native 10/20 m inputs"
+      },
+      "scope": {
+        "es": "Ventana editorial Tena–Archidona.",
+        "en": "Tena–Archidona editorial window."
+      },
+      "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+      "license": "Copernicus Sentinel Terms and Conditions; Cloud Score+ CC BY 4.0",
+      "citation": "Modified Copernicus Sentinel data (2019, 2024), processed with Google Earth Engine; Cloud Score+ by Google.",
+      "limits": {
+        "es": "Una mediana anual no representa un único día. Las paletas no son mediciones descargables. El GeoTIFF fuente queda local, no se ofrece como descarga pública.",
+        "en": "An annual median is not a single day. Color palettes are not downloadable numerical measurements. The source GeoTIFF remains local, not a public download."
+      },
+      "image": "assets/images/spectral/napo-rgb-2024.webp",
+      "image_caption": {
+        "es": "Composición anual Sentinel-2, 2024 · datos Copernicus modificados.",
+        "en": "Annual Sentinel-2 composite, 2024 · modified Copernicus data."
+      },
+      "viewer": "explore.html?system=water&focus=napo&view=spectral&signal=mndwi&year=2024&compare=1&split=50",
+      "method": "documentation/napo-spectral-rivers.md",
+      "files": [
+        {
+          "href": "data/spectral/napo-manifest.json",
+          "label": {
+            "es": "Manifiesto, escenas y calidad",
+            "en": "Manifest, scenes and quality"
+          },
+          "kind": "metadata"
+        },
+        {
+          "href": "data/spectral/napo-explorer-manifest.json",
+          "label": {
+            "es": "Manifiesto de derivados",
+            "en": "Derived products manifest"
+          },
+          "kind": "metadata"
+        },
+        {
+          "href": "assets/images/spectral/napo-rgb-2024.webp",
+          "label": {
+            "es": "Vista RGB 2024 · WebP",
+            "en": "2024 RGB view · WebP"
+          },
+          "kind": "image"
+        }
+      ],
+      "related": [
+        "maap-230"
+      ]
+    },
+    {
+      "id": "napo-10m",
+      "title": {
+        "es": "Napo a 10 m · cobertura parcial",
+        "en": "Napo at 10 m · partial coverage"
+      },
+      "summary": {
+        "es": "RGB 2019/2024 disponible en el bloque 7 y 24 celdas candidatas de cambio sin revisar.",
+        "en": "2019/2024 RGB available for block 7 and 24 unreviewed candidate change cells."
+      },
+      "topics": [
+        "water",
+        "life"
+      ],
+      "territories": [
+        "ecuador",
+        "napo"
+      ],
+      "publisher": "Copernicus Sentinel-2 · Ecuador Vivo",
+      "access": "derivative",
+      "format": "WebP tiles · GeoJSON · JSON",
+      "period": "2019 / 2024",
+      "resolution": {
+        "es": "RGB 10 m; cribado en celdas de 1 km",
+        "en": "10 m RGB; screening in 1 km cells"
+      },
+      "scope": {
+        "es": "Solo el bloque publicado, no toda Napo. El manifiesto delimita los bloques disponibles.",
+        "en": "Only the published block, not all Napo. The manifest identifies available blocks."
+      },
+      "source_url": "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR_HARMONIZED",
+      "license": "Copernicus Sentinel Terms and Conditions; Cloud Score+ / geoBoundaries CC BY 4.0",
+      "citation": "Modified Copernicus Sentinel data (2019, 2024); Cloud Score+ by Google; geoBoundaries v6. Procesado por Ecuador Vivo.",
+      "limits": {
+        "es": "Las celdas señalan dónde revisar; no son polígonos de ríos, minería ni daños confirmados. No hay validación de campo.",
+        "en": "Cells indicate where to review; they are not river boundaries, mining polygons or confirmed damage. No field validation."
+      },
+      "viewer": "explore.html?system=water&focus=napo",
+      "method": "documentation/napo-rivers.md",
+      "files": [
+        {
+          "href": "data/rivers/napo-candidates.geojson",
+          "label": {
+            "es": "Celdas candidatas · GeoJSON",
+            "en": "Candidate cells · GeoJSON"
+          },
+          "kind": "data"
+        },
+        {
+          "href": "data/rivers/napo-manifest.json",
+          "label": {
+            "es": "Cobertura, teselas y procedencia",
+            "en": "Coverage, tiles and provenance"
+          },
+          "kind": "metadata"
+        }
+      ],
+      "related": [
+        "maap-230"
+      ]
+    },
+    {
+      "id": "estaciones-inamhi",
+      "title": {
+        "es": "Red de estaciones hidrometeorológicas",
+        "en": "Hydrometeorological station network"
+      },
+      "summary": {
+        "es": "214 ubicaciones que INAMHI reportó como TRANSMITIENDO al recuperar esta instantánea.",
+        "en": "214 locations reported by INAMHI as TRANSMITIENDO when this snapshot was retrieved."
+      },
+      "topics": [
+        "water",
+        "sky"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "INAMHI",
+      "access": "file",
+      "format": "GeoJSON",
+      "period": "2026-09-11",
+      "resolution": {
+        "es": "Puntos de estación; precisión no certificada aquí",
+        "en": "Station points; accuracy not certified here"
+      },
+      "scope": {
+        "es": "Ventana continental; filtros en el archivo.",
+        "en": "Continental window; filters recorded in the file."
+      },
+      "source_url": "https://inamhi.gob.ec/info/visor/",
+      "license": {
+        "es": "Consultar condiciones de INAMHI; no se asigna licencia propia a la fuente.",
+        "en": "Check INAMHI terms; no project license assigned to source data."
+      },
+      "citation": "INAMHI. Visor hidrometeorológico, API station_information. Recuperado 2026-09-11T20:58:57.784Z.",
+      "limits": {
+        "es": "Solo ubicación y metadatos. No contiene lluvia, caudales, series, pronósticos ni un estado de transmisión en vivo.",
+        "en": "Locations and metadata only. No rainfall, discharge, time series, forecasts or live transmission status."
+      },
+      "viewer": "explore.html?system=water",
+      "method": "data/README.md",
+      "files": [
+        {
+          "href": "data/geojson/estaciones-inamhi.geojson",
+          "label": {
+            "es": "Instantánea de estaciones · GeoJSON",
+            "en": "Station snapshot · GeoJSON"
+          },
+          "kind": "data"
+        }
+      ],
+      "related": []
+    },
+    {
+      "id": "geomorfologia",
+      "title": {
+        "es": "Indicios geomorfológicos documentados",
+        "en": "Documented geomorphic evidence"
+      },
+      "summary": {
+        "es": "Tres ocurrencias de formas del relieve sintetizadas de Egüez et al. (2003).",
+        "en": "Three landform occurrences summarized from Egüez et al. (2003)."
+      },
+      "topics": [
+        "earth"
+      ],
+      "territories": [
+        "ecuador"
+      ],
+      "publisher": "USGS OFR 03-289 · derivado Ecuador Vivo / GEM",
+      "access": "file",
+      "format": "GeoJSON",
+      "period": {
+        "es": "Fuente publicada en 2003",
+        "en": "Source published in 2003"
+      },
+      "resolution": {
+        "es": "Ubicaciones regionales representativas",
+        "en": "Representative regional locations"
+      },
+      "scope": {
+        "es": "Billecocha, Huayrapungo y Pallatanga.",
+        "en": "Billecocha, Huayrapungo and Pallatanga."
+      },
+      "source_url": "https://pubs.usgs.gov/of/2003/ofr-03-289/",
+      "license": "CC BY-SA 4.0 (geometría derivada de GEM)",
+      "citation": "Egüez, A., Alvarado, A., Yepes, H., Machette, M. N., Costa, C. & Dart, R. L. (2003). Database and Map of Quaternary faults and folds of Ecuador and its offshore regions. USGS OFR 03-289.",
+      "limits": {
+        "es": "Los puntos no delimitan las formas observadas ni sustituyen levantamientos de campo.",
+        "en": "Points do not delineate the observed landforms and do not replace field mapping."
+      },
+      "viewer": "explore.html?system=earth",
+      "method": "data/README.md",
+      "files": [
+        {
+          "href": "data/geojson/estructuras.geojson",
+          "label": {
+            "es": "Ocurrencias · GeoJSON",
+            "en": "Occurrences · GeoJSON"
+          },
+          "kind": "data"
+        }
+      ],
+      "related": [
+        "eguez-2003",
+        "baize-2015"
+      ]
+    },
+    {
+      "id": "usgs-reciente",
+      "title": {
+        "es": "Sismicidad reciente",
+        "en": "Recent earthquakes"
+      },
+      "summary": {
+        "es": "Consulta de eventos por fecha y magnitud, con enlace al registro original.",
+        "en": "Events queried by date and magnitude, linked to the original record."
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "USGS FDSN",
+      "access": "service",
+      "format": "FDSN API",
+      "period": {
+        "es": "Consulta dinámica; últimos 30 días por defecto",
+        "en": "Dynamic query; last 30 days by default"
+      },
+      "resolution": {
+        "es": "Localización por evento; consultar incertidumbre",
+        "en": "Event locations; consult uncertainty"
+      },
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "USGS FDSN. Sismicidad reciente. https://earthquake.usgs.gov/fdsnws/event/1/",
+      "limits": {
+        "es": "Ventana regional, incluye áreas vecinas y excluye Galápagos. Los eventos pueden revisarse. No es el catálogo congelado de un video ni una alerta oficial.",
+        "en": "Regional window includes neighboring areas and excludes Galápagos. Events can be revised. Not a video's frozen catalog or an official alert."
+      },
+      "viewer": "explore.html?system=earth",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "imerg",
+      "title": {
+        "es": "Lluvia satelital · IMERG",
+        "en": "Satellite rainfall · IMERG"
+      },
+      "summary": {
+        "es": "Tasa de precipitación representada como imagen diaria.",
+        "en": "Precipitation rate displayed as a daily image."
+      },
+      "topics": [
+        "water",
+        "sky"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "NASA GPM / GIBS",
+      "access": "service",
+      "format": "WMS",
+      "period": {
+        "es": "Selección diaria",
+        "en": "Daily selection"
+      },
+      "resolution": "0.1°",
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://gpm.nasa.gov/data/imerg",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "NASA GPM / GIBS. Lluvia satelital · IMERG. https://gpm.nasa.gov/data/imerg",
+      "limits": {
+        "es": "Es una imagen de un servicio, no una serie numérica descargada. No equivale a lluvia acumulada ni a una medición por barrio.",
+        "en": "A service image, not a downloaded numerical time series. Not accumulated rainfall or a neighborhood measurement."
+      },
+      "viewer": "explore.html?system=water",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "airs",
+      "title": {
+        "es": "Temperatura del aire · AIRS",
+        "en": "Air temperature · AIRS"
+      },
+      "summary": {
+        "es": "Contexto atmosférico diurno, no medición de una estación.",
+        "en": "Daytime atmospheric context, not a station measurement."
+      },
+      "topics": [
+        "sky"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "NASA Aqua / AIRS / GIBS",
+      "access": "service",
+      "format": "WMS",
+      "period": {
+        "es": "Selección diaria",
+        "en": "Daily selection"
+      },
+      "resolution": "1°",
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/AIRS_L3_Surface_Air_Temperature_Daily_Day.json",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "NASA Aqua / AIRS / GIBS. Temperatura del aire · AIRS. https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/AIRS_L3_Surface_Air_Temperature_Daily_Day.json",
+      "limits": {
+        "es": "Cuadrícula regional gruesa. Hacer zoom no aporta detalle local ni un pronóstico.",
+        "en": "Coarse regional grid. Zooming does not add local detail or provide a forecast."
+      },
+      "viewer": "explore.html?system=sky",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "cuencas",
+      "title": {
+        "es": "Cuencas hidrográficas",
+        "en": "Watersheds"
+      },
+      "summary": {
+        "es": "Límites y consulta puntual desde el servicio nacional.",
+        "en": "Boundaries and point queries from the national service."
+      },
+      "topics": [
+        "water"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "INAMHI / MAATE",
+      "access": "service",
+      "format": "WMS / WFS",
+      "period": {
+        "es": "Versión expuesta por el proveedor",
+        "en": "Version served by the provider"
+      },
+      "resolution": {
+        "es": "Consultar escala y edición en la ficha del proveedor",
+        "en": "Consult scale and edition in the provider record"
+      },
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://geoservicios.inamhi.gob.ec/catalogue/#/dataset/8",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "INAMHI / MAATE. Cuencas hidrográficas. https://geoservicios.inamhi.gob.ec/catalogue/#/dataset/8",
+      "limits": {
+        "es": "No se conserva aquí el archivo nacional completo. La disponibilidad depende del servicio externo.",
+        "en": "The full national file is not hosted here. Availability depends on the external service."
+      },
+      "viewer": "explore.html?system=water",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "inundacion-viirs",
+      "title": {
+        "es": "Agua superficial · inundación VIIRS",
+        "en": "Surface water · VIIRS flooding"
+      },
+      "summary": {
+        "es": "Producto satelital de inundación con ventana de un día.",
+        "en": "Satellite flood product with a one-day window."
+      },
+      "topics": [
+        "water",
+        "risk"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "NASA LANCE / VIIRS / GIBS",
+      "access": "service",
+      "format": "WMS",
+      "period": {
+        "es": "Ventana de 1 día",
+        "en": "1-day window"
+      },
+      "resolution": "250 m",
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://www.earthdata.nasa.gov/data/instruments/viirs",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "NASA LANCE / VIIRS / GIBS. Agua superficial · inundación VIIRS. https://www.earthdata.nasa.gov/data/instruments/viirs",
+      "limits": {
+        "es": "Nubes, sombras y resolución limitan la detección. No es pronóstico, mapa de amenaza ni alerta de emergencia.",
+        "en": "Clouds, shadows and resolution limit detection. Not a forecast, hazard map or emergency warning."
+      },
+      "viewer": "explore.html?system=risk",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "anomalias-termicas",
+      "title": {
+        "es": "Anomalías térmicas · VIIRS",
+        "en": "Thermal anomalies · VIIRS"
+      },
+      "summary": {
+        "es": "Detecciones térmicas diarias mostradas en el visor.",
+        "en": "Daily thermal detections shown in the viewer."
+      },
+      "topics": [
+        "life",
+        "risk"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "NASA FIRMS / GIBS",
+      "access": "service",
+      "format": "WMS",
+      "period": {
+        "es": "Selección diaria",
+        "en": "Daily selection"
+      },
+      "resolution": {
+        "es": "Consultar producto VIIRS y metadatos originales",
+        "en": "Consult the VIIRS product and original metadata"
+      },
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "NASA FIRMS / GIBS. Anomalías térmicas · VIIRS. https://firms.modaps.eosdis.nasa.gov/",
+      "limits": {
+        "es": "Una detección no delimita un incendio ni prueba su causa. La visualización no contiene aquí una serie local conservada.",
+        "en": "A detection does not delineate a fire or establish its cause. No local time series is archived by this visualization."
+      },
+      "viewer": "explore.html?system=life",
+      "files": [],
+      "related": []
+    },
+    {
+      "id": "nubes-modis",
+      "title": {
+        "es": "Fracción de nube · MODIS",
+        "en": "Cloud fraction · MODIS"
+      },
+      "summary": {
+        "es": "Porcentaje de cobertura nubosa diurna.",
+        "en": "Daytime cloud-cover percentage."
+      },
+      "topics": [
+        "sky"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena",
+        "archidona"
+      ],
+      "publisher": "NASA Aqua / MODIS / GIBS",
+      "access": "service",
+      "format": "WMS",
+      "period": {
+        "es": "Selección diaria",
+        "en": "Daily selection"
+      },
+      "resolution": {
+        "es": "Producto regional; consultar metadatos",
+        "en": "Regional product; consult metadata"
+      },
+      "scope": {
+        "es": "Servicio externo mostrado en el contexto de Ecuador.",
+        "en": "External service viewed in Ecuador's geographic context."
+      },
+      "source_url": "https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/MODIS_Aqua_Cloud_Fraction_Day.json",
+      "license": {
+        "es": "Consultar condiciones del proveedor; visualización con atribución.",
+        "en": "Consult provider terms; visualization with attribution."
+      },
+      "citation": "NASA Aqua / MODIS / GIBS. Fracción de nube · MODIS. https://gibs.earthdata.nasa.gov/layer-metadata/v1.0/MODIS_Aqua_Cloud_Fraction_Day.json",
+      "limits": {
+        "es": "Imagen de visualización. No constituye un pronóstico ni la máscara de calidad de los análisis Sentinel-2.",
+        "en": "Visualization image. Not a forecast or the quality mask used by Sentinel-2 analyses."
+      },
+      "viewer": "explore.html?system=sky",
+      "files": [],
+      "related": []
+    }
+  ]
+}

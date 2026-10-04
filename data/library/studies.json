@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-04",
+  "scope": "Studies about Ecuador already connected to the site's content. Not an exhaustive review or automatic global feed.",
+  "records": [
+    {
+      "id": "maap-230",
+      "title": "MAAP #230: Mining in the Ecuadorian Amazon, Central Sector — Napo Province",
+      "authors": "Fundación EcoCiencia / Amazon Conservation · MAAP",
+      "year": 2025,
+      "type": {
+        "es": "Informe de monitoreo",
+        "en": "Monitoring report"
+      },
+      "topics": [
+        "water",
+        "life"
+      ],
+      "territories": [
+        "ecuador",
+        "napo",
+        "tena"
+      ],
+      "scope": {
+        "es": "Napo: Jatunyacu, Anzu, Huambuno y Puní–Cotona–Arajuno.",
+        "en": "Napo: Jatunyacu, Anzu, Huambuno and Puní–Cotona–Arajuno."
+      },
+      "summary": {
+        "es": "Contexto independiente para contrastar los cambios de paisaje observados en Napo. Combina análisis satelital y evidencias de mayor detalle.",
+        "en": "Independent context for examining observed landscape changes in Napo. Combines satellite analysis with more detailed evidence."
+      },
+      "limits": {
+        "es": "Sus áreas y métodos no coinciden necesariamente con nuestras ventanas. Sus resultados no son etiquetas de validación para cada píxel del atlas. Es un informe, no se presenta aquí como artículo revisado por pares.",
+        "en": "Its areas and methods do not necessarily match our windows. Its results are not validation labels for each atlas pixel. It is a report, not presented here as a peer-reviewed article."
+      },
+      "url": "https://www.maapprogram.org/ecuador-mining-napo/",
+      "doi": null,
+      "venue": "Monitoring of the Andes Amazon Program",
+      "status": "source-linked-editorial-summary",
+      "checked": "2026-10-04",
+      "verification": {
+        "es": "Enlace y pertinencia territorial contrastados; síntesis breve del proyecto, no abstract del autor.",
+        "en": "Source link and geographic relevance checked; short project summary, not the authors' abstract."
+      },
+      "citation": "Fundación EcoCiencia / Amazon Conservation (2025). MAAP #230: Mining in the Ecuadorian Amazon, Central Sector — Napo Province. https://www.maapprogram.org/ecuador-mining-napo/",
+      "related": [
+        "napo-fluvial",
+        "napo-spectral",
+        "mapbiomas-napo"
+      ],
+      "reading": "documentation/napo-spectral-rivers.md",
+      "image": "assets/images/spectral/napo-rgb-2024.webp",
+      "image_caption": {
+        "es": "Contexto visual propio: Copernicus modificado (2024), no una figura de MAAP.",
+        "en": "Our contextual image: modified Copernicus data (2024), not a MAAP figure."
+      }
+    },
+    {
+      "id": "baize-2020",
+      "title": "Active Tectonics and Earthquake Geology Along the Pallatanga Fault, Central Andes of Ecuador",
+      "authors": "Baize, S.; Audin, L.; Alvarado, A.; et al.",
+      "year": 2020,
+      "type": {
+        "es": "Artículo científico",
+        "en": "Research article"
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador"
+      ],
+      "scope": {
+        "es": "Falla Pallatanga, Andes centrales de Ecuador.",
+        "en": "Pallatanga fault, central Ecuadorian Andes."
+      },
+      "summary": {
+        "es": "Relaciona tectónica activa, formas del relieve y registro de terremotos. Sustenta ejemplos de la guía educativa sobre fallas.",
+        "en": "Connects active tectonics, landforms and the earthquake record. Supports examples in the educational fault guide."
+      },
+      "limits": {
+        "es": "Un estudio de una falla no describe todas las fallas del país. Sus interpretaciones no equivalen a una predicción del próximo terremoto.",
+        "en": "A study of one fault does not describe every fault in the country. Its interpretations are not a prediction of the next earthquake."
+      },
+      "url": "https://www.frontiersin.org/journals/earth-science/articles/10.3389/feart.2020.00193/full",
+      "doi": "10.3389/feart.2020.00193",
+      "venue": "Frontiers in Earth Science, 8, 193",
+      "status": "source-linked-editorial-summary",
+      "checked": "2026-10-04",
+      "verification": {
+        "es": "Fuente editorial y relación con la guía contrastadas. Esta ficha no es una revisión científica independiente.",
+        "en": "Publisher source and guide connection checked. This record is not an independent scientific review."
+      },
+      "citation": "Baize, S., Audin, L., Alvarado, A., et al. (2020). Active Tectonics and Earthquake Geology Along the Pallatanga Fault, Central Andes of Ecuador. Frontiers in Earth Science, 8, 193. https://doi.org/10.3389/feart.2020.00193",
+      "related": [
+        "fallas-gem",
+        "geomorfologia"
+      ],
+      "reading": "learn.html#ref-baize-2020"
+    },
+    {
+      "id": "baize-2015",
+      "title": "Paleoseismology and tectonic geomorphology of the Pallatanga fault (Central Ecuador), a major structure of the South-American crust",
+      "authors": "Baize, S.; Audin, L.; Winter, T.; et al.",
+      "year": 2015,
+      "type": {
+        "es": "Artículo científico",
+        "en": "Research article"
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador"
+      ],
+      "scope": {
+        "es": "Pallatanga y entorno, Ecuador central.",
+        "en": "Pallatanga and surrounding area, central Ecuador."
+      },
+      "summary": {
+        "es": "Una de las fuentes de las fotografías y croquis de campo usados para leer las huellas del fallamiento en el paisaje.",
+        "en": "One of the sources of field photographs and sketches used to read faulting evidence in the landscape."
+      },
+      "limits": {
+        "es": "Las figuras requieren su atribución original. Una forma del relieve aislada no demuestra por sí sola actividad tectónica.",
+        "en": "Figures require their original attribution. An isolated landform does not establish tectonic activity on its own."
+      },
+      "url": "https://doi.org/10.1016/j.geomorph.2014.02.030",
+      "doi": "10.1016/j.geomorph.2014.02.030",
+      "venue": "Geomorphology",
+      "status": "source-linked-editorial-summary",
+      "checked": "2026-10-04",
+      "verification": {
+        "es": "Referencia ya usada en la guía, contrastada con la bibliografía de Baize et al. (2020). No se afirma una nueva revisión integral del artículo.",
+        "en": "Reference already used in the guide, cross-checked against Baize et al. (2020). No new full review of the paper is claimed."
+      },
+      "citation": "Baize, S., Audin, L., Winter, T., et al. (2015). Paleoseismology and tectonic geomorphology of the Pallatanga fault (Central Ecuador), a major structure of the South-American crust. Geomorphology. https://doi.org/10.1016/j.geomorph.2014.02.030",
+      "related": [
+        "geomorfologia"
+      ],
+      "reading": "learn.html#ref-baize-2015",
+      "image": "assets/images/education/riobamba-lican-scarp-1287.webp",
+      "image_caption": {
+        "es": "Baize et al. (2015), fig. 6C · escarpe Riobamba–Licán. Reproducción con permiso declarado por el autor del proyecto.",
+        "en": "Baize et al. (2015), fig. 6C · Riobamba–Licán scarp. Permission reported by the project author."
+      }
+    },
+    {
+      "id": "eguez-2003",
+      "title": "Database and Map of Quaternary Faults and Folds of Ecuador and its Offshore Regions",
+      "authors": "Egüez, A.; Alvarado, A.; Yepes, H.; Machette, M. N.; Costa, C.; Dart, R. L.",
+      "year": 2003,
+      "type": {
+        "es": "Informe técnico y cartografía",
+        "en": "Technical report and map"
+      },
+      "topics": [
+        "earth",
+        "risk"
+      ],
+      "territories": [
+        "ecuador"
+      ],
+      "scope": {
+        "es": "Ecuador y regiones costa afuera.",
+        "en": "Ecuador and offshore regions."
+      },
+      "summary": {
+        "es": "Inventario nacional de referencia para nombres, descripciones y evidencias geomorfológicas. Es la fuente documental de las tres ocurrencias del atlas.",
+        "en": "National reference inventory for names, descriptions and geomorphic evidence. Documentary source for the atlas's three occurrences."
+      },
+      "limits": {
+        "es": "Compilación antigua de escala regional. No es la descarga de geometrías GEM ni un levantamiento reciente. Las ubicaciones del atlas son representativas.",
+        "en": "Older regional-scale compilation. It is not the GEM geometry download or a recent survey. Atlas locations are representative."
+      },
+      "url": "https://pubs.usgs.gov/of/2003/ofr-03-289/",
+      "doi": null,
+      "venue": "USGS Open-File Report 03-289",
+      "status": "source-linked-editorial-summary",
+      "checked": "2026-10-04",
+      "verification": {
+        "es": "Referencia y uso conservados en la documentación del atlas; la consulta web del informe no se pudo comprobar automáticamente en esta integración.",
+        "en": "Reference and use preserved in atlas documentation; the report webpage could not be automatically checked during this integration."
+      },
+      "citation": "Egüez, A., Alvarado, A., Yepes, H., Machette, M. N., Costa, C., & Dart, R. L. (2003). Database and Map of Quaternary Faults and Folds of Ecuador and its Offshore Regions. USGS Open-File Report 03-289. https://pubs.usgs.gov/of/2003/ofr-03-289/",
+      "related": [
+        "fallas-gem",
+        "geomorfologia"
+      ],
+      "reading": "learn.html#ref-eguez-2003"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+Así se llena el mapa con más de un siglo de sismos 🌎 | Voz: elevenlabs.io
+
+2661 registros USGS · 1900–2025 · M ≥ 4. Ecuador continental, océano cercano y zonas vecinas; sin Galápagos. No incluye 2026.
+
+📍 Posición = epicentro.
+⭕ Tamaño = magnitud, no área de daños.
+🎨 Color = profundidad, no peligro.
+Se acumulan registros del pasado, no sismos actuales o simultáneos.
+
+Profundidad máxima de esta selección: 254 km. Un registro sin profundidad no se coloca a cero. Las vistas laterales son proyecciones regionales, no cortes de una falla.
+
+Catálogo incompleto y revisable; conserva distintos tipos de magnitud, no todos Mw. Más registros no demuestra más peligro. Este video no predice terremotos ni muestra el daño local.
+
+Conversa en familia, practica simulacros y prepara tu kit. ¿Ya tienen un plan? Guarda y comparte para hablarlo.
+
+Henry Conteron, ingeniero en geociencias e investigador independiente.
+Andes Pulso · Visualización propia.
+Voz generada con IA: ElevenLabs · Emilio · elevenlabs.io.
+Inspiración visual: @notasdeungeologo; sin reutilizar su video ni audio.
+
+Fuentes: USGS https://earthquake.usgs.gov/fdsnws/event/1/ e IG-EPN https://igepn.edu.ec/que-hacer-ante/un-sismo
+Descarga: 02/10/2026. Fechas UTC. Selección regional, no fronteras políticas.
+
+#Ecuador #Sismos #Geociencias #ConcienciaSismica #AndesPulso

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datos · Ecuador Vivo</title>
+<meta name="description" content="Catálogo de datos y servicios de Ecuador Vivo: procedencia, cobertura, resolución, límites y descargas.">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="assets/css/portal.css"><link rel="stylesheet" href="assets/css/portal-catalog.css">
+<script type="module" src="assets/js/portal.js"></script><script type="module" src="assets/js/portal-catalog.js"></script>
+</head>
+<body class="portal" data-catalog-mode="datasets">
+<a class="skip-link" href="#catalog-content" data-es="Saltar al contenido" data-en="Skip to content">Saltar al contenido</a>
+<header class="portal-header"><a class="portal-brand" href="index.html" data-keep-lang><span class="portal-mark">EV</span><span>Ecuador Vivo</span></a><nav class="portal-nav" aria-label="Principal"><a href="explore.html" data-keep-lang data-es="Explorar" data-en="Explore">Explorar</a><a href="datos.html" data-keep-lang data-es="Datos" data-en="Data" aria-current="page">Datos</a><a href="andes-pulso.html" data-keep-lang>Andes Pulso</a><a href="biblioteca.html" data-keep-lang data-es="Biblioteca" data-en="Library" >Biblioteca</a><a href="learn.html" data-keep-lang data-es="Aprender" data-en="Learn">Aprender</a></nav><button type="button" data-portal-language aria-label="Cambiar idioma / Switch language">EN</button></header>
+<main class="portal-main catalog-main" id="catalog-content">
+<section class="catalog-intro">
+<p class="eyebrow" data-es="REPOSITORIO ABIERTO" data-en="OPEN REPOSITORY">REPOSITORIO ABIERTO</p>
+<h1><span data-es="Datos para entender Ecuador." data-en="Data to understand Ecuador.">Datos para<br>entender Ecuador.</span></h1>
+<p class="catalog-lede" data-es="Busca por territorio, tema o fuente. Conoce el origen y los límites antes de descargar." data-en="Search by territory, topic or source. Understand the origin and limits before downloading.">Busca por territorio, tema o fuente. Conoce el origen y los límites antes de descargar.</p>
+
+</section>
+<div class="catalog-search"><label for="catalog-search" data-es="Buscar en el catálogo" data-en="Search the catalog">Buscar en el catálogo</label><input type="search" id="catalog-search" autocomplete="off" placeholder="Napo, fallas, ríos…" aria-controls="catalog-results"></div>
+<div class="catalog-layout">
+<aside class="catalog-filters" aria-label="Filtros">
+<div><label for="territory-filter" data-es="Territorio" data-en="Territory">Territorio</label><select id="territory-filter"><option value="all" data-es="Todo el catálogo" data-en="Entire catalog">Todo el catálogo</option><option value="ecuador">Ecuador</option><option value="napo">Napo</option><option value="tena">Tena</option><option value="archidona">Archidona</option></select></div>
+<div><label for="topic-filter" data-es="Tema" data-en="Topic">Tema</label><select id="topic-filter"><option value="all" data-es="Todos los temas" data-en="All topics">Todos los temas</option><option value="earth" data-es="Tierra" data-en="Earth">Tierra</option><option value="water" data-es="Agua" data-en="Water">Agua</option><option value="sky" data-es="Cielo" data-en="Sky">Cielo</option><option value="life" data-es="Vida" data-en="Life">Vida</option><option value="risk" data-es="Riesgo" data-en="Risk">Riesgo</option></select></div>
+<div><label for="access-filter" data-es="Tipo de acceso" data-en="Access type">Tipo de acceso</label><select id="access-filter"><option value="all" data-es="Todos" data-en="All">Todos</option><option value="file" data-es="Archivo de datos" data-en="Data file">Archivo de datos</option><option value="derivative" data-es="Derivados y metadatos" data-en="Derivatives and metadata">Derivados y metadatos</option><option value="service" data-es="Servicio externo" data-en="External service">Servicio externo</option></select></div>
+<button class="button button-secondary catalog-reset" type="button" id="catalog-reset" data-es="Limpiar filtros" data-en="Clear filters">Limpiar filtros</button>
+<p class="catalog-filter-note" data-es="Los filtros señalan cobertura o pertinencia, no garantizan detalle local. Cada ficha declara su escala." data-en="Filters indicate coverage or relevance, not guaranteed local detail. Each record states its scale.">Los filtros señalan cobertura o pertinencia, no garantizan detalle local. Cada ficha declara su escala.</p>
+<a class="catalog-policy" href="data/README.md" data-es="Guía de procedencia ↗" data-en="Provenance guide ↗">Guía de procedencia ↗</a>
+</aside>
+<section class="catalog-results-panel" aria-label="Resultados">
+<p class="catalog-count" id="catalog-count" role="status" aria-live="polite"></p>
+<div id="catalog-results"><p data-es="Cargando fichas…" data-en="Loading records…">Cargando fichas…</p></div>
+<noscript><p>Activa JavaScript para buscar. / Enable JavaScript to search.</p><a href="data/catalog/datasets.json">Catálogo completo / Full catalog (JSON)</a></noscript>
+</section>
+<section id="catalog-detail" class="catalog-detail" aria-label="Ficha del conjunto" aria-live="polite" tabindex="-1"></section>
+</div>
+<section class="catalog-crosslink"><div><p class="eyebrow" data-es="BIBLIOTECA DE ECUADOR" data-en="ECUADOR LIBRARY">BIBLIOTECA DE ECUADOR</p><h2 data-es="Cada mapa tiene una historia." data-en="Every map has a story.">Cada mapa tiene una historia.</h2></div><a class="button button-secondary" href="biblioteca.html" data-keep-lang data-es="Explorar biblioteca →" data-en="Explore the library →">Explorar biblioteca →</a></section>
+</main>
+<footer class="portal-footer"><span>Ecuador Vivo · Henry P. Conteron Moreta</span><a href="LICENSE-DATA.md" data-es="Licencias y atribución" data-en="Licenses and attribution">Licencias y atribución</a><a href="documentation/biblioteca-ecuador.md" data-es="Criterios editoriales" data-en="Editorial criteria">Criterios editoriales</a></footer>
+</body></html>
+

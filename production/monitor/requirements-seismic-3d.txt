@@ -1,0 +1,3 @@
+# Optional local GPU renderer; does not replace existing video dependencies.
+moderngl==5.12.0
+glcontext==3.0.0

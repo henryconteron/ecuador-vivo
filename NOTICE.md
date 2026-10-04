@@ -37,3 +37,22 @@
 
 El atlas es educativo y científico. No sustituye cartografía oficial, estudios
 geotécnicos ni evaluaciones de amenaza sísmica.
+
+## Laboratorio fluvial de Napo · escenas fechadas
+
+`rivers.html` y los paquetes numéricos de `data/fluvial/` contienen datos
+Copernicus Sentinel-2 modificados (2019, 2024 y 2026), obtenidos de los COG
+públicos de Earth Search / Element 84. IDs, fechas, activos, calibración,
+agregación y reproyección están en `data/fluvial/manifest.json`. No proceden
+de imágenes generadas ni de una medición del color de una ilustración.
+
+Se atribuyen NDWI a McFeeters (1996), MNDWI a Xu (2006), AWEI a Feyisa et al.
+(2014) y las referencias metodológicas a sus autores en el laboratorio y
+`documentation/fluvial-lab.md`. Las ecuaciones son adaptadas a bandas
+Sentinel-2. La línea base de mínima distancia de seis bandas no es una
+reproducción exacta del método de Cavallo et al. (2025). No se reproducen
+figuras o imágenes de esos artículos en esta incorporación.
+# Andes Pulso: preservación audiovisual
+
+El código MIT no licencia los medios de `assets/media/andes-pulso/`. El caso nacional conserva una voz sintética con atribución **Voz: elevenlabs.io**, bajo las condiciones no comerciales documentadas para esa toma. No se concede licencia abierta para el video o la voz. Los datos conservan sus créditos originales USGS/redes; consultar `data/cases/memoria-sismica-1900-2025/case.json` y `FUENTES_Y_PUBLICACION.md`.
+
