@@ -11,6 +11,8 @@
 - [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
 - [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): historias y ejercicios.
 - [Cuaderno de rocas](https://henryconteron.github.io/ecuador-vivo/rocks.html): observación, ejercicios y ficha descargable, en español e inglés.
+- [Cartoteca](https://henryconteron.github.io/ecuador-vivo/geologia.html): filtros, atributos y selección descargable de unidades y hojas del piloto Tena–Archidona.
+- [Laboratorio](https://henryconteron.github.io/ecuador-vivo/laboratorio.html): apertura opcional de GeoLibre externo con datos públicos versionados. No conecta cuentas privadas ni publica aportes automáticamente.
 
 ### Geología y aportes — octubre de 2026
 
@@ -18,7 +20,7 @@ Cada sistema del visor desactiva las capas ajenas. «Combinar con otros sistemas
 
 La integración IIGE incluye un servicio regional externo y una selección reproducible de 56 polígonos y cuatro hojas que intersectan la ventana Tena–Archidona. La escala de las unidades no está documentada en el servicio; el índice de hojas es 1:100 000 y Tena figura «En revisión». Consultar [fuentes, método, límites y condiciones](documentation/geologia-y-aportes.md).
 
-Se pueden comparar archivos GeoJSON WGS84 localmente (hasta 10 MB), sin publicarlos. No hay todavía georreferenciador de imágenes, reproyección ni publicación automática de aportes. Las propuestas de datos y estudios pasan por revisión en GitHub. El descubrimiento bibliográfico genera candidatos privados o un artefacto de revisión manual; nunca agrega estudios automáticamente a la biblioteca pública.
+Se pueden comparar archivos GeoJSON WGS84 localmente (hasta 10 MB), sin publicarlos. El atlas no incorpora un georreferenciador propio ni reproyección; el laboratorio permite abrir GeoLibre externo, que documenta esas herramientas. Todavía no se ha validado una hoja ecuatoriana mediante ese flujo. No hay publicación automática de aportes: las propuestas de datos y estudios pasan por revisión en GitHub. El descubrimiento bibliográfico genera candidatos privados o un artefacto de revisión manual; nunca agrega estudios automáticamente a la biblioteca pública.
 
 ### Organización y preservación
 

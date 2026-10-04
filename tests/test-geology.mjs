@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {validateLocalGeoJSON} from '../assets/js/map/local-data.js';
+import './test-laboratory.mjs';
 const manifest=JSON.parse(fs.readFileSync('data/geology/manifest.json'));
 assert.deepEqual(manifest.bbox,[-78.1,-1.2,-77.6,-.7]);
 assert.equal(manifest.status,'source-snapshot-not-independently-validated');

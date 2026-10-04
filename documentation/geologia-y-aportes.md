@@ -47,8 +47,8 @@ Para contribuir públicamente hay un formulario de propuesta en GitHub (requiere
 
 - [UGS Geologic Map Portal](https://github.com/UGS-GIO/geolMapPortal): referencia para conectar hojas y cartografía consultable.
 - [AuScope AVRE](https://www.auscope.org.au/avre): referencia para separar descubrimiento de recursos y modelos 3D. Su visor geomodels no respondió durante esta consulta; no se ha afirmado probarlo.
-- [GeoLibre](https://github.com/opengeos/GeoLibre) y [funciones documentadas](https://geolibre.app/features/): candidato para un espacio GIS avanzado con carga de archivos y vistas comparadas. No se instaló ni se integró el proyecto completo. No se confirmó una función específica de georreferenciación de imágenes en la página consultada.
+- [GeoLibre](https://github.com/opengeos/GeoLibre) y [funciones documentadas](https://geolibre.app/features/): el laboratorio ofrece ahora una apertura externa opcional con datos públicos versionados. La revisión posterior confirmó un georreferenciador en su código y tutorial oficial. No se instaló ni se copió el proyecto completo. Véase [integración y límites](laboratorio-y-almacenamiento.md).
 
-La georreferenciación con puntos de control queda pendiente: requiere CRS origen/destino, puntos distribuidos, transformación, puntos de comprobación independientes, residuos y error reportado, recorte de márgenes, licencia y registro de autoría. Superponer una imagen estirada no equivale a georreferenciarla. No prometer precisión por el solo aspecto visual.
+La validación de una hoja ecuatoriana con puntos de control queda pendiente: requiere CRS origen/destino, puntos distribuidos, transformación, puntos de comprobación independientes, residuos y error reportado, recorte de márgenes, licencia y registro de autoría. Superponer una imagen estirada no equivale a georreferenciarla. No prometer precisión por el solo aspecto visual.
 
 Un repositorio público de aportes requerirá identidad, almacenamiento, cuotas, análisis de archivos, moderación, retirada y versiones. La comparación local y las propuestas revisadas funcionan sin crear todavía esa infraestructura ni comprometer pagos.

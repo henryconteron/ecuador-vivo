@@ -1,5 +1,12 @@
 # Registro de cambios
 
+## 2026-10-04 — Cartoteca y laboratorio externo
+
+- Cartoteca bilingüe con filtros de unidades, litología y estado de hojas IIGE, selección en mapa y exportación GeoJSON con procedencia.
+- GeoLibre externo bajo apertura explícita, con conjuntos públicos fijados a una revisión y guías de comparación y georreferenciación. Sin conexión con cuentas privadas ni publicación automática.
+- Empaquetado portátil y verificación SHA-256 del piloto geológico; respaldo privado en Drive con recuperación comprobada. No constituye un respaldo completo del proyecto.
+- Pruebas de filtros, integridad, procedencia, apertura opcional y archivos de respaldo.
+
 ## 2026-10-04 — Sistemas independientes, geología y cuaderno de rocas
 
 - Aislamiento real de capas por sistema y combinación explícita; preferencias de capas conservadas al volver al apartado.
