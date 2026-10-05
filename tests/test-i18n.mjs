@@ -27,7 +27,11 @@ vm.runInContext(fs.readFileSync("assets/js/i18n.js", "utf8"), context);
 const markup = ["explore.html", "learn.html", "lecturas.html"]
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
-const runtimeSource = ["assets/js/learn.js", "assets/js/map.js", "assets/js/map/landcover.js", "assets/js/map/imagery.js", "assets/js/map/spectral.js", "assets/js/map/spectral-map.js", "assets/js/map/rivers.js", "assets/js/map/rivers-observations.js"]
+const mapModules = fs.readdirSync("assets/js/map", { withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.endsWith(".js"))
+  .map((entry) => `assets/js/map/${entry.name}`)
+  .sort();
+const runtimeSource = ["assets/js/learn.js", "assets/js/map.js", ...mapModules]
   .map((file) => fs.readFileSync(file, "utf8"))
   .join("\n");
 const keys = [
@@ -86,4 +90,4 @@ for (const language of ["es", "en"]) {
   }
 }
 
-console.log(`i18n tests passed for ${keys.length} markup keys.`);
+console.log(`i18n tests passed for ${keys.length} interface keys.`);

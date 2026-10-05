@@ -46,19 +46,19 @@ import {
 } from "./map/precipitation.js";
 import { catalogForSystem } from "./map/source-catalog.js";
 import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js";
+import { stationMarkerOptions } from "./map/stations.js";
 import {
-  filterStations,
-  loadStationSnapshot,
-  normalizeStationCategory,
-  STATION_SOURCE,
-  stationMarkerOptions,
-} from "./map/stations.js";
+  createStationPanel,
+  createStationPopup,
+  stationCategoryLabel,
+} from "./map/station-panel.js";
 import { ATLAS_SYSTEMS, contentBelongsToSelection, createSystemScope, normalizeAtlasSystem } from "./map/systems.js";
-import {mountGeology} from "./map/geology.js";
-import {mountLocalData} from "./map/local-data.js";
+import { mountGeology } from "./map/geology.js";
+import { mountLocalData } from "./map/local-data.js";
 import { normalizeThermalDate, thermalDateRange, THERMAL_SOURCE, thermalWmsOptions } from "./map/thermal.js";
-import { createWmsLayerController } from "./map/wms-layer.js";
+import { createOpacityControl, createWmsLayerController } from "./map/wms-layer.js";
 import { createEarthquakePanel } from "./map/earthquake-panel.js";
+import { filterFaultCatalog, hasCatalogFilters, sortFaultCatalog } from "./map/fault-catalog.js";
 import { catalogKey, createTextTools, normalize } from "./map/utils.js";
 
 const mapElement = document.querySelector("#map");
@@ -184,7 +184,11 @@ function initializeAtlas() {
       });
     },
     onEachFeature(feature, layer) {
-      layer.bindPopup(createStationPopup(feature));
+      layer.bindPopup(createStationPopup(feature, {
+        t,
+        template,
+        formatNumber,
+      }));
       layer.bindTooltip(feature.properties?.codigo || t("value.unavailable"), {
         direction: "top",
         offset: [0, -4],
@@ -350,10 +354,7 @@ function initializeAtlas() {
   let basinLookupState = "idle";
   let selectedBasin = null;
   let basinLookupRequestId = 0;
-  let stationCatalog = [];
-  let visibleStationCatalog = [];
-  let stationMetadata = {};
-  let stationState = "loading";
+  let stationPanel;
   let napoLandcover;
   let napoImagery;
   let napoSpectral;
@@ -442,6 +443,30 @@ function initializeAtlas() {
     t,
     template,
   });
+
+  createOpacityControl(
+    hillshadeLayer,
+    elements.hillshadeOpacity,
+    elements.hillshadeOpacityValue,
+  );
+  createOpacityControl(basinLayer, elements.basinOpacity, elements.basinOpacityValue);
+  createOpacityControl(
+    precipitationLayer,
+    elements.precipitationOpacity,
+    elements.precipitationOpacityValue,
+  );
+  createOpacityControl(
+    airTemperatureLayer,
+    elements.airTemperatureOpacity,
+    elements.airTemperatureOpacityValue,
+  );
+  createOpacityControl(
+    cloudFractionLayer,
+    elements.cloudFractionOpacity,
+    elements.cloudFractionOpacityValue,
+  );
+  createOpacityControl(floodLayer, elements.floodOpacity, elements.floodOpacityValue);
+  createOpacityControl(thermalLayer, elements.thermalOpacity, elements.thermalOpacityValue);
 
   const placeMarker = L.circleMarker([0, 0], {
     radius: 8,
@@ -575,50 +600,6 @@ function initializeAtlas() {
     return article;
   }
 
-  function stationCategoryLabel(feature) {
-    return t(`stations.${normalizeStationCategory(feature.properties?.categoria)}`);
-  }
-
-  function popupDetail(term, value) {
-    const group = document.createElement("div");
-    const label = document.createElement("dt");
-    const description = document.createElement("dd");
-    label.textContent = term;
-    description.textContent = value || t("value.unavailable");
-    group.append(label, description);
-    return group;
-  }
-
-  function createStationPopup(feature) {
-    const properties = feature.properties ?? {};
-    const article = document.createElement("article");
-    const eyebrow = document.createElement("p");
-    const title = document.createElement("h3");
-    const name = document.createElement("p");
-    const details = document.createElement("dl");
-    const link = document.createElement("a");
-
-    article.className = "station-popup";
-    eyebrow.className = "station-popup-kicker";
-    eyebrow.textContent = stationCategoryLabel(feature);
-    title.textContent = properties.codigo || t("value.unavailable");
-    name.textContent = properties.nombre || t("value.unavailable");
-    details.append(
-      popupDetail(t("stations.popupAltitude"), Number.isFinite(properties.altitud_m)
-        ? template("stations.altitude", { altitude: formatNumber(properties.altitud_m, 0) })
-        : t("value.unavailable")),
-      popupDetail(t("stations.popupOwner"), properties.propietario),
-      popupDetail(t("stations.popupLocation"), [properties.canton, properties.provincia].filter(Boolean).join(", ")),
-      popupDetail(t("stations.popupState"), t("stations.transmitting")),
-    );
-    link.href = STATION_SOURCE.viewer;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = t("stations.openViewer");
-    article.append(eyebrow, title, name, details, link);
-    return article;
-  }
-
   function formatApproximateDistance(distanceKm) {
     return template("place.approxDistance", {
       distance: formatNumber(distanceKm, distanceKm < 10 ? 1 : 0),
@@ -696,14 +677,14 @@ function initializeAtlas() {
       }
     }
 
-    if (map.hasLayer(stationLayer) && visibleStationCatalog.length > 0) {
-      const closestStation = nearestFeature(selectedPoint, visibleStationCatalog);
+    if (map.hasLayer(stationLayer) && stationPanel.visibleCatalog.length > 0) {
+      const closestStation = nearestFeature(selectedPoint, stationPanel.visibleCatalog);
       if (closestStation.feature) {
         const properties = closestStation.feature.properties ?? {};
         elements.placeResults.append(createPlaceResult(
           t("stations.placeLabel"),
           `${properties.codigo || t("value.unavailable")} · ${properties.nombre || t("value.unavailable")}`,
-          `${formatApproximateDistance(closestStation.distanceKm)} · ${stationCategoryLabel(closestStation.feature)}`,
+          `${formatApproximateDistance(closestStation.distanceKm)} · ${stationCategoryLabel(closestStation.feature, t)}`,
         ));
       }
     }
@@ -896,6 +877,16 @@ function initializeAtlas() {
     renderPlaceExplanation: () => renderPlaceExplanation()
   });
 
+  stationPanel = createStationPanel(map, stationLayer, elements, {
+    t,
+    template,
+    formatUtcDate,
+    updateLegendVisibility: () => updateLegendVisibility(),
+    updateSourceCount: () => updateSourceCount(),
+    getSelectedPoint: () => selectedPoint,
+    renderPlaceExplanation: () => renderPlaceExplanation(),
+  });
+
   function updateLegendVisibility() {
     const activeLayers = {
       hillshade: map.hasLayer(hillshadeLayer),
@@ -949,40 +940,15 @@ function initializeAtlas() {
     input.addEventListener("change", () => queueMicrotask(updateLegendVisibility));
   });
 
-  function matchesFilters(feature) {
-    const query = normalize(elements.search.value);
-    const selectedMovement = elements.movement.value;
-    const properties = feature.properties ?? {};
-    const searchableText = normalize(
-      [
-        properties.nombre,
-        properties.nombre_en,
-        properties.provincia,
-        properties.provincia_en,
-        properties.sistema,
-        properties.sistema_en,
-        properties.catalog_id,
-        properties.catalog_name,
-        properties.fuente,
-        properties.reference,
-      ]
-        .filter(Boolean)
-        .join(" "),
-    );
-    return (query === "" || searchableText.includes(query)) &&
-      (selectedMovement === "all" || movementOf(feature) === selectedMovement);
-  }
-
-  function hasActiveFilters() {
-    return elements.search.value.trim() !== "" || elements.movement.value !== "all";
-  }
-
   function updateControls() {
     const hasCatalog = catalog.length > 0;
     elements.faultToggle.disabled = !hasCatalog;
     elements.search.disabled = !hasCatalog;
     elements.movement.disabled = !hasCatalog;
-    elements.clear.disabled = !hasCatalog || !hasActiveFilters();
+    elements.clear.disabled = !hasCatalog || !hasCatalogFilters({
+      query: elements.search.value,
+      movement: elements.movement.value,
+    });
   }
 
   function showCatalogState(title, message, showDemoLink = false) {
@@ -1017,9 +983,10 @@ function initializeAtlas() {
 
   function renderList(features) {
     elements.list.replaceChildren();
-    features
-      .slice()
-      .sort((a, b) => localizedProperty(a, "nombre").localeCompare(localizedProperty(b, "nombre"), i18n?.language ?? "es"))
+    sortFaultCatalog(features, {
+      localizedProperty,
+      locale: i18n?.language ?? "es",
+    })
       .forEach((feature) => {
         const item = document.createElement("li");
         const button = document.createElement("button");
@@ -1041,7 +1008,11 @@ function initializeAtlas() {
   }
 
   function renderCatalog() {
-    const visibleFeatures = catalog.filter(matchesFilters);
+    const visibleFeatures = filterFaultCatalog(
+      catalog,
+      { query: elements.search.value, movement: elements.movement.value },
+      { normalize, movementOf },
+    );
     if (selectedFeature && !visibleFeatures.includes(selectedFeature)) selectedFeature = null;
     faultLayer.clearLayers();
     faultLayer.addData({ type: "FeatureCollection", features: visibleFeatures });
@@ -1187,73 +1158,6 @@ function initializeAtlas() {
     else renderPlaceExplanation();
   });
 
-  function updateHillshadeOpacity() {
-    const opacity = Number(elements.hillshadeOpacity.value) / 100;
-    hillshadeLayer.setOpacity(opacity);
-    elements.hillshadeOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-
-  function updateStationStatus() {
-    elements.stationStatus.dataset.state = stationState;
-    if (stationState === "loading") {
-      elements.stationStatus.textContent = t("stations.loading");
-    } else if (stationState === "error") {
-      elements.stationStatus.textContent = t("stations.error");
-    } else if (map.hasLayer(stationLayer)) {
-      elements.stationStatus.textContent = template("stations.visible", {
-        visible: visibleStationCatalog.length,
-        total: stationCatalog.length,
-      });
-    } else {
-      elements.stationStatus.textContent = template("stations.ready", { count: stationCatalog.length });
-    }
-  }
-
-  function updateStationRetrievedAt() {
-    elements.stationRetrievedAt.dateTime = stationMetadata.retrievedAt || "";
-    elements.stationRetrievedAt.textContent = stationMetadata.retrievedAt
-      ? formatUtcDate(stationMetadata.retrievedAt)
-      : t("value.unavailable");
-  }
-
-  function renderStations() {
-    visibleStationCatalog = filterStations(stationCatalog, elements.stationCategory.value);
-    stationLayer.clearLayers();
-    stationLayer.addData({ type: "FeatureCollection", features: visibleStationCatalog });
-    updateStationStatus();
-    updateLegendVisibility();
-    updateSourceCount();
-    if (selectedPoint) renderPlaceExplanation();
-  }
-
-  async function loadStationData() {
-    stationState = "loading";
-    elements.stationToggle.disabled = true;
-    updateStationStatus();
-    try {
-      const result = await loadStationSnapshot();
-      stationCatalog = result.features;
-      stationMetadata = result.metadata;
-      stationState = "loaded";
-      elements.stationToggle.disabled = false;
-      updateStationRetrievedAt();
-      map.attributionControl.addAttribution(
-        '<a href="https://inamhi.gob.ec/info/visor/" target="_blank" rel="noopener">Estaciones INAMHI</a>',
-      );
-      renderStations();
-    } catch (error) {
-      console.error(error);
-      stationCatalog = [];
-      visibleStationCatalog = [];
-      stationState = "error";
-      elements.stationToggle.checked = false;
-      elements.stationToggle.disabled = true;
-      elements.stationCategory.disabled = true;
-      updateStationStatus();
-    }
-  }
-  updateHillshadeOpacity();
-
   elements.hillshadeToggle.addEventListener("change", () => {
     if (elements.hillshadeToggle.checked) hillshadeLayer.addTo(map);
     else map.removeLayer(hillshadeLayer);
@@ -1261,14 +1165,6 @@ function initializeAtlas() {
     updateLegendVisibility();
     updateSourceCount();
   });
-  elements.hillshadeOpacity.addEventListener("input", updateHillshadeOpacity);
-
-  function updateBasinOpacity() {
-    const opacity = Number(elements.basinOpacity.value) / 100;
-    basinLayer.setOpacity(opacity);
-    elements.basinOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updateBasinOpacity();
 
   elements.basinToggle.addEventListener("change", () => {
     const active = elements.basinToggle.checked;
@@ -1290,26 +1186,11 @@ function initializeAtlas() {
     updateLegendVisibility();
     updateSourceCount();
   });
-  elements.basinOpacity.addEventListener("input", updateBasinOpacity);
 
   elements.stationToggle.addEventListener("change", () => {
-    const active = elements.stationToggle.checked;
-    elements.stationCategory.disabled = !active;
-    if (active) stationLayer.addTo(map);
-    else map.removeLayer(stationLayer);
-    updateStationStatus();
-    updateLegendVisibility();
-    updateSourceCount();
-    if (selectedPoint) renderPlaceExplanation();
+    stationPanel.setActive(elements.stationToggle.checked);
   });
-  elements.stationCategory.addEventListener("change", renderStations);
-
-  function updatePrecipitationOpacity() {
-    const opacity = Number(elements.precipitationOpacity.value) / 100;
-    precipitationLayer.setOpacity(opacity);
-    elements.precipitationOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updatePrecipitationOpacity();
+  elements.stationCategory.addEventListener("change", stationPanel.render);
 
   elements.precipitationToggle.addEventListener("change", () => {
     const active = elements.precipitationToggle.checked;
@@ -1331,14 +1212,6 @@ function initializeAtlas() {
     precipitationLayer.redraw();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.precipitationOpacity.addEventListener("input", updatePrecipitationOpacity);
-
-  function updateAirTemperatureOpacity() {
-    const opacity = Number(elements.airTemperatureOpacity.value) / 100;
-    airTemperatureLayer.setOpacity(opacity);
-    elements.airTemperatureOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updateAirTemperatureOpacity();
 
   elements.airTemperatureToggle.addEventListener("change", () => {
     const active = elements.airTemperatureToggle.checked;
@@ -1360,14 +1233,6 @@ function initializeAtlas() {
     airTemperatureLayer.redraw();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.airTemperatureOpacity.addEventListener("input", updateAirTemperatureOpacity);
-
-  function updateCloudFractionOpacity() {
-    const opacity = Number(elements.cloudFractionOpacity.value) / 100;
-    cloudFractionLayer.setOpacity(opacity);
-    elements.cloudFractionOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updateCloudFractionOpacity();
 
   elements.cloudFractionToggle.addEventListener("change", () => {
     const active = elements.cloudFractionToggle.checked;
@@ -1389,14 +1254,6 @@ function initializeAtlas() {
     cloudFractionLayer.redraw();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.cloudFractionOpacity.addEventListener("input", updateCloudFractionOpacity);
-
-  function updateFloodOpacity() {
-    const opacity = Number(elements.floodOpacity.value) / 100;
-    floodLayer.setOpacity(opacity);
-    elements.floodOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updateFloodOpacity();
 
   elements.floodToggle.addEventListener("change", () => {
     const active = elements.floodToggle.checked;
@@ -1415,14 +1272,6 @@ function initializeAtlas() {
     floodLayer.redraw();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.floodOpacity.addEventListener("input", updateFloodOpacity);
-
-  function updateThermalOpacity() {
-    const opacity = Number(elements.thermalOpacity.value) / 100;
-    thermalLayer.setOpacity(opacity);
-    elements.thermalOpacityValue.value = `${Math.round(opacity * 100)}%`;
-  }
-  updateThermalOpacity();
 
   elements.thermalToggle.addEventListener("change", () => {
     const active = elements.thermalToggle.checked;
@@ -1441,7 +1290,6 @@ function initializeAtlas() {
     thermalLayer.redraw();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.thermalOpacity.addEventListener("input", updateThermalOpacity);
 
   function updateMinimumMagnitudeValue() {
     elements.earthquakeMinimumMagnitudeValue.value = Number(
@@ -1519,9 +1367,9 @@ function initializeAtlas() {
     if (earthquakePanel.getState() === "loaded") earthquakePanel.renderEarthquakes();
     else earthquakePanel.updateStatus();
     updateBasinStatus();
-    if (stationState === "loaded") renderStations();
-    else updateStationStatus();
-    updateStationRetrievedAt();
+    if (stationPanel.state === "loaded") stationPanel.render();
+    else stationPanel.updateStatus();
+    stationPanel.updateRetrievedAt();
     precipitationController.updateStatus();
     airTemperatureController.updateStatus();
     cloudFractionController.updateStatus();
@@ -1592,5 +1440,5 @@ function initializeAtlas() {
   renderSystemView();
   loadAtlasData();
   earthquakePanel.loadEarthquakeData();
-  loadStationData();
+  stationPanel.load();
 }

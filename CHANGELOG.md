@@ -1,5 +1,15 @@
 # Registro de cambios
 
+## 2026-10-05 — Mantenibilidad y controles automáticos
+
+- Separados del coordinador principal el estado de estaciones INAMHI, sus fichas y el filtrado del
+  catálogo de fallas; la opacidad de siete capas comparte ahora un único control probado.
+- Descubrimiento automático de pruebas JavaScript, ESLint, validación de importaciones canónicas y
+  esquemas JSON integrados en el mismo control de publicación.
+- Solicitudes GeoJSON con tiempo límite y errores explícitos, sin dejar la interfaz esperando de
+  forma indefinida.
+- Arquitectura del visor y reglas para incorporar capas documentadas para revisión externa.
+
 ## 2026-10-04 — Aprender haciendo
 
 - Nuevo recorrido principal ES/EN: tres modelos 3D manipulables de cinemática de fallas, reparto didáctico de lluvia y condensación orográfica; preguntas, misiones y retos con explicación de cada respuesta.

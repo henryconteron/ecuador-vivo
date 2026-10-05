@@ -59,3 +59,18 @@ export function createWmsLayerController(map, layer, { statusEl, dateEl, i18nPre
     updateStatus,
   };
 }
+
+export function createOpacityControl(layer, input, output) {
+  function update() {
+    const percentage = Number(input.value);
+    const safePercentage = Number.isFinite(percentage)
+      ? Math.min(100, Math.max(0, percentage))
+      : 0;
+    layer.setOpacity(safePercentage / 100);
+    output.value = `${Math.round(safePercentage)}%`;
+  }
+
+  input.addEventListener("input", update);
+  update();
+  return update;
+}

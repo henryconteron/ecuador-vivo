@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 import { createEarthquakePanel } from "../assets/js/map/earthquake-panel.js";
-import { createWmsLayerController } from "../assets/js/map/wms-layer.js";
+import { createOpacityControl, createWmsLayerController } from "../assets/js/map/wms-layer.js";
 
 function fakeLayer() {
   const handlers = new Map();
@@ -53,6 +53,28 @@ controller.deactivate();
 layer.emit("tileerror");
 layer.emit("tileerror");
 assert.equal(statusEl.dataset.state, "off", "late errors must not revive an inactive layer");
+
+const opacityListeners = new Map();
+const opacityLayer = {
+  opacity: null,
+  setOpacity(value) {
+    this.opacity = value;
+  },
+};
+const opacityInput = {
+  value: "42",
+  addEventListener(event, callback) {
+    opacityListeners.set(event, callback);
+  },
+};
+const opacityOutput = { value: "" };
+createOpacityControl(opacityLayer, opacityInput, opacityOutput);
+assert.equal(opacityLayer.opacity, 0.42);
+assert.equal(opacityOutput.value, "42%");
+opacityInput.value = "140";
+opacityListeners.get("input")();
+assert.equal(opacityLayer.opacity, 1, "opacity must be clamped to the Leaflet range");
+assert.equal(opacityOutput.value, "100%");
 
 const earthquakeElements = {
   earthquakeDays: { value: "7" },

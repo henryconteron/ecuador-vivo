@@ -41,7 +41,8 @@ Estado y límites del traslado: [registro de integración](documentation/integra
 **[Abrir el atlas en línea →](https://henryconteron.github.io/ecuador-vivo/)** · **[Explorar la guía educativa →](https://henryconteron.github.io/ecuador-vivo/learn.html)**
 
 Documentación del proyecto: [citar el atlas](CITATION.cff) · [registro de cambios](CHANGELOG.md) ·
-[contribuir](CONTRIBUTING.md) · [seguridad y privacidad](SECURITY.md)
+[arquitectura técnica](documentation/arquitectura.md) · [contribuir](CONTRIBUTING.md) ·
+[seguridad y privacidad](SECURITY.md)
 
 Atlas interactivo de los sistemas naturales del Ecuador. El proyecto comienza con fallas,
 sismicidad y geomorfología, y está preparado para conectar progresivamente agua, atmósfera,
@@ -151,19 +152,22 @@ fallas-ecuador/
 │   └── js/
 │       ├── i18n.js
 │       ├── learn.js
-│       ├── map.js
+│       ├── map.js              # coordinación del visor
 │       └── map/
 │           ├── basins.js
 │           ├── air-temperature.js
 │           ├── cloud-fraction.js
 │           ├── config.js
 │           ├── data.js
+│           ├── earthquake-panel.js
+│           ├── fault-catalog.js
 │           ├── flood.js
 │           ├── place.js
 │           ├── popups.js
 │           ├── precipitation.js
 │           ├── seismicity.js
 │           ├── source-catalog.js
+│           ├── station-panel.js
 │           ├── stations.js
 │           ├── symbology.js
 │           ├── systems.js
@@ -203,9 +207,13 @@ fallas-ecuador/
 ├── package.json
 ├── requirements-dev.txt
 └── documentation/
+    ├── arquitectura.md
     ├── data-sources.md
     └── references/README.md
 ```
+
+La lista anterior resume el núcleo; el visor contiene otros módulos temáticos documentados en la
+[arquitectura técnica](documentation/arquitectura.md).
 
 ## Estrategia de datos
 
