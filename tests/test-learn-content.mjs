@@ -33,7 +33,7 @@ for (const match of markup.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) {
 }
 const assetPaths = new Set();
 
-for (const match of markup.matchAll(/(?:src|href)="(assets\/[^"?]+)(?:\?[^\"]*)?"/g)) {
+for (const match of markup.matchAll(/(?:src|href)="(assets\/[^"?]+)(?:\?[^"]*)?"/g)) {
   assetPaths.add(match[1]);
 }
 

@@ -36,7 +36,6 @@ async function bootCatalog() {
   let records = [];
   let selected = decodeHash();
   let lang = getLanguage();
-  let citation = "";
   const say = (es, en) => lang === "en" ? en : es;
   const value = (text) => localize(text, lang);
   function getLanguage() { return (window.portalLanguage?.() ?? new URLSearchParams(location.search).get("lang") ?? document.documentElement.lang) === "en" ? "en" : "es"; }
@@ -103,7 +102,7 @@ async function bootCatalog() {
     }
     const citations = node("details"); citations.append(node("summary",say("Cita y procedencia","Citation and provenance")),node("p",record.citation,"catalog-citation"));
     const copy = node("button",say("Copiar cita","Copy citation"),"catalog-copy"); copy.type = "button";
-    const status = node("p","","catalog-copy-status"); status.setAttribute("role","status"); citation = record.citation;
+    const status = node("p","","catalog-copy-status"); status.setAttribute("role","status");
     copy.addEventListener("click",async()=>{ try { if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable"); await navigator.clipboard.writeText(record.citation); status.textContent = say("Cita copiada.","Citation copied."); } catch { status.textContent = say("No se pudo copiar automáticamente. Selecciona el texto de la cita de arriba.","Could not copy automatically. Select the citation text above."); } });
     citations.append(copy,status); detail.append(citations);
   }

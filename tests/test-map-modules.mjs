@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import "./test-map-controllers.mjs";
 
 import { FAULT_METADATA_PROFILES, SOURCE_REGISTRY } from "../assets/js/map/config.js";
 import { buildEarthquakeUrl, fetchJsonWithTimeout, loadGeoJson } from "../assets/js/map/data.js";

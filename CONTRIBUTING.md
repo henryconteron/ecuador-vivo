@@ -16,7 +16,9 @@ para el público y trazabilidad para la comunidad científica.
 - Mantén español e inglés sincronizados en `assets/js/i18n.js`.
 - Conserva el modo `?demo=1` separado de los datos científicos.
 - Añade o actualiza pruebas cuando cambie el comportamiento de una capa.
-- Ejecuta `pnpm run check` antes de abrir una propuesta.
+- Instala las dependencias fijadas con `pnpm install --frozen-lockfile`.
+- Ejecuta `pnpm run check` antes de abrir una propuesta; ESLint, las pruebas JavaScript y los
+  validadores de datos se descubren y ejecutan desde ese comando.
 
 ## Cambios de datos
 

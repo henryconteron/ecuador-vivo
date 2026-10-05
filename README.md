@@ -331,10 +331,12 @@ para auditoría y reconstrucción.
 Antes de publicar cualquier cambio puede ejecutarse:
 
 ```bash
-npm run check
+pnpm install --frozen-lockfile
+pnpm run check
 ```
 
-La validación comprueba sintaxis JavaScript, traducciones de la interfaz, módulos del mapa,
+La validación ejecuta ESLint, descubre automáticamente las pruebas JavaScript y comprueba
+traducciones de la interfaz, módulos del mapa,
 estructura GeoJSON, geometrías admitidas, IDs únicos,
 campos obligatorios, valores cinemáticos, coordenadas WGS 84, URLs HTTPS y coherencia de los
 metadatos. Las referencias individuales ausentes se reportan como advertencia con su alcance de

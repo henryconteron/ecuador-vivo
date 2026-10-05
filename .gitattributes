@@ -4,6 +4,7 @@
 *.js text eol=lf
 *.mjs text eol=lf
 *.py text eol=lf
+pnpm-lock.yaml text eol=lf
 
 # Frozen case inputs retain original bytes (including original line endings).
 /data/cases/** -text
