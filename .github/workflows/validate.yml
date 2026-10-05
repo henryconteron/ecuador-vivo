@@ -18,10 +18,11 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - run: python -m pip install -r requirements-dev.txt
       - run: npm run check
+      - run: python scripts/validate_geojson_schemas.py
       - run: node scripts/prepare_napo_river_sample.mjs --check
       - run: node scripts/promote_napo_river_sample.mjs --help
-      - run: python -m pip install -r requirements-dev.txt
       - run: python -m pip install -r requirements-landcover.txt
       - run: python -m unittest discover -s tests
       - run: python scripts/fetch_catalog_inputs.py --help

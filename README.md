@@ -341,6 +341,13 @@ metadatos. Las referencias individuales ausentes se reportan como advertencia co
 cita; las escalas ausentes también se señalan porque la fuente original no las documenta en todos
 los registros.
 
+El flujo de integración continua ejecuta además los esquemas JSON Schema Draft 2020-12 sobre los
+catálogos públicos y comprueba que `metadata.feature_count` coincida con el número real de elementos:
+
+```bash
+python scripts/validate_geojson_schemas.py
+```
+
 ## Sismicidad reciente
 
 La capa sísmica consulta en tiempo real exclusivamente eventos con tipo `earthquake` mediante el

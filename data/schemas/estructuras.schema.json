@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://henryconteron.github.io/fallas-ecuador/data/schemas/estructuras.schema.json",
+  "$id": "https://henryconteron.github.io/ecuador-vivo/data/schemas/estructuras.schema.json",
   "title": "Indicadores geomorfológicos del atlas Fallas del Ecuador",
   "type": "object",
   "required": ["type", "name", "metadata", "features"],

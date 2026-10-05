@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://henryconteron.github.io/fallas-ecuador/data/schemas/fallas.schema.json",
+  "$id": "https://henryconteron.github.io/ecuador-vivo/data/schemas/fallas.schema.json",
   "title": "Catálogo de fallas activas del Ecuador",
   "description": "Subconjunto ecuatoriano reproducible de GEM GAF-DB; conserva los atributos de origen y declara el alcance de las citas.",
   "type": "object",
