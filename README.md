@@ -10,7 +10,7 @@
 - [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas.
 - [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
 - [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): historias y ejercicios.
-- [Modelos 3D — borrador](https://henryconteron.github.io/ecuador-vivo/modelos.html): subducción conceptual Nazca–Sudamérica con hipocentros del catálogo histórico conservado; relieve sintético y perfiles. No es Slab2 ni una reconstrucción del subsuelo ecuatoriano. [Método y límites](documentation/prototipos-3d-y-navegacion.md).
+- [Modelos 3D — borrador](https://henryconteron.github.io/ecuador-vivo/modelos.html): superficie regional Slab2 (USGS, 2018), incertidumbre e hipocentros del catálogo histórico conservado; relieve sintético separado. No es una reconstrucción del volumen completo de ambas placas. [Método y límites](documentation/prototipos-3d-y-navegacion.md).
 - [Cuaderno de rocas](https://henryconteron.github.io/ecuador-vivo/rocks.html): observación, ejercicios y ficha descargable, en español e inglés.
 - [Cartoteca](https://henryconteron.github.io/ecuador-vivo/geologia.html): filtros, atributos y selección descargable de unidades y hojas del piloto Tena–Archidona.
 - [Laboratorio](https://henryconteron.github.io/ecuador-vivo/laboratorio.html): apertura opcional de GeoLibre externo con datos públicos versionados. No conecta cuentas privadas ni publica aportes automáticamente.

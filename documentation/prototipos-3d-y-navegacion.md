@@ -10,7 +10,7 @@ Malla de 37 × 37 puntos, fórmula sintética reproducible en `assets/js/terrain
 
 ### Nazca y Sudamérica
 
-Geometría deliberadamente **conceptual**, no derivada de Slab2. Entrada simplificada en longitud −80,5°, constante a lo largo de la ventana; profundidad `0.3*d + 0.0007*d²`, donde `d=max(0,(longitud+80.5)*111)` km. Es una función inventada para probar una superficie descendente hacia el este; no describe geometría, velocidad ni espesor reales. No modela espesor continental, astenosfera, deformación, temperatura, fusión, ruptura ni evolución temporal. No ajustar la función para hacer coincidir sismos.
+La primera malla conceptual fue sustituida por un recorte nativo de **Slab2 South America (2018)**, verificado por SHA-256. Se incluyen profundidad e incertidumbre por nodo, descarga y método reproducible. Véase [Slab2: fuentes, transformación y límites](slab2.md). Es una superficie modelada de la placa subducida, no el volumen completo de ambas placas; no representa espesor continental, astenosfera, deformación, temperatura, fusión, ruptura ni evolución temporal.
 
 Los hipocentros sí proceden de la copia USGS ya preservada para [Andes Pulso](../andes-pulso.html): 2661 eventos, M ≥ 4, 1900–2025; ventana −83 a −74,5° y −5,5 a 2,5°, no frontera administrativa. Descargada el 2 de octubre de 2026. Se exige SHA-256 antes de mostrar registros. La escena filtra magnitud mínima, año final y profundidad máxima; omite profundidad ausente, negativa o superior a 700 km. No convierte desconocidos en 0 km. Registro original, fuente y precisiones disponibles: [manifiesto](../data/cases/memoria-sismica-1900-2025/manifest.json). Las profundidades son estimaciones; su calidad, fijación e incertidumbre varían por evento. No se representa aquí una elipse de incertidumbre.
 
@@ -22,7 +22,7 @@ El selector permite revisar cada evento visible sin usar el ratón sobre el lien
 
 1. Relieve: elegir DEM con fuente/licencia, resolución, CRS horizontal y datum vertical; verificar NoData y límites, producir una malla ligera y conservar originales.
 2. Formaciones: revisar CRS y georreferenciación de los archivos del usuario. Una capa de afloramientos no define por sí sola contactos en profundidad.
-3. Subducción: integrar un recorte de [Slab2, Hayes (2018), DOI 10.5066/F7PV6JNV](https://www.usgs.gov/data/slab2-a-comprehensive-subduction-zone-geometry-model), con incertidumbre y cobertura. Sigue siendo un modelo publicado, no una medición directa de toda la placa. Artículo: [Hayes et al., 2018](https://doi.org/10.1126/science.aat4723).
+3. Subducción: recorte Slab2 e incertidumbre ya incorporados. Quedan por mejorar la referencia cartográfica, perfiles seccionales y comparación con modelos regionales. No convertir separación de nodos en una afirmación de exactitud.
 4. Sismos: conservar consulta/fecha, revisar incertidumbres y selección temporal; mantener la distinción entre distribución de hipocentros e interfaz modelada.
 
 ## Navegación y aprendizaje

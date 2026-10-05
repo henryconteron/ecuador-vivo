@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import './test-slab2.mjs';
 import {createTerrain,projectPoint,sectionProfile,modelState} from '../assets/js/terrain-model.js';
-import {hypocenterPoint,conceptualDepth,selectHypocenters,loadHypocenters} from '../assets/js/subduction-model.js';
+import {hypocenterPoint,selectHypocenters,loadHypocenters} from '../assets/js/subduction-model.js';
 const mesh=createTerrain();assert.equal(mesh.length,37);assert.equal(mesh[0].length,37);assert.ok(mesh.flat().every(p=>Number.isFinite(p.z)));
 assert.throws(()=>createTerrain(1000));assert.throws(()=>sectionProfile(mesh,37));
 const profile=sectionProfile(mesh,18);profile[0].z=999;assert.notEqual(mesh[18][0].z,999);
 assert.equal(modelState({exaggeration:99}).exaggeration,4);assert.equal(modelState({yaw:NaN}).yaw,35);
 const p=hypocenterPoint({longitude:-78.75,latitude:-1.5,depth:450});assert.deepEqual(p,{x:0,y:-0,z:-1});
-assert.ok(conceptualDepth(-76)>conceptualDepth(-79));assert.equal(conceptualDepth(-82),0);
 const a=projectPoint({x:1,y:0,z:1},{yaw:0,pitch:0,exaggeration:1}),b=projectPoint({x:1,y:0,z:1},{yaw:0,pitch:0,exaggeration:2});assert.equal(a.y,-1);assert.equal(b.y,-2);
 const bytes=fs.readFileSync('data/cases/memoria-sismica-1900-2025/usgs_snapshot.geojson');const events=await loadHypocenters(async()=>({ok:true,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.length)}));
 assert.equal(events.length,2661);assert.equal(selectHypocenters(events).length,122);

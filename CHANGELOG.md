@@ -1,5 +1,12 @@
 # Registro de cambios
 
+## 2026-10-04 — Superficie Slab2 documentada
+
+- Sustituida la malla inventada por el recorte nativo Slab2 South America 2018, desde la distribución oficial USGS; profundidad, incertidumbre, manifiesto y generación reproducible con originales fijados por SHA-256.
+- Inspección por coordenadas, color por incertidumbre y descarga. Huecos conservados, sin interpolación ni conexión de nodos separados por NoData.
+- Eliminada la división conceptual de superficie en dos placas; el plano tenue solo representa profundidad cero. No se simula el volumen de la placa Sudamericana.
+- Catálogo histórico sin cambios; geometría modelada, incertidumbre de superficie e hipocentros se distinguen explícitamente.
+
 ## 2026-10-04 — Prototipos 3D y navegación compacta
 
 - Escena conceptual Nazca–Sudamérica separada explícitamente de los hipocentros USGS 1900–2025; filtros, profundidades y fichas con comprobación SHA-256 del catálogo conservado. No incorpora Slab2 ni sismos en vivo.

@@ -1,0 +1,29 @@
+{
+  "model": "Slab2 South America 2018-02-23",
+  "citation": "Hayes (2018), doi:10.5066/F7PV6JNV",
+  "article": "https://doi.org/10.1126/science.aat4723",
+  "license": "CC0-1.0",
+  "retrieved_date": "2026-10-04",
+  "source_distribution": "https://apps.usgs.gov/shakemap_geodata/slabs/",
+  "inputs": [
+    {
+      "url": "https://apps.usgs.gov/shakemap_geodata/slabs/sam_slab2_dep_02.23.18.grd",
+      "sha256": "0e09dc45baaf402204bdecbe3254b637e3a8f4818ff23903bf61254de3525257"
+    },
+    {
+      "url": "https://apps.usgs.gov/shakemap_geodata/slabs/sam_slab2_unc_02.23.18.grd",
+      "sha256": "38b27b519c368631e52598708b24012cb0911cecbe0144b593003fb0d45c1dc0"
+    }
+  ],
+  "output": {
+    "path": "ecuador.json",
+    "sha256": "526dbb73b063a1fcf2125850481de0dbc0dac56d80d3d94e5644457cf0d28388",
+    "bytes": 367777
+  },
+  "grid_spacing_degrees": 0.05,
+  "rows": 161,
+  "columns": 171,
+  "finite_depth_nodes": 21849,
+  "method": "Native grid crop; longitude minus 360; negate depth; round km to 0.001; preserve NaN as null. No interpolation or extrapolation.",
+  "limits": "Regional model, not direct observation or a complete plate volume. Grid spacing and decimal precision are not accuracy. Uncertainty is the supplied unc grid, not an asserted 95% interval."
+}
