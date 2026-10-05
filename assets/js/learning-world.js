@@ -66,7 +66,7 @@ export function createLearningWorld(canvas){
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setClearColor('#102b28');
   const scene=new THREE.Scene();scene.add(new THREE.HemisphereLight(0xe5fff4,0x584936,2.5));
   const light=new THREE.DirectionalLight(0xffedcc,3);light.position.set(-3,6,5);scene.add(light);
-  const camera=new THREE.PerspectiveCamera(38,1,.1,100);let yaw=.65,pitch=.5,distance=8.4,root=null,update=()=>{},key='';
+  const camera=new THREE.PerspectiveCamera(38,1,.1,100);let yaw=.65,pitch=.5,distance=9.6,root=null,update=()=>{},key='';
   function dispose(){if(!root)return;const geometries=new Set(),materials=new Set(root.userData.extraMaterials||[]);root.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>materials.add(m));});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}
   function paint(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.set(distance*Math.sin(yaw)*Math.cos(pitch),distance*Math.sin(pitch),distance*Math.cos(yaw)*Math.cos(pitch));camera.lookAt(0,.1,0);renderer.render(scene,camera);}
   return {set(id,state){const next=id+':'+(id==='earth'?state.fault:'');if(next!==key){dispose();key=next;root=new THREE.Group();scene.add(root);update=id==='earth'?fault(root,state.fault):id==='water'?water(root):sky(root);}update(state.progress/100,state);paint();},view(y,p,z){yaw=y;pitch=Math.max(.08,Math.min(1.48,p));distance=Math.max(5.5,Math.min(12,z));paint();},paint,dispose(){dispose();renderer.dispose();}};

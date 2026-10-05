@@ -8,7 +8,7 @@ const states=Object.fromEntries(ids.map(id=>[id,{progress:0,fault:'normal',imper
 let saved={};try{saved=JSON.parse(localStorage.getItem('ev-learning-v1')||'{}')||{};}catch{/* Private browsing remains usable. */}
 const completed=new Set(Array.isArray(saved.completed)?saved.completed.filter(id=>ids.includes(id)):[]),explored=new Set(completed),answers={};
 el('learning-note').value=typeof saved.note==='string'?saved.note.slice(0,4000):'';
-let world=null,worldFailed=false,playing=false,raf=0,lastTime=0,drag=null,view={yaw:.65,pitch:.5,distance:8.4};
+let world=null,worldFailed=false,playing=false,raf=0,lastTime=0,drag=null,view={yaw:.65,pitch:.5,distance:9.6};
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 function persist(){try{localStorage.setItem('ev-learning-v1',JSON.stringify({completed:[...completed],note:el('learning-note').value}));}catch{el('notebook-status').textContent=say('El navegador no permite guardar. Puedes descargar tu cuaderno.','This browser cannot save progress. You can download your notebook.');}}
 function progress(){el('journey-count').textContent=`${completed.size} / 3`;el('journey-progress').value=completed.size;}
