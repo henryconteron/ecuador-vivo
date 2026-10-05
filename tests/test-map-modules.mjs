@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import "./test-map-controllers.mjs";
 
 import { FAULT_METADATA_PROFILES, SOURCE_REGISTRY } from "../assets/js/map/config.js";
-import { buildEarthquakeUrl } from "../assets/js/map/data.js";
+import { buildEarthquakeUrl, fetchJsonWithTimeout, loadGeoJson } from "../assets/js/map/data.js";
 import { filterEarthquakes, normalizeEarthquakeFilters } from "../assets/js/map/seismicity.js";
 import { earthquakeDepthClass, faultStyle } from "../assets/js/map/symbology.js";
 
@@ -16,6 +16,32 @@ assert.equal(queryUrl.searchParams.get("starttime"), "2026-09-04T00:00:00.000Z")
 assert.equal(queryUrl.searchParams.get("endtime"), "2026-09-11T00:00:00.000Z");
 assert.equal(queryUrl.searchParams.get("minmagnitude"), "4.5");
 assert.equal(queryUrl.searchParams.get("eventtype"), "earthquake");
+
+const originalFetch = globalThis.fetch;
+try {
+  globalThis.fetch = async () => ({
+    ok: true,
+    status: 200,
+    async json() {
+      return {
+        type: "FeatureCollection",
+        features: [{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [-78, 0] } }],
+      };
+    },
+  });
+  const loadedFeatures = await loadGeoJson("fixture.geojson", ["Point"], { timeoutMs: 100 });
+  assert.equal(loadedFeatures.length, 1);
+
+  globalThis.fetch = (_url, { signal }) => new Promise((_resolve, reject) => {
+    signal.addEventListener("abort", () => reject(new DOMException("Timed out", "AbortError")), { once: true });
+  });
+  await assert.rejects(
+    fetchJsonWithTimeout("slow.geojson", { timeoutMs: 5 }),
+    (error) => error?.name === "AbortError",
+  );
+} finally {
+  globalThis.fetch = originalFetch;
+}
 
 const earthquake = (depth) => ({
   type: "Feature",

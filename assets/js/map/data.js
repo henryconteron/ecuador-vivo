@@ -36,10 +36,30 @@ export function validateFeatureCollection(data, acceptedGeometry) {
   return data.features;
 }
 
-export async function loadGeoJson(url, acceptedGeometry) {
-  const response = await fetch(url, { cache: "no-store" });
+export async function fetchJsonWithTimeout(
+  url,
+  { timeoutMs = 15000, ...options } = {},
+) {
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return {
+      response,
+      data: response.ok ? await response.json() : null,
+    };
+  } finally {
+    globalThis.clearTimeout(timeout);
+  }
+}
+
+export async function loadGeoJson(url, acceptedGeometry, { timeoutMs = 15000 } = {}) {
+  const { response, data } = await fetchJsonWithTimeout(url, {
+    cache: "no-store",
+    timeoutMs,
+  });
   if (!response.ok) throw new Error(`Could not load ${url} (${response.status})`);
-  return validateFeatureCollection(await response.json(), acceptedGeometry);
+  return validateFeatureCollection(data, acceptedGeometry);
 }
 
 export async function loadRecentEarthquakes({
@@ -47,24 +67,20 @@ export async function loadRecentEarthquakes({
   days = EARTHQUAKE_QUERY.days,
   minimumMagnitude = EARTHQUAKE_QUERY.minimumMagnitude,
 } = {}) {
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const response = await fetch(buildEarthquakeUrl(new Date(), { days, minimumMagnitude }), {
+  const { response, data } = await fetchJsonWithTimeout(
+    buildEarthquakeUrl(new Date(), { days, minimumMagnitude }),
+    {
       cache: "no-store",
       headers: { Accept: "application/geo+json, application/json" },
-      signal: controller.signal,
-    });
-    if (!response.ok) throw new Error(`USGS query failed (${response.status})`);
-    const data = await response.json();
-    const features = validateFeatureCollection(data, ["Point"]).filter(
-      (feature) => Array.isArray(feature.geometry.coordinates) && feature.geometry.coordinates.length >= 2,
-    );
-    return {
-      features,
-      generatedAt: Number(data.metadata?.generated) || Date.now(),
-    };
-  } finally {
-    window.clearTimeout(timeout);
-  }
+      timeoutMs,
+    },
+  );
+  if (!response.ok) throw new Error(`USGS query failed (${response.status})`);
+  const features = validateFeatureCollection(data, ["Point"]).filter(
+    (feature) => Array.isArray(feature.geometry.coordinates) && feature.geometry.coordinates.length >= 2,
+  );
+  return {
+    features,
+    generatedAt: Number(data.metadata?.generated) || Date.now(),
+  };
 }
