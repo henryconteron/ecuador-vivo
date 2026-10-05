@@ -21,7 +21,7 @@ for(const r of studies) for(const id of r.related??[]) assert.ok(datasets.some(d
 assert.ok(filterRecords(datasets,{query:'rios',territory:'napo'}).length);
 assert.equal(filterRecords(datasets,{query:'absentrecord999'}).length,0);
 for(const unsafe of ['javascript:alert(1)','//evil.test','../private','https://x:y@example.com','data:text/html,hi']) assert.equal(safeHref(unsafe),null);
-for(const file of ['index.html','explore.html','learn.html','rocks.html','rivers.html','datos.html','biblioteca.html','andes-pulso.html','geologia.html','laboratorio.html']) {
+for(const file of ['index.html','explore.html','learn.html','rocks.html','rivers.html','datos.html','biblioteca.html','andes-pulso.html','geologia.html','laboratorio.html','georreferenciar.html']) {
   const html=fs.readFileSync(file,'utf8');
   const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
   assert.equal(new Set(ids).size,ids.length,file);

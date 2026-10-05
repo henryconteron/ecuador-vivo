@@ -8,6 +8,8 @@
 
 El georreferenciador de GeoLibre sí está presente en su código y tiene [tutorial oficial](https://www.youtube.com/watch?v=lbioujkDSG0). Esto corrige la revisión inicial que no lo había confirmado. La [documentación de integración](https://geolibre.app/user-guide/embedding/) distingue visor de solo lectura y espacio de edición; este laboratorio abre el espacio editable, no `layout=viewer`. No copiamos código de UGS ni modelos de AuScope: seguimos sus ideas de catálogo por escala y conexión de evidencia.
 
+El [verificador de puntos](../georreferenciar.html) añade un diagnóstico afín local con separación de controles y comprobaciones, ejemplo sintético e informe descargable. No procesa imágenes ni envía archivos a GeoLibre o Drive. [Método y límites](georreferenciacion.md). El mapa municipal de Tena revisado no permite todavía documentar una georreferenciación validada; se prioriza recuperar su archivo original.
+
 ## Drive: depósito, no motor del visor
 
 Drive se utiliza como destino privado de respaldo. La aplicación pública no incorpora IDs de carpetas privadas, claves ni enlaces de sesión. No se modifica la ubicación de exportación de Earth Engine ni se mueven originales existentes.

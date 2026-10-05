@@ -16,6 +16,8 @@
 
 ### Geología y aportes — octubre de 2026
 
+El [verificador de georreferenciación](https://henryconteron.github.io/ecuador-vivo/georreferenciar.html) calcula un diagnóstico afín de puntos, separa ajuste y comprobación y exporta el informe localmente. El ejemplo es sintético; no transforma imágenes ni certifica una hoja real. [Formato y método](documentation/georreferenciacion.md).
+
 Cada sistema del visor desactiva las capas ajenas. «Combinar con otros sistemas» permite habilitar otros controles sin encender sus capas automáticamente. La leyenda sigue únicamente las capas activas.
 
 La integración IIGE incluye un servicio regional externo y una selección reproducible de 56 polígonos y cuatro hojas que intersectan la ventana Tena–Archidona. La escala de las unidades no está documentada en el servicio; el índice de hojas es 1:100 000 y Tena figura «En revisión». Consultar [fuentes, método, límites y condiciones](documentation/geologia-y-aportes.md).

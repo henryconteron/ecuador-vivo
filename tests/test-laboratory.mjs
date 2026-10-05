@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './test-georeference-audit.mjs';
 import fs from 'node:fs';
 import {laboratoryURL, PRESETS} from '../assets/js/laboratory.js';
 import {selectGeology, exportSelection, loadGeology} from '../assets/js/geology-catalog.js';

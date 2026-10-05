@@ -1,5 +1,12 @@
 # Registro de cambios
 
+## 2026-10-04 — Diagnóstico de georreferenciación
+
+- Verificador ES/EN de puntos: ajuste afín, comprobaciones reservadas, residuos y reporte JSON local sin envío de datos.
+- Ejemplo explícitamente sintético que contrasta ajuste de 0 m y comprobaciones de 20 m; no es una hoja validada.
+- Revisión del Mapa 8 del GADM Tena, página 20: sin cuadrícula/escala visible; se prioriza recuperar el vector original mencionado, sin publicar una superposición aproximada.
+- Pruebas numéricas, controles degenerados, coordenadas repetidas, edición e invalidación de informes.
+
 ## 2026-10-04 — Cartoteca y laboratorio externo
 
 - Cartoteca bilingüe con filtros de unidades, litología y estado de hojas IIGE, selección en mapa y exportación GeoJSON con procedencia.

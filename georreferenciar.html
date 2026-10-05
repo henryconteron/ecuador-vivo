@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title data-title-es="Revisar una georreferenciación · Ecuador Vivo" data-title-en="Review georeferencing · Ecuador Vivo">Revisar una georreferenciación · Ecuador Vivo</title>
+  <link rel="stylesheet" href="assets/css/portal.css"><link rel="stylesheet" href="assets/css/laboratory.css">
+  <script type="module" src="assets/js/portal.js"></script><script type="module" src="assets/js/georeference-workbench.js"></script>
+</head>
+<body class="portal">
+<a class="skip-link" href="#content">Saltar / Skip</a>
+<header class="portal-header">
+  <a class="portal-brand" href="index.html" data-keep-lang><span class="portal-mark">EV</span><span>Ecuador Vivo</span></a>
+  <nav class="portal-nav" aria-label="Principal"><a href="laboratorio.html" data-keep-lang data-es="Laboratorio" data-en="Laboratory">Laboratorio</a><a href="geologia.html" data-keep-lang data-es="Cartoteca" data-en="Map library">Cartoteca</a><a href="datos.html" data-keep-lang data-es="Datos" data-en="Data">Datos</a></nav>
+  <button type="button" data-portal-language>EN</button>
+</header>
+<main id="content" class="portal-main">
+  <header class="lab-hero">
+    <p class="eyebrow" data-es="LABORATORIO / CONTROL DE CALIDAD" data-en="LABORATORY / QUALITY CONTROL">LABORATORIO / CONTROL DE CALIDAD</p>
+    <h1 data-es="Puede encajar perfecto. Y estar mal ubicado." data-en="It can fit perfectly. And still be in the wrong place.">Puede encajar perfecto. Y estar mal ubicado.</h1>
+    <p data-es="Tres puntos pueden ajustar un mapa con error cero. La pregunta interesante es otra: ¿qué ocurre en los lugares que no usaste para ajustarlo?" data-en="Three points can fit a map with zero error. The interesting question is different: what happens at locations you did not use for fitting?">Tres puntos pueden ajustar un mapa con error cero. La pregunta interesante es otra: ¿qué ocurre en los lugares que no usaste para ajustarlo?</p>
+    <button id="audit-demo" type="button" class="button" data-es="Probar el ejemplo: 0 m no cuenta toda la historia" data-en="Try the example: 0 m is not the whole story">Probar el ejemplo: 0 m no cuenta toda la historia</button>
+  </header>
+  <p class="notice" data-es="Diagnóstico de transformación afín, no un georreferenciador de imágenes. No crea GeoTIFF, no transforma el CRS ni certifica exactitud. El ejemplo es sintético; no corresponde a Tena ni a una hoja validada." data-en="Affine transformation diagnostic, not an image georeferencer. It does not create GeoTIFFs, transform CRS or certify accuracy. The example is synthetic, not Tena or a validated map sheet.">Diagnóstico de transformación afín, no un georreferenciador de imágenes. No crea GeoTIFF, no transforma el CRS ni certifica exactitud. El ejemplo es sintético; no corresponde a Tena ni a una hoja validada.</p>
+  <section class="lab-steps">
+    <article><p class="eyebrow">01</p><h2 data-es="Ajustar" data-en="Fit">Ajustar</h2><p data-es="Los puntos control calculan la transformación entre píxeles y coordenadas UTM. Distribúyelos por toda la imagen, no solo en una esquina." data-en="Control points calculate the transformation between pixels and UTM coordinates. Spread them across the image, not just one corner.">Los puntos control calculan la transformación entre píxeles y coordenadas UTM. Distribúyelos por toda la imagen, no solo en una esquina.</p></article>
+    <article><p class="eyebrow">02</p><h2 data-es="Comprobar aparte" data-en="Check separately">Comprobar aparte</h2><p data-es="Reserva puntos check antes del ajuste. No participan en el cálculo. Usa referencias de calidad conocida; no los elijas después para mejorar el resultado." data-en="Reserve check points before fitting. They do not participate in the calculation. Use references of known quality; do not choose them afterwards to improve the result.">Reserva puntos check antes del ajuste. No participan en el cálculo. Usa referencias de calidad conocida; no los elijas después para mejorar el resultado.</p></article>
+    <article><p class="eyebrow">03</p><h2 data-es="Documentar límites" data-en="Document limits">Documentar límites</h2><p data-es="El RMSE resume las distancias entre posición calculada y referencia. Está en metros del CRS proyectado; no es un intervalo de confianza ni una garantía de precisión en campo." data-en="RMSE summarizes distances between calculated and reference positions. It is in projected CRS metres; it is not a confidence interval or a guarantee of field accuracy.">El RMSE resume las distancias entre posición calculada y referencia. Está en metros del CRS proyectado; no es un intervalo de confianza ni una garantía de precisión en campo.</p></article>
+  </section>
+  <section class="lab-panel" aria-labelledby="audit-heading">
+    <h2 id="audit-heading" data-es="Revisa tus puntos" data-en="Review your points">Revisa tus puntos</h2>
+    <p data-es="Solo WGS 84 / UTM 17S o 18S, con Este/Norte en metros. No se aceptan grados ni PSAD56 como si fueran WGS84. Formato JSON propio: no es una importación directa de archivos de puntos de QGIS o GeoLibre." data-en="Only WGS 84 / UTM 17S or 18S, with Easting/Northing in metres. Do not treat degrees or PSAD56 as WGS84. Custom JSON format: not a direct import of QGIS or GeoLibre point files.">Solo WGS 84 / UTM 17S o 18S, con Este/Norte en metros. No se aceptan grados ni PSAD56 como si fueran WGS84. Formato JSON propio: no es una importación directa de archivos de puntos de QGIS o GeoLibre.</p>
+    <label for="audit-file" data-es="Abrir JSON local (máximo 256 KB / 200 puntos)" data-en="Open local JSON (maximum 256 KB / 200 points)">Abrir JSON local (máximo 256 KB / 200 puntos)</label>
+    <input id="audit-file" type="file" accept=".json,application/json">
+    <label for="audit-json" data-es="Puntos y procedencia · puedes editar el ejemplo" data-en="Points and provenance · you can edit the example">Puntos y procedencia · puedes editar el ejemplo</label>
+    <textarea id="audit-json" class="audit-editor" rows="12" spellcheck="false" aria-describedby="audit-privacy"></textarea>
+    <p id="audit-privacy" class="lab-small" data-es="El cálculo ocurre en tu navegador. No se sube el archivo ni se guarda automáticamente; al recargar se pierde. Los informes descargados contienen las coordenadas que ingresaste: revísalos antes de compartir." data-en="Calculation runs in your browser. The file is not uploaded or automatically saved; reloading clears it. Downloaded reports contain your input coordinates: review them before sharing.">El cálculo ocurre en tu navegador. No se sube el archivo ni se guarda automáticamente; al recargar se pierde. Los informes descargados contienen las coordenadas que ingresaste: revísalos antes de compartir.</p>
+    <div class="lab-actions">
+      <button id="audit-run" type="button" class="button" data-es="Calcular diagnóstico" data-en="Calculate diagnostic">Calcular diagnóstico</button>
+      <button id="audit-template" type="button" class="button button-secondary" data-es="Descargar ejemplo JSON" data-en="Download JSON example">Descargar ejemplo JSON</button>
+      <button id="audit-export" type="button" class="button button-secondary" disabled data-es="Descargar informe" data-en="Download report">Descargar informe</button>
+      <button id="audit-clear" type="button" class="button button-secondary" data-es="Vaciar" data-en="Clear">Vaciar</button>
+    </div>
+    <p id="audit-status" role="status" aria-live="polite"></p>
+  </section>
+  <section id="audit-results" hidden tabindex="-1" aria-labelledby="results-heading">
+    <h2 id="results-heading" data-es="Dos errores, dos preguntas" data-en="Two errors, two questions">Dos errores, dos preguntas</h2>
+    <div class="audit-metrics">
+      <article class="lab-panel"><h3 data-es="RMSE del ajuste" data-en="Fitting RMSE">RMSE del ajuste</h3><p class="audit-value" id="audit-fit"></p><p data-es="¿Qué tan bien encaja con los puntos utilizados?" data-en="How well does it fit the points used?">¿Qué tan bien encaja con los puntos utilizados?</p></article>
+      <article class="lab-panel"><h3 data-es="RMSE de comprobación" data-en="Check-point RMSE">RMSE de comprobación</h3><p class="audit-value" id="audit-check"></p><p data-es="¿Qué pasa en los puntos reservados?" data-en="What happens at reserved points?">¿Qué pasa en los puntos reservados?</p></article>
+    </div>
+    <ul id="audit-warnings" class="notice"></ul>
+    <div class="audit-table-wrap" tabindex="0" role="region" aria-label="Residuos por punto / Point residuals">
+      <table class="audit-table"><caption data-es="Residuos: posición calculada menos referencia; distancia = √(ΔE² + ΔN²)." data-en="Residuals: calculated position minus reference; distance = √(ΔE² + ΔN²).">Residuos: posición calculada menos referencia; distancia = √(ΔE² + ΔN²).</caption><thead><tr><th scope="col">ID</th><th scope="col" data-es="Rol" data-en="Role">Rol</th><th scope="col">ΔE (m)</th><th scope="col">ΔN (m)</th><th scope="col" data-es="Distancia (m)" data-en="Distance (m)">Distancia (m)</th></tr></thead><tbody id="audit-rows"></tbody></table>
+    </div>
+  </section>
+  <section class="lab-panel audit-review"><p class="eyebrow" data-es="CASO REAL / REVISIÓN DE FUENTE" data-en="REAL CASE / SOURCE REVIEW">CASO REAL / REVISIÓN DE FUENTE</p>
+    <h2 data-es="Tena: primero recuperar el original" data-en="Tena: recover the original first">Tena: primero recuperar el original</h2>
+    <p data-es="El Mapa 8 municipal (página 20) atribuye su elaboración a junio de 2014 y cita cartas de 1986. La página no muestra cuadrícula de coordenadas ni escala; menciona un archivo shapefile adjunto que no hemos recuperado. No georreferenciamos esta imagen a ojo ni la publicamos como capa actual." data-en="Municipal Map 8 (page 20) dates its preparation to June 2014 and cites 1986 sheets. The page shows no coordinate grid or scale; it mentions an attached shapefile we have not recovered. We do not fit this image by eye or publish it as a current layer.">El Mapa 8 municipal (página 20) atribuye su elaboración a junio de 2014 y cita cartas de 1986. La página no muestra cuadrícula de coordenadas ni escala; menciona un archivo shapefile adjunto que no hemos recuperado. No georreferenciamos esta imagen a ojo ni la publicamos como capa actual.</p>
+    <a href="https://tena.gob.ec/images/sampledata/PDF/PLANACTUALIZADO/normativa.pdf#page=20" target="_blank" rel="noopener noreferrer" data-es="Consultar documento municipal original ↗" data-en="Consult original municipal document ↗">Consultar documento municipal original ↗</a>
+  </section>
+  <p class="lab-source"><a href="documentation/georreferenciacion.md" data-es="Formato, método y límites" data-en="Format, method and limitations">Formato, método y límites</a> · <a href="https://docs.qgis.org/3.44/es/docs/user_manual/working_with_raster/georeferencer.html" target="_blank" rel="noopener noreferrer" data-es="Guía de QGIS" data-en="QGIS guide">Guía de QGIS</a></p>
+</main><footer class="portal-footer">Henry P. Conteron Moreta · Ecuador Vivo</footer>
+</body></html>
