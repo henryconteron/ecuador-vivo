@@ -4,7 +4,7 @@ import {
   HILLSHADE,
   SOURCE_REGISTRY,
 } from "./map/config.js";
-import { loadGeoJson, loadRecentEarthquakes } from "./map/data.js";
+import { loadGeoJson } from "./map/data.js";
 import { BASIN_SOURCE, basinWmsOptions, queryBasinAtPoint } from "./map/basins.js";
 import {
   earthquakeColor,
@@ -14,7 +14,6 @@ import {
   faultStyle,
   movementOf,
 } from "./map/symbology.js";
-import { filterEarthquakes, normalizeEarthquakeFilters } from "./map/seismicity.js";
 import {
   createEarthquakePopup as buildEarthquakePopup,
   createEvidencePopup as buildEvidencePopup,
@@ -59,6 +58,7 @@ import {mountGeology} from "./map/geology.js";
 import {mountLocalData} from "./map/local-data.js";
 import { normalizeThermalDate, thermalDateRange, THERMAL_SOURCE, thermalWmsOptions } from "./map/thermal.js";
 import { createWmsLayerController } from "./map/wms-layer.js";
+import { createEarthquakePanel } from "./map/earthquake-panel.js";
 import { catalogKey, createTextTools, normalize } from "./map/utils.js";
 
 const mapElement = document.querySelector("#map");
@@ -338,12 +338,6 @@ function initializeAtlas() {
 
   let catalog = [];
   let evidenceCatalog = [];
-  let earthquakeCatalog = [];
-  let visibleEarthquakeCatalog = [];
-  let earthquakeGeneratedAt = null;
-  let earthquakeState = "loading";
-  let earthquakeRequestId = 0;
-  let earthquakeAttributionAdded = false;
   let selectedFeature = null;
   let selectedPoint = null;
   let placeMode = false;
@@ -736,7 +730,7 @@ function initializeAtlas() {
     }
 
     const closestEarthquake = map.hasLayer(earthquakeLayer)
-      ? nearestFeature(selectedPoint, visibleEarthquakeCatalog)
+      ? nearestFeature(selectedPoint, earthquakePanel.getVisibleCatalog())
       : {};
     if (closestEarthquake.feature) {
       const properties = closestEarthquake.feature.properties ?? {};
@@ -745,7 +739,7 @@ function initializeAtlas() {
         properties.place || t("value.unavailable"),
         `${formatApproximateDistance(closestEarthquake.distanceKm)} · ${template("place.magnitude", { magnitude: formatNumber(properties.mag) })}`,
       ));
-    } else if (earthquakeState === "loading" && elements.earthquakeToggle.checked) {
+    } else if (earthquakePanel.getState() === "loading" && elements.earthquakeToggle.checked) {
       elements.placeResults.append(createPlaceResult(
         t("place.nearestEarthquake"),
         t("place.waitingEarthquakes"),
@@ -889,6 +883,17 @@ function initializeAtlas() {
       const magnitude = formatNumber(feature.properties?.mag);
       layer.bindTooltip(`M ${magnitude}`, { direction: "top", offset: [0, -4] });
     },
+  });
+
+  const earthquakePanel = createEarthquakePanel(map, earthquakeLayer, elements, {
+    t,
+    template,
+    formatNumber,
+    formatUtcDate,
+    updateLegendVisibility: () => updateLegendVisibility(),
+    updateSourceCount: () => updateSourceCount(),
+    getSelectedPoint: () => selectedPoint,
+    renderPlaceExplanation: () => renderPlaceExplanation()
   });
 
   function updateLegendVisibility() {
@@ -1072,101 +1077,7 @@ function initializeAtlas() {
     if (selectedPoint) renderPlaceExplanation();
   }
 
-  function getEarthquakeFilters() {
-    return normalizeEarthquakeFilters({
-      days: elements.earthquakeDays.value,
-      minimumMagnitude: elements.earthquakeMinimumMagnitude.value,
-      depth: elements.earthquakeDepthFilter.value,
-    });
-  }
 
-  function locateEarthquake(feature) {
-    elements.earthquakeToggle.checked = true;
-    if (!map.hasLayer(earthquakeLayer)) earthquakeLayer.addTo(map);
-    updateLegendVisibility();
-    const [longitude, latitude] = feature.geometry.coordinates;
-    map.setView([latitude, longitude], Math.max(map.getZoom(), 9));
-    earthquakeLayer.eachLayer((layer) => {
-      if (layer.feature === feature) layer.openPopup();
-    });
-    if (window.matchMedia("(max-width: 64rem)").matches) {
-      mapElement.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start",
-      });
-    }
-  }
-
-  function renderEarthquakeList(features) {
-    elements.earthquakeList.replaceChildren();
-    elements.earthquakeListCount.textContent = String(features.length);
-    if (features.length === 0) {
-      const empty = document.createElement("li");
-      empty.className = "earthquake-list-empty";
-      empty.textContent = t("earthquakes.listEmpty");
-      elements.earthquakeList.append(empty);
-      return;
-    }
-    const maximumListedEvents = 200;
-    features.slice(0, maximumListedEvents).forEach((feature) => {
-      const properties = feature.properties ?? {};
-      const depth = Number(feature.geometry.coordinates?.[2]);
-      const item = document.createElement("li");
-      const button = document.createElement("button");
-      const title = document.createElement("strong");
-      const detail = document.createElement("small");
-      button.type = "button";
-      title.textContent = `M ${formatNumber(properties.mag)} · ${properties.place || t("value.unavailable")}`;
-      detail.textContent = `${formatUtcDate(properties.time)} · ${t("popup.depth")} ${
-        Number.isFinite(depth) ? `${formatNumber(depth)} km` : t("value.unavailable")
-      }`;
-      button.append(title, detail);
-      button.addEventListener("click", () => locateEarthquake(feature));
-      item.append(button);
-      elements.earthquakeList.append(item);
-    });
-    if (features.length > maximumListedEvents) {
-      const limitNotice = document.createElement("li");
-      limitNotice.className = "earthquake-list-empty";
-      limitNotice.textContent = template("earthquakes.listLimited", {
-        shown: maximumListedEvents,
-        total: features.length,
-      });
-      elements.earthquakeList.append(limitNotice);
-    }
-  }
-
-  function updateEarthquakeStatus() {
-    elements.earthquakeStatus.dataset.state = earthquakeState;
-    if (earthquakeState === "loading") {
-      elements.earthquakeStatus.textContent = t("earthquakes.loading");
-      return;
-    }
-    if (earthquakeState === "error") {
-      elements.earthquakeStatus.textContent = t("earthquakes.error");
-      return;
-    }
-    elements.earthquakeStatus.textContent = template("earthquakes.loaded", {
-      count: visibleEarthquakeCatalog.length,
-      date: formatUtcDate(earthquakeGeneratedAt),
-    });
-  }
-
-  function renderEarthquakes() {
-    visibleEarthquakeCatalog = filterEarthquakes(earthquakeCatalog, getEarthquakeFilters());
-    earthquakeLayer.clearLayers();
-    earthquakeLayer.addData({ type: "FeatureCollection", features: visibleEarthquakeCatalog });
-    elements.earthquakeCount.textContent = String(visibleEarthquakeCatalog.length);
-    elements.earthquakeToggle.disabled = earthquakeState !== "loaded";
-    if (earthquakeState === "error") elements.earthquakeToggle.checked = false;
-    if (elements.earthquakeToggle.checked && !map.hasLayer(earthquakeLayer)) earthquakeLayer.addTo(map);
-    if (!elements.earthquakeToggle.checked && map.hasLayer(earthquakeLayer)) map.removeLayer(earthquakeLayer);
-    updateLegendVisibility();
-    renderEarthquakeList(visibleEarthquakeCatalog);
-    updateEarthquakeStatus();
-    updateSourceCount();
-    if (selectedPoint) renderPlaceExplanation();
-  }
 
   function updateSourceCount() {
     const sources = new Set(
@@ -1174,7 +1085,7 @@ function initializeAtlas() {
         .map((feature) => feature.properties?.fuente)
         .filter((value) => typeof value === "string" && value.trim() !== ""),
     );
-    if (earthquakeCatalog.length > 0) sources.add("USGS");
+    if (earthquakePanel.hasData()) sources.add("USGS");
     if (map.hasLayer(hillshadeLayer)) sources.add("Esri World Hillshade");
     if (geology?.isActive()) sources.add("IIGE");
     if (map.hasLayer(basinLayer)) sources.add("INAMHI / MAATE");
@@ -1188,37 +1099,6 @@ function initializeAtlas() {
     if (map.hasLayer(cloudFractionLayer)) sources.add("NASA Aqua MODIS / GIBS");
     if (map.hasLayer(floodLayer)) sources.add("NASA LANCE VIIRS / GIBS");
     elements.sourceCount.textContent = String(sources.size);
-  }
-
-  async function loadEarthquakeData() {
-    const requestId = ++earthquakeRequestId;
-    const filters = getEarthquakeFilters();
-    earthquakeState = "loading";
-    elements.earthquakeToggle.disabled = true;
-    updateEarthquakeStatus();
-    try {
-      const result = await loadRecentEarthquakes({
-        days: filters.days,
-        minimumMagnitude: filters.minimumMagnitude,
-      });
-      if (requestId !== earthquakeRequestId) return;
-      earthquakeCatalog = result.features;
-      earthquakeGeneratedAt = result.generatedAt;
-      earthquakeState = "loaded";
-      if (!earthquakeAttributionAdded) {
-        map.attributionControl.addAttribution(
-          'Earthquake data: <a href="https://earthquake.usgs.gov/earthquakes/search/" target="_blank" rel="noopener">USGS</a>',
-        );
-        earthquakeAttributionAdded = true;
-      }
-    } catch (error) {
-      if (requestId !== earthquakeRequestId) return;
-      console.error(error);
-      earthquakeCatalog = [];
-      earthquakeGeneratedAt = null;
-      earthquakeState = "error";
-    }
-    renderEarthquakes();
   }
 
   async function loadAtlasData() {
@@ -1597,11 +1477,11 @@ function initializeAtlas() {
     updateLegendVisibility();
     if (selectedPoint) renderPlaceExplanation();
   });
-  elements.earthquakeDays.addEventListener("change", loadEarthquakeData);
+  elements.earthquakeDays.addEventListener("change", earthquakePanel.loadEarthquakeData);
   elements.earthquakeMinimumMagnitude.addEventListener("input", updateMinimumMagnitudeValue);
-  elements.earthquakeMinimumMagnitude.addEventListener("change", loadEarthquakeData);
+  elements.earthquakeMinimumMagnitude.addEventListener("change", earthquakePanel.loadEarthquakeData);
   elements.earthquakeDepthFilter.addEventListener("change", () => {
-    if (earthquakeState === "loaded") renderEarthquakes();
+    if (earthquakePanel.getState() === "loaded") earthquakePanel.renderEarthquakes();
   });
   elements.search.addEventListener("input", renderCatalog);
   elements.movement.addEventListener("change", renderCatalog);
@@ -1636,17 +1516,17 @@ function initializeAtlas() {
     renderCatalog();
     renderEvidence();
     updateMinimumMagnitudeValue();
-    if (earthquakeState === "loaded") renderEarthquakes();
-    else updateEarthquakeStatus();
+    if (earthquakePanel.getState() === "loaded") earthquakePanel.renderEarthquakes();
+    else earthquakePanel.updateStatus();
     updateBasinStatus();
     if (stationState === "loaded") renderStations();
     else updateStationStatus();
     updateStationRetrievedAt();
-    updatePrecipitationStatus();
-    updateAirTemperatureStatus();
-    updateCloudFractionStatus();
-    updateFloodStatus();
-    updateThermalStatus();
+    precipitationController.updateStatus();
+    airTemperatureController.updateStatus();
+    cloudFractionController.updateStatus();
+    floodController.updateStatus();
+    thermalController.updateStatus();
     updateLegendVisibility();
     renderSystemView();
     setRegionFocus(regionFocus, { fit: false });
@@ -1711,6 +1591,6 @@ function initializeAtlas() {
   applySystemScope(activeSystem, combinedSystems);
   renderSystemView();
   loadAtlasData();
-  loadEarthquakeData();
+  earthquakePanel.loadEarthquakeData();
   loadStationData();
 }

@@ -33,6 +33,7 @@ export function createWmsLayerController(map, layer, { statusEl, dateEl, i18nPre
   });
 
   layer.on("tileerror", () => {
+    if (!map.hasLayer(layer)) return;
     tileErrors++;
     if (tileErrors >= 2) {
       state = "error";
