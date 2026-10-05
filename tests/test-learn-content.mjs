@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-const markup = fs.readFileSync("learn.html", "utf8");
+// Preserved documentary reading route: still audit its figures and citations.
+const markup = fs.readFileSync("lecturas.html", "utf8");
 const learnScript = fs.readFileSync("assets/js/learn.js", "utf8");
 
 for (const story of ["earth", "water", "sky"]) {

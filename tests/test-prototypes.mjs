@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import './test-slab2.mjs';
+import './test-learning-studio.mjs';
 import {createTerrain,projectPoint,sectionProfile,modelState} from '../assets/js/terrain-model.js';
 import {hypocenterPoint,selectHypocenters,loadHypocenters} from '../assets/js/subduction-model.js';
 const mesh=createTerrain();assert.equal(mesh.length,37);assert.equal(mesh[0].length,37);assert.ok(mesh.flat().every(p=>Number.isFinite(p.z)));

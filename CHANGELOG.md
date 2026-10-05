@@ -1,5 +1,14 @@
 # Registro de cambios
 
+## 2026-10-04 — Aprender haciendo
+
+- Nuevo recorrido principal ES/EN: tres modelos 3D manipulables de cinemática de fallas, reparto didáctico de lluvia y condensación orográfica; preguntas, misiones y retos con explicación de cada respuesta.
+- Animación voluntaria con pausa, posiciones antes/durante/después, cámara accesible, movimiento reducido y alternativa textual si WebGL2 no está disponible.
+- Progreso y cuaderno guardados únicamente en el navegador, con exportación Markdown; sin cuenta ni envío de notas.
+- Fuentes USGS/NOAA y supuestos de cada modelo visibles. Las cifras del balance de agua y el umbral de nube son didácticos, no mediciones ni pronósticos.
+- Lecturas y figuras anteriores preservadas en `lecturas.html`; enlaces de biblioteca actualizados y compatibilidad de enlaces profundos.
+- Three.js r180 local con licencia MIT y procedencia verificada, sin scripts externos de CDN.
+
 ## 2026-10-04 — Superficie Slab2 documentada
 
 - Sustituida la malla inventada por el recorte nativo Slab2 South America 2018, desde la distribución oficial USGS; profundidad, incertidumbre, manifiesto y generación reproducible con originales fijados por SHA-256.

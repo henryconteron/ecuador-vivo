@@ -190,7 +190,7 @@
         "fallas-gem",
         "geomorfologia"
       ],
-      "reading": "learn.html#ref-baize-2020"
+      "reading": "lecturas.html#ref-baize-2020"
     },
     {
       "id": "baize-2015",
@@ -233,7 +233,7 @@
       "related": [
         "geomorfologia"
       ],
-      "reading": "learn.html#ref-baize-2015",
+      "reading": "lecturas.html#ref-baize-2015",
       "image": "assets/images/education/riobamba-lican-scarp-1287.webp",
       "image_caption": {
         "es": "Baize et al. (2015), fig. 6C · escarpe Riobamba–Licán. Reproducción con permiso declarado por el autor del proyecto.",
@@ -282,7 +282,7 @@
         "fallas-gem",
         "geomorfologia"
       ],
-      "reading": "learn.html#ref-eguez-2003"
+      "reading": "lecturas.html#ref-eguez-2003"
     }
   ]
 }

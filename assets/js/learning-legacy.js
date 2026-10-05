@@ -1,0 +1,4 @@
+// Keep published deep links to evidence and bibliography usable after redesign.
+const legacyIds=new Set(["learn-content","biblioteca","brief-title","library-title","choice-earth","choice-water","choice-sky","story-earth","observar","fundamentos","movimientos","sismo","paleosismologia","caso-ecuador","tecnicas-de-estudio","laboratorio","field-lab-title","ref-cornejo-2024","ref-papanikolaou-2015","ref-mccalpin-2009","ref-tarbuck","ref-usgs-paleo","ref-usgs-rupture","ref-baize-2015","ref-baize-2020","ref-eguez-2003","story-water","waterStory-check-title","waterStory-sources","story-sky","skyStory-check-title","skyStory-sources"]);
+let hash='';try{hash=decodeURIComponent(location.hash.slice(1));}catch{/* Ignore malformed fragment escapes. */}
+if(legacyIds.has(hash)&&!document.getElementById(hash))location.replace('lecturas.html'+location.search+location.hash);

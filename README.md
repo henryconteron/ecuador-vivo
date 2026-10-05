@@ -9,7 +9,8 @@
 - [Datos](https://henryconteron.github.io/ecuador-vivo/datos.html): archivos, derivados y servicios externos, claramente diferenciados.
 - [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas.
 - [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
-- [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): historias y ejercicios.
+- [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): tres experiencias 3D ES/EN con modelos didácticos de fallas, lluvia e infiltración y ascenso orográfico; retos con retroalimentación y cuaderno local. [Fuentes, método y límites](documentation/aprender-3d.md).
+- [Lecturas documentadas](https://henryconteron.github.io/ecuador-vivo/lecturas.html): historias anteriores, figuras atribuidas, evidencia de campo y bibliografía preservadas para profundizar.
 - [Modelos 3D — borrador](https://henryconteron.github.io/ecuador-vivo/modelos.html): superficie regional Slab2 (USGS, 2018), incertidumbre e hipocentros del catálogo histórico conservado; relieve sintético separado. No es una reconstrucción del volumen completo de ambas placas. [Método y límites](documentation/prototipos-3d-y-navegacion.md).
 - [Cuaderno de rocas](https://henryconteron.github.io/ecuador-vivo/rocks.html): observación, ejercicios y ficha descargable, en español e inglés.
 - [Cartoteca](https://henryconteron.github.io/ecuador-vivo/geologia.html): filtros, atributos y selección descargable de unidades y hojas del piloto Tena–Archidona.
