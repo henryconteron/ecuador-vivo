@@ -7,6 +7,7 @@
 .topbar .main-nav a:hover { color:#e0edbd; background:transparent; }
 .topbar .project-status { display:none; }
 @media(max-width:1150px) { .topbar { flex-wrap:wrap; } .topbar .brand { flex:1; } .topbar .main-nav { order:3; width:100%; overflow:auto; justify-content:space-between; } .topbar .brand-copy small { display:none; } .topbar .main-nav a { font-size:.8rem; } }
+@media(max-width:30rem){.topbar .main-nav{gap:.2rem;justify-content:space-between;overflow-x:auto;scrollbar-width:none}.topbar .main-nav::-webkit-scrollbar{display:none}.topbar .main-nav a{padding:.6rem .15rem;font-size:.72rem}}
 /* An explicit cross-system choice, never an implicit pile of overlays. */
 .system-combine{margin-top:1rem;padding:1rem;border:1px solid #425752;border-radius:12px}
 .system-combine summary{cursor:pointer;color:#c6df7e;font-weight:600}

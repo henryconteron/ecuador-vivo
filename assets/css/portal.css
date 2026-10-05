@@ -19,5 +19,9 @@
 @media(max-width:1050px){.portal-header{flex-wrap:wrap;gap:.8rem 1rem}.portal-brand{flex:1}.portal-nav{order:3;width:100%;justify-content:space-between;overflow:auto}.home-hero-inner{grid-template-columns:1fr 1.1fr}}
 @media(max-width:650px){.portal-header{padding:.9rem 1rem}.portal-brand{font-size:1.5rem}.portal-nav{gap:1.1rem}.portal-nav a{font-size:.83rem}.home-hero-inner{grid-template-columns:1fr;padding:1.8rem 1.2rem}.home-hero h1{max-width:15ch;font-size:3.15rem}.home-visual{height:340px}.home-actions{margin-top:1.4rem}.topic-strip a{flex-direction:column;gap:.4rem;font-size:1.05rem}.topic-strip svg{width:25px;height:25px}.home-paths{grid-template-columns:1fr;gap:2rem}.home-paths article,.home-paths article+article{padding:0;border:0}.home-paths article+article{border-top:1px solid var(--portal-line);padding-top:1.5rem}.portal-footer{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.portal *,.portal *::before,.portal *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+.portal :is(button,.button,.topic-strip a,.quick-launch a){transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,box-shadow 160ms ease,transform 160ms cubic-bezier(.25,1,.5,1)}
+@media(hover:hover) and (pointer:fine){.portal :is(button,.button,.quick-launch a):hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 16px rgba(16,43,40,.14)}}
+.portal :is(button,.button):active:not(:disabled){transform:translateY(1px);transition-duration:60ms}
 .portal .home-hero .button-secondary{color:var(--paper);border-color:var(--sage)}
 

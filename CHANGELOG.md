@@ -9,6 +9,8 @@
 - Solicitudes GeoJSON con tiempo límite y errores explícitos, sin dejar la interfaz esperando de
   forma indefinida.
 - Arquitectura del visor y reglas para incorporar capas documentadas para revisión externa.
+- Tipografía DM Sans/Newsreader unificada en el visor, microinteracciones compatibles con movimiento
+  reducido, barras de desplazamiento integradas y estado inicial más claro en el laboratorio.
 
 ## 2026-10-04 — Aprender haciendo
 

@@ -24,4 +24,5 @@ assert.equal((await loadGeology(fetcher)).collections['tena-units'].features.len
 await assert.rejects(loadGeology(async path=>path.endsWith('.geojson')?{ok:true,arrayBuffer:async()=>new Uint8Array([1]).buffer}:fetcher(path)));
 const lab=fs.readFileSync('laboratorio.html','utf8');assert.ok(!lab.includes('<iframe'),'external service is opt-in, not eagerly embedded');
 assert.ok(!lab.includes('drive.google.com/drive/folders/'),'no private folder IDs in public HTML');
+const labScript=fs.readFileSync('assets/js/laboratory.js','utf8');assert.match(labScript,/lab-stop'\)\.disabled=!active/,'close action must reflect the inactive state');
 console.log('Laboratory: pinned public sources, opt-in embed, geology filters, exports and integrity passed.');

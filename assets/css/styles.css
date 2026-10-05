@@ -10,7 +10,7 @@
   --focus: #7dd3fc;
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .regional-focus { margin-bottom: 1.6rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
@@ -48,7 +48,7 @@
 .imagery-dialog::backdrop { background: #050d0ae6; backdrop-filter: blur(5px); }
 .imagery-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 .imagery-header .eyebrow { color: #a7d0bb; margin: 0 0 0.4rem; font-size: 0.7rem; }
-.imagery-header h2 { font-family: Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.8rem); font-weight: 400; margin: 0; line-height: 1.1; }
+.imagery-header h2 { font-family: "Newsreader", Georgia, serif; font-size: clamp(1.65rem, 3vw, 2.8rem); font-weight: 400; margin: 0; line-height: 1.1; }
 .imagery-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 .imagery-actions button { padding: 0.6rem 0.7rem; border: 1px solid #547767; border-radius: 0.5rem; background: #23382f; color: #fff; cursor: pointer; }
 .imagery-lead { max-width: 70ch; color: #bccdc4; line-height: 1.6; font-size: 0.95rem; }
@@ -82,7 +82,7 @@
 #imagery-legend i { width: 0.8rem; height: 0.8rem; border: 1px solid #a3b6aa; border-radius: 2px; }
 .spectral-invitation { background: linear-gradient(135deg, #172e36, #142521); border-color: #4d7275; }
 .spectral-invitation .eyebrow { color: #a9d5d5; font-size: 0.67rem; }
-.spectral-invitation h3 { margin: 0.65rem 0 0.4rem; font-family: Georgia, serif; font-size: 1.4rem; font-weight: 400; }
+.spectral-invitation h3 { margin: 0.65rem 0 0.4rem; font-family: "Newsreader", Georgia, serif; font-size: 1.4rem; font-weight: 400; }
 .spectral-invitation > p { color: #b7cdca; font-size: 0.8rem; line-height: 1.6; }
 .spectral-invitation > button { border: 1px solid #648f85; border-radius: 0.45rem; padding: 0.65rem 0.8rem; background: #24453c; color: #edf9f4; font: inherit; font-size: 0.82rem; cursor: pointer; }
 .spectral-controls { display: flex; flex-wrap: wrap; gap: 0.8rem 1.4rem; align-items: end; border-block: 1px solid #345149; padding-block: 1rem; }
@@ -206,6 +206,41 @@ button,
 input,
 select {
   font: inherit;
+}
+
+button,
+.layer-switch,
+.main-nav a,
+.learn-link {
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(
+    .map-title button,
+    .regional-focus button,
+    .system-grid button,
+    .fault-list button,
+    .imagery-actions button,
+    .spectral-modes button,
+    .spectral-invitation > button,
+    .spectral-map-toolbar button,
+    .language-toggle,
+    .share-toggle
+  ):hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(110, 231, 200, 0.12);
+  }
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+  transition-duration: 60ms;
 }
 
 button,
@@ -341,6 +376,30 @@ select:focus-visible,
   background: var(--panel);
 }
 
+:is(.sidebar, .legend, .place-explainer, .imagery-dialog, #rivers-toolbar) {
+  scrollbar-width: thin;
+  scrollbar-color: #526168 rgba(12, 20, 23, 0.72);
+}
+
+:is(.sidebar, .legend, .place-explainer, .imagery-dialog, #rivers-toolbar)::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+:is(.sidebar, .legend, .place-explainer, .imagery-dialog, #rivers-toolbar)::-webkit-scrollbar-track {
+  background: rgba(12, 20, 23, 0.72);
+}
+
+:is(.sidebar, .legend, .place-explainer, .imagery-dialog, #rivers-toolbar)::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(12, 20, 23, 0.72);
+  border-radius: 999px;
+  background: #526168;
+}
+
+:is(.sidebar, .legend, .place-explainer, .imagery-dialog, #rivers-toolbar)::-webkit-scrollbar-thumb:hover {
+  background: #71858b;
+}
+
 .eyebrow {
   margin: 0 0 0.55rem;
   color: #ff8a7d;
@@ -353,7 +412,7 @@ select:focus-visible,
 .intro h1 {
   max-width: 17ch;
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: clamp(1.75rem, 3vw, 2.35rem);
   font-weight: 500;
   line-height: 1.06;
@@ -385,7 +444,7 @@ select:focus-visible,
 }
 
 .summary-grid strong {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 1.75rem;
   font-weight: 500;
 }
@@ -547,9 +606,10 @@ select:focus-visible,
   z-index: 500;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 0.65rem;
-  background: rgba(13, 21, 24, 0.92);
+  background: rgba(13, 21, 24, 0.86);
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .map-title {
@@ -779,7 +839,7 @@ footer {
 .station-popup h3 {
   margin: 0;
   color: #10272a;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 1.15rem;
 }
 
@@ -1451,7 +1511,7 @@ footer {
   min-height: 2rem;
   cursor: pointer;
   color: #ffd0c9;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 0.84rem;
 }
 
@@ -2042,7 +2102,7 @@ footer {
 
 .system-grid i {
   color: var(--system-tab-accent);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 1.15rem;
   font-style: normal;
   line-height: 1;
@@ -2152,7 +2212,7 @@ footer {
 
 .place-explainer h2 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
   font-size: 1.3rem;
   font-weight: 500;
 }
