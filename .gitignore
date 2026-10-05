@@ -35,6 +35,7 @@ assets/images/raw/
 /_local/
 /production/artifacts/
 /production/monitor/.venv/
+/production/monitor/artifacts/
 /production/monitor/.streamlit/secrets.toml
 /tools/biblioteca/original/data/posts.json
 /output/conceptos-ecuador-vivo-20261004/

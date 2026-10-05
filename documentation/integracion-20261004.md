@@ -10,21 +10,24 @@
 - Caso Andes Pulso con video local, 2661 eventos conservados, verificación de integridad, mapa, tabla, filtros, descargas, método y derechos.
 - Código científico y audiovisual del monitor preservado en `production/monitor/`; fuente del feed en `tools/biblioteca/original/`.
 
-## Limpieza ejecutada y recuperación
+## Consolidación, respaldo y recuperación
 
-4563 archivos de `monitor-sismos/artifacts` fueron trasladados a `_local/monitor-artifacts` y comprobados por SHA-256. La ruta original `monitor-sismos/artifacts` es un enlace de compatibilidad sin duplicar el contenido. Se retiraron únicamente los 9 MP4 enumerados en `cleanup-plan-20261004.json`, 46299012 bytes (44,2 MiB), a la Papelera de Windows. No se vació la Papelera; el espacio físico recuperado depende de ella y de OneDrive.
+Los artefactos de `monitor-sismos` fueron consolidados en `_local/monitor-artifacts`; el inventario actual contiene 6071 archivos. `production/monitor/artifacts` apunta a ese almacén único, de modo que las herramientas integradas trabajan sin duplicar los datos. Se retiraron únicamente los 9 MP4 enumerados en `cleanup-plan-20261004.json`, 46299012 bytes (44,2 MiB), a la Papelera de Windows. No se vació la Papelera.
 
-Se conservaron maestros finales, voces originales, datos y trabajos en curso. El inventario detallado y recibo de ejecución están en `_local/migration-20261004/`. También hay respaldos Git de ambos proyectos. El plan de limpieza es una auditoría histórica, no un registro de que se borró todo lo que enumera.
+Se creó un respaldo privado en Google Drive, **Ecuador Vivo — respaldo de producción**, compuesto por cinco paquetes divididos en 24 fragmentos, más dos manifiestos. La lectura posterior confirmó los 26 objetos, sus nombres y 2064572928 bytes de fragmentos. Los manifiestos conservan los SHA-256 calculados antes de la carga; la conexión de Drive no expone un hash remoto para afirmar una segunda comprobación criptográfica.
+
+El repositorio `feed-geologico` recibió un aviso de transición en el commit `68e171a8e621e48f7f730ff705a19f63820b098b` y quedó archivado en GitHub: continúa público, consultable y reversible, pero en modo de solo lectura. No existía un repositorio remoto independiente llamado `monitor-sismos`. La antigua URL `fallas-ecuador` redirige al repositorio vigente `ecuador-vivo`; no representa otro proyecto para borrar.
+
+Se conservaron maestros finales, voces originales, datos y trabajos en curso. El inventario detallado y recibo de ejecución están en `_local/migration-20261004/`. El procedimiento de recuperación está en `documentation/recuperacion-produccion-20261005.md`.
 
 ## Pendiente, sin ocultarlo
 
 - Confirmar qué edición local coincide exactamente con los videos publicados en Instagram/TikTok.
-- Los renderizadores históricos tienen rutas y dependencias entre versiones; preservación no equivale a portabilidad completa. No eliminar sus fuentes anteriores.
-- Windows impidió mover la raíz completa de monitor-sismos porque otro proceso la utiliza. Su contenido audiovisual ya está dentro de Ecuador Vivo; el entorno y la carpeta original no se han eliminado.
+- Los renderizadores históricos tienen rutas y dependencias entre versiones; preservación no equivale por sí sola a portabilidad completa.
+- La carpeta local antigua `C:\Users\JHONY CONTERON\monitor-sismos` y los paquetes temporales de preparación del respaldo aún requieren una retirada manual: el entorno de automatización bloqueó las eliminaciones recursivas. Antes de hacerlo deben conservarse `_local/monitor-artifacts`, `production/monitor/` y el respaldo de Drive.
 - Windows también mantiene ocupada la carpeta local `fallas-ecuador`; no fue posible renombrarla a `ecuador-vivo`. El repositorio remoto ya tiene el nombre nuevo. El cambio local debe hacerse con los editores, servidores y terminales de esa carpeta cerrados; no afecta al nombre público del sitio.
-- No se ha borrado el repositorio remoto feed-geologico ni configurado su redirección.
 - La colección bibliográfica es inicial, no una revisión exhaustiva ni una validación científica independiente.
 
 ## Comprobación
 
-`pnpm run check` o `npm run check` ejecutan los controles del atlas, laboratorio fluvial y portal. `python -m unittest discover -s tests` comprueba los procesos científicos. Las pruebas del núcleo del monitor se ejecutan desde `production/monitor` con sus dependencias.
+`pnpm run check` o `npm run check` ejecutan los controles del atlas, laboratorio fluvial y portal. El núcleo consolidado del monitor se probó desde `production/monitor`: 160 pruebas correctas y 17 omitidas por dependencias o condiciones opcionales.
