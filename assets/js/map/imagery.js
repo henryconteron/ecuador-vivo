@@ -1,5 +1,5 @@
 /** Real observations and model output, never a synthetic production fallback. */
-import {validateLandcoverManifest} from "./landcover.js?v=20260930-4";
+import {validateLandcoverManifest} from "./landcover.js";
 export function comparisonPosition(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : 50;

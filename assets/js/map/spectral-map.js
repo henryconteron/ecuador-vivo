@@ -1,6 +1,6 @@
 /** Georeferenced explorer. Display colours are not a pixel-measurement API. */
-import {loadSpectralPair, validateSpectralManifest} from "./spectral.js?v=20260930-8";
-import {comparisonPosition} from "./imagery.js?v=20260930-6";
+import {loadSpectralPair, validateSpectralManifest} from "./spectral.js";
+import {comparisonPosition} from "./imagery.js";
 
 export const SPECTRAL_MODES = Object.freeze(["rgb", "ndvi", "mndwi", "ndmi", "change", "quality"]);
 export function normalizeSpectralView(params) {

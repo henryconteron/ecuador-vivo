@@ -61,4 +61,4 @@ const canvas=el('learning-canvas');canvas.addEventListener('pointerdown',e=>{if(
 canvas.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();view.yaw+=e.key==='ArrowLeft'?-.12:e.key==='ArrowRight'?.12:0;view.pitch=Math.max(.08,Math.min(1.46,view.pitch+(e.key==='ArrowUp'?.12:e.key==='ArrowDown'?-.12:0)));setView();});
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();stop();world=null;worldFailed=true;render();});
 new ResizeObserver(()=>world?.paint()).observe(canvas);window.addEventListener('portal:language',render);
-render();if(!textOnly)import('./learning-world.js?v=20261004-2').then(module=>{world=module.createLearningWorld(canvas);render();}).catch(()=>{worldFailed=true;render();});
+render();if(!textOnly)import('./learning-world.js').then(module=>{world=module.createLearningWorld(canvas);render();}).catch(()=>{worldFailed=true;render();});

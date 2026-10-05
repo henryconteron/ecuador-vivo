@@ -1,7 +1,7 @@
 /** Provincial 10 m display tiles; screening markers are not confirmed events. */
-import {screenClip} from "./spectral-map.js?v=20260930-8";
-import {orderedRiverCells, riverCellFromParam, adjacentRiverCell} from "./rivers-review.js?v=20261001-2";
-import {mountRiverObservations} from "./rivers-observations.js?v=20261001-4";
+import {screenClip} from "./spectral-map.js";
+import {orderedRiverCells, riverCellFromParam, adjacentRiverCell} from "./rivers-review.js";
+import {mountRiverObservations} from "./rivers-observations.js";
 
 export function validateRiverManifest(manifest, config) {
   if (manifest?.schema_version !== 1) throw new Error("Unknown river bundle");

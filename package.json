@@ -12,6 +12,7 @@
     "test:js": "node scripts/run-js-checks.mjs --tests-only",
     "check:data": "node scripts/validate-catalog.mjs",
     "check:schema": "python scripts/validate_geojson_schemas.py",
+    "check:imports": "node scripts/validate-js-imports.mjs",
     "check": "eslint assets/js scripts tests && node scripts/run-js-checks.mjs",
     "update:stations": "node scripts/update_inamhi_stations.mjs",
     "fetch:catalog-inputs": "python scripts/fetch_catalog_inputs.py",

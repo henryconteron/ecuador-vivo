@@ -20,11 +20,11 @@ import {
   createFaultPopup as buildFaultPopup,
 } from "./map/popups.js";
 import { nearestFeature } from "./map/place.js";
-import { mountNapoLandcover } from "./map/landcover.js?v=20260930-4";
-import { mountNapoImagery } from "./map/imagery.js?v=20260930-5";
-import { mountNapoSpectral } from "./map/spectral.js?v=20260930-8";
-import { mountNapoSpectralMap } from "./map/spectral-map.js?v=20260930-8";
-import { mountNapoRivers } from "./map/rivers.js?v=20261001-4";
+import { mountNapoLandcover } from "./map/landcover.js";
+import { mountNapoImagery } from "./map/imagery.js";
+import { mountNapoSpectral } from "./map/spectral.js";
+import { mountNapoSpectralMap } from "./map/spectral-map.js";
+import { mountNapoRivers } from "./map/rivers.js";
 import { floodDateRange, FLOOD_SOURCE, floodWmsOptions, normalizeFloodDate } from "./map/flood.js";
 import {
   AIR_TEMPERATURE_SOURCE,
@@ -44,8 +44,8 @@ import {
   PRECIPITATION_SOURCE,
   precipitationWmsOptions,
 } from "./map/precipitation.js";
-import { catalogForSystem } from "./map/source-catalog.js?v=20260930-8";
-import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js?v=20260930";
+import { catalogForSystem } from "./map/source-catalog.js";
+import { activeSpatialContexts, normalizeRegionFocus, REGION_VIEWS } from "./map/spatial-context.js";
 import {
   filterStations,
   loadStationSnapshot,

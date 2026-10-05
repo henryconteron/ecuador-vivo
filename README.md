@@ -343,6 +343,10 @@ metadatos. Las referencias individuales ausentes se reportan como advertencia co
 cita; las escalas ausentes también se señalan porque la fuente original no las documenta en todos
 los registros.
 
+Los imports JavaScript locales se comprueban como rutas canónicas: el validador detiene la
+publicación si falta un módulo o reaparece una versión manual en la URL capaz de cargar dos
+instancias del mismo archivo.
+
 El flujo de integración continua ejecuta además los esquemas JSON Schema Draft 2020-12 sobre los
 catálogos públicos y comprueba que `metadata.feature_count` coincida con el número real de elementos:
 

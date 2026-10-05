@@ -1,4 +1,4 @@
-import {WATER_METHODS, SIGNALS, valuesAt, waterVotes, transition, pixelIndex, validateManifest, decodePack} from "./fluvial-science.js?v=20261002-1";
+import {WATER_METHODS, SIGNALS, valuesAt, waterVotes, transition, pixelIndex, validateManifest, decodePack} from "./fluvial-science.js";
 
 export const COPY = {
   es: {

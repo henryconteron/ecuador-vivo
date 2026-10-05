@@ -1,5 +1,5 @@
 /** Two measured annual composites; colours are signals, never causal labels. */
-import {comparisonPosition} from "./imagery.js?v=20260930-6";
+import {comparisonPosition} from "./imagery.js";
 
 const MODES = ["rgb", "ndvi", "mndwi"];
 const RECEIPT_KEYS = ["years", "periods", "bbox", "optical_bands", "year_bands", "quality_band", "clear_threshold", "min_observations", "excluded_scl", "composite", "observation_mask", "index_formulas", "export_crs", "export_transform", "nodata"];

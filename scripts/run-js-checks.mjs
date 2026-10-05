@@ -25,6 +25,7 @@ const validators = [
   "scripts/validate-imagery.mjs",
   "scripts/validate-spectral.mjs",
   "scripts/validate-rivers.mjs",
+  "scripts/validate-js-imports.mjs",
 ];
 
 function run(file, args = []) {
