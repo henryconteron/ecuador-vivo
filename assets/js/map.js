@@ -58,6 +58,7 @@ import { ATLAS_SYSTEMS, contentBelongsToSelection, createSystemScope, normalizeA
 import {mountGeology} from "./map/geology.js";
 import {mountLocalData} from "./map/local-data.js";
 import { normalizeThermalDate, thermalDateRange, THERMAL_SOURCE, thermalWmsOptions } from "./map/thermal.js";
+import { createWmsLayerController } from "./map/wms-layer.js";
 import { catalogKey, createTextTools, normalize } from "./map/utils.js";
 
 const mapElement = document.querySelector("#map");
@@ -359,15 +360,6 @@ function initializeAtlas() {
   let visibleStationCatalog = [];
   let stationMetadata = {};
   let stationState = "loading";
-  let precipitationState = "off";
-  let precipitationTileErrors = 0;
-  let airTemperatureState = "off";
-  let airTemperatureTileErrors = 0;
-  let cloudFractionState = "off";
-  let cloudFractionTileErrors = 0;
-  let floodState = "off";
-  let floodTileErrors = 0;
-  let thermalState = "off";
   let napoLandcover;
   let napoImagery;
   let napoSpectral;
@@ -375,7 +367,6 @@ function initializeAtlas() {
   let napoRivers;
   let geology;
   let localData;
-  let thermalTileErrors = 0;
   const featureIds = new WeakMap();
 
   elements.precipitationDate.min = precipitationRange.min;
@@ -418,176 +409,44 @@ function initializeAtlas() {
     }
   });
 
-  function updatePrecipitationStatus() {
-    elements.precipitationStatus.dataset.state = precipitationState;
-    if (precipitationState === "off") {
-      elements.precipitationStatus.textContent = t("precipitation.off");
-    } else if (precipitationState === "loading") {
-      elements.precipitationStatus.textContent = template("precipitation.loading", {
-        date: elements.precipitationDate.value,
-      });
-    } else if (precipitationState === "error") {
-      elements.precipitationStatus.textContent = t("precipitation.error");
-    } else {
-      elements.precipitationStatus.textContent = template("precipitation.loaded", {
-        date: elements.precipitationDate.value,
-      });
-    }
-  }
-
-  precipitationLayer.on("loading", () => {
-    if (!map.hasLayer(precipitationLayer)) return;
-    precipitationState = "loading";
-    precipitationTileErrors = 0;
-    updatePrecipitationStatus();
-  });
-  precipitationLayer.on("load", () => {
-    if (!map.hasLayer(precipitationLayer)) return;
-    precipitationState = precipitationTileErrors >= 2 ? "error" : "loaded";
-    updatePrecipitationStatus();
-  });
-  precipitationLayer.on("tileerror", () => {
-    precipitationTileErrors += 1;
-    if (precipitationTileErrors >= 2) {
-      precipitationState = "error";
-      updatePrecipitationStatus();
-    }
+  const precipitationController = createWmsLayerController(map, precipitationLayer, {
+    statusEl: elements.precipitationStatus,
+    dateEl: elements.precipitationDate,
+    i18nPrefix: "precipitation",
+    t,
+    template,
   });
 
-  function updateAirTemperatureStatus() {
-    elements.airTemperatureStatus.dataset.state = airTemperatureState;
-    if (airTemperatureState === "off") {
-      elements.airTemperatureStatus.textContent = t("airTemperature.off");
-    } else if (airTemperatureState === "loading") {
-      elements.airTemperatureStatus.textContent = template("airTemperature.loading", {
-        date: elements.airTemperatureDate.value,
-      });
-    } else if (airTemperatureState === "error") {
-      elements.airTemperatureStatus.textContent = t("airTemperature.error");
-    } else {
-      elements.airTemperatureStatus.textContent = template("airTemperature.loaded", {
-        date: elements.airTemperatureDate.value,
-      });
-    }
-  }
-
-  airTemperatureLayer.on("loading", () => {
-    if (!map.hasLayer(airTemperatureLayer)) return;
-    airTemperatureState = "loading";
-    airTemperatureTileErrors = 0;
-    updateAirTemperatureStatus();
-  });
-  airTemperatureLayer.on("load", () => {
-    if (!map.hasLayer(airTemperatureLayer)) return;
-    airTemperatureState = airTemperatureTileErrors >= 2 ? "error" : "loaded";
-    updateAirTemperatureStatus();
-  });
-  airTemperatureLayer.on("tileerror", () => {
-    airTemperatureTileErrors += 1;
-    if (airTemperatureTileErrors >= 2) {
-      airTemperatureState = "error";
-      updateAirTemperatureStatus();
-    }
+  const airTemperatureController = createWmsLayerController(map, airTemperatureLayer, {
+    statusEl: elements.airTemperatureStatus,
+    dateEl: elements.airTemperatureDate,
+    i18nPrefix: "airTemperature",
+    t,
+    template,
   });
 
-  function updateCloudFractionStatus() {
-    elements.cloudFractionStatus.dataset.state = cloudFractionState;
-    if (cloudFractionState === "off") {
-      elements.cloudFractionStatus.textContent = t("cloudFraction.off");
-    } else if (cloudFractionState === "loading") {
-      elements.cloudFractionStatus.textContent = template("cloudFraction.loading", {
-        date: elements.cloudFractionDate.value,
-      });
-    } else if (cloudFractionState === "error") {
-      elements.cloudFractionStatus.textContent = t("cloudFraction.error");
-    } else {
-      elements.cloudFractionStatus.textContent = template("cloudFraction.loaded", {
-        date: elements.cloudFractionDate.value,
-      });
-    }
-  }
-
-  cloudFractionLayer.on("loading", () => {
-    if (!map.hasLayer(cloudFractionLayer)) return;
-    cloudFractionState = "loading";
-    cloudFractionTileErrors = 0;
-    updateCloudFractionStatus();
-  });
-  cloudFractionLayer.on("load", () => {
-    if (!map.hasLayer(cloudFractionLayer)) return;
-    cloudFractionState = cloudFractionTileErrors >= 2 ? "error" : "loaded";
-    updateCloudFractionStatus();
-  });
-  cloudFractionLayer.on("tileerror", () => {
-    cloudFractionTileErrors += 1;
-    if (cloudFractionTileErrors >= 2) {
-      cloudFractionState = "error";
-      updateCloudFractionStatus();
-    }
+  const cloudFractionController = createWmsLayerController(map, cloudFractionLayer, {
+    statusEl: elements.cloudFractionStatus,
+    dateEl: elements.cloudFractionDate,
+    i18nPrefix: "cloudFraction",
+    t,
+    template,
   });
 
-  function updateFloodStatus() {
-    elements.floodStatus.dataset.state = floodState;
-    if (floodState === "off") {
-      elements.floodStatus.textContent = t("flood.off");
-    } else if (floodState === "loading") {
-      elements.floodStatus.textContent = template("flood.loading", { date: elements.floodDate.value });
-    } else if (floodState === "error") {
-      elements.floodStatus.textContent = t("flood.error");
-    } else {
-      elements.floodStatus.textContent = template("flood.loaded", { date: elements.floodDate.value });
-    }
-  }
-
-  floodLayer.on("loading", () => {
-    if (!map.hasLayer(floodLayer)) return;
-    floodState = "loading";
-    floodTileErrors = 0;
-    updateFloodStatus();
-  });
-  floodLayer.on("load", () => {
-    if (!map.hasLayer(floodLayer)) return;
-    floodState = floodTileErrors >= 2 ? "error" : "loaded";
-    updateFloodStatus();
-  });
-  floodLayer.on("tileerror", () => {
-    floodTileErrors += 1;
-    if (floodTileErrors >= 2) {
-      floodState = "error";
-      updateFloodStatus();
-    }
+  const floodController = createWmsLayerController(map, floodLayer, {
+    statusEl: elements.floodStatus,
+    dateEl: elements.floodDate,
+    i18nPrefix: "flood",
+    t,
+    template,
   });
 
-  function updateThermalStatus() {
-    elements.thermalStatus.dataset.state = thermalState;
-    if (thermalState === "off") {
-      elements.thermalStatus.textContent = t("thermal.off");
-    } else if (thermalState === "loading") {
-      elements.thermalStatus.textContent = template("thermal.loading", { date: elements.thermalDate.value });
-    } else if (thermalState === "error") {
-      elements.thermalStatus.textContent = t("thermal.error");
-    } else {
-      elements.thermalStatus.textContent = template("thermal.loaded", { date: elements.thermalDate.value });
-    }
-  }
-
-  thermalLayer.on("loading", () => {
-    if (!map.hasLayer(thermalLayer)) return;
-    thermalState = "loading";
-    thermalTileErrors = 0;
-    updateThermalStatus();
-  });
-  thermalLayer.on("load", () => {
-    if (!map.hasLayer(thermalLayer)) return;
-    thermalState = thermalTileErrors >= 2 ? "error" : "loaded";
-    updateThermalStatus();
-  });
-  thermalLayer.on("tileerror", () => {
-    thermalTileErrors += 1;
-    if (thermalTileErrors >= 2) {
-      thermalState = "error";
-      updateThermalStatus();
-    }
+  const thermalController = createWmsLayerController(map, thermalLayer, {
+    statusEl: elements.thermalStatus,
+    dateEl: elements.thermalDate,
+    i18nPrefix: "thermal",
+    t,
+    template,
   });
 
   const placeMarker = L.circleMarker([0, 0], {
@@ -1576,15 +1435,8 @@ function initializeAtlas() {
     const active = elements.precipitationToggle.checked;
     elements.precipitationDate.disabled = !active;
     elements.precipitationOpacity.disabled = !active;
-    if (active) {
-      precipitationState = "loading";
-      precipitationTileErrors = 0;
-      precipitationLayer.addTo(map);
-    } else {
-      map.removeLayer(precipitationLayer);
-      precipitationState = "off";
-    }
-    updatePrecipitationStatus();
+    if (active) precipitationController.activate();
+    else precipitationController.deactivate();
     updateLegendVisibility();
     updateSourceCount();
     if (selectedPoint) renderPlaceExplanation();
@@ -1595,11 +1447,8 @@ function initializeAtlas() {
       elements.precipitationDate.value,
       precipitationRange,
     );
-    precipitationState = "loading";
-    precipitationTileErrors = 0;
     precipitationLayer.setParams({ time: elements.precipitationDate.value }, false);
     precipitationLayer.redraw();
-    updatePrecipitationStatus();
     if (selectedPoint) renderPlaceExplanation();
   });
   elements.precipitationOpacity.addEventListener("input", updatePrecipitationOpacity);
@@ -1615,15 +1464,8 @@ function initializeAtlas() {
     const active = elements.airTemperatureToggle.checked;
     elements.airTemperatureDate.disabled = !active;
     elements.airTemperatureOpacity.disabled = !active;
-    if (active) {
-      airTemperatureState = "loading";
-      airTemperatureTileErrors = 0;
-      airTemperatureLayer.addTo(map);
-    } else {
-      map.removeLayer(airTemperatureLayer);
-      airTemperatureState = "off";
-    }
-    updateAirTemperatureStatus();
+    if (active) airTemperatureController.activate();
+    else airTemperatureController.deactivate();
     updateLegendVisibility();
     updateSourceCount();
     if (selectedPoint) renderPlaceExplanation();
@@ -1634,11 +1476,8 @@ function initializeAtlas() {
       elements.airTemperatureDate.value,
       airTemperatureRange,
     );
-    airTemperatureState = "loading";
-    airTemperatureTileErrors = 0;
     airTemperatureLayer.setParams({ time: elements.airTemperatureDate.value }, false);
     airTemperatureLayer.redraw();
-    updateAirTemperatureStatus();
     if (selectedPoint) renderPlaceExplanation();
   });
   elements.airTemperatureOpacity.addEventListener("input", updateAirTemperatureOpacity);
@@ -1654,15 +1493,8 @@ function initializeAtlas() {
     const active = elements.cloudFractionToggle.checked;
     elements.cloudFractionDate.disabled = !active;
     elements.cloudFractionOpacity.disabled = !active;
-    if (active) {
-      cloudFractionState = "loading";
-      cloudFractionTileErrors = 0;
-      cloudFractionLayer.addTo(map);
-    } else {
-      map.removeLayer(cloudFractionLayer);
-      cloudFractionState = "off";
-    }
-    updateCloudFractionStatus();
+    if (active) cloudFractionController.activate();
+    else cloudFractionController.deactivate();
     updateLegendVisibility();
     updateSourceCount();
     if (selectedPoint) renderPlaceExplanation();
@@ -1673,11 +1505,8 @@ function initializeAtlas() {
       elements.cloudFractionDate.value,
       cloudFractionRange,
     );
-    cloudFractionState = "loading";
-    cloudFractionTileErrors = 0;
     cloudFractionLayer.setParams({ time: elements.cloudFractionDate.value }, false);
     cloudFractionLayer.redraw();
-    updateCloudFractionStatus();
     if (selectedPoint) renderPlaceExplanation();
   });
   elements.cloudFractionOpacity.addEventListener("input", updateCloudFractionOpacity);
@@ -1693,15 +1522,8 @@ function initializeAtlas() {
     const active = elements.floodToggle.checked;
     elements.floodDate.disabled = !active;
     elements.floodOpacity.disabled = !active;
-    if (active) {
-      floodState = "loading";
-      floodTileErrors = 0;
-      floodLayer.addTo(map);
-    } else {
-      map.removeLayer(floodLayer);
-      floodState = "off";
-    }
-    updateFloodStatus();
+    if (active) floodController.activate();
+    else floodController.deactivate();
     updateLegendVisibility();
     updateSourceCount();
     if (selectedPoint) renderPlaceExplanation();
@@ -1709,11 +1531,8 @@ function initializeAtlas() {
 
   elements.floodDate.addEventListener("change", () => {
     elements.floodDate.value = normalizeFloodDate(elements.floodDate.value, floodRange);
-    floodState = "loading";
-    floodTileErrors = 0;
     floodLayer.setParams({ time: elements.floodDate.value }, false);
     floodLayer.redraw();
-    updateFloodStatus();
     if (selectedPoint) renderPlaceExplanation();
   });
   elements.floodOpacity.addEventListener("input", updateFloodOpacity);
@@ -1729,15 +1548,8 @@ function initializeAtlas() {
     const active = elements.thermalToggle.checked;
     elements.thermalDate.disabled = !active;
     elements.thermalOpacity.disabled = !active;
-    if (active) {
-      thermalState = "loading";
-      thermalTileErrors = 0;
-      thermalLayer.addTo(map);
-    } else {
-      map.removeLayer(thermalLayer);
-      thermalState = "off";
-    }
-    updateThermalStatus();
+    if (active) thermalController.activate();
+    else thermalController.deactivate();
     updateLegendVisibility();
     updateSourceCount();
     if (selectedPoint) renderPlaceExplanation();
@@ -1745,11 +1557,8 @@ function initializeAtlas() {
 
   elements.thermalDate.addEventListener("change", () => {
     elements.thermalDate.value = normalizeThermalDate(elements.thermalDate.value, thermalRange);
-    thermalState = "loading";
-    thermalTileErrors = 0;
     thermalLayer.setParams({ time: elements.thermalDate.value }, false);
     thermalLayer.redraw();
-    updateThermalStatus();
     if (selectedPoint) renderPlaceExplanation();
   });
   elements.thermalOpacity.addEventListener("input", updateThermalOpacity);
