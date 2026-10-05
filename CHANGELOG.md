@@ -1,5 +1,13 @@
 # Registro de cambios
 
+## 2026-10-04 — Prototipos 3D y navegación compacta
+
+- Escena conceptual Nazca–Sudamérica separada explícitamente de los hipocentros USGS 1900–2025; filtros, profundidades y fichas con comprobación SHA-256 del catálogo conservado. No incorpora Slab2 ni sismos en vivo.
+- Relieve matemático sintético con giro, perfil móvil y descarga local; sin CRS ni unidades físicas.
+- Accesos rápidos en inicio, paneles independientes en el visor y selector de capítulos en Aprender.
+- Tres síntesis introductorias con fuentes USGS sobre rocas, cuencas e incertidumbre de modelos 3D. No supone una revisión completa de todas las lecciones.
+- Los mapas personales georreferenciados no se importaron ni modificaron.
+
 ## 2026-10-04 — Diagnóstico de georreferenciación
 
 - Verificador ES/EN de puntos: ajuste afín, comprobaciones reservadas, residuos y reporte JSON local sin envío de datos.
