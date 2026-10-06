@@ -11,10 +11,21 @@ Uso:
     python production/monitor/render_daily_rain.py --days 7
     python production/monitor/render_daily_rain.py --days 366
 
+Opciones de formato:
+    --guides     pinta las bandas que tapan las apps (solo para revisar, no
+                 para publicar). El archivo sale con sufijo -guides.
+    --no-safe    desactiva la zona segura y usa el diseño a pantalla completa
+                 (como era antes).
+
 Diseño: calibrado píxel a píxel sobre la maqueta aprobada (títulos, botón de
 reproducción, contador, escala de color con marcas, Galápagos con datos y pie
 de página). Todo lo que no cambia entre días se dibuja una sola vez; cada frame
 solo calcula el mapa, la fecha y el contador.
+
+Zona segura: el diseño se dibuja en el lienzo de la maqueta (1080 x 1920) y al
+final se recorta y se reduce para que quede dentro de la zona que NO tapan las
+interfaces de TikTok / Instagram Reels (barra superior, descripción abajo y
+columna de botones a la derecha). Los márgenes se cambian en SAFE_* más abajo.
 
 Tipografía: usa Bahnschrift (Windows 10/11) en peso/ancho condensado. Si no
 existe, cae a Arial Narrow / Segoe UI / Inter / DejaVu. Los textos se ajustan al
@@ -48,6 +59,29 @@ ROOT = Path(__file__).resolve().parents[2]
 WIDTH = 1080
 HEIGHT = 1920
 FPS = 30
+
+# Zona segura (px sobre el lienzo final de 1080 x 1920).
+# Valores de compromiso entre TikTok, Instagram Reels y Shorts:
+#   arriba   ~ barra de la app / pestañas
+#   abajo    ~ usuario, descripción y sonido
+#   derecha  ~ columna de botones (like, comentar, compartir)
+# Si quieres ser más estricto con Reels (Meta pide 14 % arriba y 35 % abajo)
+# sube SAFE_TOP a ~270 y SAFE_BOTTOM a ~670; el diseño se reduce solo.
+SAFE_ZONE = True
+SAFE_LEFT = 60
+SAFE_RIGHT = 120
+SAFE_TOP = 190
+SAFE_BOTTOM = 400
+
+# Parte del lienzo de diseño que se mete en la zona segura
+# (izquierda, arriba, derecha, abajo). Deja un pequeño margen alrededor
+# del contenido real: marca arriba, pie de página abajo.
+DESIGN_CROP = (45, 20, 1050, 1842)
+
+# Marca superior: se coloca sola por encima de la tilde de "DÍAS".
+BRAND_BASELINE = 86       # posición original (si no hay choque)
+BRAND_CLEARANCE = 22      # espacio libre entre marca y la tilde
+BRAND_MIN_BASELINE = 50   # tope para que no se salga del recorte
 
 # Supermuestreo para bordes y máscaras suaves (antialiasing).
 SS = 3
@@ -647,12 +681,9 @@ def build_static(year, total_days, geometry):
     frame = Image.new('RGBA', (WIDTH, HEIGHT), BG)
     draw = ImageDraw.Draw(frame)
 
-    # ---- marca -------------------------------------------------------------
-    draw_tracked(draw, 61, 86, 'ECUADOR VIVO / ANDES PULSO', 'bold', 27,
-                 512, BRAND)
-    draw.line((599, 73, 683, 73), fill='#7C969E', width=2)
-
     # ---- título ------------------------------------------------------------
+    # Se calcula antes que la marca: la tilde de la Í de "DÍAS" sube por
+    # encima de las mayúsculas y la marca tiene que quedar por encima de ella.
     def title_width(size, width):
         font = make_font('display', size, width)
         return (
@@ -664,17 +695,32 @@ def build_static(year, total_days, geometry):
     title_font = make_font('display', title_size, title_wd)
     gap = word_gap(title_size)
 
+    line1_base, line2_base = 216, 322
+
+    # ---- marca (encima de la tilde, nunca tapada por el título) ------------
+    ink_top = line1_base + min(
+        text_bbox(title_font, w)[1] for w in (str(total_days), 'DÍAS', 'DE')
+    )
+    brand_base = max(
+        BRAND_MIN_BASELINE,
+        min(BRAND_BASELINE, ink_top - BRAND_CLEARANCE),
+    )
+    draw_tracked(draw, 61, brand_base, 'ECUADOR VIVO / ANDES PULSO', 'bold',
+                 27, 512, BRAND)
+    draw.line((599, brand_base - 13, 683, brand_base - 13), fill='#7C969E',
+              width=2)
+
     x = 59
     for word, kind in (('366', 'grad_aqua'), ('DÍAS', 'white'),
                        ('DE', 'white')):
         word = str(total_days) if kind == 'grad_aqua' else word
         left, _, right, _ = text_bbox(title_font, word)
         if kind == 'grad_aqua':
-            gradient_text(frame, x - left, 216, word, title_font,
+            gradient_text(frame, x - left, line1_base, word, title_font,
                           '#6AF0D0', '#54DCC5')
         else:
-            draw.text((x - left, 216), word, font=title_font, fill=WHITE,
-                      anchor='ls')
+            draw.text((x - left, line1_base), word, font=title_font,
+                      fill=WHITE, anchor='ls')
         x += (right - left) + gap
 
     x = 59
@@ -682,11 +728,11 @@ def build_static(year, total_days, geometry):
                        ('ECUADOR', 'white')):
         left, _, right, _ = text_bbox(title_font, word)
         if kind == 'grad_blue':
-            gradient_text(frame, x - left, 322, word, title_font,
+            gradient_text(frame, x - left, line2_base, word, title_font,
                           '#58B8F8', '#F3F2EE')
         else:
-            draw.text((x - left, 322), word, font=title_font, fill=WHITE,
-                      anchor='ls')
+            draw.text((x - left, line2_base), word, font=title_font,
+                      fill=WHITE, anchor='ls')
         x += (right - left) + gap
 
     # ---- subtítulo ---------------------------------------------------------
@@ -881,6 +927,57 @@ def draw_dynamic(frame, dynamic, date, total_days):
 
 
 # =============================================================================
+# ZONA SEGURA (TikTok / Instagram Reels / Shorts)
+# =============================================================================
+
+def build_safe_layout():
+    """Calcula cómo entra el diseño en la zona libre de interfaz."""
+    left, top, right, bottom = DESIGN_CROP
+    crop_w, crop_h = right - left, bottom - top
+
+    box_w = WIDTH - SAFE_LEFT - SAFE_RIGHT
+    box_h = HEIGHT - SAFE_TOP - SAFE_BOTTOM
+
+    scale = min(box_w / crop_w, box_h / crop_h, 1.0)
+    new_w, new_h = round(crop_w * scale), round(crop_h * scale)
+
+    x = SAFE_LEFT + (box_w - new_w) // 2
+    y = SAFE_TOP + (box_h - new_h) // 2
+
+    return {
+        'crop': DESIGN_CROP,
+        'size': (new_w, new_h),
+        'pos': (x, y),
+        'scale': scale,
+    }
+
+
+def compose_final(design, layout):
+    """Mete el diseño (RGB 1080x1920) dentro de la zona segura."""
+    if layout is None:
+        return design
+
+    canvas = Image.new('RGB', (WIDTH, HEIGHT), BG)
+    piece = design.crop(layout['crop']).resize(
+        layout['size'], Image.Resampling.LANCZOS)
+    canvas.paste(piece, layout['pos'])
+    return canvas
+
+
+def draw_guides(image):
+    """Tiñe de rojo las zonas que tapan las apps (solo para revisar)."""
+    overlay = Image.new('RGBA', image.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+    red = (255, 60, 60, 80)
+    d.rectangle((0, 0, WIDTH, SAFE_TOP), fill=red)
+    d.rectangle((0, HEIGHT - SAFE_BOTTOM, WIDTH, HEIGHT), fill=red)
+    d.rectangle((0, SAFE_TOP, SAFE_LEFT, HEIGHT - SAFE_BOTTOM), fill=red)
+    d.rectangle((WIDTH - SAFE_RIGHT, SAFE_TOP, WIDTH, HEIGHT - SAFE_BOTTOM),
+                fill=red)
+    return Image.alpha_composite(image.convert('RGBA'), overlay).convert('RGB')
+
+
+# =============================================================================
 # MAIN
 # =============================================================================
 
@@ -888,10 +985,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--start', default='2024-01-01')
     parser.add_argument('--days', type=int, default=7)
+    parser.add_argument('--no-safe', action='store_true',
+                        help='diseño a pantalla completa, sin zona segura')
+    parser.add_argument('--guides', action='store_true',
+                        help='pinta las zonas que tapan las apps (revisión)')
     args = parser.parse_args()
 
     if not 1 <= args.days <= 366:
         parser.error('days must be 1..366')
+
+    use_safe = SAFE_ZONE and not args.no_safe
+    layout = build_safe_layout() if use_safe else None
 
     start = dt.date.fromisoformat(args.start)
     year = start.year
@@ -953,11 +1057,25 @@ def main():
         'adm1_url': adm1_url,
         'video_resolution': [WIDTH, HEIGHT],
         'video_fps': FPS,
+        'safe_zone': (
+            {
+                'enabled': True,
+                'margins_px': {
+                    'left': SAFE_LEFT,
+                    'right': SAFE_RIGHT,
+                    'top': SAFE_TOP,
+                    'bottom': SAFE_BOTTOM,
+                },
+                'design_scale': round(layout['scale'], 4),
+            }
+            if use_safe else {'enabled': False}
+        ),
         'frames': [],
     }
 
     # ---- video -------------------------------------------------------------
-    video = out / 'ecuador-lluvia-diaria-preview.mp4'
+    suffix = '-guides' if args.guides else ''
+    video = out / f'ecuador-lluvia-diaria-preview{suffix}.mp4'
 
     writer = imageio_ffmpeg.write_frames(
         str(video),
@@ -1001,7 +1119,9 @@ def main():
             frame.paste(gal_overlay, (GAL_X, GAL_Y), gal_mask)
             frame.alpha_composite(static_top)
 
-            rgb_frame = frame.convert('RGB')
+            rgb_frame = compose_final(frame.convert('RGB'), layout)
+            if args.guides:
+                rgb_frame = draw_guides(rgb_frame)
             pixels = np.asarray(rgb_frame)
 
             # ---- duración --------------------------------------------------
@@ -1020,7 +1140,7 @@ def main():
                 writer.send(pixels)
 
             if i in (0, args.days - 1):
-                rgb_frame.save(out / f'frame-{date}.png')
+                rgb_frame.save(out / f'frame-{date}{suffix}.png')
 
             receipt['frames'].append({
                 'date': str(date),
