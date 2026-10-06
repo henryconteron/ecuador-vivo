@@ -3,6 +3,103 @@ export const CASE_ID = "memoria-sismica-1900-2025";
 export const CASE_BASE = `data/cases/${CASE_ID}/`;
 export const SNAPSHOT_SHA256 = "8cf19180b19b9a9998f76f1feee9bf88b69d141287a9d213e3455f20c1b2d5c8";
 export const PAGE_SIZE = 20;
+export const STORY_REGISTRY = "data/cases/registry.json";
+
+export function storyStatusLabel(status, language = "es") {
+  const labels = {
+    data_ready: { es: "datos preparados", en: "data prepared" },
+    draft: { es: "borrador", en: "draft" },
+    published: { es: "publicado", en: "published" },
+  };
+  return labels[status]?.[language] ?? (language === "en" ? "in preparation" : "en preparación");
+}
+
+function storyText(record, field, language) {
+  return record[`${field}_${language}`] ?? record[`${field}_es`] ?? "";
+}
+
+function appendStoryFileLinks(parent, record, language) {
+  const links = document.createElement("div");
+  links.className = "case-story-links";
+  for (const file of record.files ?? []) {
+    const link = document.createElement("a");
+    link.href = file.href;
+    link.textContent = `${file[`label_${language}`] ?? file.label_es} ↗`;
+    link.setAttribute("download", "");
+    links.append(link);
+  }
+  parent.append(links);
+}
+
+export function renderStoryCatalog(records, language = "es", container = document.getElementById("case-catalog")) {
+  if (!container) return;
+  container.replaceChildren();
+  if (!Array.isArray(records) || !records.length) {
+    const empty = document.createElement("p");
+    empty.textContent = language === "en" ? "No stories are registered yet." : "Todavía no hay historias registradas.";
+    container.append(empty);
+    return;
+  }
+  for (const record of records) {
+    const article = document.createElement("article");
+    article.className = `case-story-card case-story-${record.kind ?? "general"}`;
+    const header = document.createElement("div");
+    header.className = "case-story-card-header";
+    const kind = document.createElement("span");
+    kind.className = "case-story-kind";
+    kind.textContent = record.kind ?? "story";
+    const status = document.createElement("span");
+    status.className = "case-story-status";
+    status.textContent = storyStatusLabel(record.status, language);
+    header.append(kind, status);
+    const title = document.createElement("h3");
+    title.textContent = storyText(record, "title", language);
+    const hook = document.createElement("p");
+    hook.className = "case-story-hook";
+    hook.textContent = storyText(record, "hook", language);
+    const question = document.createElement("p");
+    question.className = "case-story-question";
+    question.textContent = storyText(record, "question", language);
+    const facts = document.createElement("dl");
+    facts.className = "case-story-facts";
+    for (const [label, value] of [
+      [language === "en" ? "Period" : "Periodo", storyText(record, "period", language)],
+      [language === "en" ? "Sources" : "Fuentes", storyText(record, "sources", language)],
+      [language === "en" ? "Territory" : "Territorio", (record.territories ?? []).join(" · ")],
+    ]) {
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const detail = document.createElement("dd");
+      detail.textContent = value;
+      facts.append(term, detail);
+    }
+    const limits = document.createElement("p");
+    limits.className = "case-story-limits";
+    limits.textContent = `${language === "en" ? "Limit: " : "Límite: "}${storyText(record, "limits", language)}`;
+    article.append(header, title, hook, question, facts, limits);
+    appendStoryFileLinks(article, record, language);
+    container.append(article);
+  }
+}
+
+async function initStoryCatalog() {
+  const container = document.getElementById("case-catalog");
+  if (!container) return;
+  let records;
+  try {
+    const response = await fetch(STORY_REGISTRY);
+    if (!response.ok) throw new Error(`Registry HTTP ${response.status}`);
+    const registry = await response.json();
+    records = Array.isArray(registry.cases) ? registry.cases : [];
+    window.__ecuadorVivoStoryRegistry = records;
+  } catch (error) {
+    console.error("Andes Pulso: story registry unavailable", error);
+    container.textContent = "No se pudo cargar el catálogo; descarga el JSON para revisar las fichas.";
+    return;
+  }
+  const language = window.portalLanguage?.() ?? (new URLSearchParams(location.search).get("lang") === "en" ? "en" : "es");
+  renderStoryCatalog(records, language, container);
+}
 
 export function normalizeSnapshot(collection) {
   if (collection?.type !== "FeatureCollection" || !Array.isArray(collection.features)) {
@@ -221,6 +318,8 @@ async function initCase() {
     byId("case-map").setAttribute("aria-label", t("Mapa de epicentros del catálogo conservado", "Epicenter map of the preserved catalog"));
     if (allEvents.length) { drawMap(); drawTable(); drawSummary(); showStatus(); }
     else if (loadFailed) showStatus();
+    const storyRecords = window.__ecuadorVivoStoryRegistry;
+    if (storyRecords) renderStoryCatalog(storyRecords, language);
   });
 
   try {
@@ -248,3 +347,4 @@ async function initCase() {
 }
 
 if (typeof document !== "undefined") initCase();
+if (typeof document !== "undefined") initStoryCatalog();

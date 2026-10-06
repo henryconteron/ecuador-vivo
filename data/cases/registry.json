@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "title": "Ecuador Vivo · catálogo de historias comprobables",
+  "updated": "2026-10-06",
+  "contract": [
+    "Cada historia conserva el periodo, la fuente, la transformación aplicada y sus límites.",
+    "Una imagen provisional nunca se presenta como una observación definitiva.",
+    "Las animaciones futuras deben usar la misma escala cuando comparen fechas o territorios."
+  ],
+  "cases": [
+    {
+      "id": "ecuador-clima-mensual-1981-2026",
+      "kind": "climate",
+      "status": "data_ready",
+      "title_es": "Ecuador bajo la lluvia",
+      "title_en": "Ecuador under rain",
+      "hook_es": "¿La lluvia se mueve por el país como una estación invisible?",
+      "hook_en": "Does rain move across the country like an invisible season?",
+      "question_es": "Animación mensual de lluvia y temperatura, con anomalías respecto a 1981–2010.",
+      "question_en": "Monthly rain and temperature animation, with anomalies against 1981–2010.",
+      "period_es": "Enero de 1981 – agosto de 2026",
+      "period_en": "January 1981 – August 2026",
+      "territories": ["Ecuador", "Napo", "Tena", "Archidona"],
+      "sources_es": "CHIRPS · ERA5-Land · SRTM",
+      "sources_en": "CHIRPS · ERA5-Land · SRTM",
+      "files": [
+        {"label_es": "Recibo de procedencia", "label_en": "Provenance receipt", "href": "data/cases/ecuador-clima-mensual-1981-2026/source_receipt.json"},
+        {"label_es": "Especificación ENSO", "label_en": "ENSO specification", "href": "data/cases/ecuador-clima-mensual-1981-2026/enso_join_spec.json"},
+        {"label_es": "Guion de trabajo", "label_en": "Working script", "href": "data/cases/ecuador-clima-mensual-1981-2026/guion_borrador.md"},
+        {"label_es": "Receta Earth Engine", "label_en": "Earth Engine recipe", "href": "scripts/export_ecuador_climate_history_gee.js"}
+      ],
+      "limits_es": "2026 solo contiene enero–agosto; el promedio regional no sustituye estaciones meteorológicas.",
+      "limits_en": "2026 only covers January–August; a regional mean is not a substitute for weather stations."
+    },
+    {
+      "id": "ecuador-lluvia-diaria-2024",
+      "kind": "rainfall",
+      "status": "data_ready",
+      "title_es": "La lluvia que mueve los ríos",
+      "title_en": "The rain that moves rivers",
+      "hook_es": "Primero cae la lluvia. Después responde la cuenca.",
+      "hook_en": "Rain falls first. The basin responds later.",
+      "question_es": "Lluvia diaria de 2024 como contexto para leer cambios en ríos y humedales.",
+      "question_en": "Daily rainfall in 2024 as context for reading changes in rivers and wetlands.",
+      "period_es": "Año 2024",
+      "period_en": "Year 2024",
+      "territories": ["Ecuador", "Napo", "Tena", "Archidona"],
+      "sources_es": "GPM IMERG V07 · SRTM",
+      "sources_en": "GPM IMERG V07 · SRTM",
+      "files": [
+        {"label_es": "Recibo de datos", "label_en": "Data receipt", "href": "data/cases/ecuador-lluvia-diaria-2024/source_receipt.json"},
+        {"label_es": "Guion de trabajo", "label_en": "Working script", "href": "data/cases/ecuador-lluvia-diaria-2024/guion_borrador.md"},
+        {"label_es": "Receta Earth Engine", "label_en": "Earth Engine recipe", "href": "scripts/export_ecuador_rain_video_gee.js"}
+      ],
+      "limits_es": "La estimación satelital no mide caudal ni demuestra por sí sola inundación o minería.",
+      "limits_en": "The satellite estimate does not measure discharge or prove flooding or mining by itself."
+    },
+    {
+      "id": "ecuador-lluvia-2026-enero-agosto",
+      "kind": "rainfall",
+      "status": "data_ready",
+      "title_es": "La lluvia de este año, con cautela",
+      "title_en": "This year's rain, with caution",
+      "hook_es": "¿Qué podemos decir de 2026 sin inventar los meses que todavía faltan?",
+      "hook_en": "What can we say about 2026 without inventing the months still missing?",
+      "question_es": "Acumulados diarios provisionales de enero–agosto de 2026, con su estado de procesamiento visible.",
+      "question_en": "Provisional daily totals from January–August 2026, with processing status visible.",
+      "period_es": "Enero – agosto de 2026",
+      "period_en": "January – August 2026",
+      "territories": ["Ecuador", "Napo", "Tena", "Archidona"],
+      "sources_es": "GPM IMERG V07 provisional",
+      "sources_en": "Provisional GPM IMERG V07",
+      "files": [
+        {"label_es": "Recibo de datos", "label_en": "Data receipt", "href": "data/cases/ecuador-lluvia-2026-enero-agosto/source_receipt.json"},
+        {"label_es": "Guion de trabajo", "label_en": "Working script", "href": "data/cases/ecuador-lluvia-2026-enero-agosto/guion_borrador.md"},
+        {"label_es": "Receta Earth Engine", "label_en": "Earth Engine recipe", "href": "scripts/export_ecuador_rain_video_gee_2026.js"}
+      ],
+      "limits_es": "Es un corte incompleto y provisional; no es un total anual ni una medición de estación.",
+      "limits_en": "This is an incomplete provisional snapshot; it is not an annual total or a station measurement."
+    },
+    {
+      "id": "ecuador-lluvia-climatologia-1991-2020",
+      "kind": "climate",
+      "status": "data_ready",
+      "title_es": "Ecuador bajo la lluvia",
+      "title_en": "Ecuador under rain",
+      "hook_es": "¿Cómo se mueve la estación lluviosa por el país?",
+      "hook_en": "How does the rainy season move across the country?",
+      "question_es": "Doce cuadros muestran la precipitación mensual media de 1991–2020 con una escala fija.",
+      "question_en": "Twelve frames show mean monthly precipitation from 1991–2020 on one fixed scale.",
+      "period_es": "Climatología 1991–2020",
+      "period_en": "1991–2020 climatology",
+      "territories": ["Ecuador", "Napo", "Tena", "Archidona"],
+      "sources_es": "CHIRPS Daily · SRTM",
+      "sources_en": "CHIRPS Daily · SRTM",
+      "files": [
+        {"label_es": "Recibo climatológico", "label_en": "Climatology receipt", "href": "data/cases/ecuador-lluvia-climatologia-1991-2020/source_receipt.json"},
+        {"label_es": "Guion GeoPanda", "label_en": "GeoPanda script", "href": "data/cases/ecuador-lluvia-climatologia-1991-2020/guion_borrador.md"},
+        {"label_es": "Receta Earth Engine", "label_en": "Earth Engine recipe", "href": "scripts/export_ecuador_rain_climatology_geopanda_gee.js"}
+      ],
+      "limits_es": "Es una climatología, no el total de un año específico; el suavizado no aumenta la resolución.",
+      "limits_en": "It is a climatology, not one year's total; smoothing does not increase resolution."
+    },
+    {
+      "id": "ecuador-temperatura-2026-enero-agosto",
+      "kind": "temperature",
+      "status": "data_ready",
+      "title_es": "Un año de calor",
+      "title_en": "A year of heat",
+      "hook_es": "El color cambia. ¿Cambió realmente el clima?",
+      "hook_en": "The color changes. Did the climate really change?",
+      "question_es": "Temperatura del aire a 2 m para contextualizar anomalías y contrastarlas con la lluvia.",
+      "question_en": "2 m air temperature to contextualize anomalies and contrast them with rain.",
+      "period_es": "Enero – agosto de 2026",
+      "period_en": "January – August 2026",
+      "territories": ["Ecuador", "Napo", "Tena", "Archidona"],
+      "sources_es": "ERA5-Land Daily Aggregated",
+      "sources_en": "ERA5-Land Daily Aggregated",
+      "files": [
+        {"label_es": "Recibo de datos", "label_en": "Data receipt", "href": "data/cases/ecuador-temperatura-2026-enero-agosto/source_receipt.json"},
+        {"label_es": "Guion de trabajo", "label_en": "Working script", "href": "data/cases/ecuador-temperatura-2026-enero-agosto/guion_borrador.md"},
+        {"label_es": "Receta Earth Engine", "label_en": "Earth Engine recipe", "href": "scripts/export_ecuador_temperature_heatmap_gee.js"}
+      ],
+      "limits_es": "Es una reconstrucción atmosférica, no la temperatura medida por un termómetro en cada píxel.",
+      "limits_en": "This is an atmospheric reanalysis, not a thermometer reading at every pixel."
+    }
+  ]
+}

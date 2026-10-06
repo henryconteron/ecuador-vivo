@@ -120,6 +120,44 @@ Los derivados conservan condiciones y atribución de sus fuentes, no MIT.
 Los archivos `*.demo.geojson` contienen geometrías sintéticas sin valor
 científico. Se incluyen únicamente para probar la interfaz y quedan cubiertos
 por la licencia del código salvo indicación posterior.
+
+## Caso audiovisual: fronteras de Sudamérica, 1886–2019
+
+El borrador `sudamerica-fronteras-1886-2019` se construye localmente con
+**CShapes 2.0** de ETH Zurich International Conflict Research, cuyos períodos
+históricos van de 1886-01-01 a 2019-12-31. El insumo bruto no se redistribuye:
+el recibo, la fuente y los límites están en
+`data/cases/sudamerica-fronteras-1886-2019/source_receipt.json`.
+
+Fuente y cita: Schvitz, G. et al. (2022). *Mapping The International System,
+1886-2017: The CShapes 2.0 Dataset*. *Journal of Conflict Resolution*, 66(1),
+144–161. https://icr.ethz.ch/data/cshapes/
+
+CShapes se publica bajo **CC BY-NC-SA 4.0**. Cualquier derivado audiovisual
+público debe conservar atribución, carácter no comercial y las condiciones
+ShareAlike. La animación representa períodos geométricos codificados; no es una
+resolución de controversias territoriales ni una historia social exhaustiva.
+
+# Datos climáticos para videos
+
+Los exportadores de `scripts/export_ecuador_rain_video_gee*.js` usan **NASA/GPM IMERG V07**;
+conservar la cita DOI `10.5067/GPM/IMERG/3B-HH/07` y distinguir productos `permanent` de
+`provisional`. La disponibilidad de 2026 se trata como ventana parcial y no como total anual.
+
+El archivo histórico usa **CHIRPS Daily v2.0** (`UCSB-CHG/CHIRPS/DAILY`), producto de UCSB/CHG a
+0,05° y de dominio público. Cita: Funk et al. (2015), *Scientific Data* 2, 150066,
+https://doi.org/10.1038/sdata.2015.66.
+
+La temperatura usa **ECMWF/Copernicus ERA5-Land Daily Aggregated** (`ECMWF/ERA5_LAND/DAILY_AGGR`),
+banda `temperature_2m`, convertida de kelvin a °C. Para distribución pública, conservar la nota:
+“Contains modified Copernicus Climate Change Service Information [year]”; ni ECMWF ni la Comisión
+Europea son responsables del uso que se haga de la información. Cita: Muñoz Sabater (2019),
+https://doi.org/10.24381/cds.68d2bb30.
+
+Las fases ENSO no se infieren del mapa. El cruce se hará con el índice oficial publicado por NOAA
+CPC (ONI/RONI), conservando la versión y la línea base indicada por NOAA:
+https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/oni/v6/index.php.
+
 # Medios audiovisuales de Andes Pulso
 
 Los videos, voces, subtítulos y piezas editoriales conservados en la integración no adquieren automáticamente la licencia MIT del software ni una licencia abierta de datos. El video nacional utiliza una toma de voz sintética cuyo registro exige uso no comercial y atribución `Voz: elevenlabs.io`. Sus condiciones y las de los datos USGS se identifican en `data/cases/memoria-sismica-1900-2025/case.json`. Solicitar autorización específica para reutilizaciones no amparadas por esas condiciones.
@@ -127,4 +165,3 @@ Los videos, voces, subtítulos y piezas editoriales conservados en la integraci�
 # Selección geológica IIGE · 2026-10-04
 
 Los datos de `data/geology/` proceden del Instituto de Investigación Geológico y Energético, descargados el 4 de octubre de 2026. Están sujetos a las [condiciones del IIGE](https://geoportal.geoenergia.gob.ec/), no a la licencia MIT. Conservar autoría, fecha y límites de la selección. No implica respaldo oficial. Consultas y huellas en `data/geology/manifest.json`; detalles en `documentation/geologia-y-aportes.md`.
-

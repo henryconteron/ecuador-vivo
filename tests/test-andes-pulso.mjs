@@ -7,6 +7,14 @@ import { normalizeSnapshot, filterEvents, pageEvents, depthGroup, summarizeEvent
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const base = path.join(root, CASE_BASE);
+const storyRegistry = JSON.parse(readFileSync(path.join(root, "data/cases/registry.json"), "utf8"));
+assert.equal(storyRegistry.schema_version, 1);
+assert.equal(storyRegistry.cases.length, 5);
+for (const story of storyRegistry.cases) {
+  assert.ok(story.id && story.title_es && story.title_en, story.id);
+  assert.ok(story.territories.includes("Ecuador"), story.id);
+  for (const file of story.files) assert.ok(existsSync(path.join(root, file.href)), `${story.id}: ${file.href}`);
+}
 const record = JSON.parse(readFileSync(path.join(base, "case.json"), "utf8"));
 const manifest = JSON.parse(readFileSync(path.join(base, "manifest.json"), "utf8"));
 const snapshotBytes = readFileSync(path.join(base, "usgs_snapshot.geojson"));

@@ -1,0 +1,25 @@
+{
+  "case_id": "ecuador-lluvia-diaria-2024",
+  "status": "gee_export_script_ready",
+  "source": "NASA/GPM_L3/IMERG_V07",
+  "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V07",
+  "doi": "https://doi.org/10.5067/GPM/IMERG/3B-HH/07",
+  "period": ["2024-01-01", "2024-12-31"],
+  "source_units": "mm/h",
+  "interval_minutes": 30,
+  "daily_derivation": "sum(rate_mm_per_hour) * 0.5 hour",
+  "output_units": "mm/day",
+  "native_resolution_m": 11132,
+  "visual_min_mm_day": 0,
+  "visual_max_mm_day": 120,
+  "display_note": "Bilinear resampling and an Ecuador outline improve legibility only; they do not increase the native 0.1 degree information.",
+  "native_grid_description": "0.1 degree, approximately 11 km at Ecuadorian latitudes",
+  "terrain_context": "USGS/SRTMGL1_003",
+  "limits": [
+    "Satellite estimate, not a gauge measurement at each location",
+    "Does not determine river discharge, flood extent, mining, or damage",
+    "Final versus provisional status must be preserved in the Earth Engine receipt",
+    "A zoomed pixel remains a roughly 11 km cell"
+  ],
+  "license_note": "NASA-produced GPM data are freely available for public use; preserve citation and product documentation."
+}

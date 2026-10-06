@@ -1,0 +1,23 @@
+# Adapted from Streamlit's bundled Nord template; local fonts, no CDN.
+[theme]
+base = "dark"
+primaryColor = "#237e72"
+backgroundColor = "#0b1922"
+secondaryBackgroundColor = "#19333e"
+textColor = "#f3f1e9"
+linkColor = "#77d8bc"
+borderColor = "#32505b"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "8px"
+font = "sans-serif"
+[theme.sidebar]
+backgroundColor = "#10252e"
+secondaryBackgroundColor = "#19333e"
+[server]
+address = "127.0.0.1"
+port = 8510
+headless = true
+maxUploadSize = 512
+[browser]
+gatherUsageStats = false

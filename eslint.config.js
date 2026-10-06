@@ -46,7 +46,7 @@ export default [
     },
   },
   {
-    files: ["scripts/export_napo_*_gee.js"],
+    files: ["scripts/*_gee*.js"],
     languageOptions: {
       globals: {
         ee: "readonly",

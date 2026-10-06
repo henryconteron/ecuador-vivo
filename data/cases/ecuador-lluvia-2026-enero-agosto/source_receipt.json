@@ -1,0 +1,14 @@
+{
+  "case_id": "ecuador-lluvia-2026-enero-agosto",
+  "status": "gee_export_script_ready",
+  "source": "NASA/GPM_L3/IMERG_V07",
+  "source_url": "https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V07",
+  "period": ["2026-01-01", "2026-08-31"],
+  "status_used": "provisional",
+  "source_units": "mm/h",
+  "daily_derivation": "sum(rate_mm_per_hour) * 0.5 hour",
+  "output_units": "mm/day",
+  "interval_count_per_day": 48,
+  "native_resolution_m": 11132,
+  "limits": ["2026 is year-to-date, not a complete annual total", "Satellite estimate, not a local gauge", "Does not determine discharge or flood extent"]
+}

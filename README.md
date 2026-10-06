@@ -7,7 +7,7 @@
 - [Inicio](https://henryconteron.github.io/ecuador-vivo/): presentación del proyecto.
 - [Explorar](https://henryconteron.github.io/ecuador-vivo/explore.html): visor de Tierra, Agua, Cielo, Vida y Riesgo.
 - [Datos](https://henryconteron.github.io/ecuador-vivo/datos.html): archivos, derivados y servicios externos, claramente diferenciados.
-- [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas.
+- [Andes Pulso](https://henryconteron.github.io/ecuador-vivo/andes-pulso.html): video, mapa y tabla de la misma instantánea, método, límites y descargas. El [catálogo de historias](data/cases/registry.json) añade las próximas piezas de lluvia y temperatura con sus recibos y recetas de Earth Engine.
 - [Biblioteca](https://henryconteron.github.io/ecuador-vivo/biblioteca.html): estudios sobre Ecuador vinculados a los temas del atlas; no feed global automático.
 - [Aprender](https://henryconteron.github.io/ecuador-vivo/learn.html): tres experiencias 3D ES/EN con modelos didácticos de fallas, lluvia e infiltración y ascenso orográfico; retos con retroalimentación y cuaderno local. [Fuentes, método y límites](documentation/aprender-3d.md).
 - [Lecturas documentadas](https://henryconteron.github.io/ecuador-vivo/lecturas.html): historias anteriores, figuras atribuidas, evidencia de campo y bibliografía preservadas para profundizar.
@@ -392,6 +392,34 @@ la humedad antecedente, el relieve, los suelos, el drenaje y la ocupación de la
 seguimiento hidrometeorológico nacional, el atlas mantiene un enlace explícito a
 INAMHI–GEOGLOWS y conserva a INAMHI como fuente institucional en evaluación para futuras capas de
 estaciones, caudales y alertas.
+
+### Caso audiovisual en preparación: 365 días de lluvia sobre Ecuador
+
+El siguiente caso transforma la tasa IMERG de 30 minutos en acumulado diario mediante una
+conversión explícita (`mm/h × 0,5 h`). El script de Google Earth Engine, el guion y los límites
+se conservan en `scripts/export_ecuador_rain_video_gee.js` y
+`data/cases/ecuador-lluvia-diaria-2024/`; aún no debe presentarse como una exportación final hasta
+conservar el recibo generado por Earth Engine. La animación usa el relieve sombreado de SRTM solo
+como contexto y mantiene visible la resolución aproximada de 11 km de cada celda.
+
+### Ventanas 2026 e historia climática
+
+También quedan preparados tres recorridos reproducibles para Earth Engine:
+
+- `scripts/export_ecuador_rain_video_gee_2026.js`: lluvia IMERG provisional de enero–agosto de
+  2026; no presenta el año incompleto como total anual.
+- `scripts/export_ecuador_temperature_heatmap_gee.js`: temperatura del aire a 2 m de ERA5-Land,
+  en una paleta divergente frío–cálido.
+- `scripts/export_ecuador_climate_history_gee.js`: 548 meses (1981–agosto de 2026) de anomalías
+  de lluvia CHIRPS y temperatura ERA5-Land respecto a 1981–2010, más una tabla CSV regional.
+
+Los guiones y recibos viven en `data/cases/`. La tabla histórica se debe cruzar con las temporadas
+oficiales del ONI de NOAA antes de afirmar que una anomalía fue causada por El Niño o La Niña.
+CHIRPS aporta una malla diaria de 0,05° útil para tendencias; ERA5-Land aporta temperatura del aire
+a 2 m en una malla de aproximadamente 11 km. Ninguno sustituye una estación local.
+La animación térmica usa aire a 2 m para no mezclar variables. Si más adelante queremos contar el
+calor de la superficie con mayor detalle, `MODIS/061/MOD11A1` ofrece LST diaria de 1 km, pero debe
+tratarse como otro producto: tiene nubosidad y no equivale a temperatura del aire.
 
 ## Temperatura del aire satelital
 

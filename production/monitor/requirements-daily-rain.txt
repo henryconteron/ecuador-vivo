@@ -1,0 +1,6 @@
+# Versions used for the verified 2024 daily rainfall video (Windows, Python 3.13).
+# Standalone renderer: no Earth Engine account or Streamlit required.
+numpy==2.4.3
+Pillow==12.1.1
+rasterio==1.5.1
+imageio-ffmpeg==0.6.0

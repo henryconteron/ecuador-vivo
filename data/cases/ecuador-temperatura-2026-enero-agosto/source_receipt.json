@@ -1,0 +1,13 @@
+{
+  "case_id": "ecuador-temperatura-2026-enero-agosto",
+  "status": "gee_export_script_ready",
+  "source": "ECMWF/ERA5_LAND/DAILY_AGGR",
+  "source_url": "https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR",
+  "period": ["2026-01-01", "2026-08-31"],
+  "source_band": "temperature_2m",
+  "source_units": "K",
+  "output_units": "degC",
+  "derivation": "temperature_2m - 273.15",
+  "native_resolution_m": 11132,
+  "limits": ["Reanalysis, not a thermometer at each pixel", "Not land-surface temperature", "2026 window is incomplete"]
+}

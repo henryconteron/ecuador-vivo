@@ -1,0 +1,14 @@
+{
+  "case_id": "ecuador-clima-mensual-1981-2026",
+  "status": "gee_export_script_ready",
+  "rainfall_source": "UCSB-CHG/CHIRPS/DAILY",
+  "temperature_source": "ECMWF/ERA5_LAND/DAILY_AGGR",
+  "period": ["1981-01", "2026-08"],
+  "baseline": ["1981-01", "2010-12"],
+  "months": 548,
+  "rainfall_units": "mm/month",
+  "temperature_units": "degC",
+  "anomaly_definition": "monthly value minus same-calendar-month 1981-2010 mean",
+  "enso_note": "Join the table with NOAA ONI seasons before attributing anomalies to El Niño or La Niña",
+  "limits": ["Regional mean is not a station observation", "Anomaly is not proof of causation", "2026 is partial"]
+}

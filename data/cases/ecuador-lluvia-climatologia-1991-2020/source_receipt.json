@@ -1,0 +1,18 @@
+{
+  "case_id": "ecuador-lluvia-climatologia-1991-2020",
+  "status": "gee_export_script_ready",
+  "source": "UCSB-CHG/CHIRPS/DAILY",
+  "source_url": "https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY",
+  "period": ["1991-01-01", "2020-12-31"],
+  "aggregation": "monthly sum for each year, then mean across 1991–2020",
+  "output_units": "mean mm/month",
+  "months": 12,
+  "native_resolution_m": 5566,
+  "visualization": "bilinear display resampling only; fixed 0–700 mm/month scale",
+  "limits": [
+    "Climatology describes the 1991–2020 baseline, not one specific year",
+    "Satellite-derived precipitation is not a station measurement at every pixel",
+    "Zooming does not resolve showers below the native grid"
+  ],
+  "license_note": "CHIRPS data are publicly available; preserve the dataset citation and documentation."
+}

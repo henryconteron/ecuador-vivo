@@ -1,0 +1,10 @@
+{
+  "join_key": "calendar month",
+  "climate_table_field": "date",
+  "official_index": "NOAA CPC Oceanic Niño Index (ONI) / current RONI guidance",
+  "official_url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/oni/v6/index.php",
+  "legacy_definition": "three-month running mean of Niño 3.4 SST anomalies",
+  "threshold_note": "NOAA documents warm/cold periods with a +/-0.5 C threshold; use the index version and baseline stated by NOAA for the publication date.",
+  "interpretation_rule": "Use the join to compare timing and spatial response; do not claim causation from correlation alone.",
+  "recommended_cases": ["1997-1998 El Niño", "2010-2011 La Niña", "2015-2016 El Niño", "2020-2022 La Niña", "2023-2024 El Niño"]
+}

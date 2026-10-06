@@ -1,0 +1,21 @@
+{
+  "case_id": "sudamerica-fronteras-1886-2019",
+  "title": "Sudamérica no siempre se vio así",
+  "status": "draft",
+  "dataset": {
+    "name": "CShapes 2.0",
+    "publisher": "ETH Zurich International Conflict Research",
+    "source_url": "https://icr.ethz.ch/data/cshapes/CShapes-2.0.zip",
+    "documentation_url": "https://icr.ethz.ch/data/cshapes/",
+    "coverage": "1886-01-01 through 2019-12-31",
+    "license": "CC BY-NC-SA 4.0",
+    "citation": "Schvitz, Guy, Seraina Rüegger, Luc Girardin, Lars-Erik Cederman, Nils Weidmann, and Kristian Skrede Gleditsch. 2022. Mapping The International System, 1886-2017: The CShapes 2.0 Dataset. Journal of Conflict Resolution 66(1): 144-161."
+  },
+  "scope": "South America, with Panama and French Guiana retained where necessary for the CShapes periods represented in the regional view.",
+  "limits": [
+    "The dataset encodes historical country-period geometry and status; it is not an exhaustive social, legal, indigenous or lived history.",
+    "The video must not label 2020 or later as observed CShapes data.",
+    "The visualization does not adjudicate territorial disputes or claims."
+  ],
+  "reuse": "Any public derivative must retain attribution and comply with CC BY-NC-SA 4.0."
+}
