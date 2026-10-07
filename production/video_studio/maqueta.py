@@ -31,6 +31,9 @@ from rasterio.warp import reproject
 
 from data import boundary, fetch, rain_path
 from model import ROOT, STORE
+from layout_engine import (begin_layout, finish_layout, scene_for, place_layer, full_layer,
+                           draw as layout_draw, editable_icon)
+from layout_engine import SceneDraw
 
 
 # =============================================================================
@@ -255,6 +258,16 @@ def draw_line(draw, x, baseline, text, kind, cap, target_width, fill):
 
 
 def draw_tracked(draw, x, baseline, text, kind, cap, target_width, fill):
+    if isinstance(draw, SceneDraw):
+        tile = Image.new('RGBA', draw.image.size)
+        key = draw.scene.key('tracked_text')
+        change = draw.scene.overrides.get(key, {})
+        text = change.get('text', text)
+        draw_tracked(ImageDraw.Draw(tile), x, baseline, text, kind,
+                     round(change.get('font_size', cap)), target_width, change.get('color', fill))
+        full_layer(draw.image, tile, key=key, kind='text', label=text, text=text,
+                   font_size=cap, color=fill, content_editable=True)
+        return
     size = size_for_cap(kind, cap)
 
     while size > 12:
@@ -302,6 +315,17 @@ def colorize(values, project):
 
 
 def gradient_text(image, x, baseline, text, font_obj, color_left, color_right):
+    scene = scene_for(image)
+    key = scene.key('gradient') if scene else None
+    original_text = text
+    if scene:
+        override = scene.overrides.get(key, {})
+        if not any(c.isdigit() for c in str(text)):
+            text = override.get('text', text)
+        if override.get('font_size'):
+            font_obj = font_obj.font_variant(size=round(override['font_size']))
+        color_left = override.get('color', color_left)
+        color_right = override.get('color', color_right)
     mask = Image.new('L', image.size, 0)
     ImageDraw.Draw(mask).text(
         (x, baseline),
@@ -324,17 +348,18 @@ def gradient_text(image, x, baseline, text, font_obj, color_left, color_right):
     right = np.array(hex_to_rgb(color_right), dtype=float)[None, None, :]
     gradient = np.repeat(left * (1 - t) + right * t, height, axis=0).astype('uint8')
 
-    image.paste(
-        Image.fromarray(gradient, 'RGB'),
-        (x0, y0),
-        mask.crop(bbox)
-    )
+    layer = Image.fromarray(gradient, 'RGB').convert('RGBA')
+    layer.putalpha(mask.crop(bbox))
+    place_layer(image, layer, (x0, y0), key=key, kind='text', text=str(original_text),
+                label=str(original_text), font_size=font_obj.size, color=color_left,
+                content_editable=not any(c.isdigit() for c in str(original_text)))
 
 
 # =============================================================================
 # ICONOS
 # =============================================================================
 
+@editable_icon
 def draw_calendar_icon(draw, x, y, color, s=1.25):
     body = 44 * s
     stroke = round(3 * s)
@@ -357,6 +382,7 @@ def draw_calendar_icon(draw, x, y, color, s=1.25):
         )
 
 
+@editable_icon
 def draw_play_button(draw, box, color):
     x0, y0, x1, y1 = box
     draw.ellipse(box, fill='#1C2B37')
@@ -367,6 +393,7 @@ def draw_play_button(draw, box, color):
     )
 
 
+@editable_icon
 def draw_database_icon(draw, x, y, color, w=58, h=74):
     e = round(w * 0.28)
     draw.ellipse((x, y, x + w, y + e), outline=color, width=3)
@@ -377,17 +404,20 @@ def draw_database_icon(draw, x, y, color, w=58, h=74):
         draw.arc((x, yk - e / 2, x + w, yk + e / 2), 0, 180, fill=color, width=3)
 
 
+@editable_icon
 def draw_mountain_icon(draw, x, y, color):
     draw.line((x, y + 43, x + 26, y + 3, x + 49, y + 43), fill=color, width=3)
     draw.line((x + 32, y + 43, x + 48, y + 17, x + 70, y + 43), fill=color, width=3)
 
 
+@editable_icon
 def draw_instagram_icon(draw, x, y, color):
     draw.rounded_rectangle((x, y, x + 32, y + 32), radius=9, outline=color, width=3)
     draw.ellipse((x + 8, y + 8, x + 24, y + 24), outline=color, width=3)
     draw.ellipse((x + 23, y + 5, x + 27, y + 9), fill=color)
 
 
+@editable_icon
 def draw_tiktok_icon(draw, x, y, color):
     draw.line((x + 18, y + 3, x + 18, y + 26), fill=color, width=5)
     draw.line((x + 18, y + 4, x + 30, y + 11), fill=color, width=5)
@@ -857,8 +887,8 @@ def compose_maqueta(project, values, boundary, date, index, count):
     # -------------------------------------------------------------------------
     # Base
     # -------------------------------------------------------------------------
-    design = Image.new('RGBA', (WIDTH, HEIGHT), bg)
-    draw = ImageDraw.Draw(design)
+    design = begin_layout(Image.new('RGBA', (WIDTH, HEIGHT), bg), project, 'map')
+    draw = layout_draw(design)
 
     # -------------------------------------------------------------------------
     # Title line 1
@@ -1039,13 +1069,16 @@ def compose_maqueta(project, values, boundary, date, index, count):
     # -------------------------------------------------------------------------
     # Map glow
     # -------------------------------------------------------------------------
+    canvas = design
+    design = Image.new('RGBA', (WIDTH, HEIGHT))
+    gal_canvas = Image.new('RGBA', (WIDTH, HEIGHT))
     design.alpha_composite(
         make_glow(main_mask, accent),
         (map_x, map_y)
     )
 
     if show_gal and gal_mask is not None:
-        design.alpha_composite(
+        gal_canvas.alpha_composite(
             make_glow(gal_mask, accent),
             (gal['x'], gal['y'])
         )
@@ -1068,7 +1101,7 @@ def compose_maqueta(project, values, boundary, date, index, count):
         gal_rgb = Image.fromarray(colorize(gal_values, project))
         covered = Image.fromarray(np.where(np.isfinite(gal_values),
                                           np.asarray(gal_mask), 0).astype('uint8'))
-        design.paste(gal_rgb, (gal['x'], gal['y']), covered)
+        gal_canvas.paste(gal_rgb, (gal['x'], gal['y']), covered)
 
     # -------------------------------------------------------------------------
     # Outlines
@@ -1088,7 +1121,7 @@ def compose_maqueta(project, values, boundary, date, index, count):
             (gal['w'], gal['h']),
             [(gal_rings, MAP_BORDER, 1.4)]
         )
-        top.alpha_composite(gal_lines, (gal['x'], gal['y']))
+        gal_canvas.alpha_composite(gal_lines, (gal['x'], gal['y']))
 
     top_draw = ImageDraw.Draw(top)
 
@@ -1132,15 +1165,20 @@ def compose_maqueta(project, values, boundary, date, index, count):
         )
 
     design.alpha_composite(top)
+    full_layer(canvas, design, key='map.main', label='Mapa continental y ciudades', kind='map')
+    full_layer(canvas, gal_canvas, key='map.galapagos', label='Galápagos', kind='map')
+    design = canvas
 
     # -------------------------------------------------------------------------
     # Legend
     # -------------------------------------------------------------------------
+    canvas = design
+    design = Image.new('RGBA', canvas.size)
     legend = project['legend']
     if project['units']:
         legend += f' · {project["units"]}'
 
-    draw = ImageDraw.Draw(design)
+    draw = layout_draw(design)
     draw_line(
         draw,
         55,
@@ -1182,7 +1220,9 @@ def compose_maqueta(project, values, boundary, date, index, count):
             Image.Resampling.LANCZOS
         )
 
-        design.paste(bar, (bar_x0, bar_y0), bar_mask)
+        bar = bar.convert('RGBA')
+        bar.putalpha(bar_mask)
+        place_layer(design, bar, (bar_x0, bar_y0), key='legend.colors', kind='legend', label='Escala de colores')
 
         label_font = fit_text('label', 27, 66, '120+')
 
@@ -1228,6 +1268,9 @@ def compose_maqueta(project, values, boundary, date, index, count):
     # -------------------------------------------------------------------------
     # Footer
     # -------------------------------------------------------------------------
+    full_layer(canvas, design, key='legend.shared', kind='map', label='Leyenda y escala de colores')
+    design = canvas
+    draw = layout_draw(design)
     draw.line((56, 1689, 1025, 1689), fill=line_color, width=2)
     draw.line((587, 1716, 587, 1836), fill=vline_color, width=2)
 
@@ -1304,7 +1347,9 @@ def compose_maqueta(project, values, boundary, date, index, count):
     # -------------------------------------------------------------------------
     # Safe-area composition
     # -------------------------------------------------------------------------
-    result = compose_final(design.convert('RGB'))
+    design = finish_layout(design)
+    custom = project.get('_layout_capture') or project.get('visual_layout', {}).get('full_canvas')
+    result = design.convert('RGB') if custom else compose_final(design.convert('RGB'))
 
     if project['width'] != 1080:
         result = result.resize(

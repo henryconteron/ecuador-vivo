@@ -276,6 +276,15 @@ La vista inicial y el botón de restablecimiento cubren Ecuador continental. La 
 Galápagos se definirá como una vista geográfica independiente para evitar reducir excesivamente la
 escala del territorio continental.
 
+### Herramientas privadas locales
+
+`Abrir editor de videos.vbs` inicia Video Studio, donde las comparaciones climáticas y sus maquetas
+para redes están integradas en **Editor → Tipo de video: Comparación climática**. `Abrir panel personal de la web.vbs` abre
+otra aplicación local para editar textos, bloques, tema y capas conectadas del sitio. El panel web
+escucha solo en `127.0.0.1`, no se despliega a Pages y no guarda credenciales. Su primera versión
+edita contenido estructurado; no reescribe la lógica de componentes ni sustituye una consola de
+desarrollo. Véase [`production/site_admin/README.md`](production/site_admin/README.md).
+
 La instantánea de estaciones se renueva con `npm run update:stations`. El proceso consulta la API
 pública usada por el visor hidrometeorológico de INAMHI, conserva solo puntos dentro de la vista
 continental cuyo estado informado es `TRANSMITIENDO`, y registra fecha, endpoint, filtros y conteos

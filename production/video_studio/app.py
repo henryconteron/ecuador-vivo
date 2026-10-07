@@ -40,16 +40,36 @@ TEMPLATE_VERSION = getattr(_model, 'TEMPLATE_VERSION', 1)
 # ``maqueta`` layout to the older social renderer and raise KeyError('maqueta').
 import data as _data
 _data = importlib.reload(_data)
+import variables as _variables
+_variables = importlib.reload(_variables)
+if 'layout_engine' in sys.modules:
+    importlib.reload(sys.modules['layout_engine'])
 if 'maqueta' in sys.modules:
     _maqueta = importlib.reload(sys.modules['maqueta'])
 if 'endcard' in sys.modules:
     _endcard = importlib.reload(sys.modules['endcard'])
+for module_name in ('editorial', 'comparison_maps'):
+    if module_name in sys.modules:
+        importlib.reload(sys.modules[module_name])
 import render as _render
 _render = importlib.reload(_render)
 import social as _social
 _social = importlib.reload(_social)
 import jobs as _jobs
 _jobs = importlib.reload(_jobs)
+import publication as _publication
+_publication = importlib.reload(_publication)
+import providers as _providers
+_providers = importlib.reload(_providers)
+for module_name in ('storyboard', 'workspace', 'storyboard_ui', 'climate_comparison', 'comparison_video', 'climate_comparison_ui', 'spatial_csv_ui'):
+    if module_name in sys.modules:
+        importlib.reload(sys.modules[module_name])
+
+# CCv2 is registered once per module load, not on every interaction. Refresh
+# its inline assets only when their source changed during local development.
+_layout_module = sys.modules.get('layout_editor')
+if _layout_module and getattr(_layout_module, 'SOURCE_MTIME', None) != Path(_layout_module.__file__).stat().st_mtime_ns:
+    importlib.reload(_layout_module)
 
 boundary = _data.boundary
 load_values = _data.load_values
@@ -61,7 +81,11 @@ start_job = _jobs.start_job
 read_json = _jobs.read_json
 write_json = _jobs.write_json
 statuses = _jobs.statuses
+default_case_id = _publication.default_case_id
+prepare_case = _publication.prepare_case
 from endcard import compose_endcard, summary_for_project
+detect_profile = _variables.detect_profile
+resolve_aggregation = _variables.resolve_aggregation
 
 
 # =============================================================================
@@ -80,6 +104,7 @@ st.session_state.setdefault('preview', None)
 st.session_state.setdefault('endcard_preview', None)
 st.session_state.setdefault('import_rows', [])
 st.session_state.setdefault('active_job', None)
+st.session_state.setdefault('section', 'Editor')
 
 # Force a one-time migration when the renderer/template version changes.
 # Streamlit preserves session_state across hot reloads, which otherwise leaves
@@ -92,12 +117,26 @@ if st.session_state.get('_ecuador_vivo_template_version') != TEMPLATE_VERSION:
     st.session_state['_ecuador_vivo_template_version'] = TEMPLATE_VERSION
     st.cache_data.clear()
 
+# Provider downloads can be handed into the editor on the next rerun. Consume
+# the queued project before the sidebar widget is created, as Streamlit does
+# not allow changing a widget's value after it has been instantiated.
+pending_provider_project = st.session_state.pop('_pending_provider_project', None)
+pending_provider_section = st.session_state.pop('_pending_provider_section', None)
+if pending_provider_project is not None:
+    st.session_state.project = upgrade_project(pending_provider_project)
+    st.session_state.preview = None
+    st.session_state.endcard_preview = None
+    st.session_state.import_rows = []
+    st.session_state.revision += 1
+if pending_provider_section:
+    st.session_state.section = pending_provider_section
+
 p = upgrade_project(st.session_state.project)
 revision = st.session_state.revision
 
 # Included in the cached preview key so old PNGs can never survive a renderer
 # update with the same project JSON.
-RENDER_CACHE_VERSION = f'ecuador-vivo-maqueta-{TEMPLATE_VERSION}-3'
+RENDER_CACHE_VERSION = f'ecuador-vivo-maqueta-{TEMPLATE_VERSION}-visual-1'
 
 
 # =============================================================================
@@ -110,6 +149,12 @@ def replace_project(project):
     st.session_state.preview = None
     st.session_state.endcard_preview = None
     st.session_state.import_rows = []
+    st.session_state.pop('climate_comparison', None)
+    stored = project.get('comparison_data')
+    if stored:
+        restored = copy.deepcopy(stored)
+        restored['frames'] = [pd.DataFrame(rows) for rows in stored.get('frames', [])]
+        st.session_state.climate_comparison = restored
 
 
 @st.cache_data(max_entries=8, show_spinner=False)
@@ -127,6 +172,8 @@ def preview_bytes(project_json, index, render_cache_version):
         index,
         len(rows)
     )
+    from storyboard import format_preview
+    image = format_preview(image, project)
 
     buffer = io.BytesIO()
     image.save(buffer, format='PNG')
@@ -141,9 +188,34 @@ def endcard_preview_bytes(project_json, render_cache_version):
     rows = validate(project)
     summary = summary_for_project(project, rows, boundary())
     image = compose_endcard(project, summary)
+    from storyboard import format_preview
+    image = format_preview(image, project)
     buffer = io.BytesIO()
     image.save(buffer, format='PNG')
     return buffer.getvalue()
+
+
+@st.cache_data(max_entries=4, show_spinner=False)
+def _editor_summary(scientific_json, file_versions):
+    project = default_project()
+    project.update(json.loads(scientific_json))
+    return summary_for_project(project, timeline(project), boundary())
+
+
+def editor_summary(settings):
+    # Moving a text/icon must not reread hundreds of daily rasters. Only the
+    # data/method identity participates in this cache. Local file changes
+    # invalidate it; no scientific result is altered by presentation edits.
+    fields = ('source', 'start', 'end', 'entries', 'bbox', 'scale', 'offset',
+              'nodata', 'clip_ecuador', 'kind', 'variable', 'units', 'cadence',
+              'endcard_aggregation', 'endcard_accumulated_units')
+    values = {key: settings[key] for key in fields if key in settings}
+    versions = []
+    for row in settings.get('entries', []):
+        path = Path(row['path'])
+        stat = path.stat()
+        versions.append((str(path), stat.st_mtime_ns, stat.st_size))
+    return _editor_summary(json.dumps(values, sort_keys=True), tuple(versions))
 
 
 def snapshot():
@@ -197,6 +269,90 @@ def restore_maqueta_style():
     rerun_project()
 
 
+@st.cache_data(ttl=1800, show_spinner=False)
+def cached_inamhi_stations():
+    return _providers.inamhi_stations()
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
+def cached_inamhi_parameters(station_id):
+    return _providers.inamhi_parameters(station_id)
+
+
+def _queue_provider_project(result, provider):
+    """Use a downloaded gridded time series without losing the visual template."""
+    candidate = copy.deepcopy(p)
+    candidate.update(
+        source='local',
+        entries=copy.deepcopy(result['entries']),
+        start=result['start'],
+        end=result['end'],
+        cadence='Diaria',
+        scale=1.0,
+        offset=0.0,
+        nodata=-9999.0,
+        clip_ecuador=True,
+        endcard_aggregation_mode='auto',
+        endcard_rank_mode='provinces',
+        citation=result['citation'],
+        source_url=result['source_url'],
+        resolution_note=result['resolution_note'],
+        note=result['note'],
+        endcard_footer=result.get('endcard_footer', result['citation']),
+        endcard_footer_2=result.get(
+            'endcard_footer_2',
+            'Ecuador continental · límites: geoBoundaries'
+        ),
+        endcard_subtitle=(
+            f"Así cambió {result['variable'].lower()} en Ecuador "
+            f"durante {result['start'][:4]}."
+        ),
+        endcard_enabled=bool(result.get('endcard_enabled', False)),
+        show_galapagos=bool(result.get('show_galapagos', False)),
+        bbox=list(result.get('map_bbox', _providers.ECUADOR_MAP_BBOX)),
+    )
+    for key in ('variable', 'units', 'legend', 'title', 'description', 'kind'):
+        if result.get(key) is not None:
+            candidate[key] = result[key]
+    if result.get('stops'):
+        candidate['stops'] = list(result['stops'])
+    if result.get('palette'):
+        candidate['palette'] = list(result['palette'])
+    if result.get('endcard_aggregation'):
+        candidate['endcard_aggregation'] = result['endcard_aggregation']
+    if result.get('accumulated_units'):
+        candidate['endcard_accumulated_units'] = result['accumulated_units']
+    candidate['endcard_title'] = 'MÉTRICAS DEL PERÍODO'
+    candidate['endcard_section_2_note'] = (
+        'Provincias · promedio espacial · ranking 1–12'
+    )
+    candidate['endcard_section_3'] = 'PROVINCIAS 13–24'
+    candidate['endcard_section_3_note'] = 'Continuación del ranking.'
+    candidate['endcard_auto_text'] = True
+    candidate['scale_note'] = result.get(
+        'scale_note', result['resolution_note']
+    )
+    candidate['name'] = (
+        f"{provider} · {result['variable']} · "
+        f"{result['start']}–{result['end']}"
+    )
+    candidate['title'] = result.get(
+        'title', result['variable'].upper() + ' EN ECUADOR'
+    )
+    candidate['description'] = result.get(
+        'description',
+        f"Evolución diaria · {result['start']} a {result['end']}."
+    )
+    candidate['endcard_footer'] = result.get(
+        'endcard_footer',
+        f"{provider} · {result['resolution_note']}"
+    )
+    validate(candidate)
+    st.session_state._pending_provider_project = candidate
+    st.session_state._pending_provider_section = 'Editor'
+    st.rerun()
+
+
 # =============================================================================
 # SIDEBAR
 # =============================================================================
@@ -208,10 +364,14 @@ with st.sidebar:
         'ESTUDIO DE VIDEO · LOCAL'
     )
 
+    if st.session_state.section == 'Comparar para video':
+        st.session_state.section = 'Editor'
+        p['video_type'] = 'Comparación climática'
     section = st.radio(
         'Espacio de trabajo',
         [
             'Editor',
+            'Obtener datos',
             'Exportaciones',
             'Cómo usarlo'
         ],
@@ -316,13 +476,20 @@ if section == 'Cómo usarlo':
 
     st.markdown(
         '''
-1. En **Datos**, elige CHIRPS o importa tus GeoTIFF.
-2. En **Diseño**, usa **Maqueta Ecuador Vivo · aprobada** y cambia título,
-   subtítulo, colores y escala.
-3. En **Textos y créditos**, cambia marca, autoría, fuente, TikTok e Instagram.
-4. En **Mapa y tiempo**, elige ciudades, fechas, duración y resolución.
-5. Pulsa **Actualizar vista previa**.
-6. Cuando se vea como quieres, pulsa **Generar video**.
+1. En **Obtener datos**, descarga un período de CHIRPS v3 o NASA POWER y
+   envíalo directamente al **Editor**; para INAMHI puedes consultar y descargar
+   observaciones diarias de una estación.
+2. En **Editor**, elige **Mapa temporal**, **Comparación climática** o **CSV geográfico**.
+3. En **Datos**, prepara y revisa las fechas, unidades, cálculos o coordenadas.
+4. En **Maqueta**, ajusta el mapa y las métricas en el mismo lienzo: mueve,
+   redimensiona, añade o elimina textos e iconos. **Eliminar elemento** quita
+   la capa del diseño; **Recuperar elemento** permite volver a ponerla.
+   Las cifras calculadas no se sustituyen por valores escritos manualmente.
+5. Pulsa **OK · aplicar y guardar** antes de cambiar de tarjeta o de apartado.
+   Los cambios se dibujan aquí; no hay otra vista previa que actualizar.
+6. En **Montaje**, elige el formato (redes o YouTube), el orden y los tiempos.
+   También puedes añadir imágenes, clips y tarjetas explicativas.
+7. En **Exportar**, guarda el proyecto y pulsa **Generar video**.
 
 ### Maqueta Ecuador Vivo
 La plantilla aprobada conserva la estructura visual:
@@ -334,11 +501,24 @@ La plantilla aprobada conserva la estructura visual:
 - leyenda;
 - fuente, autoría y redes.
 
-La vista previa y la exportación utilizan el mismo renderer. Lo que ves en la
-vista previa es la composición que se envía al MP4.
+El lienzo y la exportación utilizan las mismas capas y el mismo dibujado.
+Las guías de seguridad y el borde de selección no aparecen en el MP4.
 
 ### Datos
-**CHIRPS:** lluvia diaria en mm/día. No se inventan días intermedios.
+**CHIRPS v3:** precipitación diaria en mm/día, 0,05° (~5,6 km). Sus productos
+diarios satelitales y de reanálisis distribuyen acumulados pentadales en días;
+el día es una etiqueta coherente, no una ventana de observación uniforme.
+
+**NASA POWER:** campos meteorológicos diarios y gratuitos; descarga nacional
+regional en GeoTIFF y CSV. Su grilla nativa es mucho más gruesa que CHIRPS: el
+remuestreo de pantalla no añade detalle. Las métricas provinciales quedan
+desactivadas por defecto para evitar darles una precisión que no tienen.
+
+**INAMHI:** observaciones diarias de estaciones meteorológicas/hidrológicas.
+El editor conserva cada estación como punto y reporta fechas faltantes; no
+convierte una estación en promedio provincial ni inventa una superficie.
+El endpoint del visor puede limitar el histórico disponible. Si un período
+no aparece, el panel enlaza el acceso oficial para solicitarlo.
 
 **GeoTIFF:** una banda seleccionada por fecha. Revisa unidades, escala,
 desplazamiento, NoData y preparación científica antes de importar.
@@ -353,6 +533,423 @@ de alrededor de **26 s** reproduce el ritmo corto de la pieza anual.
         str(STORE),
         language=None
     )
+
+    st.stop()
+
+
+# =============================================================================
+# DATA PROVIDERS
+# =============================================================================
+
+if section == 'Obtener datos':
+    st.title('Obtener datos · Ecuador vivo')
+    st.caption(
+        'Descarga desde fuentes originales, conserva el recibo de procedencia '
+        'y manda las grillas compatibles directo al editor.'
+    )
+    source_name = st.selectbox(
+        'Fuente de datos',
+        ['CHIRPS v3 · lluvia', 'NASA POWER · clima', 'INAMHI · estaciones'],
+        key='provider_source',
+    )
+
+    if source_name.startswith('CHIRPS'):
+        st.subheader('Precipitación diaria en rejilla')
+        st.markdown(
+            'CHIRPS v3 ofrece lluvia estimada con resolución de **0,05°**. '
+            'Elige un producto y descarga hasta **31 días por paquete**; cada '
+            'GeoTIFF se recorta en el equipo para incluir Ecuador continental y '
+            'Galápagos. El manifiesto conserva la URL fuente y la huella SHA-256 '
+            'del archivo recortado; no descarga el GeoTIFF global completo.'
+        )
+        product_labels = {
+            key: value['label'] for key, value in _providers.CHIRPS_PRODUCTS.items()
+        }
+        product = st.selectbox(
+            'Producto', list(product_labels),
+            format_func=product_labels.get,
+            index=0,
+            key='provider_chirps_product',
+        )
+        product_info = _providers.CHIRPS_PRODUCTS[product]
+        today = dt.date.today()
+        default_end = today - dt.timedelta(days=7)
+        default_start = default_end - dt.timedelta(days=6)
+        period = st.date_input(
+            'Período (máximo 31 días)',
+            value=(default_start, default_end),
+            min_value=product_info['minimum_date'],
+            max_value=today,
+            key=f'provider_chirps_period_{product}',
+        )
+        st.info(product_info['method'] + ' La versión preliminar puede revisarse cuando salga la final.')
+        chirps_dates = period if isinstance(period, (tuple, list)) else (period,)
+        if len(chirps_dates) == 2:
+            first, last = chirps_dates
+            signature = f'{product}|{first}|{last}'
+            if st.button('Descargar y preparar serie', type='primary', key='download_chirps'):
+                progress = st.progress(0, text='Conectando con CHIRPS…')
+
+                def chirps_progress(index, total, date_label):
+                    progress.progress(
+                        index / total,
+                        text=f'Día {index} de {total} · {date_label}',
+                    )
+
+                try:
+                    result = _providers.download_chirps_v3(
+                        first, last, product, progress=chirps_progress
+                    )
+                    result['_signature'] = signature
+                    st.session_state.provider_chirps_result = result
+                    progress.progress(1.0, text='Serie preparada para el editor.')
+                    st.rerun()
+                except Exception as error:
+                    st.error(f'No se pudo descargar CHIRPS: {error}')
+            else:
+                result = st.session_state.get('provider_chirps_result')
+                if result and result.get('_signature') == signature:
+                    st.success(
+                        f"{result['count']} días listos · "
+                        f"{result['start']} a {result['end']} · {result['resolution_note']}"
+                    )
+                    st.caption(
+                        f"Crédito sugerido: {result['citation']}. "
+                        'El paquete incluye GeoTIFF diarios y metadata.json.'
+                    )
+                    c1, c2 = st.columns(2)
+                    c1.download_button(
+                        'Descargar paquete GeoTIFF + recibo',
+                        Path(result['zip_path']).read_bytes(),
+                        file_name=Path(result['zip_path']).name,
+                        mime='application/zip',
+                        key='download_chirps_zip',
+                    )
+                    c2.download_button(
+                        'Descargar manifiesto',
+                        Path(result['manifest_path']).read_bytes(),
+                        file_name='metadata-chirps-v3.json',
+                        mime='application/json',
+                        key='download_chirps_manifest',
+                    )
+                    if st.button(
+                        'Usar esta serie en el editor',
+                        type='primary',
+                        key='use_chirps_in_editor',
+                    ):
+                        _queue_provider_project({
+                            **result,
+                            'endcard_enabled': True,
+                            'endcard_aggregation': 'sum',
+                            'accumulated_units': 'mm',
+                            'show_galapagos': True,
+                            'legend': 'LLUVIA DIARIA',
+                            'title': 'LLUVIA EN ECUADOR',
+                            'variable': 'Precipitación diaria CHIRPS v3',
+                            'description': f"Lluvia día a día · {first:%d %b %Y} a {last:%d %b %Y}.",
+                            'endcard_footer': f"CHIRPS v3 · 0,05° · {product.upper()}",
+                            'endcard_footer_2': 'Ecuador + Galápagos · límites: geoBoundaries',
+                            'map_bbox': _providers.ECUADOR_MAP_BBOX,
+                        }, 'CHIRPS v3')
+        else:
+            st.caption('Selecciona fecha inicial y final para habilitar la descarga.')
+
+        st.caption('Fuente oficial: https://chc.ucsb.edu/data/chirps3')
+
+    elif source_name.startswith('NASA'):
+        st.subheader('Clima diario en una grilla regional')
+        st.markdown(
+            'NASA POWER permite descargar series regionales para una variable '
+            'por solicitud. El paquete contiene el CSV original, GeoTIFF '
+            'multibanda y manifiesto. El grid meteorológico es de escala '
+            'regional (~50–60 km); no es adecuado para inferir diferencias '
+            'finas entre provincias o barrios.'
+        )
+        parameter = st.selectbox(
+            'Variable', list(_providers.POWER_VARIABLES),
+            format_func=lambda code: (
+                f"{_providers.POWER_VARIABLES[code]['label']} "
+                f"({_providers.POWER_VARIABLES[code]['units']})"
+            ),
+            key='provider_power_parameter',
+        )
+        today = dt.date.today()
+        default_end = today - dt.timedelta(days=14)
+        default_start = default_end - dt.timedelta(days=6)
+        period = st.date_input(
+            'Período (máximo 366 días por descarga)',
+            value=(default_start, default_end),
+            min_value=dt.date(1981, 1, 1),
+            max_value=today,
+            key='provider_power_period',
+        )
+        st.caption(
+            'Los valores meteorológicos regionales de POWER provienen de '
+            'productos de modelado/reanálisis; no son observaciones de '
+            'estaciones INAMHI. La API regional acepta una variable por pedido.'
+        )
+        power_dates = period if isinstance(period, (tuple, list)) else (period,)
+        if len(power_dates) == 2:
+            first, last = power_dates
+            signature = f'{parameter}|{first}|{last}'
+            if st.button('Descargar campo y preparar video', type='primary', key='download_power'):
+                progress = st.progress(0, text='Consultando NASA POWER…')
+                try:
+                    result = _providers.download_power_regional(
+                        first, last, parameter,
+                        progress=lambda index, total, label: progress.progress(
+                            index / max(total, 1),
+                            text=f'Preparando banda {index} de {total} · {label}',
+                        ),
+                    )
+                    result.update(
+                        endcard_enabled=False,
+                        show_galapagos=False,
+                        endcard_footer=(
+                            f"NASA POWER · {parameter} · grilla regional"
+                        ),
+                        endcard_footer_2=(
+                            'Resolución gruesa · no interpretar como estación local'
+                        ),
+                        map_bbox=_providers.ECUADOR_MAP_BBOX,
+                    )
+                    result['_signature'] = signature
+                    st.session_state.provider_power_result = result
+                    progress.progress(1.0, text='Campo listo para el editor.')
+                    st.rerun()
+                except Exception as error:
+                    st.error(f'No se pudo descargar NASA POWER: {error}')
+            else:
+                result = st.session_state.get('provider_power_result')
+                if result and result.get('_signature') == signature:
+                    st.success(
+                        f"{result['count']} fechas · {result['start']} a {result['end']} · "
+                        f"grid {result['manifest']['spatial_resolution_degrees']['latitude']:.3g}° × "
+                        f"{result['manifest']['spatial_resolution_degrees']['longitude']:.3g}°"
+                    )
+                    if result['missing_dates']:
+                        st.warning(
+                            f"La fuente no devolvió {len(result['missing_dates'])} fecha(s): "
+                            + ', '.join(result['missing_dates'][:8])
+                        )
+                        st.warning(
+                            'No enviaré esta serie a un video diario mientras tenga '
+                            'fechas ausentes: eso comprimiría el tiempo. Descarga el '
+                            'paquete para revisarlo o elige un período sin huecos.'
+                        )
+                    st.caption(
+                        'Se enviará al editor con la tarjeta de métricas finales '
+                        'apagada por defecto: la grilla es demasiado gruesa para '
+                        'un ranking provincial defendible.'
+                    )
+                    c1, c2 = st.columns(2)
+                    c1.download_button(
+                        'Descargar paquete CSV + GeoTIFF',
+                        Path(result['zip_path']).read_bytes(),
+                        file_name=Path(result['zip_path']).name,
+                        mime='application/zip',
+                        key='download_power_zip',
+                    )
+                    c2.download_button(
+                        'Descargar metadata',
+                        Path(result['manifest_path']).read_bytes(),
+                        file_name='metadata-nasa-power.json',
+                        mime='application/json',
+                        key='download_power_manifest',
+                    )
+                    if st.button(
+                        'Usar esta serie en el editor',
+                        type='primary',
+                        key='use_power_in_editor',
+                        disabled=bool(result['missing_dates']),
+                    ):
+                        _queue_provider_project({
+                            **result,
+                            'title': result['title'],
+                            'description': (
+                                f"Evolución diaria de {result['parameter_name'].lower()} · "
+                                f"{first:%d %b %Y} a {last:%d %b %Y}."
+                            ),
+                            'legend': result['legend'],
+                            'map_bbox': _providers.ECUADOR_MAP_BBOX,
+                        }, 'NASA POWER')
+        else:
+            st.caption('Selecciona fecha inicial y final para habilitar la descarga.')
+
+        st.caption('Documentación oficial: https://power.larc.nasa.gov/docs/services/api/temporal/daily/')
+
+    else:
+        st.subheader('Observaciones de estaciones INAMHI')
+        st.markdown(
+            'Este conector consulta el catálogo del visor diario y permite '
+            'descargar la serie CSV de una estación junto con su procedencia. '
+            'Empieza en **Napo** para facilitar tu uso en Tena y Archidona.'
+        )
+        try:
+            stations = cached_inamhi_stations()
+        except Exception as error:
+            stations = []
+            st.error(f'No se pudo consultar el catálogo de estaciones: {error}')
+            st.link_button('Abrir visor oficial de INAMHI', _providers.INAMHI_VIEWER_URL)
+        if stations:
+            provinces = sorted({row['province'] for row in stations if row['province']})
+            preferred = 'Napo' if 'Napo' in provinces else (provinces[0] if provinces else 'Todas')
+            province_options = ['Todas'] + provinces
+            province = st.selectbox(
+                'Provincia', province_options,
+                index=province_options.index(preferred),
+                key='provider_inamhi_province',
+            )
+            filtered_stations = [
+                row for row in stations
+                if province == 'Todas' or row['province'] == province
+            ]
+            selected_station = st.selectbox(
+                'Estación', filtered_stations,
+                format_func=lambda row: ' · '.join(
+                    part for part in (
+                        row.get('code'), row.get('name'), row.get('canton'), row.get('province')
+                    ) if part
+                ) or str(row['id']),
+                key='provider_inamhi_station',
+            )
+            try:
+                parameters = cached_inamhi_parameters(selected_station['id'])
+            except Exception as error:
+                parameters = []
+                st.error(f'No se pudo consultar el catálogo de variables: {error}')
+            if parameters:
+                parameter = st.selectbox(
+                    'Variable/estadístico disponible', parameters,
+                    format_func=lambda row: ' · '.join(
+                        part for part in (
+                            row['name'], row['statistic'], row['units'], row['code']
+                        ) if part
+                    ),
+                    key=f"provider_inamhi_parameter_{selected_station['id']}",
+                )
+                today = dt.date.today()
+                default_end = today - dt.timedelta(days=1)
+                default_start = default_end - dt.timedelta(days=29)
+                period = st.date_input(
+                    'Período (máximo 31 días)',
+                    value=(default_start, default_end),
+                    min_value=dt.date(1981, 1, 1),
+                    max_value=today,
+                    key=f"provider_inamhi_period_{selected_station['id']}",
+                )
+                st.info(
+                    'La estación es una medición puntual. El CSV no representa '
+                    'el promedio de Napo ni genera por sí solo un campo continuo '
+                    'para el mapa; no se interpolan valores.'
+                )
+                inamhi_dates = period if isinstance(period, (tuple, list)) else (period,)
+                if len(inamhi_dates) == 2:
+                    first, last = inamhi_dates
+                    signature = f"{selected_station['id']}|{parameter['code']}|{first}|{last}"
+                    if st.button('Consultar y preparar datos INAMHI', type='primary', key='download_inamhi'):
+                        try:
+                            result = _providers.download_inamhi_daily(
+                                selected_station, parameter, first, last
+                            )
+                            result['_signature'] = signature
+                            st.session_state.provider_inamhi_result = result
+                            st.rerun()
+                        except Exception as error:
+                            st.error(f'No se pudo obtener la serie INAMHI: {error}')
+                    else:
+                        result = st.session_state.get('provider_inamhi_result')
+                        if result and result.get('_signature') == signature:
+                            st.success(
+                                f"{result['count']} observaciones dentro del período · "
+                                f"{result['start']} a {result['end']}"
+                            )
+                            if result['returned_date_span_before_filter']:
+                                returned = result['returned_date_span_before_filter']
+                                if returned['start'] != result['start'] or returned['end'] != result['end']:
+                                    st.warning(
+                                        'El visor respondió con una ventana diferente a la pedida '
+                                        f"({returned['start']}–{returned['end']}); solo se conservaron "
+                                        'filas dentro de tu período. Revisa posibles huecos.'
+                                    )
+                            if result['missing_dates']:
+                                st.warning(
+                                    f"Faltan {len(result['missing_dates'])} días de la estación: "
+                                    + ', '.join(result['missing_dates'][:12])
+                                )
+                            st.dataframe(
+                                pd.DataFrame(result['rows']),
+                                hide_index=True,
+                                use_container_width=True,
+                            )
+                            c1, c2, c3 = st.columns(3)
+                            c1.download_button(
+                                'Descargar CSV', Path(result['csv_path']).read_bytes(),
+                                file_name=Path(result['csv_path']).name,
+                                mime='text/csv', key='download_inamhi_csv',
+                            )
+                            c2.download_button(
+                                'Descargar paquete + recibo', Path(result['zip_path']).read_bytes(),
+                                file_name=Path(result['zip_path']).name,
+                                mime='application/zip', key='download_inamhi_zip',
+                            )
+                            c3.download_button(
+                                'Descargar metadata', Path(result['manifest_path']).read_bytes(),
+                                file_name='metadata-inamhi.json',
+                                mime='application/json', key='download_inamhi_manifest',
+                            )
+                            st.caption(
+                                'INAMHI informa acceso público gratuito; su API no '
+                                'devuelve una licencia explícita ni una bandera de QC. '
+                                'El manifiesto conserva esa limitación y el crédito.'
+                            )
+                else:
+                    st.caption('Selecciona fecha inicial y final para consultar los datos.')
+            else:
+                st.warning('Esta estación no muestra variables diarias en el catálogo público actual.')
+            st.link_button('Abrir visor diario oficial', _providers.INAMHI_VIEWER_URL)
+            st.link_button('Acceso/solicitud oficial de datos históricos', _providers.INAMHI_PUBLIC_ACCESS_URL)
+            st.markdown(
+                'Si el visor no cubre el periodo histórico, INAMHI recibe '
+                'solicitudes en [datos@inamhi.gob.ec](mailto:datos@inamhi.gob.ec).'
+            )
+        else:
+            st.warning('El catálogo no respondió con estaciones. Vuelve a intentarlo o abre el visor oficial.')
+
+    st.divider()
+    st.subheader('Otras fuentes ecuatorianas para ampliar el catálogo')
+    st.caption(
+        'Son portales institucionales reales, pero todavía no están conectados '
+        'como descargas de un clic. El siguiente paso es implementar cada '
+        'conector con su API/servicio y licencia verificados.'
+    )
+    source_cards = [
+        ('IGM · cartografía y servicios geográficos',
+         'Geoportal nacional; publica cartografía, escalas, metadatos y servicios WMS/WFS/WMTS.',
+         'https://www.geoportaligm.gob.ec/geoportal-igm/'),
+        ('IIGE · geología y energía',
+         'Geoportal geológico con metadatos y servicios WMS/WCS; requiere respetar la licencia de descarga y atribuir la fecha.',
+         'https://geoportal.geoenergia.gob.ec/'),
+        ('IG-EPN · sismos y volcanes',
+         'Catálogos sísmicos y registros descargables; cada producto tiene su propio formulario/condiciones.',
+         'https://igepn.edu.ec/catalogos-sismicos/formulario-catalogos-sismicos'),
+        ('INOCAR · océano y mareas',
+         'Consultas de mareas por puerto/fecha y productos oceanográficos; no se asume una API estable.',
+         'https://www.inocar.mil.ec/mareas/form_mareas.php'),
+        ('IEDG · índice geoespacial del Ecuador',
+         'Entrada nacional a geoportales institucionales y servicios publicados por organismos públicos.',
+         'https://www.iedg.gob.ec/servicios/geoportales/'),
+        ('Datos Abiertos Ecuador',
+         'Catálogo transversal; los formatos y la disponibilidad dependen de cada conjunto de datos.',
+         'https://www.datosabiertos.gob.ec/'),
+    ]
+    for offset in range(0, len(source_cards), 2):
+        columns = st.columns(2)
+        for column, card in zip(columns, source_cards[offset:offset + 2]):
+            with column.container(border=True):
+                st.markdown(f"**{card[0]}**")
+                st.caption(card[1])
+                st.link_button('Abrir portal oficial', card[2], use_container_width=True)
 
     st.stop()
 
@@ -496,6 +1093,62 @@ def jobs_panel():
             ):
                 os.startfile(folder)
 
+        comparison_table = folder / 'comparison.csv'
+        if comparison_table.is_file():
+            st.download_button(
+                'Datos comparados · CSV',
+                comparison_table.read_bytes(),
+                file_name='ecuador-vivo-comparacion.csv',
+                mime='text/csv',
+                key='comparison_csv_' + folder.name,
+            )
+        comparison_rank = folder / 'ranking-provincias.csv'
+        if comparison_rank.is_file():
+            st.download_button(
+                'Ranking provincial · CSV',
+                comparison_rank.read_bytes(),
+                file_name='ecuador-vivo-ranking-provincias.csv',
+                mime='text/csv',
+                key='comparison_rank_' + folder.name,
+            )
+
+        job_project = read_json(folder / 'project.json', {})
+        job_receipt = read_json(folder / 'receipt.json', {})
+        if job_receipt.get('endcard', {}).get('enabled'):
+            st.divider()
+            st.subheader('Preparar ficha para Andes Pulso')
+            st.caption(
+                'Copia el MP4, las métricas calculadas, las fuentes y el recibo '
+                'al proyecto web como borrador. No publica ni hace commit.'
+            )
+            case_id = st.text_input(
+                'Identificador del caso',
+                value=default_case_id(job_project),
+                max_chars=72,
+                key='case_id_' + folder.name,
+                help='Se puede editar; usa minúsculas y guiones, por ejemplo lluvia-ecuador-2024.',
+            )
+            if st.button(
+                'Preparar borrador en Andes Pulso',
+                type='primary',
+                key='prepare_case_' + folder.name,
+                icon=':material/library_add:',
+            ):
+                try:
+                    record = prepare_case(folder, case_id.strip())
+                    st.success(
+                        f'Ficha «{record["id"]}» creada como borrador. '
+                        'MP4 y datos ya están en la carpeta del proyecto web.'
+                    )
+                    st.code(
+                        'data/cases/' + record['id']
+                        + '\nassets/media/andes-pulso/' + record['id']
+                        + '\nRevisa data/cases/registry.json antes de publicar.',
+                        language=None,
+                    )
+                except Exception as error:
+                    st.error(f'No se pudo preparar la ficha: {error}')
+
     else:
 
         st.warning(
@@ -525,39 +1178,31 @@ if section == 'Exportaciones':
 
 st.title('Cuenta una historia con tus mapas')
 
-st.caption(
-    'La maqueta de Ecuador Vivo, ahora editable. '
-    'Datos reales · vista previa · MP4 vertical.'
+video_types = ['Mapa temporal', 'Comparación climática', 'CSV geográfico']
+video_type = st.selectbox(
+    'Tipo de video', video_types,
+    index=video_types.index(p.get('video_type', 'Mapa temporal')),
+    key=f'video_type_{revision}',
+    help='La maqueta, los controles y el cierre se adaptan al tipo seleccionado.',
 )
+p['video_type'] = video_type
+st.session_state.project = p
+from workspace import navigation, export_check, authoring_config
+phase = navigation()
+if phase == 'Montaje':
+    from storyboard_ui import show_storyboard
+    show_storyboard(p, key=f'story_{revision}', always_open=True)
+    st.caption('El formato y la secuencia se aplican al tipo de video seleccionado. La composición se ajusta solo en Maqueta.')
+if video_type == 'Comparación climática':
+    from climate_comparison_ui import render_embedded
+    render_embedded(p, phase=phase)
+    st.stop()
+if video_type == 'CSV geográfico':
+    from spatial_csv_ui import show_spatial_csv
+    show_spatial_csv(p, phase=phase)
+    st.stop()
 
-left, right = st.columns(
-    [
-        1.25,
-        1
-    ],
-    gap='large'
-)
-
-
-# =============================================================================
-# LEFT CONTROLS
-# =============================================================================
-
-with left:
-
-    step = st.segmented_control(
-        'Controles',
-        [
-            'Datos',
-            'Diseño',
-            'Cierre final',
-            'Textos y créditos',
-            'Mapa y tiempo'
-        ],
-        default='Datos',
-        key='step'
-    )
-
+def temporal_controls(step):
     with st.container(
         border=True
     ):
@@ -947,7 +1592,7 @@ with left:
             if p['layout'] == 'maqueta':
                 st.success(
                     'Esta es la maqueta aprobada. '
-                    'Vista previa y MP4 usan la misma composición.'
+                    'Lienzo y MP4 usan la misma composición.'
                 )
 
             p['name'] = st.text_input(
@@ -1245,6 +1890,10 @@ with left:
             )
 
             categorical_endcard = p['kind'] == 'categorical'
+            profile = detect_profile(p)
+            unsupported_endcard = (
+                p['kind'] == 'continuous' and not profile['supported']
+            )
             if categorical_endcard:
                 # A ranked numerical endcard would falsely imply arithmetic
                 # meaning for land-cover or other class codes.
@@ -1253,36 +1902,73 @@ with left:
                     'Las capas categóricas no usan este cierre numérico. '
                     'Desactívalo o prepara un cierre de clases específico.'
                 )
+            elif unsupported_endcard:
+                p['endcard_enabled'] = False
+                st.warning(
+                    'Las direcciones no se pueden resumir con un promedio '
+                    'aritmético. Importa componentes u/v o una serie con '
+                    'media circular ya calculada para usar un cierre.'
+                )
 
             p['endcard_enabled'] = st.toggle(
                 'Añadir el cierre al final del video',
                 p.get('endcard_enabled', True),
                 key=f'endcard_enabled_{revision}',
-                disabled=categorical_endcard,
+                disabled=(categorical_endcard or unsupported_endcard),
             )
 
             if p['endcard_enabled']:
-                aggregation = st.segmented_control(
-                    'Cómo se combinan las fechas',
-                    ['sum', 'mean'],
-                    default=p.get('endcard_aggregation', 'sum'),
+                aggregation_mode = st.radio(
+                    'Regla temporal',
+                    ['auto', 'manual'],
+                    index=(0 if p.get('endcard_aggregation_mode', 'auto') == 'auto'
+                           else 1),
+                    horizontal=True,
                     format_func=lambda value: (
-                        'Acumular · lluvia, caudal por intervalo'
-                        if value == 'sum'
-                        else 'Promediar · temperatura, índices'
+                        'Automática · recomendada'
+                        if value == 'auto' else 'Revisar manualmente'
                     ),
-                    key=f'endcard_aggregation_{revision}',
+                    key=f'endcard_aggregation_mode_{revision}',
                     help=(
-                        'Acumular suma cada fecha: úsalo solo cuando cada '
-                        'mapa representa una cantidad del intervalo. '
-                        'Promediar conserva las unidades de variables '
-                        'intensivas, como °C, NDWI o anomalías.'
+                        'Automática detecta si la variable representa una '
+                        'cantidad por intervalo (se acumula) o una magnitud '
+                        'intensiva como °C o NDWI (se promedia).'
                     ),
                 )
-                if aggregation is not None:
-                    p['endcard_aggregation'] = aggregation
+                p['endcard_aggregation_mode'] = aggregation_mode
+                if aggregation_mode == 'auto':
+                    effective_aggregation, profile = resolve_aggregation(p)
+                    # Keep the saved value aligned with the applied value, so
+                    # the receipt remains legible even outside the editor.
+                    p['endcard_aggregation'] = effective_aggregation
+                    st.info(
+                        f'Aplicado automáticamente: **'
+                        f'{"acumular" if effective_aggregation == "sum" else "promediar"}'
+                        f'** ({profile["kind"]}).'
+                    )
+                else:
+                    options = ['mean'] if profile['intensive'] else ['sum', 'mean']
+                    selected = p.get('endcard_aggregation', profile['aggregation'])
+                    if selected not in options:
+                        selected = profile['aggregation']
+                    aggregation = st.segmented_control(
+                        'Cómo se combinan las fechas',
+                        options,
+                        default=selected,
+                        format_func=lambda value: (
+                            'Acumular · cantidad por intervalo'
+                            if value == 'sum' else 'Promediar · variable intensiva'
+                        ),
+                        key=f'endcard_aggregation_{revision}',
+                    )
+                    if aggregation is not None:
+                        p['endcard_aggregation'] = aggregation
+                    effective_aggregation, profile = resolve_aggregation(p)
 
-                if p['endcard_aggregation'] == 'sum':
+                for warning in profile['warnings']:
+                    st.warning(warning)
+
+                if effective_aggregation == 'sum':
                     p['endcard_accumulated_units'] = st.text_input(
                         'Unidades tras acumular',
                         p.get('endcard_accumulated_units', ''),
@@ -1299,91 +1985,94 @@ with left:
                         'temporal y conservarán las unidades del mapa.'
                     )
 
-                p['endcard_duration'] = st.number_input(
-                    'Duración del cierre (segundos)',
-                    min_value=1.0,
-                    max_value=30.0,
-                    value=float(p.get('endcard_duration', 6.0)),
-                    step=0.5,
-                    key=f'endcard_duration_{revision}'
+                p['endcard_auto_text'] = st.toggle(
+                    'Adaptar títulos y etiquetas al tipo de dato automáticamente',
+                    p.get('endcard_auto_text', True),
+                    key=f'endcard_auto_text_{revision}',
+                    help=(
+                        'Cambia encabezados, descripciones de las cuatro cifras, '
+                        'unidades y pie según la variable y su frecuencia. '
+                        'Desactívalo para escribir cada texto manualmente.'
+                    ),
                 )
-
-                st.caption(
-                    'Se agregará después de la última fecha. Las cifras se '
-                    'calculan desde los rásteres exportados y también quedan '
-                    'guardadas en receipt.json.'
-                )
-                st.caption(
-                    'El ranking nacional usa las 24 provincias, incluida '
-                    'Galápagos: cada valor es la media espacial de píxeles '
-                    'válidos dentro del polígono provincial, no el dato de '
-                    'su capital.'
-                )
-
-                p['endcard_title'] = st.text_input(
-                    'Título del cierre',
-                    p['endcard_title'],
-                    max_chars=80,
-                    key=f'endcard_title_{revision}'
-                )
-                p['endcard_subtitle'] = st.text_input(
-                    'Subtítulo del cierre',
-                    p['endcard_subtitle'],
-                    max_chars=150,
-                    key=f'endcard_subtitle_{revision}'
-                )
-
-                c1, c2 = st.columns(2)
-                p['endcard_section_1'] = c1.text_input(
-                    'Bloque 1',
-                    p['endcard_section_1'],
-                    max_chars=60,
-                    key=f'endcard_section1_{revision}'
-                )
-                p['endcard_section_1_note'] = c2.text_input(
-                    'Nota del bloque 1',
-                    p['endcard_section_1_note'],
-                    max_chars=120,
-                    key=f'endcard_section1note_{revision}'
-                )
-                c3, c4 = st.columns(2)
-                p['endcard_section_2'] = c3.text_input(
-                    'Ranking 1–12',
-                    p['endcard_section_2'],
-                    max_chars=60,
-                    key=f'endcard_section2_{revision}'
-                )
-                p['endcard_section_2_note'] = c4.text_input(
-                    'Nota del ranking 1–12',
-                    p['endcard_section_2_note'],
-                    max_chars=120,
-                    key=f'endcard_section2note_{revision}'
-                )
-                c5, c6 = st.columns(2)
-                p['endcard_section_3'] = c5.text_input(
-                    'Ranking 13–24',
-                    p['endcard_section_3'],
-                    max_chars=60,
-                    key=f'endcard_section3_{revision}'
-                )
-                p['endcard_section_3_note'] = c6.text_input(
-                    'Nota del ranking 13–24',
-                    p['endcard_section_3_note'],
-                    max_chars=120,
-                    key=f'endcard_section3note_{revision}'
-                )
-                p['endcard_footer'] = st.text_input(
-                    'Texto técnico del pie',
-                    p['endcard_footer'],
-                    max_chars=150,
-                    key=f'endcard_footer_{revision}'
-                )
-                p['endcard_footer_2'] = st.text_input(
-                    'Cobertura geográfica del pie',
-                    p['endcard_footer_2'],
-                    max_chars=150,
-                    key=f'endcard_footer2_{revision}'
-                )
+                if p['endcard_auto_text']:
+                    st.caption(
+                        'El cierre usará la variable, unidades, fechas, fuente y '
+                        'estadísticas calculadas para completar los textos. '
+                        'Puedes desactivar esta opción para personalizar cada línea.'
+                    )
+                else:
+                    p['endcard_title'] = st.text_input(
+                        'Título del cierre', p['endcard_title'], max_chars=80,
+                        key=f'endcard_title_{revision}'
+                    )
+                    p['endcard_subtitle'] = st.text_input(
+                        'Subtítulo del cierre', p['endcard_subtitle'], max_chars=150,
+                        key=f'endcard_subtitle_{revision}'
+                    )
+                    c1, c2 = st.columns(2)
+                    p['endcard_section_1'] = c1.text_input(
+                        'Bloque 1', p['endcard_section_1'], max_chars=60,
+                        key=f'endcard_section1_{revision}'
+                    )
+                    p['endcard_section_1_note'] = c2.text_input(
+                        'Nota del bloque 1', p['endcard_section_1_note'],
+                        max_chars=120, key=f'endcard_section1note_{revision}'
+                    )
+                    c3, c4 = st.columns(2)
+                    p['endcard_section_2'] = c3.text_input(
+                        'Ranking 1–12', p['endcard_section_2'], max_chars=60,
+                        key=f'endcard_section2_{revision}'
+                    )
+                    p['endcard_section_2_note'] = c4.text_input(
+                        'Nota del ranking 1–12', p['endcard_section_2_note'],
+                        max_chars=120, key=f'endcard_section2note_{revision}'
+                    )
+                    c5, c6 = st.columns(2)
+                    p['endcard_section_3'] = c5.text_input(
+                        'Ranking 13–24', p['endcard_section_3'], max_chars=60,
+                        key=f'endcard_section3_{revision}'
+                    )
+                    p['endcard_section_3_note'] = c6.text_input(
+                        'Nota del ranking 13–24', p['endcard_section_3_note'],
+                        max_chars=120, key=f'endcard_section3note_{revision}'
+                    )
+                    p['endcard_footer'] = st.text_input(
+                        'Texto técnico del pie', p['endcard_footer'], max_chars=150,
+                        key=f'endcard_footer_{revision}'
+                    )
+                    p['endcard_footer_2'] = st.text_input(
+                        'Cobertura geográfica del pie', p['endcard_footer_2'],
+                        max_chars=150, key=f'endcard_footer2_{revision}'
+                    )
+                    st.caption('Etiquetas de las cifras y del eje del ranking')
+                    d1, d2 = st.columns(2)
+                    p['endcard_date_metric_label'] = d1.text_input(
+                        'Cifra 1 · fecha destacada',
+                        p['endcard_date_metric_label'], max_chars=80,
+                        key=f'endcard_date_metric_{revision}'
+                    )
+                    p['endcard_period_metric_label'] = d2.text_input(
+                        'Cifra 2 · período destacado',
+                        p['endcard_period_metric_label'], max_chars=80,
+                        key=f'endcard_period_metric_{revision}'
+                    )
+                    d3, d4 = st.columns(2)
+                    p['endcard_average_metric_label'] = d3.text_input(
+                        'Cifra 3 · promedio',
+                        p['endcard_average_metric_label'], max_chars=80,
+                        key=f'endcard_average_metric_{revision}'
+                    )
+                    p['endcard_maximum_metric_label'] = d4.text_input(
+                        'Cifra 4 · máximo',
+                        p['endcard_maximum_metric_label'], max_chars=80,
+                        key=f'endcard_maximum_metric_{revision}'
+                    )
+                    p['endcard_rank_axis_label'] = st.text_input(
+                        'Texto del eje del ranking (vacío = automático)',
+                        p['endcard_rank_axis_label'], max_chars=120,
+                        key=f'endcard_rank_axis_{revision}'
+                    )
             else:
                 st.info('El video terminará en la última fecha del mapa.')
 
@@ -1608,422 +2297,89 @@ with left:
                 key=f'cities_{revision}'
             )
 
-            try:
-                rows_for_time = timeline(
-                    p
-                )
-                minimum_duration = (
-                    len(rows_for_time)
-                    / 30
-                )
-            except Exception:
-                rows_for_time = []
-                minimum_duration = 0.1
-
-            p['duration'] = st.number_input(
-                'Duración total del video (segundos)',
-                min_value=max(
-                    0.1,
-                    minimum_duration
-                ),
-                max_value=7200.0,
-                value=max(
-                    float(
-                        p['duration']
-                    ),
-                    minimum_duration
-                ),
-                step=1.0,
-                key=f'duration_{revision}'
-            )
-
-            cols = st.columns(2)
-
-            if cols[0].button(
-                'Ritmo corto',
-                help='≈26 s para 366 fechas'
-            ):
-
-                try:
-                    p['duration'] = max(
-                        len(
-                            timeline(
-                                p
-                            )
-                        )
-                        / 30,
-                        26.0
-                    )
-                    rerun_project()
-                except ValueError as error:
-                    st.error(
-                        str(error)
-                    )
-
-            if cols[1].button(
-                '1,5 s por fecha'
-            ):
-
-                try:
-                    p['duration'] = (
-                        len(
-                            timeline(
-                                p
-                            )
-                        )
-                        * 1.5
-                    )
-                    rerun_project()
-                except ValueError as error:
-                    st.error(
-                        str(error)
-                    )
-
-            p['width'] = st.selectbox(
-                'Resolución vertical',
-                [
-                    1080,
-                    720
-                ],
-                index=(
-                    0
-                    if p['width'] == 1080
-                    else 1
-                ),
-                format_func=lambda n:
-                    f'{n} × {n * 16 // 9}',
-                key=f'width_{revision}'
-            )
-
-            p['crf'] = st.selectbox(
-                'Calidad de codificación',
-                [
-                    18,
-                    16,
-                    22
-                ],
-                index=[
-                    18,
-                    16,
-                    22
-                ].index(
-                    p['crf']
-                ),
-                format_func=lambda value:
-                    {
-                        18:
-                            'Alta',
-                        16:
-                            'Muy alta · archivo mayor',
-                        22:
-                            'Ligera · pruebas'
-                    }[
-                        value
-                    ],
-                key=f'quality_{revision}'
-            )
-
-            st.caption(
-                '30 fps · H.264 · todas las fechas incluidas.'
-            )
-
-    if st.button(
-        'Guardar proyecto',
-        icon=':material/save:',
-        key='save_project'
-    ):
-        target = save_project()
-        st.success(
-            f'Proyecto guardado: {target.name}'
-        )
 
 
 # =============================================================================
-# RIGHT PREVIEW
+# ONE TEMPORAL WORKSPACE — no duplicate preview column
 # =============================================================================
 
-with right:
-
-    st.subheader('Tu video')
+if phase == 'Datos':
+    temporal_controls('Datos')
+    st.info('Después de elegir y validar las fuentes, abre Maqueta para editar el diseño.')
+elif phase == 'Maqueta':
+    # Optional template controls are not a second preview/editor.
+    with st.expander('Configuración de la plantilla y créditos'):
+        control = st.segmented_control('Configuración',
+            ['Diseño', 'Cierre final', 'Textos y créditos', 'Encuadre'],
+            default='Diseño', key='step', persist_state='session')
+        temporal_controls('Mapa y tiempo' if control == 'Encuadre' else control)
 
     try:
         rows = validate(p)
-        error_message = None
-    except (
-        ValueError,
-        TypeError,
-        KeyError
-    ) as error:
-        rows = []
-        error_message = str(error)
-        st.warning(
-            error_message
-        )
-
-    if rows:
-
-        st.caption(
-            f'{len(rows)} fechas · '
-            f'{p["duration"]:g} s de mapa'
-            + (f' + {p["endcard_duration"]:g} s de cierre'
-               if p.get('endcard_enabled', True) else '')
-            + ' · '
-            f'{p["width"]} × {p["width"] * 16 // 9}'
-        )
-
-        index = (
-            st.slider(
-                'Fecha de la vista previa',
-                1,
-                len(rows),
-                1,
-                key=f'preview_index_{revision}'
-            )
-            - 1
-            if len(rows) > 1
-            else 0
-        )
-
-        st.caption(
-            rows[index]['date']
-        )
-
-        if st.button(
-            'Actualizar vista previa',
-            type='primary',
-            icon=':material/preview:',
-            key='preview_button'
-        ):
-
-            try:
-
-                with st.spinner(
-                    'Dibujando con la maqueta…'
-                ):
-
-                    png = preview_bytes(
-                        snapshot(),
-                        index,
-                        RENDER_CACHE_VERSION
-                    )
-
-                st.session_state.preview = {
-                    'png':
-                        png,
-                    'signature':
-                        snapshot(),
-                    'index':
-                        index
-                }
-
-            except Exception as error:
-
-                st.error(
-                    f'No se pudo dibujar: {error}'
-                )
-
-        last = st.session_state.preview
-
-        if last:
-
-            if (
-                last['signature']
-                != snapshot()
-                or last['index']
-                != index
-            ):
-
-                st.caption(
-                    'Hay cambios pendientes. '
-                    'Pulsa Actualizar vista previa.'
-                )
-
-            if p['layout'] == 'maqueta':
-
-                st.image(
-                    last['png'],
-                    width=360,
-                    alt='Vista previa de la maqueta Ecuador Vivo'
-                )
-
-                st.caption(
-                    'La maqueta aprobada ya incorpora su zona segura. '
-                    'El MP4 usa esta misma composición.'
-                )
-
-            else:
-
-                guides = st.toggle(
-                    'Ver márgenes de seguridad',
-                    key='safe_guides'
-                )
-
-                displayed = (
-                    guided_preview(
-                        last['png'],
-                        json.loads(
-                            last['signature']
-                        ).get(
-                            'layout',
-                            'social'
-                        )
-                    )
-                    if guides
-                    else last['png']
-                )
-
-                st.image(
-                    displayed,
-                    width=360
-                )
-
-            st.download_button(
-                'Guardar imagen PNG',
-                last['png'],
-                file_name='vista-previa.png',
-                mime='image/png',
-                icon=':material/image:'
-            )
-
-        if p.get('endcard_enabled', True):
-            st.markdown('#### Vista previa del cierre')
-            st.caption(
-                'La tarjeta se añade después del último mapa y se adapta a '
-                'TikTok, Instagram Reels y Shorts mediante la misma zona segura.'
-            )
-            if st.button(
-                'Actualizar vista previa del cierre',
-                icon=':material/analytics:',
-                key='endcard_preview_button'
-            ):
-                try:
-                    with st.spinner('Calculando métricas y dibujando el cierre…'):
-                        png = endcard_preview_bytes(
-                            snapshot(),
-                            RENDER_CACHE_VERSION
-                        )
-                    st.session_state.endcard_preview = {
-                        'png': png,
-                        'signature': snapshot(),
-                    }
-                except Exception as error:
-                    st.error(f'No se pudo dibujar el cierre: {error}')
-
-            endcard_last = st.session_state.endcard_preview
-            if endcard_last:
-                if endcard_last['signature'] != snapshot():
-                    st.caption('El cierre tiene cambios pendientes. Actualiza su vista previa.')
-                st.image(
-                    endcard_last['png'],
-                    width=360,
-                    alt='Vista previa del cierre de métricas Ecuador Vivo'
-                )
-                st.download_button(
-                    'Guardar cierre PNG',
-                    endcard_last['png'],
-                    file_name='cierre-metricas.png',
-                    mime='image/png',
-                    icon=':material/image:'
-                )
-            else:
-                st.caption('Actualiza esta vista para desbloquear la exportación con cierre.')
-
+        with st.expander('Fecha de trabajo del lienzo'):
+            index = st.slider('Fecha del mapa en el lienzo', 1, len(rows), 1,
+                key=f'preview_index_{revision}', persist_state='session') - 1 if len(rows) > 1 else 0
+            st.caption(rows[index]['date'])
+        if p['layout'] == 'maqueta':
+            from layout_editor import show_layout_editor
+            p['visual_layout'] = authoring_config(p)['visual_layout']
+            def render_editable_map(settings):
+                editable_rows = validate(settings)
+                values, _ = load_values(settings, editable_rows[index])
+                return compose(settings, values, boundary(), editable_rows[index]['date'], index, len(editable_rows))
+            def render_editable_endcard(settings):
+                return compose_endcard(settings, editor_summary(settings))
+            def persist_visual_layout(layout):
+                p['visual_layout'] = layout
+            show_layout_editor(p, render_editable_map,
+                render_editable_endcard if p.get('endcard_enabled', True) else None,
+                project=p, persist=persist_visual_layout, key=f'normal_visual_{revision}')
         else:
-
-            reference = (
-                ROOT
-                / '_local'
-                / 'climate-studio'
-                / '2024-01-01-1days'
-                / 'frame-2024-01-01.png'
-            )
-
-            if reference.exists():
-
-                st.image(
-                    str(reference),
-                    width=360,
-                    alt='Referencia de la maqueta aprobada'
-                )
-
-                st.caption(
-                    'Referencia aprobada. '
-                    'Pulsa Actualizar vista previa para usar el editor.'
-                )
-
-        active = [
-            state
-            for _, state in statuses()
-            if state.get('state')
-            in (
-                'queued',
-                'running'
-            )
-        ]
-
-        preview_ready = (
-            last is not None
-            and last['signature']
-            == snapshot()
-            and (
-                not p.get('endcard_enabled', True)
-                or (
-                    st.session_state.endcard_preview is not None
-                    and st.session_state.endcard_preview['signature'] == snapshot()
-                )
-            )
-        )
-
-        if not preview_ready:
-
-            st.caption(
-                'Actualiza la vista previa antes de exportar.'
-            )
-
-        if st.button(
-            'Generar video',
-            type='primary',
-            icon=':material/movie:',
-            disabled=(
-                bool(active)
-                or not preview_ready
-            ),
-            key='render_button'
-        ):
-
-            try:
-
-                folder = start_job(
-                    copy.deepcopy(
-                        p
-                    )
-                )
-
-                st.session_state.active_job = str(
-                    folder
-                )
-
-                st.success(
-                    'Exportación iniciada. '
-                    'Revisa Exportaciones en la barra lateral.'
-                )
-
-            except Exception as error:
-
-                st.error(
-                    f'No se pudo iniciar: {error}'
-                )
-
-        if active:
-
-            st.caption(
-                'Hay una exportación activa. '
-                'Puedes seguir diseñando mientras termina.'
-            )
-
-        st.download_button(
-            'Descargar proyecto JSON',
-            snapshot(),
-            file_name='ecuador-vivo-proyecto.json',
-            mime='application/json'
-        )
+            st.info('Este estilo antiguo no tiene capas editables. En Configuración selecciona Maqueta Ecuador Vivo para mover o eliminar elementos.')
+            st.image(preview_bytes(snapshot(), index, RENDER_CACHE_VERSION), width=450,
+                alt='Estilo antiguo no editable; cambia a Maqueta Ecuador Vivo para editar capas')
+    except (ValueError, KeyError, TypeError, OSError) as error:
+        st.warning(f'No se pudo abrir la maqueta: {error}')
+elif phase == 'Montaje':
+    if not p.get('storyboard', {}).get('enabled'):
+        # This is the only default timing control. Custom cards own their
+        # times in Montaje and never compete with a second duration widget.
+        p['duration'] = st.number_input('Duración del mapa · segundos',
+            min_value=max(1/30, len(timeline(p))/30), max_value=3600.,
+            value=max(float(p['duration']), len(timeline(p))/30), key=f'map_seconds_{revision}')
+        if p.get('endcard_enabled', True):
+            p['endcard_duration'] = st.number_input('Duración de métricas · segundos',
+                min_value=1., max_value=30., value=float(p.get('endcard_duration', 6.)),
+                key=f'metric_seconds_{revision}')
+else:
+    try:
+        from storyboard import base_timing
+        config = base_timing(copy.deepcopy(p))
+        rows = validate(config)
+        def export_map(settings):
+            values, _ = load_values(settings, rows[0])
+            return compose(settings, values, boundary(), rows[0]['date'], 0, len(rows))
+        def export_endcard(settings):
+            return compose_endcard(settings, editor_summary(settings))
+        ready = export_check(config, export_map,
+            export_endcard if config.get('endcard_enabled', True) else None)
+    except (ValueError, KeyError, TypeError, OSError) as error:
+        ready = False
+        st.error(str(error))
+    active = [state for _, state in statuses() if state.get('state') in ('queued', 'running')]
+    if st.button('Generar video', type='primary', icon=':material/movie:',
+        key='render_button', disabled=not ready or bool(active)):
+        try:
+            folder = start_job(copy.deepcopy(p))
+            st.session_state.active_job = str(folder)
+            st.success('Exportación iniciada. Revisa Exportaciones en la barra lateral.')
+        except Exception as error:
+            st.error(f'No se pudo iniciar: {error}')
+    if active:
+        st.caption('Hay una exportación activa. Puedes seguir diseñando mientras termina.')
+    with st.container(horizontal=True):
+        if st.button('Guardar proyecto', icon=':material/save:', key='save_project'):
+            target = save_project()
+            st.success(f'Proyecto guardado: {target.name}')
+        st.download_button('Descargar proyecto JSON', snapshot(),
+            file_name='ecuador-vivo-proyecto.json', mime='application/json')

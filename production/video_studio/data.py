@@ -10,11 +10,12 @@ from pathlib import Path
 
 import numpy as np
 import rasterio
+from rasterio.features import geometry_mask
 from rasterio.mask import mask as mask_raster
 from rasterio.io import MemoryFile
 from rasterio.transform import from_bounds as grid_from_bounds
 from rasterio.windows import Window, from_bounds
-from rasterio.warp import reproject, transform_geom
+from rasterio.warp import reproject, transform_geom, transform as warp_transform
 from rasterio.enums import Resampling
 
 from model import ROOT, STORE
@@ -117,14 +118,17 @@ def _chirps_point_means(src, points):
     return values
 
 
-def _polygon_means(src, band, features, *, scale=1.0, offset=0.0,
-                   reject_negative=False, source_nodata=None):
-    """Mean of each supplied WGS84 polygon on its native source raster.
+def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
+                   reject_negative=False, source_nodata=None,
+                   clip_bounds=None):
+    """Mean, max and min of each WGS84 polygon on the *native* source raster.
 
-    This deliberately happens *before* visual resampling.  Therefore the
-    provincial ranking is a zonal statistic over actual source pixels, not a
-    value sampled at the provincial capital nor an average of display colours.
-    ``features`` must be geoJSON ADM1 features in EPSG:4326.
+    This deliberately happens before visual resampling. The provincial ranking
+    is a zonal statistic over actual source pixels, not a value sampled at the
+    provincial capital nor an average of display colours. The extremes are also
+    native: a bilinear display grid can hide a hot pixel (a 45 °C pixel became
+    25 °C in a synthetic 110 m raster), so national maxima must not be read
+    from it. ``features`` must be geoJSON ADM1 features in EPSG:4326.
     """
     result = {}
     if not features or not src.crs:
@@ -138,23 +142,71 @@ def _polygon_means(src, band, features, *, scale=1.0, offset=0.0,
         try:
             native_geometry = transform_geom('EPSG:4326', src.crs, geometry,
                                              precision=9)
-            sampled, _ = mask_raster(
+            sampled, out_transform = mask_raster(
                 src, [native_geometry], indexes=band, crop=True, filled=False
             )
         except (ValueError, rasterio.errors.RasterioError):
-            # A regional raster may not intersect an ADM1 polygon.  Missing
+            # A regional raster may not intersect an ADM1 polygon. Missing
             # coverage remains absent; it is never converted to zero.
             continue
         values = np.ma.asarray(sampled).filled(np.nan).astype('float64')
         valid = np.isfinite(values)
+        if clip_bounds is not None:
+            west, south, east, north = clip_bounds
+            clip_geometry = {
+                'type': 'Polygon',
+                'coordinates': [[
+                    [west, south], [east, south], [east, north],
+                    [west, north], [west, south]
+                ]],
+            }
+            native_clip = transform_geom('EPSG:4326', src.crs,
+                                         clip_geometry, precision=9)
+            within_frame = geometry_mask(
+                [native_clip], out_shape=values.shape,
+                transform=out_transform, invert=True, all_touched=False,
+            )
+            valid &= within_frame
         if source_nodata is not None and np.isfinite(source_nodata):
             valid &= ~np.isclose(values, source_nodata)
         if reject_negative:
             valid &= values >= 0
         if not valid.any():
             continue
-        result[str(name)] = float(np.mean(values[valid] * scale + offset))
+        physical = values[valid] * scale + offset
+        # Geographic raster cells shrink with latitude. Weight native pixels
+        # by cos(latitude) so a zonal mean approximates an area mean instead
+        # of over-weighting the smaller high-latitude cells. In projected
+        # rasters this falls back to an ordinary pixel mean; the input CRS is
+        # retained in the receipt so that choice remains auditable.
+        if src.crs.is_geographic:
+            rows, cols = values.shape[-2:]
+            center_col = cols // 2
+            xs, ys = rasterio.transform.xy(
+                out_transform, np.arange(rows), np.full(rows, center_col),
+                offset='center'
+            )
+            _, latitudes = warp_transform(src.crs, 'EPSG:4326', xs, ys)
+            row_weights = np.cos(np.deg2rad(np.asarray(latitudes, dtype='float64')))
+            area_weights = np.broadcast_to(
+                row_weights[:, np.newaxis], values.shape[-2:]
+            )
+            mean_value = float(np.average(values[valid] * scale + offset,
+                                          weights=area_weights[valid]))
+        else:
+            mean_value = float(np.mean(physical))
+        result[str(name)] = {
+            'mean': mean_value,
+            'max': float(np.max(physical)),
+            'min': float(np.min(physical)),
+        }
     return result
+
+
+def _polygon_means(src, band, features, **kwargs):
+    """Backward-compatible view of ``_polygon_stats``: name → mean."""
+    return {name: row['mean']
+            for name, row in _polygon_stats(src, band, features, **kwargs).items()}
 
 
 def load_values(project, row, point_samples=(), province_features=()):
@@ -167,14 +219,19 @@ def load_values(project, row, point_samples=(), province_features=()):
                 # Read only the requested window, not the global image.
                 values = src.read(1, window=window, masked=True)
                 samples = _chirps_point_means(src, point_samples)
-                province_samples = _polygon_means(
-                    src, 1, province_features, reject_negative=True
+                stats = _polygon_stats(
+                    src, 1, province_features, reject_negative=True,
+                    clip_bounds=(None if len(province_features) == 24 else box),
                 )
+        province_samples = {n: r['mean'] for n, r in stats.items()}
         raw = values.filled(np.nan).astype('float32')
         raw[(raw < 0) | ~np.isfinite(raw)] = np.nan
         return raw, {'path': str(path), 'source_url': url, 'band': 1,
                      'point_samples': samples,
-                     'province_samples': province_samples}
+                     'province_mean_method': 'cosine_latitude_area_approximation',
+                     'province_samples': province_samples,
+                     'province_extremes': {n: (r['min'], r['max'])
+                                           for n, r in stats.items()}}
     path = Path(row['path'])
     w, h = map_dimensions(box)
     with rasterio.open(path) as src:
@@ -192,15 +249,26 @@ def load_values(project, row, point_samples=(), province_features=()):
                   src_nodata=source_nodata,
                   dst_crs='EPSG:4326', dst_transform=grid_from_bounds(*box, w, h),
                   dst_nodata=float('nan'), resampling=method)
-        province_samples = _polygon_means(
+        stats = _polygon_stats(
             src, row['band'], province_features,
             scale=project['scale'], offset=project['offset'],
             source_nodata=source_nodata,
+            clip_bounds=(None if len(province_features) == 24 else box),
         )
-        metadata = {'path': str(path), 'band': row['band'], 'source_url': project.get('source_url', ''),
+        province_samples = {n: r['mean'] for n, r in stats.items()}
+        metadata = {'path': str(path), 'band': row['band'],
+                    'source_url': project.get('source_url', ''),
+                    'provider_source_url': row.get('source_url', ''),
+                    'provider_artifact_sha256': row.get('artifact_sha256', ''),
                     'native_crs': str(src.crs), 'native_transform': list(src.transform),
                     'embedded_scale': src.scales[row['band'] - 1], 'embedded_offset': src.offsets[row['band'] - 1],
-                    'point_samples': {}, 'province_samples': province_samples}
+                    'province_mean_method': (
+                        'cosine_latitude_area_approximation'
+                        if src.crs.is_geographic else 'native_pixel_mean_projected_crs'
+                    ),
+                    'point_samples': {}, 'province_samples': province_samples,
+                    'province_extremes': {n: (r['min'], r['max'])
+                                          for n, r in stats.items()}}
     raw = raw * project['scale'] + project['offset']
     if not np.isfinite(raw).any():
         raise ValueError(f'{row["date"]}: no hay datos válidos dentro del encuadre.')
@@ -214,7 +282,8 @@ def load_values(project, row, point_samples=(), province_features=()):
 def store_upload(name, payload):
     # The supplied filename never determines a filesystem path.
     digest = hashlib.sha256(payload).hexdigest()
-    target = STORE / 'imports' / (digest + '.tif')
+    extension = '.csv' if Path(name).suffix.lower() == '.csv' else '.tif'
+    target = STORE / 'imports' / (digest + extension)
     target.parent.mkdir(parents=True, exist_ok=True)
     if not target.exists():
         target.write_bytes(payload)

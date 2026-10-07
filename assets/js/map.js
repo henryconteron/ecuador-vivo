@@ -5,6 +5,7 @@ import {
   SOURCE_REGISTRY,
 } from "./map/config.js";
 import { loadGeoJson } from "./map/data.js";
+import { mountCustomSources } from "./map/custom-sources.js";
 import { BASIN_SOURCE, basinWmsOptions, queryBasinAtPoint } from "./map/basins.js";
 import {
   earthquakeColor,
@@ -65,6 +66,13 @@ const mapElement = document.querySelector("#map");
 const mapError = document.querySelector("#map-error");
 const i18n = window.atlasI18n;
 const { t, template, formatNumber, formatUtcDate, localizedProperty } = createTextTools(i18n);
+let siteSettings = { mapSources: {} };
+try {
+  const settingsResponse = await fetch(new URL("../../data/site-settings.json", import.meta.url), { cache: "no-store" });
+  if (settingsResponse.ok) siteSettings = await settingsResponse.json();
+} catch {
+  // A missing optional settings file must never prevent the core atlas from opening.
+}
 
 if (typeof window.L === "undefined") {
   mapElement.setAttribute("aria-hidden", "true");
@@ -83,11 +91,14 @@ if (typeof window.L === "undefined") {
   catalogState.querySelector("strong").textContent = t("catalog.viewerErrorTitle");
   catalogState.querySelector("p").textContent = t("errors.checkConnection");
 } else {
-  initializeAtlas();
+  initializeAtlas(siteSettings);
 }
 
-function initializeAtlas() {
+function initializeAtlas(settings = {}) {
   const L = window.L;
+  const sourceEnabled = source => settings.mapSources?.[source] !== false;
+  let customSources = null;
+  applyConfiguredSourceVisibility(settings.mapSources || {});
   const ecuadorBounds = L.latLngBounds(ECUADOR_CONTINENTAL_BOUNDS);
   const urlParameters = new URLSearchParams(window.location.search);
   const demoMode = urlParameters.get("demo") === "1";
@@ -163,7 +174,8 @@ function initializeAtlas() {
     maxZoom: 18,
     opacity: HILLSHADE.initialOpacity,
     attribution: HILLSHADE.attribution,
-  }).addTo(map);
+  });
+  if (sourceEnabled("hillshade")) hillshadeLayer.addTo(map);
 
   map.createPane("hydrographic-basins");
   map.getPane("hydrographic-basins").style.zIndex = "260";
@@ -532,6 +544,7 @@ function initializeAtlas() {
   });
 
   function renderSystemView({ updateUrl = false } = {}) {
+    customSources?.sync();
     elements.sidebar.dataset.activeSystem = activeSystem;
     elements.systemButtons.forEach((button) => {
       const isActive = button.dataset.system === activeSystem;
@@ -541,7 +554,7 @@ function initializeAtlas() {
       if (count) count.textContent = t(isActive ? "systems.active" : count.dataset.systemCountKey);
     });
     elements.systemContent.forEach((section) => {
-      section.hidden = !systemAllowed(section.dataset.systemContent);
+      section.hidden = section.dataset.adminDisabled === "true" || !systemAllowed(section.dataset.systemContent);
     });
     document.querySelectorAll("[data-combine-system]").forEach(control => {
       control.checked = combinedSystems.includes(control.value);
@@ -820,7 +833,8 @@ function initializeAtlas() {
     layer.on("mouseout", () => layer.setStyle(styleFeature(feature)));
   }
 
-  const faultLayer = L.geoJSON([], { style: styleFeature, onEachFeature: onEachFault }).addTo(map);
+  const faultLayer = L.geoJSON([], { style: styleFeature, onEachFeature: onEachFault });
+  if (sourceEnabled("faults")) faultLayer.addTo(map);
   map.createPane("evidence");
   map.getPane("evidence").style.zIndex = "420";
   const evidenceLayer = L.geoJSON([], {
@@ -912,7 +926,7 @@ function initializeAtlas() {
       section.hidden = !visible;
       if (visible) visibleSections += 1;
     });
-    elements.legendEmpty.hidden = visibleSections > 0;
+    elements.legendEmpty.hidden = visibleSections > 0 || (customSources?.activeCount() ?? 0) > 0;
     const contexts = activeSpatialContexts(activeLayers, i18n?.language, { demo: demoMode });
     if (napoLandcover?.isActive()) contexts.push(napoLandcover.context());
     if (napoSpectralMap?.isActive()) contexts.push(napoSpectralMap.context());
@@ -1074,8 +1088,8 @@ function initializeAtlas() {
 
   async function loadAtlasData() {
     const [faultResult, evidenceResult] = await Promise.allSettled([
-      loadGeoJson(catalogUrl, DATASETS.faults.geometries),
-      loadGeoJson(evidenceUrl, DATASETS.evidence.geometries),
+      sourceEnabled("faults") ? loadGeoJson(catalogUrl, DATASETS.faults.geometries) : Promise.resolve([]),
+      sourceEnabled("evidence") ? loadGeoJson(evidenceUrl, DATASETS.evidence.geometries) : Promise.resolve([]),
     ]);
 
     if (faultResult.status === "fulfilled") {
@@ -1388,6 +1402,7 @@ function initializeAtlas() {
   if (guidedTour) {
     activeSystem = guidedTour;
     const applyToggle = (control, checked) => {
+      if (control.disabled) return;
       control.checked = checked;
       control.dispatchEvent(new Event("change"));
     };
@@ -1430,6 +1445,9 @@ function initializeAtlas() {
   geology = mountGeology({L, map, language: () => i18n.language, onChange: () => { updateLegendVisibility(); updateSourceCount(); }});
   localData = mountLocalData({L, map, language: () => i18n.language, owner: () => activeSystem, allowed: systemAllowed,
     onChange: () => { renderSystemView(); updateLegendVisibility(); }});
+  customSources = mountCustomSources({L, map, sources: settings.customMapSources,
+    language: () => i18n.language, allowed: systemAllowed,
+    onChange: () => updateLegendVisibility()});
   applySystemScope = createSystemScope([...document.querySelectorAll('.layer-switch input[type="checkbox"]')]);
   document.querySelectorAll("[data-combine-system]").forEach(control => control.addEventListener("change", () => {
     combinedSystems = [...document.querySelectorAll("[data-combine-system]:checked")].map(input => input.value).filter(value => value !== activeSystem);
@@ -1439,6 +1457,42 @@ function initializeAtlas() {
   applySystemScope(activeSystem, combinedSystems);
   renderSystemView();
   loadAtlasData();
-  earthquakePanel.loadEarthquakeData();
-  stationPanel.load();
+  if (sourceEnabled("earthquakes")) earthquakePanel.loadEarthquakeData();
+  if (sourceEnabled("stations")) stationPanel.load();
+}
+
+function applyConfiguredSourceVisibility(sourceSettings) {
+  const controls = {
+    faults: "#fault-toggle",
+    evidence: "#evidence-toggle",
+    hillshade: "#hillshade-toggle",
+    basins: "#basin-toggle",
+    stations: "#station-toggle",
+    precipitation: "#precipitation-toggle",
+    airTemperature: "#air-temperature-toggle",
+    cloudFraction: "#cloud-fraction-toggle",
+    flood: "#flood-toggle",
+    thermal: "#thermal-toggle",
+    earthquakes: "#earthquake-toggle",
+    geology: "#geology-toggle",
+    landcover: "#landcover-toggle",
+    rivers: "#rivers-toggle",
+    spectral: "#spectral-map-toggle",
+  };
+  for (const [source, selector] of Object.entries(controls)) {
+    if (sourceSettings[source] !== false) continue;
+    const toggle = document.querySelector(selector);
+    if (!toggle) continue;
+    toggle.checked = false;
+    toggle.disabled = true;
+    const wrapper = toggle.closest(".now-layer-card") || toggle.closest(".layer-switch") || toggle.closest("label");
+    if (wrapper) {
+      wrapper.dataset.adminDisabled = "true";
+      wrapper.hidden = true;
+    }
+    if (source === "earthquakes") {
+      const filters = document.querySelector("#earthquake-filters");
+      if (filters) filters.hidden = true;
+    }
+  }
 }

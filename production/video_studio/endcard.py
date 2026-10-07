@@ -9,6 +9,7 @@ imagen de referencia (941 x 1672 px) y se escalan con ``K`` al ancho real del
 lienzo, de modo que el cierre sale igual a la maqueta aprobada.
 """
 
+import calendar
 import datetime as dt
 import math
 from collections import defaultdict
@@ -18,6 +19,9 @@ from PIL import Image, ImageColor, ImageDraw
 
 from data import boundary, load_values, province_boundaries
 from rasterio.features import bounds as geometry_bounds
+from variables import endcard_copy, resolve_aggregation, section_2_title
+from layout_engine import (begin_layout, finish_layout, scene_for, attach_layout,
+                           place_layer, draw as layout_draw)
 from maqueta import (
     DESIGN_CROP,
     HEIGHT,
@@ -148,9 +152,16 @@ class SummaryAccumulator:
         self.box = tuple(float(v) for v in project['bbox'])
         self.daily = []
         self.monthly_values = defaultdict(list)
+        self.monthly_dates = defaultdict(set)
+        self.annual_values = defaultdict(list)
         self.region_sums = defaultdict(float)
         self.region_counts = defaultdict(int)
+        self.n_observed = 0
+        self.spatial_coverage = []
         self.rank_features = self._selected_provinces()
+        # National native extremes are only meaningful when the frame is the
+        # whole country (23 continental provinces + Galápagos polygon).
+        self.national = len(self.rank_features) == 24
         self.rank_names = {
             feature.get('properties', {}).get('shapeName')
             for feature in self.rank_features
@@ -194,7 +205,11 @@ class SummaryAccumulator:
     @property
     def aggregation(self):
         """Temporal operator selected for the physical meaning of the data."""
-        return self.project.get('endcard_aggregation', 'sum')
+        return resolve_aggregation(self.project)[0]
+
+    @property
+    def profile(self):
+        return resolve_aggregation(self.project)[1]
 
     def _area_weights(self, shape):
         """Cell-area proxy for the EPSG:4326 grid used by every render.
@@ -210,18 +225,26 @@ class SummaryAccumulator:
             np.cos(np.deg2rad(lat))[:, np.newaxis], (height, width)
         )
 
-    def observe(self, date, values, point_samples=None, province_samples=None):
+    def observe(self, date, values, point_samples=None, province_samples=None,
+                province_extremes=None):
+        self.n_observed += 1
         values = np.asarray(values, dtype='float32')
         # Values below zero are legitimate for temperature, anomalies and
         # spectral indices. CHIRPS invalid negatives are removed in data.py.
         valid = np.isfinite(values)
+        domain_count = values.size
         if self.project.get('clip_ecuador', True):
             try:
-                valid &= _land_mask(self.boundary, self.box, values.shape)
+                domain = _land_mask(self.boundary, self.box, values.shape)
+                domain_count = int(domain.sum())
+                valid &= domain
             except Exception:
                 # A custom non-Ecuador bbox may not intersect the country polygon;
                 # preserving the source values is safer than silently dropping all.
                 pass
+
+        coverage = (int(valid.sum()) / domain_count if domain_count else 0.0)
+        self.spatial_coverage.append((date, coverage))
 
         if not valid.any():
             return
@@ -231,16 +254,31 @@ class SummaryAccumulator:
         mean_value = float(np.average(land_values, weights=weights))
         max_value = float(np.max(land_values))
         min_value = float(np.min(land_values))
+        extreme_source = 'display_grid'
+        # Extremes come from the native raster (zonal pass over the 23
+        # continental provinces) whenever available: the display grid can
+        # alias away a fine-resolution peak. Galápagos is left out so that
+        # mean and extremes describe the same domain as the map frame.
+        if self.national and province_extremes:
+            native = [ext for name, ext in province_extremes.items()
+                      if name in self.rank_names and name != 'Galápagos']
+            if len(native) == 23:
+                min_value = float(min(e[0] for e in native))
+                max_value = float(max(e[1] for e in native))
+                extreme_source = 'native_source_pixels'
         day = dt.date.fromisoformat(date)
         self.daily.append({
             'date': date,
             'mean': mean_value,
             'maximum': max_value,
             'minimum': min_value,
+            'extreme_source': extreme_source,
         })
         # Keep the year in the key: a multi-year project must not merge every
         # January into a fictitious "wettest month".
         self.monthly_values[(day.year, day.month)].append(mean_value)
+        self.monthly_dates[(day.year, day.month)].add(day)
+        self.annual_values[day.year].append(mean_value)
 
         # Province statistics arrive from the native source raster (before
         # display resampling). Thus “Napo” means all valid source pixels inside
@@ -279,34 +317,124 @@ class SummaryAccumulator:
         # the editorial card below uses the generic peak_* fields.
         wettest_day = max(days, key=lambda row: row['maximum'])
         rainiest_day = max(days, key=lambda row: row['mean'])
-        monthly_metric = {
-            month: (sum(values) if self.aggregation == 'sum'
-                    else float(np.mean(values)))
-            for month, values in self.monthly_values.items()
-            if values
-        }
-        (month_year, month_number), month_value = max(
-            monthly_metric.items(), key=lambda item: item[1]
-        )
-        month_days = len(self.monthly_values[(month_year, month_number)]) or 1
+        warnings = list(self.profile['warnings'])
+        cadence = self.project.get('cadence', 'Diaria')
+        valid_dates = len(days)
+        if valid_dates < self.n_observed:
+            warnings.append(
+                f'{self.n_observed - valid_dates} observación(es) no tuvieron '
+                'píxeles válidos en el encuadre; se excluyeron del resumen.'
+            )
+        lowest_coverage = min(self.spatial_coverage, key=lambda row: row[1],
+                              default=None)
+        if lowest_coverage and lowest_coverage[1] < 0.999:
+            warnings.append(
+                f'Cobertura espacial incompleta: el mínimo fue '
+                f'{lowest_coverage[1]:.1%} el {lowest_coverage[0]}; '
+                'los promedios usan solo píxeles válidos.'
+            )
+
+        def complete(key, n):
+            # A partial calendar month must never compete with full ones:
+            # with a constant 5 mm/day, a 31-day month beats a 29-day one and
+            # the first/last month of a custom range would always lose.
+            if cadence != 'Diaria':
+                return True
+            return n == calendar.monthrange(*key)[1]
+
+        if cadence == 'Anual':
+            candidates = self.annual_values
+            period_metric = {
+                year: (sum(values) if self.aggregation == 'sum'
+                       else float(np.mean(values)))
+                for year, values in candidates.items() if values
+            }
+            peak_year, month_value = max(period_metric.items(),
+                                         key=lambda item: item[1])
+            month_year, month_number = peak_year, None
+            month_days = len(candidates[peak_year]) or 1
+        else:
+            candidates = {k: v for k, v in self.monthly_values.items()
+                          if v and complete(k, len(self.monthly_dates[k]))}
+            if not candidates:
+                candidates = {k: v for k, v in self.monthly_values.items() if v}
+                warnings.append('Ningún mes está completo: el mes destacado usa '
+                                'datos parciales y no es comparable.')
+            elif len(candidates) < len([v for v in self.monthly_values.values() if v]):
+                warnings.append('Los meses incompletos se excluyen del mes destacado.')
+            period_metric = {
+                month: (sum(values) if self.aggregation == 'sum'
+                        else float(np.mean(values)))
+                for month, values in candidates.items()
+            }
+            (month_year, month_number), month_value = max(
+                period_metric.items(), key=lambda item: item[1]
+            )
+            month_days = len(self.monthly_values[(month_year, month_number)]) or 1
         aggregate_units = (
-            self.project.get('endcard_accumulated_units', '').strip()
+            (self.project.get('endcard_accumulated_units', '').strip()
+             or self.profile['accumulated_unit'])
             if self.aggregation == 'sum' else self.project.get('units', '').strip()
         )
+        total_dates = max(1, self.n_observed)
         provinces = [
             {
                 'name': name,
                 'value': (total if self.aggregation == 'sum'
                           else total / self.region_counts[name]),
                 'days': self.region_counts[name],
+                'coverage': self.region_counts[name] / total_dates,
             }
             for name, total in self.region_sums.items()
             if self.region_counts[name]
         ]
         provinces.sort(key=lambda row: row['value'], reverse=True)
+        partial = [r for r in provinces if r['coverage'] < 1.0]
+        if partial and self.aggregation == 'sum':
+            worst = min(partial, key=lambda r: r['coverage'])
+            warnings.append(
+                f'{len(partial)} provincia(s) con fechas sin dato; su '
+                f'acumulado queda subestimado (peor caso: {worst["name"]}, '
+                f'{worst["coverage"]:.0%} de cobertura).')
+        elif partial:
+            warnings.append(f'{len(partial)} provincia(s) con fechas sin dato; '
+                            'su promedio usa solo las fechas válidas.')
+        if self.national and len(provinces) < 24:
+            warnings.append(f'Solo {len(provinces)} de 24 provincias tienen '
+                            'datos válidos.')
         mean_period = float(np.mean([row['mean'] for row in days]))
         years = {dt.date.fromisoformat(row['date']).year for row in days}
         project_year = next(iter(years)) if len(years) == 1 else None
+        period_name = (str(month_year) if cadence == 'Anual'
+                       else MONTHS[month_number - 1])
+        if self.national:
+            scope = (
+                'Promedio y extremos: Ecuador continental del mapa principal; '
+                'promedio espacial ponderado por área aproximada (coseno de '
+                'latitud). Ranking: 24 provincias, incluida Galápagos; cada '
+                'valor es el promedio espacial de píxeles nativos válidos.'
+            )
+        else:
+            scope = (
+                'Encuadre seleccionado: promedio espacial ponderado por área '
+                'aproximada (coseno de latitud); ranking: promedio espacial '
+                'de la porción visible de cada provincia, usando píxeles nativos '
+                'válidos dentro del encuadre.'
+            )
+        extreme_sources = {row['extreme_source'] for row in days}
+        extreme_method = (
+            next(iter(extreme_sources)) if len(extreme_sources) == 1 else 'mixed'
+        )
+        if extreme_method == 'mixed':
+            warnings.append(
+                'Los máximos combinan píxeles fuente y la rejilla visual según '
+                'la fecha; revisa la cobertura antes de interpretarlos.'
+            )
+        elif extreme_method == 'display_grid':
+            warnings.append(
+                'El máximo se obtuvo de la rejilla remuestreada para el mapa; '
+                'puede suavizar extremos respecto al GeoTIFF fuente.'
+            )
         return {
             'days': len(days),
             'year': project_year,
@@ -321,29 +449,35 @@ class SummaryAccumulator:
             'peak_pixel_date': wettest_day['date'],
             'peak_pixel_value': wettest_day['maximum'],
             'minimum_pixel_value': min(row['minimum'] for row in days),
-            'peak_month': f'{MONTHS[month_number - 1]}',
+            'extreme_method': extreme_method,
+            'peak_month': period_name,
             'peak_month_number': month_number,
             'peak_month_year': month_year,
             'peak_month_value': month_value,
+            'peak_period_kind': 'year' if cadence == 'Anual' else 'month',
+            'variable_kind': self.profile['kind'],
+            'decimals': self.profile['decimals'],
+            'signed': self.profile['signed'],
+            'warnings': warnings,
             'city_rank_units': aggregate_units,
             'province_rank': provinces,
             'ranking_kind': 'provinces',
+            'national_extent': self.national,
             # Backward-compatible aliases for older receipts and projects.
             'mean_daily': mean_period,
             'wettest_day': wettest_day['date'],
             'wettest_day_value': wettest_day['maximum'],
             'rainiest_day': rainiest_day['date'],
             'rainiest_day_mean': rainiest_day['mean'],
-            'wettest_month': f'{MONTHS[month_number - 1]}',
+            'wettest_month': period_name,
             'wettest_month_number': month_number,
             'wettest_month_value': month_value,
-            'wettest_month_mean': month_value / month_days,
+            'wettest_month_mean': (month_value if cadence == 'Anual'
+                                   else month_value / month_days),
             # city_rank remains for receipt compatibility with the first
             # release; it now contains provincial, not capital, statistics.
             'city_rank': provinces,
-            'scope': ('Promedio espacial ponderado por área aproximada '
-                      '(coseno de latitud); ranking: promedio espacial por '
-                      'provincia sobre píxeles nativos válidos.'),
+            'scope': scope,
         }
 
 
@@ -356,26 +490,46 @@ def summary_for_project(project, rows, boundary_geojson=None):
         )
         accumulator.observe(
             row['date'], values,
-            metadata.get('point_samples'), metadata.get('province_samples')
+            metadata.get('point_samples'), metadata.get('province_samples'),
+            metadata.get('province_extremes')
         )
     return accumulator.to_dict()
 
 
-def _fmt(value, unit=''):
+def _fmt(value, unit='', decimals=1):
     if value is None:
         return 'N/D'
-    return f'{value:.1f}' + (f' {unit.strip()}' if unit and unit.strip() else '')
+    return (f'{value:.{decimals}f}'
+            + (f' {unit.strip()}' if unit and unit.strip() else ''))
 
 
 def _date_label(value, year=False):
     if not value:
         return 'N/D'
     day = dt.date.fromisoformat(value)
-    label = f'{day.day:02d} {MONTHS[day.month - 1].lower()}'
-    return f'{label} {day.year}' if year else label
+    if year:
+        return str(day.year)
+    return f'{day.day:02d} {MONTHS[day.month - 1].lower()}'
+
+
+def _period_label(value, cadence='Diaria', include_year=False):
+    if not value:
+        return 'N/D'
+    day = dt.date.fromisoformat(value)
+    if cadence == 'Anual':
+        return str(day.year)
+    if cadence == 'Mensual':
+        return f'{MONTH_NAMES[day.month - 1]} {day.year}'
+    if cadence == 'Por observación':
+        return f'{day.day:02d} {MONTHS[day.month - 1].lower()} {day.year}'
+    if include_year and cadence == 'Diaria':
+        return f'{day.day:02d} {MONTHS[day.month - 1].lower()} {day.year}'
+    return _date_label(value)
 
 
 def _month_name(summary):
+    if summary.get('peak_period_kind') == 'year':
+        return str(summary.get('peak_month_year', 'N/D'))
     number = summary.get('peak_month_number', summary.get('wettest_month_number'))
     month = summary.get('peak_month', summary.get('wettest_month'))
     if not number and month in MONTHS:
@@ -476,7 +630,7 @@ def _gradient_bar(design, x0, y0, x1, y1, left, right, radius):
     arr = np.repeat(row, h, axis=0).astype('uint8')
     bar = Image.fromarray(arr, 'RGB').convert('RGBA')
     bar.putalpha(mask)
-    design.alpha_composite(bar, (int(round(x0)), int(round(y0))))
+    place_layer(design, bar, (int(round(x0)), int(round(y0))), kind='data', editable=False, label='Barra calculada')
 
 
 def _dashed_v(draw, x, y0, y1, color, dash=3, gap=4):
@@ -490,6 +644,16 @@ def _stamp_icon(design, painter, box, color):
     """Dibuja un icono de maqueta (``painter(draw, x, y, color)``) en una capa
     aparte y lo escala para que ocupe ``box`` (px de la referencia)."""
     x0, y0, x1, y1 = (_s(v) for v in box)
+    scene = scene_for(design)
+    key = scene.key('stamp_icon') if scene else None
+    if scene and scene.overrides.get(key, {}).get('icon'):
+        from editorial import stamp_icon
+        diameter = max(1, round(min(x1-x0, y1-y0)))
+        tile = Image.new('RGBA', (diameter, diameter))
+        stamp_icon(tile, diameter/2, diameter/2, scene.overrides[key]['icon'], diameter=diameter)
+        place_layer(design, tile, (round((x0+x1-diameter)/2), round((y0+y1-diameter)/2)),
+                    key=key, kind='icon', label='Icono', icon=scene.overrides[key]['icon'])
+        return
     origin = 200
     layer = Image.new('RGBA', (900, 900), (0, 0, 0, 0))
     painter(ImageDraw.Draw(layer), origin, origin, color)
@@ -500,13 +664,22 @@ def _stamp_icon(design, painter, box, color):
     scale = min((x1 - x0) / icon.width, (y1 - y0) / icon.height)
     size = (max(1, round(icon.width * scale)), max(1, round(icon.height * scale)))
     icon = icon.resize(size, Image.Resampling.LANCZOS)
-    design.alpha_composite(icon, (round((x0 + x1) / 2 - size[0] / 2),
-                                  round((y0 + y1) / 2 - size[1] / 2)))
+    place_layer(design, icon, (round((x0 + x1) / 2 - size[0] / 2),
+                              round((y0 + y1) / 2 - size[1] / 2)), key=key, kind='icon', label=painter.__name__)
 
 
 def _icon_circle(design, cx, cy, painter):
     """Círculo oscuro de 78 px (ref) con un icono vectorial dentro,
     suavizado con supersampling."""
+    scene = scene_for(design)
+    key = scene.key('icon') if scene else None
+    if scene and scene.overrides.get(key, {}).get('icon'):
+        from editorial import stamp_icon
+        tile = Image.new('RGBA', (round(80*K), round(80*K)))
+        stamp_icon(tile, tile.width/2, tile.height/2, scene.overrides[key]['icon'], diameter=tile.width)
+        place_layer(design, tile, (round(_s(cx)-tile.width/2), round(_s(cy)-tile.height/2)),
+                    key=key, kind='icon', label='Icono de métrica', icon=scene.overrides[key]['icon'])
+        return
     ss = 4
     side = int(round(80 * K * ss))
     u = K * ss
@@ -521,8 +694,8 @@ def _icon_circle(design, cx, cy, painter):
     painter(d, p, u)
     out = int(round(80 * K))
     layer = layer.resize((out, out), Image.Resampling.LANCZOS)
-    design.alpha_composite(layer, (round(_s(cx) - out / 2),
-                                   round(_s(cy) - out / 2)))
+    place_layer(design, layer, (round(_s(cx) - out / 2), round(_s(cy) - out / 2)),
+                key=key, kind='icon', label='Icono de métrica')
 
 
 def _paint_cloud(d, p, u):
@@ -582,15 +755,63 @@ def _paint_mountain(d, p, u):
                   fill='#F2F5F7')
 
 
+def _paint_thermometer(d, p, u):
+    white, hot = '#F2F6F9', '#FF775E'
+    d.rounded_rectangle((*p(-7, -28), *p(7, 16)), radius=6 * u,
+                        outline=white, width=max(2, int(3 * u)))
+    d.ellipse((*p(-13, 10), *p(13, 36)), fill=hot, outline=white,
+              width=max(2, int(3 * u)))
+    d.rounded_rectangle((*p(-3, -4), *p(3, 21)), radius=2 * u, fill=hot)
+    for y in (-15, -6, 3):
+        d.line([p(8, y), p(16, y)], fill=white, width=max(1, int(2 * u)))
+
+
+def _paint_wind(d, p, u):
+    color = '#E8F2F6'
+    for points in (
+        [(-27, -13), (1, -13), (15, -8), (7, -2)],
+        [(-32, 0), (14, 0), (27, 5), (18, 12)],
+        [(-23, 14), (-2, 14), (7, 20)],
+    ):
+        d.line([p(x, y) for x, y in points], fill=color,
+               width=max(2, int(3 * u)), joint='curve')
+
+
+def _paint_index(d, p, u):
+    colors = ('#55E6D1', '#6FB7FF', '#F4D276')
+    for i, color in enumerate(colors):
+        y = -12 + i * 12
+        d.arc((*p(-25 + i * 2, y - 10), *p(25 - i * 2, y + 10)),
+              start=205, end=335, fill=color, width=max(2, int(3 * u)))
+
+
+def _paint_pin(d, p, u):
+    """Location icon for geographic records, not a rainfall-cloud default."""
+    color = '#55E6D1'
+    d.ellipse((*p(-20, -25), *p(20, 15)), fill=color)
+    d.polygon([p(-16, 6), p(0, 30), p(16, 6)], fill=color)
+    d.ellipse((*p(-8, -14), *p(8, 2)), fill='#102b36')
+
+
+def _icon_for_profile(kind):
+    return {
+        'temperature': _paint_thermometer,
+        'wind_speed': _paint_wind,
+        'index': _paint_index,
+    }.get(kind, _paint_cloud)
+
+
 def _nice_step(max_value, intervals=8, fill=0.92):
     """Paso 'redondo' del eje para que la barra mayor quede en ~90 %."""
     if not max_value or max_value <= 0:
         return 1.0
     raw = max_value / fill / intervals
     mag = 10 ** math.floor(math.log10(raw))
-    for mult in (1, 2, 2.5, 5, 10):
+    # Finer multipliers keep the longest bar near 90 % of the axis (with
+    # 1/2/2.5/5/10 a 4 096 mm maximum used only 51 % of the width).
+    for mult in (1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10):
         if mult * mag >= raw:
-            return mult * mag
+            return round(mult * mag, 10)
     return 10 * mag
 
 
@@ -649,7 +870,8 @@ def _section_header(draw, index, title, note, accent, white, muted):
 
 
 def _ranking_panel(draw, design, project, index, first_rank, entries,
-                   axis_max, step, label, unit, white):
+                   axis_max, step, label, unit, white, axis_min=0.0,
+                   decimals=1, spread_rows=False):
     geo = RANK_PANELS[index]
     axis_y = geo['axis_y']
     muted = '#C3D0D8'
@@ -660,6 +882,10 @@ def _ranking_panel(draw, design, project, index, first_rank, entries,
                   round(_s(axis_y)), '#17394A')
     draw.line((_s(AXIS_X0), _s(geo['grid_top']), _s(AXIS_X0), _s(axis_y)),
               fill='#34464F', width=1)
+    zero_x = (AXIS_X0 + AXIS_W * (0 - axis_min) / (axis_max - axis_min)
+              if axis_min < 0 else AXIS_X0)
+    draw.line((_s(zero_x), _s(geo['grid_top']), _s(zero_x), _s(axis_y)),
+              fill='#667986', width=2)
     draw.line((_s(AXIS_X0), _s(axis_y), _s(AXIS_END), _s(axis_y)),
               fill='#667986', width=2)
     tick_font = _fit('regular', ('160', 23), '160')
@@ -667,8 +893,8 @@ def _ranking_panel(draw, design, project, index, first_rank, entries,
         x = AXIS_X0 + i * AXIS_W / 8
         draw.line((_s(x), _s(axis_y), _s(x), _s(axis_y + 5)), fill='#667986',
                   width=1)
-        _center(draw, _s(x), _s(axis_y + 27.5), f'{i * step:g}', tick_font,
-                muted)
+        _center(draw, _s(x), _s(axis_y + 27.5),
+                f'{round(axis_min + i * step, 6):g}', tick_font, muted)
     lab_font = _fit('regular', ('Acumulado en 2024 (mm)', 234), label,
                     420)
     _center(draw, _s(586), _s(axis_y + 55), label, lab_font, muted)
@@ -685,7 +911,8 @@ def _ranking_panel(draw, design, project, index, first_rank, entries,
     name_ref = ('Pto. Fco. de Orellana', 164.5)
     val_ref = ('142.6 mm', 72)
     for idx, row in enumerate(entries[:12]):
-        c = geo['first_c'] + idx * geo['pitch']
+        c = (geo['grid_top'] + (axis_y - geo['grid_top']) * (idx + .5) / len(entries)
+             if spread_rows and len(entries) <= 6 else geo['first_c'] + idx * geo['pitch'])
         rank = first_rank + idx
         # Chip del puesto.
         draw.rounded_rectangle((_s(48), _s(c - 9), _s(88), _s(c + 13)),
@@ -695,27 +922,48 @@ def _ranking_panel(draw, design, project, index, first_rank, entries,
         nfont = _fit('regular', name_ref, row['name'], 175)
         _ink(draw, _s(geo['name_x']), _s(c + 7), row['name'], nfont, white)
         # Barra.
-        bar_w = max(6, AXIS_W * row['value'] / axis_max)
+        # The axis may start below zero (anomalies, sub-zero temperatures);
+        # a bar is always the distance from the axis start to the value, so a
+        # negative value is never drawn as a fake 6 px stub.
+        value_x = (AXIS_X0 + AXIS_W * (row['value'] - axis_min)
+                   / (axis_max - axis_min))
         left, right = colors[min(rank - 1, len(colors) - 1)]
-        x1 = AXIS_X0 + bar_w
-        _gradient_bar(design, _s(AXIS_X0), _s(c - 9.75), _s(x1), _s(c + 9.75),
+        bar_start, bar_end = sorted((zero_x, value_x))
+        # Keep the zero crossing exact for negative values. Extending a bar to
+        # an arbitrary minimum width can make a tiny anomaly look larger and
+        # cross the zero line, which is scientifically misleading.
+        if abs(bar_end - bar_start) < 1:
+            bar_end = bar_start + 1
+        _gradient_bar(design, _s(bar_start), _s(c - 9.75), _s(bar_end), _s(c + 9.75),
                       left, right, _s(4))
         # Valor.
-        value = _fmt(row['value'], unit)
+        value = _fmt(row['value'], unit, decimals)
         vfont = _fit('bold', val_ref, value)
         # The gutter created by AXIS_W keeps this label outside the coloured
         # bar for every value, including the maximum.
-        _ink(draw, _s(x1 + 11), _s(c + 7.5), value, vfont, white)
+        if row['value'] < 0:
+            # Put negative labels just to the right of zero, outside the bar.
+            # Left-aligned labels can collide with long province names.
+            _ink(draw, _s(zero_x + 11), _s(c + 7.5), value, vfont, white)
+        else:
+            _ink(draw, _s(bar_end + 11), _s(c + 7.5), value, vfont, white)
 
 
 def compose_endcard(project, summary):
     """Render the editable closing card at the project's output size."""
+    if summary.get('findings') and summary.get('period_values'):
+        from editorial import compose_temporal_closing
+        return compose_temporal_closing(project, summary)
     bg = project['background']
     white = project['text']
     accent = project['accent']
     muted = '#BCD0D8'
-    design = Image.new('RGBA', (WIDTH, HEIGHT), bg)
-    draw = ImageDraw.Draw(design)
+    profile = resolve_aggregation(project)[1]
+    copy = endcard_copy(project, summary, profile)
+    if summary.get('comparison_copy'):
+        copy.update(summary['comparison_copy'])
+    design = begin_layout(Image.new('RGBA', (WIDTH, HEIGHT), bg), project, 'endcard')
+    draw = layout_draw(design)
 
     # Marca + filete.
     brand = project['brand'].upper()
@@ -749,20 +997,21 @@ def compose_endcard(project, summary):
     # shifted down together. This keeps the title/brand relationship clean
     # without changing the reference geometry of the panels.
     body = Image.new('RGBA', (WIDTH, HEIGHT), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(body)
     body_shift = round(_s(50))
+    attach_layout(body, design, (0, body_shift))
+    draw = layout_draw(body)
 
     # Subtítulo.
     draw.rounded_rectangle((_s(60), _s(158), _s(817), _s(211)),
                            radius=_s(18), fill='#0E2232')
-    sub = project['endcard_subtitle']
+    sub = copy['subtitle'] if project.get('endcard_auto_text', True) else project['endcard_subtitle']
     sfont = _fit('regular', ('Concepto para el cierre del video de lluvia 2024.',
                              650), sub, 709)
     _ink(draw, _s(84), _s(196), sub, sfont, '#DDEBF3')
 
     # 01 · Cifras.
-    _section_header(draw, 1, project['endcard_section_1'],
-                    project['endcard_section_1_note'], accent, white, muted)
+    _section_header(draw, 1, copy['section_1'], copy['section_1_note'],
+                    accent, white, muted)
     for dx in (254.5, 486.5, 705):
         draw.line((_s(dx), _s(324), _s(dx), _s(508)), fill='#2B4757', width=2)
 
@@ -784,39 +1033,54 @@ def compose_endcard(project, summary):
     period_mean = summary.get('mean_period', summary.get('mean_daily'))
     month_value = summary.get('peak_month_value',
                               summary.get('wettest_month_value'))
-    if aggregation == 'sum':
-        month_labels = [('Mes con mayor acumulado', 205, 457)]
-        rank_label = (f'Acumulado en {summary.get("year")}'
-                      if summary.get('year') else 'Acumulado del período')
-    else:
-        month_labels = [('Mes con mayor promedio', 195, 457)]
-        rank_label = 'Promedio del período'
-    rank_axis_label = (
-        f'{rank_label} ({aggregate_unit})' if aggregate_unit else rank_label
-    )
+    decimals = summary.get('decimals', 1)
+    month_labels = [(copy['period_label'], 205, 457)]
+    rank_axis_label = copy['rank_axis_label']
     label_color = '#E8EFF3'
     # (cx_círculo, icono, cx_texto, ancho_max, valor, ref_valor, base_valor,
     #  líneas de etiqueta [(texto, ref_ancho, base)], regla, sub)
+    date_label = copy['date_label']
+    cadence = summary.get('cadence', project.get('cadence', 'Diaria'))
+    date_value = _period_label(peak_date, cadence)
+    max_date = _period_label(peak_pixel_date, cadence, include_year=True)
+    period_display = _month_name(summary)
+    period_metric = _fmt(month_value, aggregate_unit, decimals)
+    if cadence == 'Por observación':
+        period_display = f'{summary.get("days", 0):,}'
+        period_metric = f'{summary.get("days", 0):,} observaciones'
     cards = [
-        (141, _paint_cloud, 141.5, 200,
-         _date_label(peak_date), ('14 ene', 116), 430.5,
-         [('Mayor promedio espacial', 205, 457)], (66, 215),
-         (_fmt(peak_date_mean, unit), ('87.3 mm', 99), 505, 'display')),
+        (141, _icon_for_profile(profile['kind']), 141.5, 200,
+         date_value, ('14 ene', 116), 430.5,
+         [(date_label, 205, 457)], (66, 215),
+         (_fmt(peak_date_mean, unit, decimals), ('87.3 mm', 99), 505, 'display')),
         (372, _paint_calendar, 371.5, 215,
-         _month_name(summary), ('Marzo', 90), 428.5,
+         period_display, ('Marzo', 90), 428.5,
          month_labels, (283, 459),
-         (_fmt(month_value, aggregate_unit),
+         (period_metric,
           ('12.6 mm/día', 131), 506, 'display')),
         (593, _paint_bars, 595.5, 205,
-         _fmt(period_mean, unit), ('5.8 mm/día', 150), 433,
-         [('Promedio espacial', 146, 465), ('del período', 82, 490)], None, None),
+         _fmt(period_mean, unit, decimals), ('5.8 mm/día', 150), 433,
+         [(copy['average_labels'][0], 146, 465),
+          (copy['average_labels'][1], 100, 490)], None, None),
         (807, _paint_mountain, 813, 190,
-         _fmt(peak_pixel_value, unit), ('142.6 mm', 143),
+         _fmt(peak_pixel_value, unit, decimals), ('142.6 mm', 143),
          429.5,
-         [('Máximo por píxel', 140, 458), ('registrado', 92, 483)], None,
-         (_date_label(peak_pixel_date, year=True),
+         [(copy['maximum_labels'][0], 140, 458),
+          (copy['maximum_labels'][1], 92, 483)], None,
+         (max_date,
           ('02 abr 2024', 102), 514, 'bold')),
     ]
+    if summary.get('comparison_cards'):
+        painters = [_icon_for_profile(profile['kind']), _paint_calendar, _paint_bars, _paint_index]
+        if summary.get('geographic_records'):
+            painters[0] = _paint_pin
+        cards = [
+            (cx, painters[index], cx, 185,
+             item['value'], ('142.6 mm', 143), 430,
+             [(item['label'], 200, 462)], (cx - 75, cx + 75),
+             (item.get('sub', ''), ('02 abr 2024', 102), 505, 'bold'))
+            for index, (cx, item) in enumerate(zip((141, 372, 593, 807), summary['comparison_cards']))
+        ]
     for (cx, painter, tx, vmax, value, vref, vbase, labels, rule,
          sub_item) in cards:
         _icon_circle(body, cx, 349.5, painter)
@@ -836,23 +1100,36 @@ def compose_endcard(project, summary):
     # 02 y 03 · Ranking provincial.
     ranking = summary.get('city_rank', [])
     max_value = max((row['value'] for row in ranking), default=0)
-    step = _nice_step(max_value)
-    axis_max = step * 8
-    _section_header(draw, 2, project['endcard_section_2'],
-                    project['endcard_section_2_note'], accent, white, muted)
+    min_value = min((row['value'] for row in ranking), default=0)
+    if min_value < 0:
+        step = _nice_step(max(max_value, 0) - min_value)
+        axis_min = math.floor(min_value / step) * step
+    else:
+        step = _nice_step(max_value)
+        axis_min = 0.0
+    axis_max = axis_min + step * 8
+    _section_header(draw, 2, copy['section_2'], copy['section_2_note'],
+                    accent, white, muted)
     _ranking_panel(draw, body, project, 2, 1, ranking[:12], axis_max, step,
-                   rank_axis_label, aggregate_unit, white)
-    section_3 = project['endcard_section_3']
+                   rank_axis_label, aggregate_unit, white, axis_min, decimals,
+                   spread_rows=bool(summary.get('comparison_cards')))
+    section_3 = copy['section_3'] if project.get('endcard_auto_text', True) else project['endcard_section_3']
     # Do not promise a 24th province when a regional/local raster lacks a
     # complete province. Custom user wording is always preserved.
     canonical_third = section_3.upper().replace('–', '-').strip()
     if canonical_third in ('CIUDADES 13-24', 'PROVINCIAS 13-24') and len(ranking) < 24:
         prefix = 'PROVINCIAS' if 'PROVINCIAS' in canonical_third else 'CIUDADES'
         section_3 = f'{prefix} 13–{max(13, len(ranking))}'
-    _section_header(draw, 3, section_3,
-                    project['endcard_section_3_note'], accent, white, muted)
-    _ranking_panel(draw, body, project, 3, 13, ranking[12:24], axis_max,
-                   step, rank_axis_label, aggregate_unit, white)
+    section_3_note = copy['section_3_note'] if project.get('endcard_auto_text', True) else project['endcard_section_3_note']
+    _section_header(draw, 3, section_3, section_3_note, accent, white, muted)
+    if summary.get('comparison_notes'):
+        for idx, note in enumerate(summary['comparison_notes']):
+            note_font = _fit('regular', ('Ventana temporal comparable', 340), note, 810)
+            _ink(draw, _s(54), _s(1175 + idx * 62), note, note_font, muted)
+    else:
+        _ranking_panel(draw, body, project, 3, 13, ranking[12:24], axis_max,
+                       step, rank_axis_label, aggregate_unit, white, axis_min,
+                       decimals)
 
     # Pie.
     draw.line((_s(33), _s(1556), _s(907), _s(1556)), fill='#627783', width=2)
@@ -860,18 +1137,18 @@ def compose_endcard(project, summary):
               width=2)
     _stamp_icon(body, draw_database_icon, (46, 1577, 89, 1627), '#E4EFEA')
     n_provinces = len(ranking) or len(getattr(summary, 'rank_features', []))
-    province_label = (f'{n_provinces} provincias del Ecuador'
+    province_label = summary.get('rank_label') or (f'{n_provinces} provincias del Ecuador'
                       if n_provinces == 24
                       else f'{n_provinces} provincias incluidas')
     foot = [
         (province_label, 'bold',
          ('24 provincias del Ecuador', 312), 118, 1593, white),
-        (project.get('endcard_footer',
-                     'CHIRPS v2 · resolución nativa ≈ 5,6 km'), 'regular',
+        ((copy['footer'] if project.get('endcard_auto_text', True)
+          else project.get('endcard_footer', 'Fuente de datos')), 'regular',
          ('CHIRPS v2 · resolución nativa ≈ 5,6 km', 286), 118, 1619.5,
          '#B9C9D3'),
-        (project.get('endcard_footer_2',
-                     'Ecuador continental + Galápagos · límites: geoBoundaries'),
+        ((copy['footer_2'] if project.get('endcard_auto_text', True)
+          else project.get('endcard_footer_2', 'Encuadre seleccionado')),
          'regular',
          ('Ecuador continental + Galápagos · límites: geoBoundaries', 390),
          119, 1644,
@@ -896,7 +1173,9 @@ def compose_endcard(project, summary):
               227), '#C9D6DE')
 
     design.alpha_composite(body, (0, body_shift))
-    result = compose_final(design.convert('RGB'))
+    design = finish_layout(design)
+    custom = project.get('_layout_capture') or project.get('visual_layout', {}).get('full_canvas')
+    result = design.convert('RGB') if custom else compose_final(design.convert('RGB'))
     if project['width'] != WIDTH:
         result = result.resize((project['width'], project['width'] * 16 // 9),
                                Image.Resampling.LANCZOS)

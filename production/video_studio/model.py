@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 STORE = ROOT / '_local' / 'video-studio'
-TEMPLATE_VERSION = 6
+TEMPLATE_VERSION = 7
 
 PALETTES = {
     'Ecuador Vivo · maqueta': [
@@ -24,6 +24,7 @@ PALETTES = {
     'Vegetación': ['#68412b', '#a06c3b', '#c5a45e', '#e6dda3', '#b7d589', '#72b667', '#33864a', '#0b5335'],
     'Anomalías': ['#313695', '#4575b4', '#74add1', '#e0f3f8', '#fff7bc', '#fdae61', '#d73027', '#a50026'],
     'Viridis': ['#440154', '#46327e', '#365c8d', '#277f8e', '#1fa187', '#4ac16d', '#a0da39', '#fde725'],
+    'Termal editorial': ['#086a9e', '#0ebcd7', '#55e5c5', '#e9f56b', '#ffba38', '#ff5542', '#e61b56'],
 }
 
 CLASSES = [
@@ -61,6 +62,11 @@ TEXT_DEFAULTS = {
     'endcard_section_3_note': 'Continuación del ranking.',
     'endcard_footer': 'CHIRPS v2 · resolución nativa ≈ 5,6 km',
     'endcard_footer_2': 'Ecuador continental + Galápagos · límites: geoBoundaries',
+    'endcard_date_metric_label': 'Mayor promedio espacial',
+    'endcard_period_metric_label': 'Mes con mayor acumulado',
+    'endcard_average_metric_label': 'Promedio espacial del período',
+    'endcard_maximum_metric_label': 'Máximo por píxel registrado',
+    'endcard_rank_axis_label': '',
 }
 
 BOOL_DEFAULTS = {
@@ -68,6 +74,7 @@ BOOL_DEFAULTS = {
     'show_provinces': True,
     'show_play_button': True,
     'endcard_enabled': True,
+    'endcard_auto_text': True,
 }
 
 ENDCARD_DEFAULTS = {
@@ -75,6 +82,10 @@ ENDCARD_DEFAULTS = {
     # Sum is appropriate for precipitation increments. Intensive variables
     # such as temperature and spectral indices must use a temporal mean.
     'endcard_aggregation': 'sum',
+    # 'auto' detecta el tipo de variable (variables.py) y elige suma o
+    # promedio; 'manual' respeta endcard_aggregation salvo que sea físicamente
+    # inválido (sumar temperatura, índices, viento, %).
+    'endcard_aggregation_mode': 'auto',
     'endcard_accumulated_units': 'mm',
     # Each ranking entry is the native-raster spatial mean of an ADM1 polygon.
     # Keeping this explicit makes its method auditable in saved projects.
@@ -154,6 +165,7 @@ def upgrade_project(p):
         p.setdefault(key, value)
 
     p.setdefault('layout', 'maqueta')
+    p.setdefault('video_type', 'Mapa temporal')
     p.setdefault('template_version', TEMPLATE_VERSION)
 
     # Old projects usually stored author/credits as empty strings.
@@ -295,15 +307,22 @@ def validate(p):
         if not isinstance(p[key], bool):
             raise ValueError(f'{key} debe ser verdadero o falso.')
 
+    custom_timing = p.get('storyboard', {}).get('enabled', False)
+    closing_min, closing_max = (1/30, 300) if custom_timing else (1, 30)
     if (
         not isinstance(p['endcard_duration'], (int, float))
         or not math.isfinite(p['endcard_duration'])
-        or not 1 <= p['endcard_duration'] <= 30
+        or not closing_min <= p['endcard_duration'] <= closing_max
     ):
-        raise ValueError('El cierre final debe durar entre 1 y 30 segundos.')
+        raise ValueError(f'El cierre final debe durar entre {closing_min:g} y {closing_max:g} segundos.')
 
     if p.get('endcard_aggregation') not in ('sum', 'mean'):
         raise ValueError('La métrica temporal del cierre no es válida.')
+    if p.get('endcard_aggregation_mode') not in ('auto', 'manual'):
+        raise ValueError('El modo de métrica temporal debe ser auto o manual.')
+    if p.get('endcard_enabled', True) and p['kind'] == 'continuous':
+        from variables import resolve_aggregation
+        resolve_aggregation(p)  # rechaza sumar magnitudes intensivas
     if (not isinstance(p.get('endcard_accumulated_units'), str)
             or len(p['endcard_accumulated_units']) > 40
             or '\n' in p['endcard_accumulated_units']

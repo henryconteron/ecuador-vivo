@@ -16,6 +16,7 @@ from model import STORE, validate, frame_counts
 from data import boundary, load_values, sha256
 from render import compose
 from endcard import SummaryAccumulator, compose_endcard
+from variables import endcard_copy
 
 
 def write_json(path, value):
@@ -86,6 +87,8 @@ def statuses():
 
 
 def start_job(project):
+    from storyboard import base_timing
+    project = base_timing(project)
     validate(project)
     job = STORE / 'jobs' / (dt.datetime.now().strftime('%Y%m%d-%H%M%S') + '-' + uuid.uuid4().hex[:8])
     job.mkdir(parents=True)
@@ -114,7 +117,8 @@ def execute(job):
         write_json(job / 'status.json', {'state': state, 'progress': progress,
                    'message': message, 'updated': time.time(), 'pid': os.getpid()})
     try:
-        p = read_json(job / 'project.json')
+        from storyboard import base_timing, assemble
+        p = base_timing(read_json(job / 'project.json'))
         rows = validate(p)
         counts = frame_counts(len(rows), p['duration'])
         status('running', 'Preparando mapa y datos')
@@ -133,8 +137,9 @@ def execute(job):
                        'enabled': bool(p.get('show_galapagos', True)
                                        and p.get('clip_ecuador', False)),
                        'bbox': [-92.2, -1.8, -88.8, 1.9],
-                       'source_note': 'Misma escena diaria y escala CHIRPS; media y máximo '
-                                      'de píxeles nativos válidos. NoData permanece sin dato; '
+                       'source_note': 'Mismos rásteres y misma escala visual que el mapa '
+                                      'principal. Para el ranking provincial se usa la media '
+                                      'de píxeles fuente válidos; NoData permanece sin dato y '
                                       'el océano no entra en las estadísticas.'
                    },
                    'source_records': [], 'complete': False}
@@ -153,7 +158,8 @@ def execute(job):
             )
             summary.observe(
                 row['date'], values,
-                metadata.get('point_samples'), metadata.get('province_samples')
+                metadata.get('point_samples'), metadata.get('province_samples'),
+                metadata.get('province_extremes')
             )
             path = metadata['path']
             if path not in hashes:
@@ -173,7 +179,9 @@ def execute(job):
 
         if p.get('endcard_enabled', True):
             status('running', 'Dibujando cierre con métricas')
-            endcard = compose_endcard(p, summary.to_dict())
+            summary_data = summary.to_dict()
+            display_copy = endcard_copy(p, summary_data)
+            endcard = compose_endcard(p, summary_data)
             endcard.save(job / 'endcard.png')
             endcard_pixels = np.asarray(endcard)
             endcard_frames = max(1, round(p['endcard_duration'] * p['fps']))
@@ -185,7 +193,8 @@ def execute(job):
                 'enabled': True,
                 'duration_seconds': endcard_frames / p['fps'],
                 'frames': endcard_frames,
-                'summary': summary.to_dict(),
+                'summary': summary_data,
+                'display_copy': display_copy,
             }
         else:
             receipt['endcard'] = {'enabled': False}
@@ -194,7 +203,13 @@ def execute(job):
         if (job / 'cancel.request').exists():
             raise InterruptedError('Exportación cancelada antes de finalizar.')
         final = job / 'ecuador-vivo.mp4'
-        partial.replace(final)
+        status('running', 'Ajustando formato y secuencia')
+        assembled, montage = assemble(job, partial, p, map_duration=receipt['map_duration_seconds'],
+            endcard_duration=receipt['endcard_duration_seconds'], status=lambda message: status('running', message))
+        if (job / 'cancel.request').exists():
+            raise InterruptedError('Exportación cancelada antes de finalizar el montaje.')
+        assembled.replace(final)
+        receipt.update(montage=montage, duration_seconds=montage['duration_seconds'])
         receipt.update(complete=True, video_sha256=sha256(final))
         write_json(job / 'receipt.json', receipt)
         status('complete', 'Video terminado')

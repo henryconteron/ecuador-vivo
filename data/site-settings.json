@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "mapSources": {
+    "faults": true,
+    "evidence": true,
+    "hillshade": true,
+    "basins": true,
+    "stations": true,
+    "precipitation": true,
+    "airTemperature": true,
+    "cloudFraction": true,
+    "flood": true,
+    "thermal": true,
+    "earthquakes": true,
+    "geology": true,
+    "landcover": true,
+    "rivers": true,
+    "spectral": true
+  }
+}

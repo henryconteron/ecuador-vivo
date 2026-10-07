@@ -712,6 +712,10 @@ select:focus-visible,
   background: repeating-linear-gradient(to right, #38bdf8 0 0.48rem, transparent 0.48rem 0.72rem);
 }
 
+.site-editor-block { max-width: 1200px; margin: 2rem auto; padding: clamp(1.2rem, 3vw, 2.2rem); border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); }
+.site-editor-block h2 { font: 400 clamp(1.8rem, 3vw, 2.8rem)/1.08 Georgia, serif; margin: 0 0 .75rem; }
+.site-editor-block > p { max-width: 75ch; }
+
 .legend .dextral {
   background: repeating-linear-gradient(to right, #f59e0b 0 0.55rem, transparent 0.55rem 0.7rem, #f59e0b 0.7rem 0.82rem, transparent 0.82rem 1rem);
 }
@@ -1086,6 +1090,10 @@ footer {
   margin-bottom: 1.2rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--line);
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .layer-switch {
@@ -2489,6 +2497,8 @@ footer {
     font-size: 0.75rem;
   }
 }
+
+[data-site-admin-hidden="true"], [data-admin-disabled="true"] { display: none !important; }
 
 @media (max-width: 23rem) {
   .brand-copy {

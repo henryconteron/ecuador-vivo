@@ -36,7 +36,7 @@ que todo objeto de ese tamaño sea identificable.
 | Tema y fuente | Historia / ritmo | Detalle aproximado | Video posible y precaución principal |
 | --- | --- | --- | --- |
 | [CHIRPS v2](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHG_CHIRPS_DAILY) | Desde 1981; diario | 0,05°, ≈5,6 km | Lluvia de un año o décadas; es la versión del video terminado. |
-| [CHIRPS v3 DAILY_SAT](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_SAT) | Desde 1981; diario derivado | 0,05° | Serie alternativa nueva; mantener una sola versión durante toda la comparación. |
+| [CHIRPS v3 DAILY_SAT](https://developers.google.com/earth-engine/datasets/catalog/UCSB-CHC_CHIRPS_V3_DAILY_SAT) | Desde 2001; diario derivado de IMERG Late | 0,05° | La partición diaria satelital comienza después que la serie total; no confundir con CHIRPS v3 `rnl`, que usa ERA5 y se extiende desde 1981. |
 | [GPM IMERG V07](https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V07) | Desde 2000; cada 30 min | ≈11 km | Evolución de episodios de lluvia. Integrar tasas mm/h; distinguir provisional/final. |
 | [ERA5-Land diario](https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_DAILY_AGGR) | Desde 1950; diario | Malla ≈11 km | Temperatura del aire, humedad del suelo y otras variables; es reanálisis. |
 | [MODIS MOD11A1](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A1) | Desde 2000; diario | 1 km | Calor de la superficie diurno/nocturno; faltan observaciones con nubes. |
@@ -369,8 +369,12 @@ no intercambies etiquetas de eventos sin explicarlo.
   aprobado; produce al menos 1080 × 1920 y evita recompresiones sucesivas.
 
 Los TIFF por sí solos no adquieren el diseño del último MP4: cada nueva variable
-necesita conectar lectura, conversión, QA y leyenda al montador. El motor actual
-solo tiene completada esa conexión para lluvia CHIRPS v2 diaria.
+necesita conectar lectura, conversión, QA y leyenda al montador. El Estudio local
+ya puede descargar CHIRPS v3 y NASA POWER regional y preparar sus grillas para el
+renderizador; las métricas de POWER quedan apagadas por su escala regional. INAMHI
+se descarga como series puntuales CSV, pero todavía no se dibuja como una capa
+animada de estaciones. Los demás productos de esta tabla siguen requiriendo
+descarga/preparación independiente.
 
 ## 13. Archivo organizado y ahorro de espacio/cuota
 
@@ -410,7 +414,10 @@ no comercial ya habilitado, pero tampoco es cómputo ilimitado.
 
 | Herramienta | Comprobado | Pendiente |
 | --- | --- | --- |
-| Video diario CHIRPS v2 | Año 2024 generado y revisado | Nuevos periodos según disponibilidad. |
+| Estudio local · CHIRPS v3 | Conector directo de productos prelim/final, recorte, créditos y traspaso al editor | Probar cada producto/fecha; preliminar y final tienen latencias distintas. |
+| Estudio local · NASA POWER | Conector directo regional, CSV + GeoTIFF y serie lista para el editor | Interpretar solo a escala regional; no usar ranking provincial fino. |
+| Estudio local · INAMHI | Catálogo de estaciones y descarga CSV diaria con faltantes/procedencia | La API del visor puede limitar histórico; falta renderizar animación de puntos de estación. |
+| Video diario CHIRPS v2 | Año 2024 generado y revisado | Mantener como flujo anterior reproducible. |
 | `download_daily_rain.py` | Descarga real de 2023-01-01 y reutilización/verificación de siete archivos de 2024 | No se han descargado décadas completas. |
 | `export_climate_data_for_videos_gee.js` | Sintaxis local y bandas contrastadas con catálogo | Ejecutar primer mes en tu cuenta; revisar salida TIFF/CSV. |
 | MapBiomas, MODIS, VIIRS, Sentinel y otras rutas de esta guía | Fuentes y documentación consultadas | Descargar selección y adaptar cada variable al montaje final. |

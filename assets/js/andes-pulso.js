@@ -31,6 +31,111 @@ function appendStoryFileLinks(parent, record, language) {
   parent.append(links);
 }
 
+function appendCaseVideo(parent, record, language) {
+  const href = record.video?.href;
+  if (typeof href !== "string" || !/^assets\/media\/andes-pulso\/[a-z0-9-]+\/ecuador-vivo\.mp4$/.test(href)) return;
+  const wrap = document.createElement("div");
+  wrap.className = "case-story-video-wrap";
+  const video = document.createElement("video");
+  video.className = "case-story-video";
+  video.controls = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.src = href;
+  video.setAttribute("aria-label", language === "en" ? "Video and map animation for this case" : "Video y animación cartográfica del caso");
+  const poster = record.video.poster;
+  if (typeof poster === "string" && /^assets\/media\/andes-pulso\/[a-z0-9-]+\/poster\.png$/.test(poster)) video.poster = poster;
+  wrap.append(video);
+  parent.append(wrap);
+}
+
+function metricText(value, units, language = "es", digits = 2) {
+  if (!Number.isFinite(value)) return "—";
+  const locale = language === "en" ? "en-US" : "es-EC";
+  const number = value.toLocaleString(locale, { maximumFractionDigits: digits });
+  return `${number}${units ? ` ${units}` : ""}`;
+}
+
+function appendStoryEvidence(article, record, evidence, language) {
+  const detail = document.createElement("details");
+  detail.className = "case-story-evidence";
+  const summaryLine = document.createElement("summary");
+  summaryLine.textContent = language === "en" ? "Metrics shown in the video" : "Cifras que aparecen en el video";
+  detail.append(summaryLine);
+  const metrics = evidence.summary ?? {};
+  const copy = evidence.display_copy ?? {};
+  const unit = metrics.units ?? "";
+  const aggregateUnit = metrics.aggregate_units ?? unit;
+  const rows = [
+    [copy.date_label ?? (language === "en" ? "Highlighted date" : "Fecha destacada"), metricText(metrics.peak_date_mean, unit, language), metrics.peak_date],
+    [copy.period_label ?? (language === "en" ? "Highlighted period" : "Período destacado"), metricText(metrics.peak_month_value, aggregateUnit, language), metrics.peak_month],
+    [(language === "en" ? "Period spatial mean" : "Promedio espacial del período"), metricText(metrics.mean_period, unit, language)],
+    [Array.isArray(copy.maximum_labels) ? copy.maximum_labels.filter(Boolean).join(" ") : (language === "en" ? "Maximum" : "Máximo"), metricText(metrics.peak_pixel_value, unit, language), metrics.peak_pixel_date],
+  ];
+  const list = document.createElement("dl");
+  list.className = "case-story-metrics";
+  for (const [label, value, when] of rows) {
+    if (value === "—") continue;
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const description = document.createElement("dd");
+    description.textContent = [value, when].filter(Boolean).join(" · ");
+    list.append(term, description);
+  }
+  detail.append(list);
+
+  const ranking = metrics.province_rank ?? metrics.city_rank ?? [];
+  if (ranking.length) {
+    const caption = document.createElement("p");
+    caption.className = "case-story-table-caption";
+    caption.textContent = language === "en" ? "Provincial values used for the ranking" : "Valores provinciales usados en el ranking";
+    const scroll = document.createElement("div");
+    scroll.className = "case-story-table-scroll";
+    const table = document.createElement("table");
+    table.className = "case-story-metric-table";
+    const head = document.createElement("thead");
+    const header = document.createElement("tr");
+    for (const label of [language === "en" ? "Rank" : "Puesto", language === "en" ? "Province" : "Provincia", language === "en" ? "Value" : "Valor"]) {
+      const cell = document.createElement("th");
+      cell.scope = "col";
+      cell.textContent = label;
+      header.append(cell);
+    }
+    head.append(header);
+    const body = document.createElement("tbody");
+    ranking.forEach((row, index) => {
+      const tr = document.createElement("tr");
+      for (const value of [String(index + 1), String(row.name ?? ""), metricText(row.value, metrics.city_rank_units ?? aggregateUnit, language, metrics.decimals ?? 1)]) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        tr.append(cell);
+      }
+      body.append(tr);
+    });
+    table.append(head, body);
+    scroll.append(table);
+    detail.append(caption, scroll);
+  }
+  if (metrics.scope) {
+    const scope = document.createElement("p");
+    scope.className = "case-story-scope";
+    scope.textContent = metrics.scope;
+    detail.append(scope);
+  }
+  const warnings = Array.isArray(metrics.warnings) ? metrics.warnings : [];
+  if (warnings.length) {
+    const warningList = document.createElement("ul");
+    warningList.className = "case-story-warnings";
+    for (const warning of warnings) {
+      const item = document.createElement("li");
+      item.textContent = warning;
+      warningList.append(item);
+    }
+    detail.append(warningList);
+  }
+  article.append(detail);
+}
+
 export function renderStoryCatalog(records, language = "es", container = document.getElementById("case-catalog")) {
   if (!container) return;
   container.replaceChildren();
@@ -43,6 +148,7 @@ export function renderStoryCatalog(records, language = "es", container = documen
   for (const record of records) {
     const article = document.createElement("article");
     article.className = `case-story-card case-story-${record.kind ?? "general"}`;
+    article.dataset.caseId = record.id ?? "";
     const header = document.createElement("div");
     header.className = "case-story-card-header";
     const kind = document.createElement("span");
@@ -76,7 +182,9 @@ export function renderStoryCatalog(records, language = "es", container = documen
     const limits = document.createElement("p");
     limits.className = "case-story-limits";
     limits.textContent = `${language === "en" ? "Limit: " : "Límite: "}${storyText(record, "limits", language)}`;
-    article.append(header, title, hook, question, facts, limits);
+    article.append(header, title, hook, question);
+    appendCaseVideo(article, record, language);
+    article.append(facts, limits);
     appendStoryFileLinks(article, record, language);
     container.append(article);
   }
@@ -99,6 +207,20 @@ async function initStoryCatalog() {
   }
   const language = window.portalLanguage?.() ?? (new URLSearchParams(location.search).get("lang") === "en" ? "en" : "es");
   renderStoryCatalog(records, language, container);
+  for (const record of records) {
+    const href = record.summary_href;
+    if (typeof href !== "string" || !/^data\/cases\/[a-z0-9-]+\/summary\.json$/.test(href)) continue;
+    try {
+      const response = await fetch(href);
+      if (!response.ok) continue;
+      const evidence = await response.json();
+      const article = [...container.querySelectorAll(".case-story-card")]
+        .find((item) => item.dataset.caseId === record.id);
+      if (article) appendStoryEvidence(article, record, evidence, language);
+    } catch (error) {
+      console.warn(`Andes Pulso: summary unavailable for ${record.id}`, error);
+    }
+  }
 }
 
 export function normalizeSnapshot(collection) {
