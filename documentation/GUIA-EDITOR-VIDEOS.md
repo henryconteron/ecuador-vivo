@@ -11,12 +11,13 @@ No es la página pública de Ecuador Vivo: es una herramienta privada de producc
 ## Tu primer video
 
 1. **Editor → Datos:** deja «Lluvia CHIRPS · automática». Empieza con 1–7 días de enero de 2024 para probar. El año 2024 completo ya está descargado en este equipo.
-2. **Diseño:** cambia título, subtítulo, leyenda, nota, fondo, color del texto y paleta. Pulsa **Aplicar paleta** o **Aplicar escala** si modificas sus tablas.
-3. **Textos y créditos:** escribe tu nombre en «Tu nombre / autoría», por ejemplo `Elaborado por Henry P. Conteron Moreta`. Añade tu cuenta o colaboradores en «Créditos adicionales / redes». También puedes editar la marca superior, las fuentes visibles, las unidades, las notas, el formato de fecha, la palabra del contador y las etiquetas de las ciudades.
-4. **Mapa y tiempo:** elige región, ciudades y duración. «Usar ritmo original» asigna 1,5 segundos por fecha: 366 días ocupan 549 segundos (9 min 9 s). Elige 1080 × 1920 y calidad Alta para conservar el formato original.
-5. **Actualizar vista previa:** revisa varias fechas usando el deslizador. La vista previa y el MP4 usan el mismo dibujado. Los cambios no aparecen en la imagen hasta actualizarla.
-6. **Guardar proyecto:** conserva tu configuración, incluida tu firma. Así podrás abrirla después y cambiar únicamente los datos y las fechas.
-7. **Generar video:** abre **Exportaciones** para ver el progreso, reproducir el resultado, descargar el MP4 o abrir su carpeta.
+2. **Diseño:** cambia título, subtítulo, leyenda, fondo, color del texto y paleta. La maqueta aprobada ya protege la zona segura y muestra Galápagos cuando el encuadre es Ecuador completo.
+3. **Cierre final:** activa la tarjeta de métricas, elige cuántos segundos permanece y edita sus títulos, subtítulos y notas. Las cifras salen de los mismos rásteres del video.
+4. **Textos y créditos:** escribe tu nombre en «Autoría», por ejemplo `Henry P. Conteron Moreta`. Añade tu cargo, TikTok, Instagram, fuente científica y límites. También puedes editar la marca superior, las unidades, el formato de fecha y las etiquetas de las ciudades.
+5. **Mapa y tiempo:** elige región, ciudades y duración del mapa. «1,5 s por fecha» asigna 1,5 segundos por fecha; el cierre se suma aparte. Elige 1080 × 1920 y calidad Alta.
+6. **Actualizar vista previa:** revisa varias fechas usando el deslizador y pulsa también **Actualizar vista previa del cierre** si lo activaste. La vista previa y el MP4 usan el mismo dibujado.
+7. **Guardar proyecto:** conserva tu configuración, incluida tu firma y los textos del cierre.
+8. **Generar video:** abre **Exportaciones** para ver el progreso, reproducir el resultado, descargar el MP4 o abrir su carpeta.
 
 Escribe textos breves: el editor reduce su tamaño para que quepan; un párrafo largo será menos legible en el teléfono. Las líneas personales vacías no muestran texto. El crédito de límites vacío recupera automáticamente la atribución a geoBoundaries. Los números de fechas, contador y escala se generan a partir de los datos; no son adornos editables libremente.
 
@@ -32,11 +33,33 @@ Escribe textos breves: el editor reduce su tamaño para que quepan; un párrafo 
 
 Una serie diaria con fechas faltantes se rechaza. Si las observaciones son irregulares, selecciona «Por observación»: cada observación recibe aproximadamente la misma duración, aunque los intervalos reales entre fechas difieran. No se inventan días intermedios.
 
+### Cómo elegir las métricas del cierre
+
+En **Cierre final**, elige **Acumular** únicamente cuando cada mapa representa
+una cantidad del intervalo: por ejemplo, CHIRPS en `mm/día` se suma y el
+ranking anual queda en `mm`. Para temperatura, NDWI, MNDWI, anomalías u otras
+variables intensivas, elige **Promediar**: el ranking y el mes destacado se
+calculan como promedios temporales y mantienen la unidad original. Los valores
+negativos no se eliminan; son válidos para índices y temperaturas. El promedio
+nacional pondera la latitud para aproximar el área de cada píxel geográfico.
+
+El ranking nacional es de **las 24 provincias**, incluida Galápagos. Para cada
+fecha, el editor calcula la media de todos los píxeles válidos del ráster
+original dentro del polígono ADM1 de cada provincia; luego acumula o promedia
+esas medias según la variable elegida. No es una lectura de la capital ni una
+estación meteorológica. Si tu GeoTIFF no llega a Galápagos, el cierre mostrará
+solo las provincias realmente cubiertas, en lugar de inventar un valor insular.
+
+No actives el cierre numérico para coberturas, usos del suelo u otras clases:
+sus códigos son etiquetas y no admiten suma o promedio. Para esas capas, usa
+un cierre editorial específico con proporciones de área preparadas fuera del
+editor.
+
 ## Calidad visual y rigor
 
 ### Publicar en TikTok, Instagram y Reels
 
-En **Mapa y tiempo → Distribución para publicar**, usa **Redes sociales**. El MP4 sigue siendo 1080 × 1920 (9:16), H.264, 30 fps; el contenido se redistribuye, no se estira. Se reservan 220 px arriba, 440 abajo, 80 a la izquierda y 200 a la derecha. El título, mapa, leyenda, notas y firma quedan dentro de esa área. **Márgenes amplios** reserva 280 px arriba y 680 abajo, con un mapa menor. **Original** recupera la distribución anterior, que no protege los créditos frente a la interfaz social.
+La **Maqueta Ecuador Vivo · aprobada** ya incorpora una zona segura común para TikTok, Instagram Reels y Shorts. El MP4 sigue siendo 1080 × 1920 (9:16), H.264, 30 fps; **Redes sociales** y **Márgenes amplios** son alternativas con más espacio. **Diseño clásico** recupera la distribución anterior.
 
 Estos márgenes son una decisión editorial del proyecto, no coordenadas oficiales ni una garantía universal. [TikTok explica](https://ads.tiktok.com/resources/help/article/tiktok-auction-in-feed-ads?lang=en-GB) que el área segura depende de dimensiones, texto y formatos añadidos y que la vista previa puede diferir entre dispositivos. Su guía corresponde a anuncios; se toma como referencia de diseño, no como certificación de publicaciones orgánicas. [Meta recomienda creatividades Reels verticales y dentro de una zona segura](https://www.facebook.com/business/ads/facebook-instagram-reels-ads).
 
@@ -50,7 +73,7 @@ Antes de publicar:
 4. Comprueba la portada por separado: la cuadrícula del perfil puede usar un recorte diferente al video vertical. No se promete que la misma composición quepa completa en una miniatura cuadrada.
 5. La duración de 9:09 del video anual se conserva si la eliges, pero no se garantiza que todos los tipos de publicación/cuentas la admitan. Para un clip corto de un año, baja la duración (por ejemplo 60–90 s); siguen apareciendo todas las fechas.
 
-Los MP4 ya exportados no cambian: hay que generar una exportación nueva para aplicar esta distribución. Los proyectos sin un campo de distribución adoptan Redes sociales al abrirse; puedes recuperar Original en el selector.
+Los MP4 ya exportados no cambian: hay que generar una exportación nueva para aplicar estos ajustes. Los proyectos antiguos se migran a la maqueta aprobada; puedes elegir otra distribución en **Diseño**.
 
 - 1080p es la resolución del video, no la resolución científica del sensor.
 - La lluvia y otras variables continuas usan interpolación espacial para visualización; las categorías usan vecino más cercano para no mezclar códigos.
@@ -66,7 +89,7 @@ Dentro del proyecto:
 - `_local/video-studio/projects/`: configuraciones guardadas, sin los TIFF dentro del JSON.
 - `_local/video-studio/imports/`: copias de GeoTIFF importados.
 - `_local/video-studio/cache/`: nuevos datos descargados y límites.
-- `_local/video-studio/jobs/`: una carpeta por exportación con MP4, configuración, imágenes inicial/final, registro y recibo de procedencia con hashes.
+- `_local/video-studio/jobs/`: una carpeta por exportación con MP4, configuración, imágenes inicial/final, `endcard.png`, registro y recibo de procedencia con hashes.
 - `_local/climate-studio/`: los datos de lluvia y videos anteriores; el editor los reutiliza sin borrarlos.
 
 Respalda **projects + imports** juntos. Los proyectos importados en otro equipo requieren volver a enlazar su serie mediante la carga de GeoTIFF. Cada exportación tiene una carpeta nueva: no sobrescribe el original.

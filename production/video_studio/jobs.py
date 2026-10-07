@@ -15,6 +15,7 @@ import numpy as np
 from model import STORE, validate, frame_counts
 from data import boundary, load_values, sha256
 from render import compose
+from endcard import SummaryAccumulator, compose_endcard
 
 
 def write_json(path, value):
@@ -118,9 +119,25 @@ def execute(job):
         counts = frame_counts(len(rows), p['duration'])
         status('running', 'Preparando mapa y datos')
         shape = boundary()
+        summary = SummaryAccumulator(p, shape)
         receipt = {'project': p, 'temporal_interpolation': False, 'frames_per_date': counts,
                    'boundary_source': 'geoBoundaries · https://www.geoboundaries.org/',
-                   'duration_seconds': sum(counts)/30, 'source_records': [], 'complete': False}
+                   'map_duration_seconds': sum(counts)/30,
+                   'endcard_duration_seconds': (
+                       p['endcard_duration'] if p.get('endcard_enabled', True) else 0
+                   ),
+                   'duration_seconds': sum(counts)/30 + (
+                       p['endcard_duration'] if p.get('endcard_enabled', True) else 0
+                   ),
+                   'galapagos': {
+                       'enabled': bool(p.get('show_galapagos', True)
+                                       and p.get('clip_ecuador', False)),
+                       'bbox': [-92.2, -1.8, -88.8, 1.9],
+                       'source_note': 'Misma escena diaria y escala CHIRPS; media y máximo '
+                                      'de píxeles nativos válidos. NoData permanece sin dato; '
+                                      'el océano no entra en las estadísticas.'
+                   },
+                   'source_records': [], 'complete': False}
         partial = job / 'video-incompleto.mp4'
         writer = imageio_ffmpeg.write_frames(str(partial), (p['width'], p['width']*16//9),
             fps=30, codec='libx264', pix_fmt_in='rgb24', pix_fmt_out='yuv420p', macro_block_size=1,
@@ -131,7 +148,13 @@ def execute(job):
             if (job / 'cancel.request').exists():
                 raise InterruptedError('Exportación cancelada. El archivo parcial no es un video terminado.')
             status('running', f'{i+1}/{len(rows)} · preparando {row["date"]}')
-            values, metadata = load_values(p, row)
+            values, metadata = load_values(
+                p, row, province_features=summary.rank_features
+            )
+            summary.observe(
+                row['date'], values,
+                metadata.get('point_samples'), metadata.get('province_samples')
+            )
             path = metadata['path']
             if path not in hashes:
                 hashes[path] = sha256(path)
@@ -147,6 +170,25 @@ def execute(job):
             receipt['source_records'].append(metadata)
             progress = (i+1)/len(rows)
             status('running', f'{i+1}/{len(rows)} · {row["date"]}')
+
+        if p.get('endcard_enabled', True):
+            status('running', 'Dibujando cierre con métricas')
+            endcard = compose_endcard(p, summary.to_dict())
+            endcard.save(job / 'endcard.png')
+            endcard_pixels = np.asarray(endcard)
+            endcard_frames = max(1, round(p['endcard_duration'] * p['fps']))
+            for frame_index in range(endcard_frames):
+                if frame_index % 30 == 0 and (job / 'cancel.request').exists():
+                    raise InterruptedError('Exportación cancelada durante el cierre.')
+                writer.send(endcard_pixels)
+            receipt['endcard'] = {
+                'enabled': True,
+                'duration_seconds': endcard_frames / p['fps'],
+                'frames': endcard_frames,
+                'summary': summary.to_dict(),
+            }
+        else:
+            receipt['endcard'] = {'enabled': False}
         writer.close()
         writer = None
         if (job / 'cancel.request').exists():
