@@ -28,16 +28,45 @@ def show_storyboard(project, key='story', *, always_open=False):
     if not enabled:
         return
     with st.container(border=True):
-        st.subheader('Salida del video')
+        st.header('Formato de salida')
         previous = project.get('delivery', {})
         choices = list(FORMATS)
-        cols = st.columns(3)
-        format_name = cols[0].selectbox('Formato del archivo final', choices,
-            index=choices.index(previous.get('format', DEFAULT_FORMAT)), key=key+'_format')
-        quality = cols[1].selectbox('Resolución de salida', ['1080p', '720p'],
-            index=1 if previous.get('quality', '720p' if project.get('width') == 720 else '1080p') == '720p' else 0, key=key+'_quality')
-        background = cols[2].color_picker('Fondo de los márgenes', previous.get('background', project.get('background', '#04151e')), key=key+'_background')
-        project['delivery'] = {'format': format_name, 'quality': quality, 'background': background}
+        with st.container(horizontal=True, wrap=True, gap='medium'):
+            format_name = st.selectbox('Formato del archivo final', choices,
+                index=choices.index(previous.get('format', DEFAULT_FORMAT)), key=key+'_format', width=360)
+            quality = st.selectbox('Resolución de salida', ['1080p', '720p'],
+                index=1 if previous.get('quality', '720p' if project.get('width') == 720 else '1080p') == '720p' else 0, key=key+'_quality', width=180)
+            background = st.color_picker('Fondo de los márgenes', previous.get('background', project.get('background', '#04151e')), key=key+'_background')
+        project['delivery'] = {**previous, 'format': format_name, 'quality': quality, 'background': background}
+        from output_profiles import PRESETS, profile_for
+        with st.expander('Perfiles de publicación y tamaño personalizado'):
+            profile_ids = ['legacy', *PRESETS, 'custom']
+            current_profile = previous.get('output_profile', {})
+            current_id = current_profile.get('id', 'legacy')
+            profile_id = st.selectbox('Perfil de publicación', profile_ids,
+                index=profile_ids.index(current_id) if current_id in profile_ids else 0,
+                format_func=lambda value: 'Formato clásico de arriba' if value == 'legacy'
+                    else 'Tamaño personalizado' if value == 'custom' else PRESETS[value][0],
+                key=key+'_profile')
+            if profile_id != 'legacy':
+                selected_profile = {'id': profile_id}
+                if profile_id == 'custom':
+                    with st.container(horizontal=True):
+                        selected_profile['width'] = st.number_input('Ancho · px',
+                            min_value=160, max_value=3840, step=2,
+                            value=int(current_profile.get('width', 1080)), key=key+'_custom_width')
+                        selected_profile['height'] = st.number_input('Alto · px',
+                            min_value=160, max_value=3840, step=2,
+                            value=int(current_profile.get('height', 1920)), key=key+'_custom_height')
+                try:
+                    profile_for(selected_profile)
+                except (ValueError, TypeError) as error:
+                    st.error(str(error))
+                    return
+                project['delivery']['output_profile'] = selected_profile
+                st.caption('El perfil fija las dimensiones finales. Los márgenes son recomendaciones editoriales; no representan zonas oficiales de las plataformas.')
+            else:
+                project['delivery'].pop('output_profile', None)
         # Render the source artwork at its native canvas size; reduce only at
         # delivery. An old 720p setting must not soften a new 1080p export.
         project['width'] = 1080
@@ -56,7 +85,7 @@ def show_storyboard(project, key='story', *, always_open=False):
                 storyboard['cards'].append(dict(id='endcard', kind='endcard', label='Métricas calculadas', duration=None))
         cards = storyboard['cards']
         active = timeline_config(project)
-        st.subheader('Tu secuencia')
+        st.header('Secuencia de tarjetas')
         st.caption('Selecciona una tarjeta, edita su duración y colócala antes o después con las flechas. Los ejemplos no entran en los cálculos: sus créditos quedan separados en el recibo.')
         try:
             resolved = cards_for(active)
@@ -124,7 +153,7 @@ def show_storyboard(project, key='story', *, always_open=False):
                 edited['citation'] = st.text_area('Fuente / fecha / créditos del ejemplo', row.get('citation', ''), max_chars=240)
             if row['kind'] in ('image', 'video'):
                 fit = st.selectbox('Encuadre del ejemplo', ['Encajar completo', 'Rellenar con recorte'],
-                    index=1 if row.get('fit') == 'cover' else 0)
+                    index=1 if row.get('fit') == 'cover' else 0, disabled='data_visualization' in row)
                 edited['fit'] = 'cover' if fit == 'Rellenar con recorte' else 'contain'
             if row['kind'] == 'video':
                 edited['start'] = st.number_input('Inicio dentro del clip · segundos', min_value=0.,

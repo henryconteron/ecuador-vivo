@@ -29,7 +29,7 @@ from rasterio.enums import Resampling
 from rasterio.transform import from_bounds as grid_from_bounds
 from rasterio.warp import reproject
 
-from data import boundary, fetch, rain_path
+from data import boundary, fetch, rain_path, native_domain_stats
 from model import ROOT, STORE
 from layout_engine import (begin_layout, finish_layout, scene_for, place_layer, full_layer,
                            draw as layout_draw, editable_icon)
@@ -314,6 +314,35 @@ def colorize(values, project):
     ).astype('uint8')
 
 
+def raster_alpha(values, geographic_mask):
+    """Geographic coverage intersected with finite display support.
+
+    colorize produces RGB, including a placeholder color for missing samples.
+    This common alpha policy prevents that placeholder from becoming a datum;
+    valid zero/signed values and the existing antialiased coast mask are kept.
+    Border/glow layers remain separate decoration, not data coverage.
+    """
+    support = np.isfinite(values)
+    if geographic_mask.mode != 'L' or support.shape != (geographic_mask.height, geographic_mask.width):
+        raise ValueError('La máscara geográfica debe ser L y coincidir con la cuadrícula del ráster.')
+    return Image.fromarray(np.where(support, np.asarray(geographic_mask), 0).astype('uint8'))
+
+
+def paint_raster_layer(values, project, geographic_mask):
+    """Paint one already sampled geographic grid with true, straight RGBA."""
+    image = Image.fromarray(colorize(values, project)).convert('RGBA')
+    image.putalpha(raster_alpha(values, geographic_mask))
+    return image
+
+
+def main_map_size(box):
+    """The existing maqueta's geographic aspect fit, shared with layer export."""
+    ratio = (box[2] - box[0]) / (box[3] - box[1])
+    if ratio < MAIN_W / MAIN_H:
+        return max(1, round(MAIN_H * ratio)), MAIN_H
+    return MAIN_W, max(1, round(MAIN_W / ratio))
+
+
 def gradient_text(image, x, baseline, text, font_obj, color_left, color_right):
     scene = scene_for(image)
     key = scene.key('gradient') if scene else None
@@ -524,6 +553,15 @@ def outline_layer(size, groups):
     return layer.resize((width, height), Image.Resampling.LANCZOS)
 
 
+def paint_map_outline(size, rings, provinces=(), *, border_width=2.2):
+    """Shared geographic borders; provincial lines are explicit and optional."""
+    groups = []
+    if provinces:
+        groups.append((provinces, PROVINCE_BORDER, 1.2))
+    groups.append((rings, MAP_BORDER, border_width))
+    return outline_layer(size, groups)
+
+
 @lru_cache(maxsize=1)
 def adm1_boundary():
     base = (
@@ -572,12 +610,16 @@ def resize_values(values, width, height, kind):
 
     if kind == 'categorical':
         clean = np.where(valid, values, 0).astype('float32')
-        return np.asarray(
+        result = np.asarray(
             Image.fromarray(clean).resize(
                 (width, height),
                 Image.Resampling.NEAREST
             )
-        )
+        ).copy()
+        support = np.asarray(Image.fromarray(valid.astype('uint8')).resize(
+            (width, height), Image.Resampling.NEAREST)) > 0
+        result[~support] = np.nan
+        return result
 
     filled = fill_missing(np.nan_to_num(values, nan=0.0), valid)
     smooth = np.asarray(
@@ -586,7 +628,15 @@ def resize_values(values, width, height, kind):
             Image.Resampling.BICUBIC
         )
     )
-    return np.clip(smooth, 0, None)
+    # Interpolation is presentation only. Preserve signed variables and missing
+    # support, and prevent bicubic overshoot beyond the observed source range.
+    result = np.array(smooth, copy=True)
+    if valid.any():
+        result = np.clip(result, values[valid].min(), values[valid].max())
+    support = np.asarray(Image.fromarray(valid.astype('uint8')).resize(
+        (width, height), Image.Resampling.NEAREST)) > 0
+    result[~support] = np.nan
+    return result
 
 
 def load_galapagos_scene(project, date, gal_w, gal_h):
@@ -626,6 +676,9 @@ def load_galapagos_scene(project, date, gal_w, gal_h):
                 dst_transform=grid_from_bounds(*GALAPAGOS_BOX, gal_w, gal_h),
                 resampling=method,
             )
+            statistics = native_domain_stats(
+                src, entry.get('band', 1), {**project, 'bbox': list(GALAPAGOS_BOX),
+                                           'clip_ecuador': True})
         data = data * project.get('scale', 1.0) + project.get('offset', 0.0)
         island_mask, _, _ = build_mask_and_rings(
             boundary(), GALAPAGOS_BOX, gal_w, gal_h, clip=True,
@@ -633,9 +686,12 @@ def load_galapagos_scene(project, date, gal_w, gal_h):
         )
         valid = np.isfinite(data) & (np.asarray(island_mask) > 64)
         data[~valid] = np.nan
-        return {'values': data, 'valid_pixels': int(valid.sum()),
-                'mean': float(data[valid].mean()) if valid.any() else None,
-                'max': float(data[valid].max()) if valid.any() else None}
+        return {'values': data, 'valid_pixels': statistics['valid_pixels'],
+                'display_valid_pixels': int(valid.sum()),
+                'mean': statistics['mean'], 'max': statistics['max'],
+                'statistics_method': statistics['method'],
+                'coverage': statistics['coverage'],
+                'weighting': statistics['weighting']}
 
     if project['source'] != 'chirps':
         return None
@@ -813,15 +869,7 @@ def compose_maqueta(project, values, boundary, date, index, count):
     box = tuple(float(v) for v in project['bbox'])
 
     # Main map dimensions keep the geographic aspect ratio inside the approved box.
-    ratio = (box[2] - box[0]) / (box[3] - box[1])
-    target_ratio = MAIN_W / MAIN_H
-
-    if ratio < target_ratio:
-        map_h = MAIN_H
-        map_w = max(1, round(MAIN_H * ratio))
-    else:
-        map_w = MAIN_W
-        map_h = max(1, round(MAIN_W / ratio))
+    map_w, map_h = main_map_size(box)
 
     map_x = MAIN_X + (MAIN_W - map_w) // 2
     map_y = MAIN_Y + (MAIN_H - map_h) // 2
@@ -1087,40 +1135,27 @@ def compose_maqueta(project, values, boundary, date, index, count):
     # Main raster
     # -------------------------------------------------------------------------
     resized = resize_values(values, map_w, map_h, project['kind'])
-    main_rgb = Image.fromarray(colorize(resized, project))
-
-    if project['clip_ecuador']:
-        design.paste(main_rgb, (map_x, map_y), main_mask)
-    else:
-        design.paste(main_rgb, (map_x, map_y))
+    main_raster = paint_raster_layer(resized, project, main_mask)
+    # Preserve the legacy RGB paste over its separate glow decoration exactly.
+    design.paste(main_raster.convert('RGB'), (map_x, map_y), main_raster.getchannel('A'))
 
     # -------------------------------------------------------------------------
     # Galápagos raster
     # -------------------------------------------------------------------------
     if show_gal and gal_mask is not None and gal_values is not None:
-        gal_rgb = Image.fromarray(colorize(gal_values, project))
-        covered = Image.fromarray(np.where(np.isfinite(gal_values),
-                                          np.asarray(gal_mask), 0).astype('uint8'))
-        gal_canvas.paste(gal_rgb, (gal['x'], gal['y']), covered)
+        gal_raster = paint_raster_layer(gal_values, project, gal_mask)
+        gal_canvas.paste(gal_raster.convert('RGB'), (gal['x'], gal['y']), gal_raster.getchannel('A'))
 
     # -------------------------------------------------------------------------
     # Outlines
     # -------------------------------------------------------------------------
     top = Image.new('RGBA', (WIDTH, HEIGHT), (0, 0, 0, 0))
 
-    groups = []
-    if main_provinces:
-        groups.append((main_provinces, PROVINCE_BORDER, 1.2))
-    groups.append((main_rings, MAP_BORDER, 2.2))
-
-    main_lines = outline_layer((map_w, map_h), groups)
+    main_lines = paint_map_outline((map_w, map_h), main_rings, main_provinces)
     top.alpha_composite(main_lines, (map_x, map_y))
 
     if show_gal and gal_mask is not None:
-        gal_lines = outline_layer(
-            (gal['w'], gal['h']),
-            [(gal_rings, MAP_BORDER, 1.4)]
-        )
+        gal_lines = paint_map_outline((gal['w'], gal['h']), gal_rings, border_width=1.4)
         gal_canvas.alpha_composite(gal_lines, (gal['x'], gal['y']))
 
     top_draw = ImageDraw.Draw(top)

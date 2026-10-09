@@ -1,0 +1,1762 @@
+{
+  "tiktok": {
+    "blank": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Lienzo vacío",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": []
+    },
+    "cover": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Portada",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 165
+          },
+          "style": {
+            "text": "Ecuador Vivo",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 233,
+            "width": 994,
+            "height": 1026
+          },
+          "style": {
+            "text": "Una historia basada en datos",
+            "color": "#f0f5f8",
+            "font_size": 43,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 1767,
+            "width": 994,
+            "height": 110
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_metric": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + métrica",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 165
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 233,
+            "width": 994,
+            "height": 1026
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 43,
+            "y": 1284,
+            "width": 994,
+            "height": 458
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 30
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 1767,
+            "width": 994,
+            "height": 110
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_ranking": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + ranking",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 165
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 233,
+            "width": 994,
+            "height": 1026
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 43,
+            "y": 1284,
+            "width": 994,
+            "height": 458
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 30
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 1767,
+            "width": 994,
+            "height": 110
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "closing": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Conclusión / créditos",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 165
+          },
+          "style": {
+            "text": "Conclusión",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 233,
+            "width": 994,
+            "height": 1026
+          },
+          "style": {
+            "text": "Fuentes, metodología y créditos",
+            "color": "#f0f5f8",
+            "font_size": 43,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 1767,
+            "width": 994,
+            "height": 110
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    }
+  },
+  "instagram_square": {
+    "blank": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Lienzo vacío",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": []
+    },
+    "cover": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Portada",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 89
+          },
+          "style": {
+            "text": "Ecuador Vivo",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 557,
+            "height": 795
+          },
+          "style": {
+            "text": "Una historia basada en datos",
+            "color": "#f0f5f8",
+            "font_size": 43,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 994,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_metric": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + métrica",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 89
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 557,
+            "height": 795
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 624,
+            "y": 157,
+            "width": 413,
+            "height": 795
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 30
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 994,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_ranking": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + ranking",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 89
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 557,
+            "height": 795
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 624,
+            "y": 157,
+            "width": 413,
+            "height": 795
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 30
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 994,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "closing": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Conclusión / créditos",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 994,
+            "height": 89
+          },
+          "style": {
+            "text": "Conclusión",
+            "color": "#f0f5f8",
+            "font_size": 52,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 557,
+            "height": 795
+          },
+          "style": {
+            "text": "Fuentes, metodología y créditos",
+            "color": "#f0f5f8",
+            "font_size": 43,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 994,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 24
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    }
+  },
+  "youtube": {
+    "blank": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Lienzo vacío",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": []
+    },
+    "cover": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Portada",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 1834,
+            "height": 89
+          },
+          "style": {
+            "text": "Ecuador Vivo",
+            "color": "#f0f5f8",
+            "font_size": 92,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 1155,
+            "height": 795
+          },
+          "style": {
+            "text": "Una historia basada en datos",
+            "color": "#f0f5f8",
+            "font_size": 77,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 1834,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 42
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_metric": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + métrica",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 1834,
+            "height": 89
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 92,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 1155,
+            "height": 795
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 1223,
+            "y": 157,
+            "width": 654,
+            "height": 795
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 54
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 1834,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 42
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_ranking": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + ranking",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 1834,
+            "height": 89
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 92,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 1155,
+            "height": 795
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 1223,
+            "y": 157,
+            "width": 654,
+            "height": 795
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 54
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 1834,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 42
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "closing": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Conclusión / créditos",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 43,
+            "y": 43,
+            "width": 1834,
+            "height": 89
+          },
+          "style": {
+            "text": "Conclusión",
+            "color": "#f0f5f8",
+            "font_size": 92,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 43,
+            "y": 157,
+            "width": 1155,
+            "height": 795
+          },
+          "style": {
+            "text": "Fuentes, metodología y créditos",
+            "color": "#f0f5f8",
+            "font_size": 77,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 43,
+            "y": 977,
+            "width": 1834,
+            "height": 60
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 42
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    }
+  },
+  "custom": {
+    "blank": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Lienzo vacío",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": []
+    },
+    "cover": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Portada",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 6,
+            "y": 6,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Ecuador Vivo",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 6,
+            "y": 34,
+            "width": 64,
+            "height": 93
+          },
+          "style": {
+            "text": "Una historia basada en datos",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 6,
+            "y": 130,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_metric": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + métrica",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 6,
+            "y": 6,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 6,
+            "y": 34,
+            "width": 64,
+            "height": 93
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 74,
+            "y": 34,
+            "width": 80,
+            "height": 93
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 6,
+            "y": 130,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "map_ranking": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Mapa + ranking",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 6,
+            "y": 6,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Título de la escena",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "map.placeholder",
+          "type": "shape",
+          "name": "map.placeholder",
+          "transform": {
+            "x": 6,
+            "y": 34,
+            "width": 64,
+            "height": 93
+          },
+          "style": {
+            "fill": "#13bfd1",
+            "opacity": 0.18
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map"
+        },
+        {
+          "id": "context",
+          "type": "text",
+          "name": "context",
+          "transform": {
+            "x": 74,
+            "y": 34,
+            "width": 80,
+            "height": 93
+          },
+          "style": {
+            "text": "Añade un mapa y vincula resultados desde Datos.",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "metric",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 6,
+            "y": 130,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 3,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    },
+    "closing": {
+      "id": "scene.00000000000000000000000000000000",
+      "name": "Conclusión / créditos",
+      "duration": 6,
+      "background": "#04151e",
+      "renderer": "studio",
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "name": "title",
+          "transform": {
+            "x": 6,
+            "y": 6,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Conclusión",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 0,
+          "layout_role": "title",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "body",
+          "type": "text",
+          "name": "body",
+          "transform": {
+            "x": 6,
+            "y": 34,
+            "width": 64,
+            "height": 93
+          },
+          "style": {
+            "text": "Fuentes, metodología y créditos",
+            "color": "#f0f5f8",
+            "font_size": 8,
+            "bold": true
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 1,
+          "layout_role": "map",
+          "typography_preset": "Professional"
+        },
+        {
+          "id": "source",
+          "type": "source",
+          "name": "source",
+          "transform": {
+            "x": 6,
+            "y": 130,
+            "width": 148,
+            "height": 24
+          },
+          "style": {
+            "text": "Fuente y periodo · completa los créditos",
+            "color": "#f0f5f8",
+            "font_size": 8
+          },
+          "data_binding": null,
+          "animation": {
+            "in": "none",
+            "out": "none",
+            "duration": 0,
+            "delay": 0
+          },
+          "visible": true,
+          "locked": false,
+          "z_index": 2,
+          "layout_role": "source",
+          "typography_preset": "Professional"
+        }
+      ]
+    }
+  }
+}

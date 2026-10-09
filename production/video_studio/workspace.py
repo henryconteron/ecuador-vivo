@@ -6,13 +6,15 @@ import streamlit as st
 
 from storyboard import cards_for, dimensions, format_preview
 
-PHASES = ('Datos', 'Maqueta', 'Montaje', 'Exportar')
+PHASES = ('Datos', 'Maqueta', 'Montaje', 'Exportar', 'Estudio')
 
 
 def navigation():
     phase = st.segmented_control('Espacio de edición', PHASES,
         default='Datos', key='studio_phase', persist_state='session',
-        help='Datos: fuentes y cálculos. Maqueta: un lienzo editable. Montaje: formato, tarjetas y tiempos. Exportar: guardar y generar.')
+        format_func=lambda value: f'{PHASES.index(value)+1} · {value}',
+        width='stretch', wrap=True,
+        help='Datos: fuentes y cálculos. Maqueta: lienzo de mapa. Montaje: tarjetas. Exportar: montaje anterior. Estudio: escenas libres, canvas y timeline propios.')
     return phase or 'Datos'
 
 
@@ -26,7 +28,7 @@ def download_artwork(image, config, *, label='Descargar tarjeta PNG', key=None):
 
 def export_check(config, render_map, render_endcard=None):
     """Validate current settings, not an old preview; never starts an export."""
-    st.subheader('Revisar y exportar')
+    st.header('Revisar y exportar')
     try:
         cards = cards_for(config)
         w, h = dimensions(config)

@@ -1,19 +1,48 @@
-# Adapted from Streamlit's bundled Nord template; local fonts, no CDN.
+# Ecuador Vivo workbench. Native theme, local fonts, no CDN.
 [theme]
 base = "dark"
-primaryColor = "#237e72"
-backgroundColor = "#0b1922"
-secondaryBackgroundColor = "#19333e"
-textColor = "#f3f1e9"
-linkColor = "#77d8bc"
-borderColor = "#32505b"
+primaryColor = "#15836f"
+backgroundColor = "#10171d"
+secondaryBackgroundColor = "#17242c"
+textColor = "#edf3f5"
+linkColor = "#82e4ca"
+borderColor = "#718a96"
+grayTextColor = "#afc0c9"
+blueTextColor = "#abd8ff"
+blueBackgroundColor = "#143247"
+greenTextColor = "#9de9c7"
+greenBackgroundColor = "#173f34"
+yellowTextColor = "#ffde95"
+yellowBackgroundColor = "#3a3220"
+redTextColor = "#ffc2bd"
+redBackgroundColor = "#42272b"
 showWidgetBorder = true
 showSidebarBorder = true
-baseRadius = "8px"
-font = "sans-serif"
+baseRadius = "6px"
+buttonRadius = "6px"
+font = "Segoe UI, sans-serif"
+headingFont = "Segoe UI, sans-serif"
+baseFontSize = 16
+headingFontSizes = ["2rem", "1.5rem", "1.25rem", "1.125rem", "1rem", "1rem"]
+headingFontWeights = [650, 600, 600, 600, 600, 600]
 [theme.sidebar]
 backgroundColor = "#10252e"
-secondaryBackgroundColor = "#19333e"
+secondaryBackgroundColor = "#182e38"
+textColor = "#f0f4f3"
+primaryColor = "#67e0c2"
+linkColor = "#82e4ca"
+borderColor = "#607b86"
+grayTextColor = "#b3c7cd"
+blueTextColor = "#abd8ff"
+blueBackgroundColor = "#143247"
+greenTextColor = "#9de9c7"
+greenBackgroundColor = "#173f34"
+yellowTextColor = "#ffde95"
+yellowBackgroundColor = "#3a3220"
+redTextColor = "#ffc2bd"
+redBackgroundColor = "#42272b"
+headingFontSizes = ["1.5rem", "1.25rem", "1.125rem", "1rem", "1rem", "1rem"]
+headingFontWeights = [650, 600, 600, 600, 600, 600]
 [server]
 address = "127.0.0.1"
 port = 8510

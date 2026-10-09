@@ -1,14 +1,20 @@
 # Estudio local de video
 
-Editor Streamlit para la plantilla cartográfica vertical de Ecuador Vivo. Inicio de usuario: doble clic en `Abrir editor de videos.vbs` en la raíz del repositorio.
+Editor audiovisual y científico de Ecuador Vivo sobre Streamlit. Inicio de usuario: doble clic en `Abrir editor de videos.vbs` en la raíz del repositorio.
+
+`5 · Estudio` abre un workspace audiovisual con canvas, recursos/capas, inspector
+y timeline en el mismo viewport. `launch.ps1` utiliza `streamlit run studio_server.py`
+para reproducción central y descarga del mismo MP4 del worker. El arranque directo
+`streamlit run app.py` conserva el editor y ofrece preview/descarga nativos alternativos.
+Ver [contrato y sistema UX](../../documentation/ECUADOR-VIVO-STUDIO-UX.md).
 
 La [guía de uso](../../documentation/GUIA-EDITOR-VIDEOS.md) explica datos, diseño, créditos, exportación y límites científicos.
 
-Los tres tipos de video comparten **Datos → Maqueta → Montaje → Exportar**.
+El flujo anterior de los tres tipos de video conserva **Datos → Maqueta → Montaje → Exportar**.
 Maqueta muestra un único lienzo editable, sin una vista previa paralela. Eliminar
 un elemento se guarda en el proyecto y se respeta al exportar; puede recuperarse.
 Cada **OK** actualiza un borrador de trabajo, sin sobrescribir el proyecto original.
-Los tiempos y formatos se editan únicamente en Montaje, y generar/guardar versiones
+En ese flujo los tiempos y formatos se editan en Montaje, y generar/guardar versiones
 queda en Exportar. `workspace.py` comparte esa navegación y valida el diseño actual.
 
 La sección **Obtener datos** conecta CHIRPS v3 y NASA POWER con el editor y
@@ -25,9 +31,15 @@ descargadores y caché local que el editor; ya no tiene un lanzador independient
 
 ## Desarrollo
 
-Python 3.13 probado en Windows. Instalar `requirements.txt` en un entorno virtual. Desde esta carpeta, ejecutar `python -m streamlit run app.py`; la configuración liga el servidor únicamente a 127.0.0.1:8510. El dibujado usa fuentes Segoe UI de Windows. No desplegar este editor como servicio público sin autenticación, aislamiento y revisión de seguridad.
+Python 3.13 probado en Windows. Instalar `requirements.txt` en un entorno virtual. Desde esta carpeta, ejecutar `python -m streamlit run studio_server.py`; la configuración liga el servidor únicamente a 127.0.0.1:8510. La interfaz usa Segoe UI y el renderer conserva las familias locales del proyecto. No desplegar este editor como servicio público sin autenticación, aislamiento y revisión de seguridad.
 
 Pruebas desde la raíz: `python -m unittest discover -s production/video_studio -p 'test_*.py' -v`, usando el entorno del editor. La prueba de lluvia usa la caché de 2024 o requiere red para descargar una fecha y los límites.
+
+Verificación reproducible del workspace: arrancar `studio_server.py` en el puerto
+8512 y ejecutar desde la raíz `python production/video_studio/verify_workspace_browser.py`.
+Usa Chrome local y Tornado ya instalado, eventos reales de ratón/teclado, uploads
+y descargas; guarda capturas y resultados en `tmp/ux-redesign/`. La fixture
+científica utiliza un día CHIRPS previamente descargado, sin proveedor nuevo.
 
 `model.py` valida proyectos; `data.py` importa y prepara matrices; `render.py` comparte el dibujado entre PNG y MP4; `maqueta.py` compone el mapa vertical e incluye un inset visible de Galápagos; `endcard.py` calcula y dibuja la tarjeta final de métricas; `jobs.py` ejecuta procesos independientes y registra procedencia; `app.py` implementa la interfaz. Todos los resultados y cachés viven en `_local/video-studio/`, excluido de Git. Los proyectos anteriores se migran sin perder sus ajustes.
 

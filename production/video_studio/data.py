@@ -81,6 +81,22 @@ def rain_path(date, allow_download=True):
     return fetch(url, target), url
 
 
+def scientific_file_versions(project):
+    """Cheap cache invalidation for actual sources; never download on styling."""
+    from model import timeline
+    versions=[]
+    rows=timeline(project) if project.get('source')=='chirps' else project.get('entries',[])
+    for row in rows:
+        try:
+            path=(rain_path(row['date'],allow_download=False)[0]
+                  if project.get('source')=='chirps' else Path(row['path']))
+            stat=path.stat()
+            versions.append((row['date'],str(path),stat.st_mtime_ns,stat.st_size))
+        except FileNotFoundError:
+            versions.append((row['date'],None,None,None))
+    return tuple(versions)
+
+
 def map_dimensions(box):
     ratio = (box[2] - box[0]) / (box[3] - box[1])
     w, h = 960, 1034
@@ -120,7 +136,7 @@ def _chirps_point_means(src, points):
 
 def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
                    reject_negative=False, source_nodata=None,
-                   clip_bounds=None):
+                   clip_bounds=None, include_empty=False, counts_only=False):
     """Mean, max and min of each WGS84 polygon on the *native* source raster.
 
     This deliberately happens before visual resampling. The provincial ranking
@@ -149,7 +165,12 @@ def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
             # A regional raster may not intersect an ADM1 polygon. Missing
             # coverage remains absent; it is never converted to zero.
             continue
-        values = np.ma.asarray(sampled).filled(np.nan).astype('float64')
+        # Cast before filling: integer source masks cannot represent NaN.
+        # https://rasterio.readthedocs.io/en/stable/topics/masks.html
+        values = np.ma.asarray(sampled).astype('float64').filled(np.nan)
+        domain = geometry_mask([native_geometry], out_shape=values.shape,
+                               transform=out_transform, invert=True,
+                               all_touched=False)
         valid = np.isfinite(values)
         if clip_bounds is not None:
             west, south, east, north = clip_bounds
@@ -167,11 +188,28 @@ def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
                 transform=out_transform, invert=True, all_touched=False,
             )
             valid &= within_frame
+            domain &= within_frame
         if source_nodata is not None and np.isfinite(source_nodata):
-            valid &= ~np.isclose(values, source_nodata)
+            valid &= values != source_nodata
         if reject_negative:
             valid &= values >= 0
         if not valid.any():
+            if include_empty:
+                result[str(name)] = {
+                    'mean': None, 'max': None, 'min': None,
+                    'valid_pixels': 0, 'total_pixels': int(domain.sum()),
+                    'coverage': 0.0,
+                    'weighting': (None if counts_only else 'cosine_latitude_area_approximation'
+                                  if src.crs.is_geographic else 'native_pixel_mean_projected_crs'),
+                }
+            continue
+        if counts_only:
+            result[str(name)] = {
+                'mean': None, 'max': None, 'min': None,
+                'valid_pixels': int(valid.sum()), 'total_pixels': int(domain.sum()),
+                'coverage': float(valid.sum()/domain.sum()) if domain.any() else 0.0,
+                'weighting': None,
+            }
             continue
         physical = values[valid] * scale + offset
         # Geographic raster cells shrink with latitude. Weight native pixels
@@ -199,6 +237,11 @@ def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
             'mean': mean_value,
             'max': float(np.max(physical)),
             'min': float(np.min(physical)),
+            'valid_pixels': int(valid.sum()),
+            'total_pixels': int(domain.sum()),
+            'coverage': float(valid.sum() / domain.sum()) if domain.any() else 0.0,
+            'weighting': ('cosine_latitude_area_approximation'
+                          if src.crs.is_geographic else 'native_pixel_mean_projected_crs'),
         }
     return result
 
@@ -207,6 +250,46 @@ def _polygon_means(src, band, features, **kwargs):
     """Backward-compatible view of ``_polygon_stats``: name → mean."""
     return {name: row['mean']
             for name, row in _polygon_stats(src, band, features, **kwargs).items()}
+
+
+def native_domain_stats(src, band, project, *, reject_negative=False):
+    """Scientific source pixels within the frame, independent of display size.
+
+    The bbox defines the domain; clipping adds all ADM0 polygon parts, including
+    holes. No geographic statistics are read from a resampled display raster.
+    """
+    west, south, east, north = project['bbox']
+    geometry = {'type': 'Polygon', 'coordinates': [[
+        [west, south], [east, south], [east, north],
+        [west, north], [west, south]]]}
+    if project.get('clip_ecuador', True):
+        polygons = []
+        for feature in boundary()['features']:
+            part = feature['geometry']
+            if part['type'] == 'Polygon':
+                polygons.append(part['coordinates'])
+            elif part['type'] == 'MultiPolygon':
+                polygons.extend(part['coordinates'])
+            else:
+                raise ValueError('El dominio científico requiere límites poligonales.')
+        geometry = {'type': 'MultiPolygon', 'coordinates': polygons}
+    feature = {'type': 'Feature', 'properties': {'name': 'domain'}, 'geometry': geometry}
+    categorical = project.get('kind') == 'categorical'
+    stats = _polygon_stats(src, band, [feature], scale=project.get('scale', 1),
+                           offset=project.get('offset', 0),
+                           source_nodata=project.get('nodata'),
+                           reject_negative=reject_negative,
+                           clip_bounds=project['bbox'], include_empty=True,
+                           counts_only=categorical).get('domain')
+    result = stats or {'mean': None, 'min': None, 'max': None,
+                      'valid_pixels': 0, 'total_pixels': 0, 'coverage': 0.0,
+                      'weighting': (None if categorical else 'cosine_latitude_area_approximation'
+                                    if src.crs.is_geographic else 'native_pixel_mean_projected_crs')}
+    result.update(method='native_categorical_support' if categorical else 'native_source_pixels', calculation_method_version=2,
+                  spatial_domain=('ecuador_land_within_bbox' if project.get('clip_ecuador', True)
+                                  else 'source_pixels_within_bbox'),
+                  bbox=list(project['bbox']), source_crs=str(src.crs))
+    return result
 
 
 def load_values(project, row, point_samples=(), province_features=()):
@@ -218,15 +301,17 @@ def load_values(project, row, point_samples=(), province_features=()):
                 window = from_bounds(*box, transform=src.transform).round_offsets().round_lengths()
                 # Read only the requested window, not the global image.
                 values = src.read(1, window=window, masked=True)
+                spatial_stats = native_domain_stats(src, 1, project, reject_negative=True)
                 samples = _chirps_point_means(src, point_samples)
                 stats = _polygon_stats(
                     src, 1, province_features, reject_negative=True,
                     clip_bounds=(None if len(province_features) == 24 else box),
                 )
         province_samples = {n: r['mean'] for n, r in stats.items()}
-        raw = values.filled(np.nan).astype('float32')
+        raw = values.astype('float32').filled(np.nan)
         raw[(raw < 0) | ~np.isfinite(raw)] = np.nan
         return raw, {'path': str(path), 'source_url': url, 'band': 1,
+                     'spatial_stats': spatial_stats,
                      'point_samples': samples,
                      'province_mean_method': 'cosine_latitude_area_approximation',
                      'province_samples': province_samples,
@@ -249,21 +334,24 @@ def load_values(project, row, point_samples=(), province_features=()):
                   src_nodata=source_nodata,
                   dst_crs='EPSG:4326', dst_transform=grid_from_bounds(*box, w, h),
                   dst_nodata=float('nan'), resampling=method)
+        continuous = project['kind'] == 'continuous'
+        spatial_stats = native_domain_stats(src, row['band'], project) if continuous else None
         stats = _polygon_stats(
             src, row['band'], province_features,
             scale=project['scale'], offset=project['offset'],
             source_nodata=source_nodata,
             clip_bounds=(None if len(province_features) == 24 else box),
-        )
+        ) if continuous else {}
         province_samples = {n: r['mean'] for n, r in stats.items()}
         metadata = {'path': str(path), 'band': row['band'],
+                    'spatial_stats': spatial_stats,
                     'source_url': project.get('source_url', ''),
                     'provider_source_url': row.get('source_url', ''),
                     'provider_artifact_sha256': row.get('artifact_sha256', ''),
                     'native_crs': str(src.crs), 'native_transform': list(src.transform),
                     'embedded_scale': src.scales[row['band'] - 1], 'embedded_offset': src.offsets[row['band'] - 1],
                     'province_mean_method': (
-                        'cosine_latitude_area_approximation'
+                        None if not continuous else 'cosine_latitude_area_approximation'
                         if src.crs.is_geographic else 'native_pixel_mean_projected_crs'
                     ),
                     'point_samples': {}, 'province_samples': province_samples,

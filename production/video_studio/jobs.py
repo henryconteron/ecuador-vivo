@@ -159,7 +159,8 @@ def execute(job):
             summary.observe(
                 row['date'], values,
                 metadata.get('point_samples'), metadata.get('province_samples'),
-                metadata.get('province_extremes')
+                metadata.get('province_extremes'),
+                spatial_stats=metadata.get('spatial_stats')
             )
             path = metadata['path']
             if path not in hashes:
@@ -210,7 +211,20 @@ def execute(job):
             raise InterruptedError('Exportación cancelada antes de finalizar el montaje.')
         assembled.replace(final)
         receipt.update(montage=montage, duration_seconds=montage['duration_seconds'])
+        receipt['calculation_method_version'] = 2
+        if p['kind'] == 'continuous':
+            scientific_summary = summary.to_dict()
+            from calculation_results import summary_results
+            receipt['calculations'] = summary_results(p, scientific_summary)
+            receipt['spatial_domain'] = {
+                'summary': scientific_summary.get('spatial_domain', 'selected_bbox'),
+                'ranking': scientific_summary.get('ranking_spatial_domain', 'province_parts_within_bbox'),
+            }
+        else:
+            receipt['spatial_domain'] = {'map': 'selected_bbox'}
         receipt.update(complete=True, video_sha256=sha256(final))
+        from job_products import video_artifact
+        receipt['artifacts'] = {'video': video_artifact(final.name, receipt['video_sha256'])}
         write_json(job / 'receipt.json', receipt)
         status('complete', 'Video terminado')
     except InterruptedError as error:

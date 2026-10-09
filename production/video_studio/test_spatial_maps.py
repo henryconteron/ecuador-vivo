@@ -116,6 +116,7 @@ class GeographicMaps(unittest.TestCase):
         from model import default_project
         app = Path(__file__).parent / 'app.py'
         at = AppTest.from_file(str(app), default_timeout=30).run()
+        at.button(key='home_legacy').click().run()
         next(row for row in at.selectbox if row.label == 'Tipo de video').select('CSV geográfico').run()
         self.assertFalse(at.exception)
         self.assertTrue(at.get('file_uploader'))
@@ -126,6 +127,7 @@ class GeographicMaps(unittest.TestCase):
         at = AppTest.from_file(str(app), default_timeout=30)
         at.session_state['project'] = project
         at.run()
+        at.button(key='home_legacy').click().run()
         self.assertFalse(at.exception, [row.message for row in at.exception])
         at.segmented_control(key='studio_phase').set_value('Maqueta').run()
         self.assertFalse(at.exception, [row.message for row in at.exception])

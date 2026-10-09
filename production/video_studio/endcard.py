@@ -226,7 +226,7 @@ class SummaryAccumulator:
         )
 
     def observe(self, date, values, point_samples=None, province_samples=None,
-                province_extremes=None):
+                province_extremes=None, *, spatial_stats=None):
         self.n_observed += 1
         values = np.asarray(values, dtype='float32')
         # Values below zero are legitimate for temperature, anomalies and
@@ -244,22 +244,34 @@ class SummaryAccumulator:
                 pass
 
         coverage = (int(valid.sum()) / domain_count if domain_count else 0.0)
+        if spatial_stats is not None:
+            coverage = spatial_stats['coverage']
         self.spatial_coverage.append((date, coverage))
 
-        if not valid.any():
+        if spatial_stats is not None and spatial_stats.get('mean') is None:
+            return
+        if spatial_stats is None and not valid.any():
             return
 
-        land_values = values[valid]
-        weights = self._area_weights(values.shape)[valid]
-        mean_value = float(np.average(land_values, weights=weights))
-        max_value = float(np.max(land_values))
-        min_value = float(np.min(land_values))
-        extreme_source = 'display_grid'
+        if spatial_stats is not None:
+            mean_value = spatial_stats['mean']
+            max_value = spatial_stats['max']
+            min_value = spatial_stats['min']
+            extreme_source = 'native_source_pixels'
+        else:
+            # Compatibility for callers supplying arrays directly; explicitly
+            # identified in the receipt. Normal preview/export supply native stats.
+            land_values = values[valid]
+            weights = self._area_weights(values.shape)[valid]
+            mean_value = float(np.average(land_values, weights=weights))
+            max_value = float(np.max(land_values))
+            min_value = float(np.min(land_values))
+            extreme_source = 'display_grid'
         # Extremes come from the native raster (zonal pass over the 23
         # continental provinces) whenever available: the display grid can
         # alias away a fine-resolution peak. Galápagos is left out so that
         # mean and extremes describe the same domain as the map frame.
-        if self.national and province_extremes:
+        if spatial_stats is None and self.national and province_extremes:
             native = [ext for name, ext in province_extremes.items()
                       if name in self.rank_names and name != 'Galápagos']
             if len(native) == 23:
@@ -273,6 +285,9 @@ class SummaryAccumulator:
             'maximum': max_value,
             'minimum': min_value,
             'extreme_source': extreme_source,
+            'mean_source': 'native_source_pixels' if spatial_stats is not None else 'display_grid',
+            'weighting': (spatial_stats['weighting'] if spatial_stats is not None
+                          else 'cosine_latitude_area_approximation'),
         })
         # Keep the year in the key: a multi-year project must not merge every
         # January into a fictitious "wettest month".
@@ -407,21 +422,36 @@ class SummaryAccumulator:
         project_year = next(iter(years)) if len(years) == 1 else None
         period_name = (str(month_year) if cadence == 'Anual'
                        else MONTHS[month_number - 1])
+        weightings = {row['weighting'] for row in days}
+        weighting_label = (
+            'promedio espacial de píxeles nativos en CRS proyectado, sin pesos '
+            'geográficos (no presupone una proyección equivalente)'
+            if weightings == {'native_pixel_mean_projected_crs'} else
+            'promedio espacial ponderado por área aproximada (coseno de latitud)'
+            if len(weightings) == 1 else 'promedio espacial con métodos de ponderación mixtos'
+        )
+        continental_domain = (self.box == (-81.5, -5.2, -75.0, 1.8)
+                              and self.project.get('clip_ecuador', True))
+        spatial_domain = ('ecuador_continental' if continental_domain else
+                          'ecuador_land_within_bbox' if self.project.get('clip_ecuador', True)
+                          else 'source_pixels_within_bbox')
         if self.national:
+            domain_label = ('Ecuador continental del mapa principal' if continental_domain
+                            else 'encuadre seleccionado del mapa principal')
             scope = (
-                'Promedio y extremos: Ecuador continental del mapa principal; '
-                'promedio espacial ponderado por área aproximada (coseno de '
-                'latitud). Ranking: 24 provincias, incluida Galápagos; cada '
+                f'Promedio y extremos: {domain_label}; {weighting_label}. '
+                'Ranking: 24 provincias, incluida Galápagos; cada '
                 'valor es el promedio espacial de píxeles nativos válidos.'
             )
         else:
             scope = (
-                'Encuadre seleccionado: promedio espacial ponderado por área '
-                'aproximada (coseno de latitud); ranking: promedio espacial '
+                f'Encuadre seleccionado: {weighting_label}; ranking: promedio espacial '
                 'de la porción visible de cada provincia, usando píxeles nativos '
                 'válidos dentro del encuadre.'
             )
         extreme_sources = {row['extreme_source'] for row in days}
+        mean_sources = {row['mean_source'] for row in days}
+        mean_method = next(iter(mean_sources)) if len(mean_sources) == 1 else 'mixed'
         extreme_method = (
             next(iter(extreme_sources)) if len(extreme_sources) == 1 else 'mixed'
         )
@@ -437,12 +467,17 @@ class SummaryAccumulator:
             )
         return {
             'days': len(days),
+            'observed_period': {'start': days[0]['date'], 'end': days[-1]['date']},
             'year': project_year,
             'aggregation': self.aggregation,
             'cadence': self.project.get('cadence'),
             'units': self.project.get('units', '').strip(),
             'aggregate_units': aggregate_units,
-            'spatial_weighting': 'cosine latitude',
+            'spatial_weighting': next(iter(weightings)) if len(weightings) == 1 else 'mixed',
+            'mean_method': mean_method,
+            'calculation_method_version': 2 if mean_method == 'native_source_pixels' else 1,
+            'spatial_domain': spatial_domain,
+            'ranking_spatial_domain': 'ecuador_24_provinces' if self.national else 'province_parts_within_bbox',
             'mean_period': mean_period,
             'peak_date': rainiest_day['date'],
             'peak_date_mean': rainiest_day['mean'],
@@ -481,18 +516,25 @@ class SummaryAccumulator:
         }
 
 
-def summary_for_project(project, rows, boundary_geojson=None):
+def summary_for_project(project, rows, boundary_geojson=None, *, progress=None, cancelled=None):
     """Build an end-card summary for preview or a reproducible export."""
     accumulator = SummaryAccumulator(project, boundary_geojson or boundary())
-    for row in rows:
+    for index, row in enumerate(rows):
+        if cancelled and cancelled():
+            raise InterruptedError('Preparación científica cancelada.')
         values, metadata = load_values(
             project, row, province_features=accumulator.rank_features
         )
         accumulator.observe(
             row['date'], values,
             metadata.get('point_samples'), metadata.get('province_samples'),
-            metadata.get('province_extremes')
+            metadata.get('province_extremes'),
+            spatial_stats=metadata.get('spatial_stats')
         )
+        if progress:
+            progress(index + 1, len(rows), row['date'])
+    if cancelled and cancelled():
+        raise InterruptedError('Preparación científica cancelada.')
     return accumulator.to_dict()
 
 

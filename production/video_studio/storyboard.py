@@ -6,6 +6,7 @@ Only user-uploaded example images/clips may explicitly opt into cropping.
 from __future__ import annotations
 
 import hashlib
+import copy
 import math
 import re
 import subprocess
@@ -14,6 +15,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import imageio_ffmpeg
+from studio_ffmpeg import read_frames
 from PIL import Image, ImageDraw, ImageOps, ImageColor
 
 from model import STORE
@@ -49,6 +51,10 @@ def _digest_cached(path, modified, size):
 
 def dimensions(config):
     delivery = config.get('delivery', {})
+    if 'output_profile' in delivery:
+        from output_profiles import profile_for
+        profile = profile_for(delivery['output_profile'])
+        return profile.width, profile.height
     name = delivery.get('format', DEFAULT_FORMAT)
     if name not in FORMATS:
         raise ValueError('Formato de video no admitido.')
@@ -93,16 +99,16 @@ def media_path(value):
     return path
 
 
-def probe_video(path):
+def probe_video(path, *, content_hash=None):
     """Read local decoder metadata; never shell out with a string or network URL."""
     path = Path(path)
     info = path.stat()
-    return dict(_probe_cached(str(path.resolve()), info.st_mtime_ns, info.st_size))
+    return copy.deepcopy(_probe_cached(str(path.resolve()), info.st_mtime_ns, info.st_size, content_hash))
 
 
 @lru_cache(maxsize=64)
-def _probe_cached(path, modified, size):
-    reader = imageio_ffmpeg.read_frames(str(path), input_params=['-protocol_whitelist', 'file,pipe'])
+def _probe_cached(path, modified, size, content_hash=None):
+    reader = read_frames(str(path), input_params=['-protocol_whitelist', 'file,pipe'])
     try:
         metadata = next(reader)
     finally:
@@ -168,6 +174,11 @@ def cards_for(config):
         row['fit'] = row.get('fit', 'contain')
         if row['fit'] not in ('contain', 'cover'):
             raise ValueError('Encuadre inválido.')
+        if 'data_visualization' in row:
+            from visualizations import validate_snapshot
+            if row['kind'] != 'image' or row['fit'] != 'contain':
+                raise ValueError('Una visualización científica se encaja completa, sin recorte.')
+            validate_snapshot(row['data_visualization'])
         if row['kind'] in ('image', 'video'):
             path = media_path(row.get('path'))
             if row['kind'] == 'image' and path.suffix.lower() not in IMAGE_SUFFIXES:
@@ -182,6 +193,11 @@ def cards_for(config):
                 row.update(start=start, has_audio=metadata['audio'])
             if row.get('sha256') and digest(path) != row['sha256']:
                 raise ValueError('Un recurso del montaje cambió después de importarse. Vuelve a importarlo.')
+            if 'data_visualization' in row:
+                from visualizations import verify_snapshot_image
+                if row.get('sha256')!=row['data_visualization']['image_sha256']:
+                    raise ValueError('El PNG cambió respecto a la instantánea científica.')
+                verify_snapshot_image(row['data_visualization'],path)
             row['path'] = str(path)
         for field in ('title', 'body', 'citation', 'label'):
             if len(str(row.get(field, ''))) > (600 if field == 'body' else 300):
@@ -256,7 +272,7 @@ def card_preview(row, config):
         with Image.open(path) as source:
             image = ImageOps.exif_transpose(source).copy()
     else:
-        reader = imageio_ffmpeg.read_frames(str(path), pix_fmt='rgb24',
+        reader = read_frames(str(path), pix_fmt='rgb24',
             input_params=['-protocol_whitelist', 'file,pipe', '-ss', str(row.get('start', 0))])
         try:
             metadata = next(reader)
@@ -320,7 +336,7 @@ def assemble(job, source, config, *, map_duration, endcard_duration, status=None
         target = stages / f'{index:02d}.mp4'
         inputs, media, static = [], None, False
         if row['kind'] == 'map':
-            inputs = ['-ss', '0', '-i', str(source)]
+            inputs = ['-i', str(source)]
             # The base renderer generated EXACTLY this duration already.
             frames = round(map_duration * 30)
         elif row['kind'] == 'endcard':
@@ -348,7 +364,10 @@ def assemble(job, source, config, *, map_duration, endcard_duration, status=None
               f'scale={width}:{slot_height}:force_original_aspect_ratio=decrease,pad={width}:{slot_height}:(ow-iw)/2:(oh-ih)/2:color=0x{background[1:]}')
         if top or bottom:
             vf += f',pad={width}:{height}:0:{top}:color=0x{background[1:]}'
-        vf += ',setsar=1,fps=30,setpts=PTS-STARTPTS'
+        # The scientific base is already an exact 30 fps frame sequence.
+        # Resampling it again can discard its last frame at a short EOF.
+        vf += (',setsar=1,setpts=N/(30*TB)' if row['kind'] == 'map'
+               else ',setsar=1,fps=30,setpts=PTS-STARTPTS')
         sound = row['kind'] == 'video' and row.get('audio', False) and row.get('has_audio')
         overlay = row['kind'] == 'video' and bool(row.get('title') or row.get('citation'))
         args = list(inputs)
@@ -367,7 +386,7 @@ def assemble(job, source, config, *, map_duration, endcard_duration, status=None
                  '-frames:v', str(frames), '-t', str(frames / 30), *common, str(target)]
         _run(args, job)
         clips.append(target)
-        receipts.append({key: row[key] for key in ('id', 'kind', 'label', 'title', 'citation', 'sha256', 'start', 'fit', 'audio') if key in row})
+        receipts.append({key: row[key] for key in ('id', 'kind', 'label', 'title', 'citation', 'sha256', 'start', 'fit', 'audio', 'data_visualization') if key in row})
         receipts[-1].update(duration_seconds=frames/30, frames=frames)
         if row['kind'] in ('image', 'video'):
             receipts[-1]['sha256'] = digest(row['path'])

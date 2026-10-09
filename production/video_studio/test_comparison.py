@@ -122,6 +122,7 @@ class ComparisonTests(unittest.TestCase):
         app = HERE / "app.py"
         at = AppTest.from_file(str(app), default_timeout=30).run()
         self.assertFalse(at.exception)
+        at.button(key='home_legacy').click().run()
         selector = next(row for row in at.selectbox if row.label == 'Tipo de video')
         selector.set_value('Comparación climática').run()
         self.assertFalse(at.exception)
@@ -148,6 +149,7 @@ class ComparisonTests(unittest.TestCase):
         at.session_state['project'] = project
         at.session_state['climate_comparison'] = output
         at.run()
+        at.button(key='home_legacy').click().run()
         self.assertFalse(at.exception, [row.message for row in at.exception])
         at.segmented_control(key='studio_phase').set_value('Maqueta').run()
         self.assertTrue(any(row.label == 'Paleta' for row in at.selectbox))

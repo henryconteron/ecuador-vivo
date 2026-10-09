@@ -104,7 +104,11 @@ st.session_state.setdefault('preview', None)
 st.session_state.setdefault('endcard_preview', None)
 st.session_state.setdefault('import_rows', [])
 st.session_state.setdefault('active_job', None)
-st.session_state.setdefault('section', 'Editor')
+st.session_state.setdefault('section', 'Inicio')
+# Retain navigation while its native radio is absent on home/Studio surfaces.
+st.session_state.section = st.session_state.section
+from studio_project import request_studio_navigation, consume_studio_navigation
+consume_studio_navigation(st.session_state)
 
 # Force a one-time migration when the renderer/template version changes.
 # Streamlit preserves session_state across hot reloads, which otherwise leaves
@@ -130,9 +134,14 @@ if pending_provider_project is not None:
     st.session_state.revision += 1
 if pending_provider_section:
     st.session_state.section = pending_provider_section
+if st.session_state.section != 'Obtener datos':
+    st.session_state.pop('science_acquisition', None)
 
 p = upgrade_project(st.session_state.project)
 revision = st.session_state.revision
+from studio_project import synchronize_source, source_projection, workspace_key, replace_document, validate_document
+synchronize_source(st.session_state, p)
+p = st.session_state.project
 
 # Included in the cached preview key so old PNGs can never survive a renderer
 # update with the same project JSON.
@@ -144,7 +153,9 @@ RENDER_CACHE_VERSION = f'ecuador-vivo-maqueta-{TEMPLATE_VERSION}-visual-1'
 # =============================================================================
 
 def replace_project(project):
-    st.session_state.project = upgrade_project(project)
+    document = replace_document(st.session_state, upgrade_project(copy.deepcopy(project)))
+    if 'studio' in project:
+        request_studio_navigation(st.session_state)
     st.session_state.revision += 1
     st.session_state.preview = None
     st.session_state.endcard_preview = None
@@ -208,14 +219,10 @@ def editor_summary(settings):
     # invalidate it; no scientific result is altered by presentation edits.
     fields = ('source', 'start', 'end', 'entries', 'bbox', 'scale', 'offset',
               'nodata', 'clip_ecuador', 'kind', 'variable', 'units', 'cadence',
-              'endcard_aggregation', 'endcard_accumulated_units')
+              'endcard_aggregation', 'endcard_aggregation_mode', 'endcard_accumulated_units',
+              '_scientific_revision_sha256')
     values = {key: settings[key] for key in fields if key in settings}
-    versions = []
-    for row in settings.get('entries', []):
-        path = Path(row['path'])
-        stat = path.stat()
-        versions.append((str(path), stat.st_mtime_ns, stat.st_size))
-    return _editor_summary(json.dumps(values, sort_keys=True), tuple(versions))
+    return _editor_summary(json.dumps(values, sort_keys=True), _data.scientific_file_versions(settings))
 
 
 def snapshot():
@@ -237,8 +244,21 @@ def save_project():
             + '.json'
         )
     )
-    write_json(target, p)
+    write_json(target, synchronize_source(st.session_state, p))
     return target
+
+
+def create_studio_from_snapshot(scientific_snapshot):
+    from studio_science import generate_scientific_project
+    from visualization_ui import scientific_identity
+    if scientific_identity(p) != scientific_snapshot['scientific_identity']:
+        raise ValueError('La fuente cambió; carga nuevamente los resultados.')
+    document=synchronize_source(st.session_state,p)
+    candidate=generate_scientific_project(document,scientific_snapshot,
+        document['studio']['output_profile'],theme=document['studio'].get('theme','Ecuador Vivo'))
+    replace_project(candidate)
+    request_studio_navigation(st.session_state)
+    st.rerun()
 
 
 def rerun_project():
@@ -348,6 +368,11 @@ def _queue_provider_project(result, provider):
         f"{provider} · {result['resolution_note']}"
     )
     validate(candidate)
+    if st.session_state.pop('science_acquisition',False):
+        st.session_state['_pending_scientific_source'] = candidate
+        st.session_state['home_mode'] = 'scientific'
+        st.session_state['_pending_provider_section'] = 'Inicio'
+        st.rerun()
     st.session_state._pending_provider_project = candidate
     st.session_state._pending_provider_section = 'Editor'
     st.rerun()
@@ -357,8 +382,25 @@ def _queue_provider_project(result, provider):
 # SIDEBAR
 # =============================================================================
 
+# Studio owns a bounded viewport. Route before the legacy sidebar/forms, while
+# retaining every earlier phase and the same source project/revision.
+if st.session_state.section == 'Inicio':
+    from studio_home import show_home
+    show_home(replace_project,document=st.session_state.project_document)
+    st.stop()
+if st.session_state.section == 'SIG':
+    from studio_sig import show_sig
+    try: show_sig(p)
+    except (ValueError,TypeError,KeyError,OSError) as error: st.error('No se pudo abrir SIG: '+str(error))
+    st.stop()
+if st.session_state.get('section','Editor')=='Editor' and st.session_state.get('studio_phase')=='Estudio':
+    from studio_workspace import show_workspace
+    document = synchronize_source(st.session_state, p)
+    show_workspace(p,key=workspace_key(document),snapshot=st.session_state.get(f'visualizations_{revision}_snapshot'),canonical=True)
+    st.stop()
+
 with st.sidebar:
-    st.title('Ecuador Vivo')
+    st.markdown('**ECUADOR VIVO**')
 
     st.caption(
         'ESTUDIO DE VIDEO · LOCAL'
@@ -370,6 +412,7 @@ with st.sidebar:
     section = st.radio(
         'Espacio de trabajo',
         [
+            'Inicio',
             'Editor',
             'Obtener datos',
             'Exportaciones',
@@ -378,11 +421,9 @@ with st.sidebar:
         key='section'
     )
 
-    st.caption(
-        'Una maqueta, tus datos y tu historia.'
-    )
+    st.divider()
 
-    st.subheader(
+    st.header(
         'Tus proyectos'
     )
 
@@ -411,7 +452,7 @@ with st.sidebar:
     ):
         candidate = read_json(chosen)
         try:
-            validate(candidate)
+            validate_document(candidate)
             replace_project(candidate)
             st.rerun()
         except (
@@ -424,8 +465,9 @@ with st.sidebar:
             )
 
     if st.button(
-        'Nueva maqueta Ecuador Vivo',
-        icon=':material/add:'
+        'Nuevo proyecto',
+        icon=':material/add:',
+        width='stretch',
     ):
         replace_project(
             default_project()
@@ -449,7 +491,7 @@ with st.sidebar:
                 candidate = json.loads(
                     restored.getvalue()
                 )
-                validate(candidate)
+                validate_document(candidate)
                 replace_project(candidate)
                 st.rerun()
             except (
@@ -542,7 +584,7 @@ de alrededor de **26 s** reproduce el ritmo corto de la pieza anual.
 # =============================================================================
 
 if section == 'Obtener datos':
-    st.title('Obtener datos · Ecuador vivo')
+    st.title('Obtener datos')
     st.caption(
         'Descarga desde fuentes originales, conserva el recibo de procedencia '
         'y manda las grillas compatibles directo al editor.'
@@ -554,7 +596,7 @@ if section == 'Obtener datos':
     )
 
     if source_name.startswith('CHIRPS'):
-        st.subheader('Precipitación diaria en rejilla')
+        st.header('Precipitación diaria en rejilla')
         st.markdown(
             'CHIRPS v3 ofrece lluvia estimada con resolución de **0,05°**. '
             'Elige un producto y descarga hasta **31 días por paquete**; cada '
@@ -657,7 +699,7 @@ if section == 'Obtener datos':
         st.caption('Fuente oficial: https://chc.ucsb.edu/data/chirps3')
 
     elif source_name.startswith('NASA'):
-        st.subheader('Clima diario en una grilla regional')
+        st.header('Clima diario en una grilla regional')
         st.markdown(
             'NASA POWER permite descargar series regionales para una variable '
             'por solicitud. El paquete contiene el CSV original, GeoTIFF '
@@ -779,7 +821,7 @@ if section == 'Obtener datos':
         st.caption('Documentación oficial: https://power.larc.nasa.gov/docs/services/api/temporal/daily/')
 
     else:
-        st.subheader('Observaciones de estaciones INAMHI')
+        st.header('Observaciones de estaciones INAMHI')
         st.markdown(
             'Este conector consulta el catálogo del visor diario y permite '
             'descargar la serie CSV de una estación junto con su procedencia. '
@@ -917,7 +959,7 @@ if section == 'Obtener datos':
             st.warning('El catálogo no respondió con estaciones. Vuelve a intentarlo o abre el visor oficial.')
 
     st.divider()
-    st.subheader('Otras fuentes ecuatorianas para ampliar el catálogo')
+    st.header('Otras fuentes ecuatorianas')
     st.caption(
         'Son portales institucionales reales, pero todavía no están conectados '
         'como descargas de un clic. El siguiente paso es implementar cada '
@@ -1041,6 +1083,16 @@ def jobs_panel():
 
     elif state.get('state') == 'complete':
 
+        from job_products import published_movie
+        try:
+            movie = published_movie(folder)
+        except (ValueError, OSError, TypeError) as error:
+            st.error('No se pudo localizar el MP4 publicado: ' + str(error))
+            return
+        if movie is None:
+            st.info('El trabajo todavía no ha publicado su MP4.')
+            return
+
         st.success(
             'MP4 terminado · conserva la maqueta y la configuración del proyecto.'
         )
@@ -1050,8 +1102,7 @@ def jobs_panel():
         ):
             st.video(
                 str(
-                    folder
-                    / 'ecuador-vivo.mp4'
+                    movie
                 ),
                 alt='Video cartográfico exportado desde Ecuador Vivo'
             )
@@ -1064,8 +1115,7 @@ def jobs_panel():
                 'Descargar MP4',
                 data=lambda:
                     (
-                        folder
-                        / 'ecuador-vivo.mp4'
+                        movie
                     ).read_bytes(),
                 file_name=(
                     'ecuador-vivo-'
@@ -1176,7 +1226,8 @@ if section == 'Exportaciones':
 # EDITOR
 # =============================================================================
 
-st.title('Cuenta una historia con tus mapas')
+st.title('Editor de video')
+st.caption('Datos verificables. Mapas que cuentan una historia.')
 
 video_types = ['Mapa temporal', 'Comparación climática', 'CSV geográfico']
 video_type = st.selectbox(
@@ -1184,11 +1235,17 @@ video_type = st.selectbox(
     index=video_types.index(p.get('video_type', 'Mapa temporal')),
     key=f'video_type_{revision}',
     help='La maqueta, los controles y el cierre se adaptan al tipo seleccionado.',
+    width=440,
 )
 p['video_type'] = video_type
 st.session_state.project = p
 from workspace import navigation, export_check, authoring_config
 phase = navigation()
+if phase == 'Estudio':
+    from studio_workspace import show_workspace
+    document = synchronize_source(st.session_state, p)
+    show_workspace(p,key=workspace_key(document),snapshot=st.session_state.get(f'visualizations_{revision}_snapshot'),canonical=True)
+    st.stop()
 if phase == 'Montaje':
     from storyboard_ui import show_storyboard
     show_storyboard(p, key=f'story_{revision}', always_open=True)
@@ -1209,8 +1266,8 @@ def temporal_controls(step):
 
         if step == 'Datos':
 
-            st.subheader(
-                'Elige qué quieres contar'
+            st.header(
+                'Fuente y periodo'
             )
 
             choice = st.selectbox(
@@ -2307,6 +2364,12 @@ if phase == 'Datos':
     temporal_controls('Datos')
     st.info('Después de elegir y validar las fuentes, abre Maqueta para editar el diseño.')
 elif phase == 'Maqueta':
+    surface = st.segmented_control('Superficie de trabajo', ['Lienzo de mapa', 'Visualizaciones'],
+        default='Lienzo de mapa', key=f'work_surface_{revision}')
+    if surface == 'Visualizaciones':
+        from visualization_ui import show_visualizations
+        show_visualizations(p, editor_summary, key=f'visualizations_{revision}',on_create_studio=create_studio_from_snapshot)
+        st.stop()
     # Optional template controls are not a second preview/editor.
     with st.expander('Configuración de la plantilla y créditos'):
         control = st.segmented_control('Configuración',
@@ -2381,5 +2444,5 @@ else:
         if st.button('Guardar proyecto', icon=':material/save:', key='save_project'):
             target = save_project()
             st.success(f'Proyecto guardado: {target.name}')
-        st.download_button('Descargar proyecto JSON', snapshot(),
+        st.download_button('Descargar proyecto JSON', json.dumps(synchronize_source(st.session_state,p),ensure_ascii=False,sort_keys=True),
             file_name='ecuador-vivo-proyecto.json', mime='application/json')

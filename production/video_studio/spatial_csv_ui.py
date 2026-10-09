@@ -38,7 +38,7 @@ def show_spatial_csv(project, *, phase='Datos'):
     valid_key = f'spatial_valid_{st.session_state.get("revision", 0)}'
     if phase == 'Datos':
         st.session_state[valid_key] = False
-        st.subheader('Tu CSV también es un mapa')
+        st.header('Datos geográficos desde CSV')
         st.caption('Puntos: observaciones, estaciones, pozos o registros de especies. Provincias: un valor explícito por provincia y periodo.')
         uploaded = st.file_uploader('CSV geográfico', type=['csv'], key='geographic_csv_upload')
         saved = project.get('spatial_data')

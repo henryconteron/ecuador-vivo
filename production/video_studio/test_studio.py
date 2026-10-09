@@ -275,6 +275,7 @@ class StudioTests(unittest.TestCase):
     def test_editor_changes_persist_and_preview(self):
         at = AppTest.from_file(str(Path(__file__).with_name('app.py')), default_timeout=30).run()
         self.assertFalse(at.exception)
+        at.button(key='home_legacy').click().run()
         if not hasattr(at, 'segmented_control'):
             self.skipTest('La versión instalada de AppTest no expone segmented_control.')
         at.segmented_control(key='studio_phase').set_value('Maqueta').run()

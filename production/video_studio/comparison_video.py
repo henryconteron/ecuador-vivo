@@ -540,6 +540,8 @@ def create_comparison_job(frame, output, config, *, rank_frame=None, progress_ca
             city_rule='Explicit WGS84 coordinates supplied by the CSV; no nearest weather-grid sampling.',
             display_resampling='None: points or province polygons.',
         )
+    from job_products import video_artifact
+    receipt['artifacts'] = {'video': video_artifact(final.name, receipt['video_sha256'])}
     write_json(job / "receipt.json", receipt)
     write_json(job / "status.json", {"state": "complete", "progress": 1.0, "message": "Comparación exportada", "updated": dt.datetime.now().timestamp()})
     return job

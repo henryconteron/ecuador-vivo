@@ -6,7 +6,7 @@ Regla física que aplica todo el cierre de métricas:
   anomalías) → se PROMEDIAN; sumarlas no tiene sentido físico;
 * direcciones (grados de viento) → no admiten promedio aritmético.
 
-``detect_profile`` lee unidades, nombre de la variable, leyenda y título del
+``detect_profile`` lee unidades y nombre científico de la variable del
 proyecto. Si no reconoce nada devuelve el perfil ``generic`` con promedio (la
 opción segura) y una advertencia visible en el recibo.
 """
@@ -52,8 +52,9 @@ def _profile(kind, aggregation, *, unit='', decimals=1, signed=False,
 
 
 def detect_profile(project):
-    text = ' '.join(_norm(project.get(k, '')) for k in
-                    ('variable', 'legend', 'title', 'name', 'description'))
+    # Editorial copy is mutable presentation, never physical metadata. A title
+    # mentioning "anomaly" must not turn a rainfall total into a temporal mean.
+    text = _norm(project.get('variable', ''))
     units = _unit_key(project.get('units', ''))
     cadence = project.get('cadence', 'Diaria')
 

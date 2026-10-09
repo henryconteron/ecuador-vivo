@@ -6,8 +6,8 @@ from workspace import PHASES, authoring_config, export_check
 
 
 class WorkspaceTests(unittest.TestCase):
-    def test_four_distinct_phases(self):
-        self.assertEqual(PHASES, ('Datos', 'Maqueta', 'Montaje', 'Exportar'))
+    def test_studio_is_added_after_the_four_legacy_phases(self):
+        self.assertEqual(PHASES, ('Datos', 'Maqueta', 'Montaje', 'Exportar', 'Estudio'))
 
     def test_authoring_copy_preserves_sources_values_and_removed_elements(self):
         original = {'units': '°C', 'offset': -273.15,

@@ -16,7 +16,7 @@ try {
         & $studioPython -m pip install -r (Join-Path $PSScriptRoot 'requirements.txt')
         if ($LASTEXITCODE -ne 0) { throw 'No se pudieron instalar las dependencias. Revisa la conexion.' }
     }
-    $studioProcess = Start-Process -FilePath $studioPython -ArgumentList @('-m','streamlit','run','app.py') -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -RedirectStandardOutput $studioLog -RedirectStandardError $studioErrors -PassThru
+    $studioProcess = Start-Process -FilePath $studioPython -ArgumentList @('-m','streamlit','run','studio_server.py') -WorkingDirectory $PSScriptRoot -WindowStyle Hidden -RedirectStandardOutput $studioLog -RedirectStandardError $studioErrors -PassThru
     for ($studioAttempt = 0; $studioAttempt -lt 60; $studioAttempt++) {
         Start-Sleep -Milliseconds 500
         try {

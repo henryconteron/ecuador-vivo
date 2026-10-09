@@ -96,7 +96,7 @@ def show_comparison(project=None, *, phase='Datos'):
     valid_key = f'comparison_valid_{revision}'
     if phase == 'Datos':
         st.session_state[valid_key] = False
-        st.subheader("Compara el mismo periodo en distintos años")
+        st.header("Variable, territorio y periodo")
         st.write(
             "Elige una variable, años y escala territorial. Los promedios de provincia se calculan "
             "sobre celdas nativas que intersectan su polígono; no se toma el valor de la capital."
@@ -397,7 +397,7 @@ def show_comparison(project=None, *, phase='Datos'):
         return
 
     st.divider()
-    st.subheader("Maqueta audiovisual · Ecuador Vivo / Andes Pulso")
+    st.header("Plantilla y créditos")
     st.caption(
         "El video muestra mapas de los rásteres originales, mes a mes y con escala fija. "
         "Las tablas y los rankings quedan para el cierre de métricas. "
@@ -688,7 +688,6 @@ def render_embedded(project=None, *, phase='Datos'):
     if phase != 'Datos':
         show_comparison(project, phase=phase)
         return
-    st.subheader("Datos de comparación")
     st.caption(
         "Mismo editor, fuentes y carpeta de proyectos. Compara primero los datos; "
         "después prepara una maqueta audiovisual con el resultado verificable."
@@ -706,7 +705,7 @@ def render_embedded(project=None, *, phase='Datos'):
     elif view == "Mar y viento":
         show_ocean_wind()
     else:
-        st.subheader("Fuentes y límites de interpretación")
+        st.header("Fuentes y límites de interpretación")
         sources = pd.DataFrame([
             {"Fuente": "INAMHI", "Variables": "Estaciones locales · lluvia, temperatura, viento", "Alcance histórico": "Depende de estación/variable; API diaria con huecos y ventana variable", "Acceso": "Conector probado; valores puntuales, nunca rellenar faltantes", "Uso recomendado": "Verificación local y estudios de ciudades/cuencas"},
             {"Fuente": "CHIRPS v3", "Variables": "Precipitación diaria", "Alcance histórico": "Final RNL desde 1981; ~5,6 km", "Acceso": "Descarga integrada en Obtener datos", "Uso recomendado": "Lluvia espacial histórica; no equivale a pluviómetro"},

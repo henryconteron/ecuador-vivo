@@ -97,6 +97,8 @@ def upgrade_project(p):
     """Upgrade old editor projects to the approved Ecuador Vivo template."""
     if not isinstance(p, dict):
         raise ValueError('El proyecto debe ser un objeto JSON.')
+    from studio_model import check_schema, SCHEMA_VERSION
+    check_schema(p)  # Before any in-place legacy factory updates.
 
     try:
         version = int(p.get('template_version', 1))
@@ -167,6 +169,7 @@ def upgrade_project(p):
     p.setdefault('layout', 'maqueta')
     p.setdefault('video_type', 'Mapa temporal')
     p.setdefault('template_version', TEMPLATE_VERSION)
+    p.setdefault('schema_version', SCHEMA_VERSION)
 
     # Old projects usually stored author/credits as empty strings.
     if p.get('layout') == 'maqueta':
@@ -280,6 +283,20 @@ def timeline(p):
 
 
 def validate(p):
+    # This route renders legacy map/storyboard data. Never claim that Studio
+    # free elements were exported when they were actually ignored.
+    from studio_model import check_schema, validate_studio, migrate_project
+    check_schema(p)
+    if 'studio' in p:
+        studio = validate_studio(p['studio'])
+        if any(scene.get('renderer', 'studio') != 'legacy' for scene in studio['scenes']):
+            raise ValueError('Las escenas Studio requieren su render dedicado; la exportación legacy no las incluye.')
+        expected = migrate_project({key:value for key,value in p.items() if key!='studio'})['studio']
+        fields=('id','name','duration','legacy_card')
+        actual_refs=[{key:scene.get(key) for key in fields} for scene in studio['scenes']]
+        expected_refs=[{key:scene.get(key) for key in fields} for scene in expected['scenes']]
+        if studio['timeline']!=expected['timeline'] or actual_refs!=expected_refs:
+            raise ValueError('La secuencia Studio difiere del storyboard legacy; sincroniza sus referencias antes de exportar.')
     upgrade_project(p)
 
     if p.get('version') != 1 or p.get('source') not in ('chirps', 'local'):

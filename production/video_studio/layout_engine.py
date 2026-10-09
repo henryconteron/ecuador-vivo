@@ -1,7 +1,8 @@
 """Local, deterministic scene graph shared by the visual editor and MP4 renderer.
 
 No global monkeypatches: each Pillow image owns its scene. Data/maps are unchanged;
-only drawing geometry is editable. Coordinates are authoring pixels (1080×1920).
+only drawing geometry is editable. Coordinates are native authoring pixels;
+legacy artwork uses 1080×1920, Studio scenes use their OutputProfile dimensions.
 """
 from __future__ import annotations
 
@@ -58,6 +59,14 @@ def clean_layout(value):
                 row['hidden'] = bool(item['hidden'])
             if 'deleted' in item:
                 row['deleted'] = bool(item['deleted'])
+            if 'locked' in item:
+                if type(item['locked']) is not bool:
+                    raise ValueError('locked debe ser booleano.')
+                row['locked'] = item['locked']
+            if 'name' in item:
+                if not isinstance(item['name'], str) or len(item['name']) > 180:
+                    raise ValueError('Nombre de capa inválido (máximo 180 caracteres).')
+                row['name'] = item['name']
             if key.startswith('custom.'):
                 custom_pixels += row.get('w', 500) * row.get('h', 120)
                 if custom_pixels > 20_000_000:
@@ -112,10 +121,11 @@ class Scene:
             if size != image.size:
                 image = image.resize(size, Image.Resampling.LANCZOS)
             w, h = image.size
-        item = dict(id=key, label=label or text[:60] or kind, kind=kind, editable=editable,
+        item = dict(id=key, label=override.get('name', label or text[:60] or kind), kind=kind, editable=editable,
                     x=round(x), y=round(y), w=round(w), h=round(h), original=original,
                     z=override.get('z', len(self.items)), hidden=override.get('hidden', False),
                     deleted=override.get('deleted', False),
+                    locked=override.get('locked', False),
                     text=text, content_editable=content_editable, font_size=font_size,
                     color=color, icon=icon, image=image)
         self.items.append(item)
@@ -162,7 +172,7 @@ class Scene:
                          color=color, content_editable=True, transformed=True)
 
     def payload(self):
-        return {'width': 1080, 'height': 1920, 'background': _png(self.base), 'scene': self.name,
+        return {'width': self.base.width, 'height': self.base.height, 'background': _png(self.base), 'scene': self.name,
                 'layers': [{**{k: v for k, v in row.items() if k != 'image'},
                             'src': _png(row['image'])} for row in self.items]}
 
