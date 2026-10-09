@@ -4,17 +4,19 @@ from studio_geography import import_geojson,read_source,region_feature,render_re
 from studio_project import request_studio_navigation
 
 
-def show_geography(session):
+def show_geography(session,*,show_import=True):
     with st.expander('Capas GeoJSON · polígonos propios',expanded=True):
         st.caption('BYOD · Polygon/MultiPolygon 2D RFC7946, hasta 8 MiB. Lon/lat WGS84 explícito; sin reproyección vectorial, antimeridiano ni polos. No se distribuyen automáticamente tus archivos. La licencia registrada es una declaración de procedencia, no una verificación legal.')
         try:
-            with st.form('geographic_import_form'):
-                upload=st.file_uploader('Importar GeoJSON',type=['geojson','json'],key='geographic_upload',max_upload_size=8)
-                citation=st.text_input('Procedencia del GeoJSON',key='geographic_citation',max_chars=1000)
-                license=st.text_input('Licencia o condiciones de uso',key='geographic_license',max_chars=1000)
-                url=st.text_input('URL pública de origen (opcional)',key='geographic_url',max_chars=1000,
-                    help='Sin usuario, contraseña, parámetros ni tokens. No configura una conexión remota.')
-                accepted=st.form_submit_button('Importar capa al proyecto',key='geographic_import')
+            accepted=False
+            if show_import:
+                with st.form('geographic_import_form'):
+                    upload=st.file_uploader('Importar GeoJSON',type=['geojson','json'],key='geographic_upload',max_upload_size=8)
+                    citation=st.text_input('Procedencia del GeoJSON',key='geographic_citation',max_chars=1000)
+                    license=st.text_input('Licencia o condiciones de uso',key='geographic_license',max_chars=1000)
+                    url=st.text_input('URL pública de origen (opcional)',key='geographic_url',max_chars=1000,
+                        help='Sin usuario, contraseña, parámetros ni tokens. No configura una conexión remota.')
+                    accepted=st.form_submit_button('Importar capa al proyecto',key='geographic_import')
             selection_key=session.key+'_geographic_region'
             if accepted:
                 if upload is None:raise ValueError('Selecciona un archivo GeoJSON.')

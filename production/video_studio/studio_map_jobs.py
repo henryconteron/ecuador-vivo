@@ -1,6 +1,7 @@
 """Private cartographic bridge: existing data loader/compositor, no new science."""
 import datetime as dt
 import os
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -21,7 +22,7 @@ from studio_temporal import validate_resource
 ROOT = STORE / 'temporal-map-preparations'
 
 
-def start_map_job(project, duration, *, representation='opaque_prerendered_map', layer_sizes=None):
+def start_map_job(project, duration, *, representation='opaque_prerendered_map', layer_sizes=None,source_index=None):
     if representation not in ('opaque_prerendered_map','rgba_observation_bundle'):
         raise ValueError('Representación cartográfica desconocida.')
     if layer_sizes is not None and (representation!='rgba_observation_bundle' or not isinstance(layer_sizes,dict)
@@ -29,13 +30,21 @@ def start_map_job(project, duration, *, representation='opaque_prerendered_map',
         raise ValueError('Resoluciones de capa no admitidas.')
     snapshot = restored_snapshot(project)
     if snapshot is None: raise ValueError('Prepara una revisión científica antes de generar el mapa.')
+    if source_index is not None and (representation!='rgba_observation_bundle' or type(source_index) is not int
+                                    or not 0<=source_index<len(snapshot['source_records'])):
+        raise ValueError('Selecciona una observación existente para el mapa RGBA.')
     source = source_projection(project)
-    source['duration'] = duration
+    if source_index is not None and (type(duration) not in (int,float) or not math.isfinite(duration) or not 1/30<=duration<=7200):
+        raise ValueError('La observación necesita de uno a 216000 fotogramas a 30 FPS.')
+    # Validate the complete scientific source without imposing its full-series
+    # playback duration on the explicitly selected observation.
+    source['duration'] = duration if source_index is None else max(duration,len(snapshot['source_records'])/30)
     validate(source)
     job = ROOT / uuid.uuid4().hex
     job.mkdir(parents=True)
     request = {'project':project, 'duration':duration}
     if representation=='rgba_observation_bundle': request.update(representation=representation,layer_sizes=layer_sizes or {})
+    if source_index is not None:request['source_index']=source_index
     write_json(job/'request.json', request)
     write_json(job/'status.json', {'state':'queued','progress':0,'message':'Mapa temporal en cola','updated':time.time()})
     try:
@@ -79,13 +88,14 @@ def execute(job, *, root=None):
                 check();progress=.05+.9*done/total;status('running',message)
             status('running','Preparando bundle RGBA privado')
             record=prepare_bundle(project,request['duration'],**sizes,progress=bundle_progress,
-                                  cancelled=lambda:(job/'cancel.request').exists())
+                                  cancelled=lambda:(job/'cancel.request').exists(),source_index=request.get('source_index'))
             check();write_json(job/'bundle-resource.json',record);check()
             progress=1
             status('complete','Bundle RGBA privado verificado; aún no publicado',bundle_resource_sha256=_hash(record))
             return
         if request.get('representation','opaque_prerendered_map')!='opaque_prerendered_map':
             raise ValueError('Representación cartográfica desconocida.')
+        if 'source_index' in request:raise ValueError('El mapa opaco no admite una selección RGBA.')
         snapshot = restored_snapshot(project)
         if snapshot is None: raise ValueError('Revisión científica ausente.')
         source = source_projection(project)

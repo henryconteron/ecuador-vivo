@@ -162,7 +162,7 @@ def _review(review, job, open_project, *, publish_label='Crear proyecto en Studi
         with st.expander('Archivos, fechas efectivas y procedencia'):
             st.dataframe(snapshot['source_records'], hide_index=True, alt='Archivos de origen con fechas, bandas y hashes')
             st.json({key:r['provenance'] for key,r in results.items()})
-        st.caption('Esta propuesta incluye las métricas y los gráficos disponibles. El mapa temporal todavía se prepara en el montaje cartográfico.')
+        st.caption('Enviar resultados crea portada, métricas numéricas, gráficos disponibles y créditos. El mapa se prepara y revisa por separado desde SIG; no se genera automáticamente ni representa un promedio anual.')
     with st.container(border=True):
         st.markdown('**4 · Configuración audiovisual**')
         suffix = Path(job).name
@@ -182,7 +182,12 @@ def _review(review, job, open_project, *, publish_label='Crear proyecto en Studi
         theme = st.selectbox('Estilo científico', list(THEMES), key='science_theme_'+suffix)
         template = st.selectbox('Plantilla de apertura', ['cover','quote','methodology'],format_func=lambda k:TEMPLATES[k], key='science_template_'+suffix)
         available = [k for k,r in results.items() if r.get('value') is not None or any(row.get('value') is not None for row in r.get('rows',[]))]
-        selected = st.multiselect('Resultados a incorporar', list(results), default=available or list(results), key='science_results_'+suffix)
+        from studio_science import result_display_name
+        selected = st.multiselect('Resultados a incorporar', list(results), default=available,
+            format_func=lambda k:result_display_name(k,results[k])+(' · Sin datos' if k not in available else ''),
+            key='science_results_'+suffix)
+        missing=[k for k in selected if k not in available]
+        if missing:st.warning('Indicadores sin datos seleccionados: '+', '.join(missing)+'. No se crearán métricas válidas ni se sustituirán por cero.')
         duration = st.number_input('Duración inicial por escena · s',.1,120.,6.,.1,key='science_duration_'+suffix)
         count = 2 + sum(k in available for k in selected)
         st.caption(f'30 FPS · {count} escenas previstas · {count*duration:.1f} s · métricas y gráficos conservan sus bindings.')

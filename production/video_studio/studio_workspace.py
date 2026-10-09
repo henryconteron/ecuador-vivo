@@ -151,8 +151,17 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
                 session.dispatch({**message,'action':'save'});st.session_state[key+'_dialog']='project';return
             if action=='native_preview':
                 session.dispatch({**message,'action':'save'});st.session_state[key+'_dialog']='preview';return
-            if action in ('regenerate','regenerate_structure','temporal_map'):
+            if action=='review_map_layers':
                 session.dispatch({**message,'action':'save'})
+                aid=message.get('asset_id')
+                if session.project['studio']['media'].get(aid,{}).get('kind')!='temporal_map':
+                    raise ValueError('Selecciona un mapa de capas de la biblioteca.')
+                st.session_state.pop(key+'_layer_review_base',None)
+                st.session_state[key+'_layer_review_asset']=aid
+                st.session_state[key+'_dialog']='map_layers';return
+            if action in ('regenerate','regenerate_structure','temporal_map','temporal_layers'):
+                session.dispatch({**message,'action':'save'})
+                st.session_state.pop(key+'_layer_review_base',None)
                 st.session_state[key+'_dialog']=action;return
             if action=='paste':message={**message,'elements':st.session_state.get(key+'_clipboard',[]),'map_instances':st.session_state.get(key+'_clipboard_maps',{})}
             if action=='cancel':
@@ -226,13 +235,17 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
     except (ValueError,TypeError,KeyError,OSError) as error:st.error('No se pudo dibujar la escena: '+str(error));return
 
     if st.session_state.get(key+'_dialog'):
-        @st.dialog({'upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico'}[st.session_state[key+'_dialog']],width='medium',
+        @st.dialog({'upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico','temporal_layers':'Preparar capas cartográficas','map_layers':'Revisar e insertar capas'}[st.session_state[key+'_dialog']],width='medium',
                    on_dismiss=lambda:st.session_state.pop(key+'_dialog',None))
         def upload_dialog():
             mode=st.session_state[key+'_dialog']
-            if mode=='temporal_map':
+            if mode=='map_layers':
+                from studio_map_ui import show_layer_review
+                show_layer_review(session,key,session.project['studio']['media'].get(st.session_state.get(key+'_layer_review_asset'),{}))
+                return
+            if mode in ('temporal_map','temporal_layers'):
                 from studio_map_ui import show_map_dialog
-                show_map_dialog(session,key)
+                show_map_dialog(session,key,representation='rgba_observation_bundle' if mode=='temporal_layers' else 'opaque_prerendered_map')
                 return
             if mode=='regenerate_structure':
                 from studio_science import propose_structure,apply_structure,restore_structure

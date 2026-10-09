@@ -164,6 +164,10 @@ def create_from_review(review, profile, *, selected=None, theme='Ecuador Vivo', 
     selected = list(snapshot['results']) if selected is None else selected
     if not selected or len(set(selected)) != len(selected) or any(k not in snapshot['results'] for k in selected):
         raise ValueError('Selecciona resultados existentes sin duplicados.')
+    if not any(snapshot['results'][k].get('value') is not None or
+               any(row.get('value') is not None for row in snapshot['results'][k].get('rows',[]))
+               for k in selected):
+        raise ValueError('Los indicadores seleccionados están sin datos; elige al menos un resultado con valores válidos.')
     # Attach the full immutable revision. Selection affects presentation only.
     candidate = generate_scientific_project(source, snapshot, profile, theme=theme, title=title)
     active = set(candidate['studio']['timeline'])

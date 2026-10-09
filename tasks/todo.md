@@ -1,11 +1,155 @@
 # Ecuador Vivo Studio: tareas
 
-## Corte vigente 4b.3b · reserva de cuota · 2026-10-08
+## ESTADO VIGENTE · SIG-ENGINE-0 pausado por cuota; SIG-U0/U1 conservados · 2026-10-09
 
-- [x] Núcleo implementado: instancias/bindings, reloj CFR existente, mapas RGBA + fecha protegida + leyenda estática verificada; preview/export/receipt, caché y persistencia/duplicación/clipboard.
-- [x] Cierre automatizado: 87 OK, 157.849 s (12 nuevas + regresiones), tmp/studio2-4b3b-final-tests-v1.log; MP4 real y PNG exactos, ciencia intacta. Suites parciales anteriores solapadas.
-- [ ] Cerrar 4b.3b: export/reproducción Chrome por documento JSON estructurado. Apertura/fecha/seek/hold/tres tamaños comprobados, pero dos timeouts esperando diálogo Exportar MP4. v1 Deploy interceptó el clic; v2 viewer elimina Deploy, posible rerun pendiente de diagnóstico. NO declarar terminado ni empezar 4b.4a.
-- [x] Checkpoint reproducible guardado con archivos, evidencias, fixture permanente, servidores propios y comando de reanudación. Leer el bloque vigente superior del checkpoint; no repetir SIG/G1/4b.0–3a.
+Cierre temporal solicitado expresamente por el usuario. **SIG-ENGINE-0 está pendiente de validación/decisión final; SIG-U2 no iniciado.** SIG-U0/U1 siguen implementados y validados (35 pruebas + 8 Chrome del corte anterior), producción sin cambios comprobada por hashes. Estado completo previo preservado en tmp/sig-engine0/sig-u1-checkpoint-before.md y bajo este bloque.
+
+Leer completos tmp/ecuador-vivo-sig-engine-0-audit.md y tmp/ecuador-vivo-sig-engine-0-checkpoint.md. Auditoría acotada y benchmarks reales guardados: backend (100/1000/5000 polígonos y 1000 densos; payload/commit/GEOS/perfiles; raster 8192² striped/COG/ventanas/overview; 2 fechas CHIRPS existentes; preparación/frame/cache/MP4 G1); HTTP ranges/derivados COG privados y valores/máscaras/CRS exactos. Navegador parcial: 8 casos SVG/OpenLayers Canvas, 4 fallos del prototipo MapLibre por worker ausente; una ronda, no comparación cerrada. No se anunció ganador ni arquitectura definitiva.
+
+Resultados destacados medidos: payload v5000 1825.6 ms, comando+commit 3191.2 ms; fuente parseada repetidamente en cámara. COG HTTP transfirió 24406 bytes para una ventana de archivo de 2923334 bytes; full-read COG comprimido fue más lento que TIFF sin comprimir, no hay ventaja universal. Descompresión CHIRPS 125.5/170.9 ms en dos observaciones; ninguna serie de 366 fechas ni revisión científica recalculada. Todos los detalles, unidades y limitaciones en el informe; no extrapolar a proyecto de 48s/1080p.
+
+Dirección provisional: mantener canónico/Studio y GDAL/GEOS/PROJ, evaluar adaptador visual maduro y caché/teselas de display separadas del análisis nativo. QGIS/GeoLibre/DuckDB solo evaluados por fuentes oficiales/código, no benchmarkeados como apps. Licencias SDK y dependencias revisadas inicialmente; aprobación final de distribución pendiente. F01–F25/BYOD y errores observation_layers/attach_map_layers/parpadeo siguen abiertos.
+
+Reanudar después de cuota: seguir §11 del informe; primero completar worker ESM MapLibre 6.13.0 y caso acotado; verificar puertos 8540/9224 antes de arrancar servidores/harness propios. No lanzar el harness completo sin corregir worker/fail-fast. Completar repeticiones/GL/GPU/OpenLayers WebGL/raster y latencia integrada/ADR; solo entonces iniciar U2. No repetir gates U0/U1 ni benchmarks backend/range sin razón nueva. Procesos exclusivos de auditoría detenidos; no tocar otras instancias ni usar PIDs históricos. Sin cambios producción/venv, Git commit/push/reset/clean ni borrados.
+
+### Gate previo a SIG-U2
+
+- [x] SIG-U0/U1 conservar código, pruebas y evidencia validada.
+- [x] SIG-ENGINE-0 inventario y benchmarks backend/range acotados; evidencia guardada.
+- [ ] SIG-ENGINE-0 completar loader/worker MapLibre, benchmark acelerado/repeticiones/capabilities/licencias.
+- [ ] SIG-ENGINE-0 validar decisión/ADR y estrategia de migración.
+- [ ] SIG-U2 iniciar únicamente tras gate arquitectónico.
+
+## Historial conservado — el estado inferior U0/U1 sigue validado
+
+## ESTADO VIGENTE · SIG-U0 y SIG-U1 implementados y validados · 2026-10-08
+
+Este bloque sustituye los estados históricos inferiores. Estrategia oficial: `tmp/ecuador-vivo-sig-universal-master.md`, leído íntegramente en UTF-8; verificación estricta de secciones 0–21 y decisión final. La investigación aislada de observation_layers fue detenida por mandato del usuario. Escape dejó inspecciones, sin nuevos cambios de producción de esa investigación; se conservaron todos los cambios útiles existentes.
+
+### Implementado y visible
+
+- SIG-U0: `studio.geography.sources/regions/views` de SIG-G1 siguen siendo el catálogo canónico de fuentes vectoriales y vistas; extensión opcional `geography.map_workspace` versión 1 para capas, orden, selección y vista. No hay otro documento/proyecto ni geometría duplicada en el JSON. Contrato y validación conectados a `validate_geography`, `PreparedTimeline`, commit y recovery existentes.
+- SIG-U1: mapa central SVG angular lon/lat, pan por arrastre, zoom focal por rueda y botones, ajuste por capa/todas las visibles, identificación por clic y limpieza de selección. Polígonos, huecos y multipartes proceden de los bytes GeoJSON verificados de SIG-G1; no imágenes ilustrativas ni cálculos científicos nuevos.
+- Panel de capas funcional: selección de capa activa, visibilidad, subir/bajar orden, quitar solo de la vista, relleno/contorno/opacidad editables. Propiedades muestran atributos originales de la entidad seleccionada, incluidos cero, negativos y null; fuente/CRS/hash/licencia en detalle secundario. Una ruta principal de importación GeoJSON con procedencia, condiciones de uso y URL pública sin credenciales, reutilizando `import_geojson`.
+- Guardado explícito y autosave usan `WorkspaceSession.commit`/snapshot existente. Guardar sin cambios no agrega historia artificial. Undo/redo y recovery conservan referencias/vista/estilo. El mapa recibe versión del documento y acuse de comandos: no bloquea botones tras un no-op o rechazo, ni acepta comandos obsoletos. Transacciones inválidas no publican parciales.
+- Studio directo permanece disponible; SIG/Studio comparten identidad, escenas, ciencia e historial. SIG-G1 sigue accesible en “Vistas estáticas SIG-G1 y envío compatible a Studio”, sin renderizar esas vistas ocultas en cada pan. No se reconstruyó el editor, su renderer ni su reloj.
+
+### Alcance y límites efectivos
+
+Este corte importa únicamente GeoJSON RFC7946 Polygon/MultiPolygon 2D, máximo 8 MiB, nativo/vista OGC:CRS84. Sin reproyección, polos ni cruce del antimeridiano. La vista angular no sirve para mediciones métricas; no se anuncia un SIG completo. El catálogo y panel son planos en U1, sin grupos jerárquicos todavía. No están implementados nuevos formatos/ráster universal, proveedores/basemap, conexiones remotas, tabla vinculada, filtros, calculadoras, geoprocesamiento, herramientas temporales universales ni publicación editorial estructurada unificada. El nuevo mapa no se inserta automáticamente en Studio: la ruta G1 explícita conservada y las rutas anteriores siguen siendo distintas capacidades, hasta SIG-U6.
+
+F01–F25 y la política BYOD se mantienen en `tmp/ecuador-vivo-professional-features-roadmap.md`, que no se modificó en este corte. Software, dependencias y datasets tienen licencias separadas; los recursos científicos personales no se empaquetan ni redistribuyen. Registrar una licencia es declaración de procedencia, no autorización legal comprobada. Los ejemplos usados aquí son fixtures sintéticos propios y permitidos, NO límites administrativos oficiales ni resultados CHIRPS.
+
+### Archivos de este corte
+
+Producción nueva: `studio_sig_layers.py`, `studio_sig_map_ui.py`, `sig_map_frontend/map.html`, `map.css`, `map.js` (todos bajo `production/video_studio/`). Pruebas nuevas: `test_sig_layers.py`, `test_sig_map_ui.py`. Modificados para U0/U1: `studio_geography.py` (validación aditiva), `studio_geographic_ui.py` (consumidor G1 sin segunda importación en SIG), `studio_sig.py` (mapa U1 principal y acceso diferido a G1). Se preservaron los cambios anteriores en los demás módulos científicos/editoriales/cartográficos y las tres pruebas sin seguimiento heredadas; no se atribuyen a U0/U1.
+
+Documentación actualizada: este checkpoint, `tasks/todo.md`, `tasks/plan.md`, `tmp/ecuador-vivo-sig-studio-implementation-plan.md`, `tmp/ecuador-vivo-studio-4b-plan.md`, `documentation/ECUADOR-VIVO-STUDIO-2-CONTRACTS.md`. Evidencias/harnesses en tmp: `sig-universal-tests.py`, `sig-u1-serve.py`, `sig-u1-browser.py`, `sig-u1-browser-peek.py` (lectura DOM de diagnóstico), `sig-universal-record-u0.py`, `sig-universal-record-u1.py`, logs/reportes/fixtures citados; todos conservados.
+
+### Gates y evidencia real
+
+1. U0 cerrado antes de comenzar U1: **14 pruebas OK / 7.783 s**, `tmp/sig-u0-tests-v1.log` (cinco nuevas de contrato/capas y nueve G1).
+2. Final integrado: **35 pruebas OK / 82.508 s**, retorno Python real 0, `tmp/sig-u1-tests-final.log`: `test_sig_map_ui` (4), `test_sig_layers` (5), `test_studio_geography` (9), `test_studio_sig` (6), `test_studio_templates` (11). No fallos ni skips en el gate final. Incluye guardar/reabrir, undo/redo, rejección sin parciales, fuentes alteradas/ausentes, geometrías fuera de Ecuador, escena G1/exportación MP4/recibo, mapas opacos/calendario, ciencia inmutable y plantillas/render MP4.
+3. Chrome real aislado, entradas nativas y servidor nuevo 8522: **8 comprobaciones OK**, `tmp/sig-u1-browser-report.json` y `tmp/sig-u1-browser-final.log`; fuente Brasil con hueco, Ecuador/Galápagos/France, selección real Brasil y France, atributos 0/-5/null, pan/zoom, ajuste/no-op, visibilidad, orden SVG, estilo/opacidad, guardado y reapertura por controles nativos y navegación Studio↔SIG sin pérdida. Originales comparados byte a byte, hashes y CRS verificados; escenas/cálculos/datasets iguales antes/después de SIG. Tres tamaños 1920×1080, 1366×768, 768×1024 sin overflow ni excepciones Streamlit/JS.
+4. Píxeles reales de screenshot: relleno (18,141,155), hueco (16,23,29), distintos y coherentes con geometría/alpha. PNG `tmp/ux-redesign/sig-u1-brazil-selected-1f0c0b2b.png` y `sig-u1-reopened-1f0c0b2b-{1920,1366,768}.png`. El MP4 G1 y las regresiones de exportación se comprobaron en las pruebas automatizadas; NO se realizó exportación nueva de capas RGBA en Chrome ni se cerraron por ello los fallos del usuario.
+5. Fallos intermedios conservados: `sig-u1-tests-v1.log` tuvo una aserción del test que serializaba dos veces el JSON de atributos; se corrigió para comparar el objeto y pasaron cuatro UI en v2. Chrome v1/v2 falló al localizar el slider React Aria (input nativo oculto para accesibilidad): selector corregido al thumb visible, sin clics JS ni mutación artificial; evidencia failure.json/screenshot en carpetas respectivas. v3 pasó 7 comprobaciones; final añade selección y persistencia en segunda geografía y pasó 8. No se silenciaron excepciones de producción para superar las pruebas.
+
+### Problemas heredados abiertos (integración definitiva)
+
+- `KeyError: observation_layers`: falta de registro de diálogo Studio para acción pendiente compartida, reportado por usuario incluso desde instancia nueva 8521. No está corregido ni atribuido automáticamente a módulos viejos.
+- Publicación RGBA SIG→Studio sin escena visible/limpieza de diálogo: pendientes transacción completa, cancelación/error, navegación y persistencia idempotentes, prueba del usuario reproducible.
+- `ImportError: attach_map_layers`: compatibilidad/importación/publicación pendiente de cerrar bajo la arquitectura canónica. No se considera resuelto por el nuevo mapa genérico.
+- Parpadeo y demora multiescena: `tmp/ecuador-vivo-preview-ux-debt.md` sigue abierto; causa no demostrada, proxies/caché/preparación estable no implementados ahora.
+
+### Próximo corte y reanudación exacta
+
+Siguiente: **SIG-U2 — formatos/CRS/estilo**, por una ruta vertical pequeña (ráster+vector con georreferencia/NoData y dataset derivado solo si es necesario), manteniendo el contrato actual y consumidores. Después SIG-U3 (tabla ligada/calculadora segura) y SIG-U4; la prioridad del SIG universal NO queda pospuesta a completar audiovisuales. SIG-U5 calendario científico; SIG-U6 publicación editorial unificada y bugs heredados. 4b.4b queda reprogramado para integración futura, no implementado ni olvidado.
+
+Leer este estado vigente y el maestro completo, revisar git status/diff y conservar todos los cambios. Desde raíz: `_local/video-studio/.venv/Scripts/python.exe -X utf8 -B tmp/sig-universal-tests.py sig-u1-tests-recheck.log test_sig_map_ui test_sig_layers test_studio_geography test_studio_sig test_studio_templates`. Reejecutar solo si hay cambios pertinentes o una duda nueva: gates actuales ya cerrados. Chrome: comprobar proceso/puerto de `tmp/sig-u1-server.json`; instancia propia **8522** sigue disponible, luego `_local/video-studio/.venv/Scripts/python.exe -X utf8 -B tmp/sig-u1-browser.py` crea otra copia aislada. NO relanzar sig-u1-serve.py si el puerto ya está ocupado; no detener servidores ajenos. Para revisión manual: Inicio → crear/abrir copia → Abrir SIG → Añadir datos propios/GeoJSON → procedencia/licencia → seleccionar polígono → guardar → Abrir Studio / Inicio→Abrir copia→SIG.
+
+Sin commit/push/reset/clean ni borrado de recursos del usuario. No se tocaron “LLUVIA EN ECUADOR” ni “Prueba Studio 4b.4a”; no se repitió CHIRPS de 366 fechas. El servidor propio verifica PID/puerto/CommandLine/cwd y preserva otras instancias (`tmp/sig-u1-server.json`). Este corte termina en U1 validado, sin implementar U2–U6.
+
+### Lista vigente SIG universal
+
+- [x] SIG-U0 — contrato canónico aditivo y persistencia; gate 14 pruebas.
+- [x] SIG-U1 — mapa/capas interactivos, atributos, estilos y reapertura; gate 35 pruebas + 8 Chrome.
+- [ ] SIG-U2 — formatos/CRS/ráster+vector, próximo incremento por cortes.
+- [ ] SIG-U3 — tabla de atributos ligada, filtros y calculadora de campos segura.
+- [ ] SIG-U4 — geoprocesamiento/calculadora ráster con procedencia.
+- [ ] SIG-U5 — exploración científica temporal y recursos estructurados.
+- [ ] SIG-U6 — publicación unificada; cerrar observation_layers/attach_map_layers y verificar Chrome/MP4.
+- [ ] UX — diagnosticar/corregir preparación y parpadeo con proyecto multiescena.
+- [ ] 4b.4b — gestos/inspector cartográfico dentro de integración futura.
+
+## Historial conservado — los bloques inferiores no sustituyen el estado vigente
+
+## ESTADO VIGENTE · SIG-U0 validado; SIG-U1 siguiente · 2026-10-08
+
+Mandato oficial: tmp/ecuador-vivo-sig-universal-master.md leído completo en UTF-8 (secciones 0–21 y decisión final). Sustituye prioridad anterior de resolver observation_layers aisladamente/4b.4b antes de SIG. Escape no dejó nuevos cambios de producción: solo inspecciones; git status/diff previos conservados.
+
+SIG-U0 implementado: studio_sig_layers.py reutiliza geography.sources/regions/views de SIG-G1 como datasets canónicos, sin duplicar archivos, registros ni IDs. Extensión opcional geography.map_workspace version=1: capas vectoriales referencian source_id, native_crs, nombre, visibilidad y estilo básico; order contiene cada capa; active_layer/selection usa region_id estable; view conserva bbox/display_crs/método angular. Sin esquema público nuevo ni capa científica reinterpretada. Comandos puros importar/agregar, selección, orden, visibilidad, estilo, pan/zoom por bbox, ajustar y quitar capa sin borrar fuente ni vistas Studio. Validación en validate_geography/PreparedTimeline/recovery existente. Proyectos G1 antiguos válidos; ensure_workspace es extensión aditiva explícita al usarse, no migración de geometrías/cálculos.
+
+Gate U0: 14 pruebas OK, 7.783 s, tmp/sig-u0-tests-v1.log: cinco nuevas de capas y nueve G1. Persistencia/undo/redo/reopen por WorkspaceSession existente; originales/atributos/CRS/scene/cálculos intactos, recursos extranjeros/estilos/selección/bbox inválidos rechazados sin parciales. No Chrome nuevo para U0: contratos/core; mapa central interactivo es SIG-U1, aún no completado.
+
+Problemas heredados pendientes para integración SIG-U6: KeyError observation_layers (Studio no registra ese diálogo compartido; caso reportado por usuario en instancia nueva 8521), publicación RGBA sin escena, ImportError attach_map_layers, estado/diálogos obsoletos/publicación duplicada/guardado parcial, MP4 opaco de 366 fechas y reaprovechamiento de runtimes antiguos. No atribuir KeyError al servidor ni anunciar resuelto con evidencias aisladas anteriores. Parpadeo/preparación multiescena sigue abierto en tmp/ecuador-vivo-preview-ux-debt.md. 4b.4b reprogramado dentro de integración futura, no olvidado ni implementado. Nueva prioridad U0 → U1 → U2/U3/U4/U5/U6 por gates; no implementar ahora calculadoras ni reconstruir Studio.
+
+F01–F25/BYOD conservados; software/dependencias/datos con licencias separadas, originales privados no empaquetados. Producción de este corte U0: studio_sig_layers.py (nuevo), studio_geography.py (validador aditivo), test_sig_layers.py (nuevo). Próximo SIG-U1: consumidor visible de map_workspace, mapa interactivo y capas; probar dos geografías, pan/zoom/picking/propiedades/orden/visibilidad/style y guardar/reabrir en Chrome. No tocar proyectos personales ni detener servidores ajenos. Sin commit/push/reset/clean/borrados.
+
+## Historial previo al mandato SIG universal, conservado
+
+## ESTADO VIGENTE · corrección prioritaria SIG → Studio validada · 2026-10-08
+
+- [x] Diagnosticar revisión/bindings/modelo/píxeles del proyecto personal exacto, trabajando solo sobre copia. Valores originales visibles en canvas/MP4; ausencia numérica no reproducida.
+- [x] Dar significado visible a cinco indicadores, preservar valor/unidad/cero válido; rechazar selección solo nula y advertir ausentes mixtos.
+- [x] Conectar SIG → fecha observada → preparación RGBA → revisión guiada → Enviar capas a Studio; siete componentes reales, fuente/fecha/leyenda/calendario compartidos.
+- [x] Mantener revisión completa de 366 registros, índices científicos globales, CRS leído de fuente verificada, alfa/NoData/hashes/datasets/cálculos exactos y legacy compatible.
+- [x] Pruebas focalizadas/afectadas y Chrome real con modelo + píxeles canvas + MP4 + recibo + guardar/reabrir/undo; no solo títulos o archivos presentes.
+- [x] Checkpoint, planes y contratos actualizados; original personal no sobrescrito, sin commits/push/reset/clean ni borrados.
+- [ ] Reproducción/diagnóstico de parpadeo multiescena de 48 s y corrección focalizada; deuda UX permanece abierta.
+- [ ] Siguiente 4b.4b, solo después de revisión del usuario; no iniciado aquí.
+- [ ] Después SIG universal prioritario: tabla vinculada y calculadoras de campos/vectorial/ráster por gates; no esperar todas las funciones audiovisuales.
+- [ ] SIG serie/multi-año estructurada automática, templates cartográficos semánticos, overlays/crop siguen pendientes. F01–F25/BYOD íntegros.
+
+Regresiones afectadas: **83 ejecutadas, 82 OK y 1 omitida**, 216.551 s, `tmp/studio2-sig-visible-regressions-v1.log` (métricas/observación/decoder/bundles/calendario/publicación/SIG/preparación/fábrica/once plantillas). La omitida es symlink Windows, WinError 1314; no un fallo de ciencia. Tras los ajustes focalizados: **10 OK**, 88.751 s, `tmp/studio2-sig-observation-publication-final.log`; **22 ejecutadas, 21 OK y 1 omitida**, 95.003 s, `tmp/studio2-sig-native-crs-final-tests.log`; **6 OK**, 50.778 s, `tmp/studio2-sig-final-compatibility.log`. Ejecuciones solapadas: no sumar como pruebas distintas. Nuevas propias: cuatro métricas y siete observación/publicación (once en total). Cero fallos pendientes.
+
+Chrome nativo final: **4 gates integrados OK**, 177.891 s, `tmp/studio2-sig-visible-browser-v6.json`. Importa una copia real CHIRPS v2/2024/366 observaciones → SIG → verifica revisión existente sin capture_snapshot → envía ocho escenas (portada, cinco métricas, gráfico de 24 provincias, créditos), conservando ocho previas → prepara 2024-01-02 → revisa/acepta siete capas/componentes → undo/redo → abre copia recuperada → exporta/reproduce MP4. Sin excepciones JS/Streamlit. PNG de métrica/continente servido al canvas coincide exactamente con canvas_payload del renderer; fecha observada source_index=1. Capturas `tmp/ux-redesign/studio2-sig-visible-v6-{review,metric,map-review,map,reopened,mp4}.png`.
+
+Auditoría independiente `tmp/studio2-sig-visible-validation-v6.json`: MP4 **57 frames, 1920×1080, 30 FPS, 1.9 s**, nueve muestras (cinco métricas, gráfico y mapa al inicio/medio/final), error medio RGB 0.742–1.526 <5 por H.264; números/unidades y cero válido visibles. Dos PNG RGBA coinciden byte a byte con MapLayerPainter sobre fuente original seleccionada; alfa [0,255], CRS nativo EPSG:4326 leído del TIFF y grid de salida EPSG:4326. Recibo/calendario/revisión/hash exactos; render de reproducción no lee rasters. Registro científico/datasets y escenas anteriores exactamente conservados; hashes de painter/maqueta/data/roadmap profesional idénticos al cierre 3b. La copia acorta solo duraciones visuales (0.1 s/escena, mapa 0.3 s) y cambia nombre: no valida rendimiento/estabilidad del montaje original de 48 s.
+
+MP4: `_local/video-studio/jobs/studio-20261008-221241-3635bdbd/video.mp4`; SHA-256 `6f641424cc903808df068106208e1e44c35a9fc82856d4aa7adf6cf5b735f00b`. Receipt/project.json vecinos. Borrador: `_local/video-studio/projects/borrador-studio-20261008-221027-0ba0e9e6.json`. Fixture: `tmp/studio2-sig-visible-integration-957b8b4d/project.json`; registro reproductible `tmp/studio2-sig-visible-integration-fixture.json`. Manifest: `_local/video-studio/media/map-bundles/899dbf9071a14bfb942c85358571d4dc/manifest.json`. Proyecto personal leído, nunca sobrescrito: `_local/video-studio/jobs/studio-20261008-211850-50bdf28e/request.json`, SHA-256 `acaf5e6fe611d4135b0d32839da06e8250789aa67a5d5aefc31edcbea1f7c334` intacto.
+
+Último ajuste focalizado: Preparar otro mapa de capas conserva el contexto SIG de observación elegida y vuelve a su preparación; elegir explícitamente otro recurso reinicia solo el sello de revisión. AppTest final verifica retry/aceptación/rechazo/otras claves intactas. Tras recargar únicamente 8520: **2 checks Chrome adicionales OK**, 70.200 s, `tmp/studio2-sig-visible-final-retry-browser.json`: retry → preparación correcta y cerrar sin insertar → 17 escenas conservadas. No se repite toda la exportación por ese ajuste de diálogo.
+
+**Pendiente:** transferencia automática de toda serie/multi-año desde SIG y plantillas cartográficas semánticas; 4b.4b gestos/inspector temporal, leyenda semántica/formatos/crop futuros y calculadoras. Esta corrección entrega primero una observación elegida y resultados reales visibles. Las once plantillas y SIG-G1 conservan sus contratos; no nuevo motor ni geografía universal implementada. Deuda de preparación/parpadeos `tmp/ecuador-vivo-preview-ux-debt.md` continúa abierta; no proxies, refactor audiovisual ni causa visual declarada. El inspector de escena puede retener texto anterior al seleccionar otra escena (observable en captura de métrica); no forma parte de este arreglo ni cambia lo pintado/exportado. Priorizar corrección focalizada de UX antes de audiovisual complejo, manteniendo **4b.4b → ampliación prioritaria del SIG universal** (tabla vinculada al mapa, campos/vectorial y ráster por contratos). No iniciar automáticamente 4b.4b. F01–F25 y BYOD íntegros; datos personales quedan locales, sin empaquetado/redistribución; licencias de software/dependencias/datos separadas.
+
+## Historial anterior a la corrección SIG → Studio, conservado
+
+## Corte vigente · 4b.4a cerrado y validado · 2026-10-08
+
+- [x] Registrar deuda UX de previsualización reportada en proyecto real 8 escenas/48 s/1920×1080/30 FPS; MP4 final correcto. Diagnóstico estático/local preservado en tmp/ecuador-vivo-preview-ux-debt.md y studio2-preview-ux-diagnostic.json; causa visual no confirmada.
+- [ ] Reproducir en Chrome el proyecto exacto, medir cold/warm, paint/DOM/status/rerenders y tiempos de preparación/cache/worker; correlacionar parpadeos antes de corregir.
+- [ ] Corrección pequeña de estabilidad de lienzo/player/progreso y reuso; evaluar proxies después de medir. Conservar renderer/reloj/ciencia y comprobación final del MP4 exportado. Antes de audiovisual complejo, manteniendo 4b.4b → SIG universal; sin gran refactorización ni proxies como condición para SIG. Gates en el registro de deuda, no implementados ahora.
+
+- [x] Biblioteca → revisión de fuente/variable/unidades/período/revisión/perfil/cobertura → Insertar capas, sin JSON manual; preparar RGBA por worker existente y aceptación explícita.
+- [x] Escena completa: continente/Galápagos independientes, fecha protegida/leyenda sellada/unidades/fuente, siete elementos/una instancia; regiones del perfil y transparencia NoData originales.
+- [x] Revalidación total/hash base/preflight antes de commit documental; sin parciales ante error; cancelación, persistencia/undo/redo/recovery y recurso anterior intactos.
+- [x] Bundles antiguos incompletos: error comprensible y preparar explícitamente otro mapa, sin convertir/sobrescribir original.
+- [x] Validación: **54 pruebas OK**, cero fallos/omitidas, 137.335 s, `tmp/studio2-4b4a-final-tests-v1.log`: ocho pruebas de publicación y regresiones de workspace, temporal v1, SIG, geografía y las once plantillas. Tras añadir la acción explícita para otro mapa, **2 pruebas focalizadas OK**, 10.811 s, `tmp/studio2-4b4a-explicit-preparation-tests-v1.log`; una se solapa con las 54. Hay nueve pruebas nuevas de publicación distintas, no sumar ejecuciones históricas. Chrome final: **7 comprobaciones OK**, 86.893 s, `tmp/studio2-4b4a-browser-v6.json`. Auditoría independiente `tmp/studio2-4b4a-validation-v6.json`: 99 frames decodificados, 320×180, 30 FPS, cuatro muestras RGB con error medio 0.985–1.019 (<5 por H.264), PNG de seek exacto, calendario completo y hash del MP4 coincidentes. Fixture sintético, no observaciones reales de Ecuador.
+- [x] Checkpoint, planes y contratos actualizados; evidencias preservadas; ciencia/painter/roadmap y F01–F25/BYOD intactos. No Git commit/push/reset/clean ni borrados.
+- [ ] Siguiente exacto **4b.4b**, gestos independientes y trim/loop de instancia; no iniciado en este corte.
+- [ ] Después ampliar prioritariamente SIG universal: tabla ligada al mapa, campos/vectorial y ráster con tipos/CRS/grid/NoData/derivados/evaluador restringido y gates. No esperar a todas las herramientas audiovisuales.
+- [ ] 4b.5a/5b/6, envío SIG multi-año estructurado y templates cartográficos compatibles continúan pendientes; fecha ISO y leyenda RGBA congelada actuales no son esos futuros editores.
+
+## Historial de tareas anteriores, conservado
+## Corte vigente · 4b.3b cerrado y validado · 2026-10-08
+
+- [x] Núcleo cartográfico 4b.3b conservado y validado: reloj compartido/instancias/bindings, RGBA/ausencia transparente, fecha protegida/leyenda sellada, preview/export/receipt, caché/persistencia/compatibilidad. 87 pruebas OK del corte anterior, no repetidas.
+- [x] Diagnóstico/reinicio solo de 8510: runtime antiguo app.py cargado antes de studio_editing vigente; ImportError reproducido y resuelto con studio_server.py. Inicio → Studio directo y SIG → Studio conservan proyecto/elementos/historial, sin excepciones; instance-after-v2-browser.json. 2 tests focalizados OK (4.199 s).
+- [x] Gate Chrome 4b.3b: 7 comprobaciones OK (52.440 s), studio2-4b3b-browser-v5.json; fotograma final 91/PNG exacto, diálogo confirmado, MP4 exportado/reproducido 320×180/30 FPS/92 frames, recibo completo igual y borrador científico intacto. Sin excepciones; tres tamaños sin overflow global.
+- [x] Auditoría del MP4 del worker: 92 frames decodificados, seis samples RGB <5, SHA igual al receipt; hashes ciencia/painter/roadmap intactos, studio2-4b3b-closing-check-v5.json. Checkpoint reproducible y logs previos preservados.
+- [x] Registrar SIG universal futuro F03–F12: mapa/capas/atributos/simbología/resultados/tiempo, tabla por ID, calculadoras vectorial/ráster, derivados/revisiones/evaluador restringido, CRS/grids/unidades/NoData y gates. Sin implementar; F01–F25/BYOD íntegros.
+- [ ] Siguiente técnico 4b.4a: revisión y publicación guiada de escena de capas; **no iniciado en esta sesión**.
+- [ ] Después 4b.4b; luego especificar el siguiente incremento SIG universal antes de implementarlo. No diferir todo SIG hasta terminar 5–9. Formatos/leyenda semántica/crop/templates y multimedia/clips/audio continúan en el plan.
 
 Lo inferior documenta el estado anterior. F01–F25/BYOD y recursos personales conservados.
 

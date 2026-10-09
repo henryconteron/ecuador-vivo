@@ -246,3 +246,69 @@ def attach_map(project, record):
     studio['scenes'].append(scene); studio['timeline'].append(scene['id'])
     PreparedTimeline(result)
     return result
+
+
+def review_map_layers(project, record):
+    """Review sealed bytes and the retained scientific revision, without computing."""
+    from studio_map_bundles import read_bundle
+    from studio_science import restored_snapshot
+    from studio_preparation import verify_sources
+    manifest=read_bundle(record)
+    if 'legend_static' not in manifest.get('auxiliaries',{}):
+        raise ValueError('Este recurso antiguo no incluye una leyenda completa. Prepara explícitamente un nuevo mapa de capas; el original se conserva.')
+    if project['studio']['datasets'].get(record['source_dataset'])!=manifest['source_records']:
+        raise ValueError('Faltan las fuentes de esta revisión en el proyecto. Abre el proyecto que contiene su revisión científica.')
+    snapshot=restored_snapshot({**project,'project_meta':{**project.get('project_meta',{}),
+        'scientific_revision':manifest['scientific_revision'],'scientific_identity':manifest['scientific_identity']}})
+    verify_sources(manifest['cartographic_settings'],snapshot)
+    return manifest
+
+
+def attach_map_layers(project, record, *, base_sha256=None):
+    """One complete new scene; the caller durably commits only the validated result."""
+    from studio_model import Scene,Element
+    from studio_timeline import PreparedTimeline
+    from studio_templates import THEMES
+    from output_profiles import profile_for,adaptive_regions,contain_bounds
+    import uuid
+    if base_sha256 is not None and _hash(project)!=base_sha256:
+        raise ValueError('El proyecto cambió durante la revisión. Cierra y revisa el recurso otra vez.')
+    manifest=review_map_layers(project,record)
+    result=copy.deepcopy(project);studio=result['studio']
+    matches=[aid for aid,r in studio['media'].items() if r.get('manifest_sha256')==record['manifest_sha256']]
+    aid=matches[0] if matches else 'map.'+record['manifest_sha256']
+    if aid in studio['media'] and studio['media'][aid]!=record:
+        raise ValueError('No se puede sustituir un recurso científico inmutable.')
+    studio['media'][aid]=copy.deepcopy(record)
+    profile=profile_for(studio['output_profile']);regions=adaptive_regions(profile)
+    map_box=regions['map'];side=regions['metric'];gap=max(2,min(profile.width,profile.height)*.015)
+    mainland={**map_box,'width':map_box['width']*.72}
+    inset={'x':map_box['x']+mainland['width']+gap,'y':map_box['y'],
+           'width':max(1,map_box['width']-mainland['width']-gap),'height':map_box['height']*.4}
+    date_h=min(60,max(20,side['height']*.18))
+    legend={'x':side['x'],'y':side['y']+date_h+gap,'width':side['width'],
+            'height':max(1,side['height']-date_h-gap)}
+    iid='instance.'+uuid.uuid4().hex;elements=[]
+    background,ink,_=THEMES[studio.get('theme','Ecuador Vivo')]
+    def add(kind,name,box,style,channel=None):
+        elements.append(Element(id='element.'+uuid.uuid4().hex,type=kind,name=name,
+            transform=box,style=style,z_index=len(elements),
+            temporal_binding={'instance_id':iid,'channel':channel} if channel else None).to_dict())
+    add('map','Ecuador continental',contain_bounds(record['layers']['continent']['size'],mainland),{'fit':'contain'},'continent')
+    add('map','Galápagos',contain_bounds(record['layers']['galapagos']['size'],inset),{'fit':'contain'},'galapagos')
+    add('text','Fecha observada',{**side,'height':date_h},
+        {'font_size':max(8,min(40,round(date_h*.5))),'color':ink},'date')
+    add('shape','Fondo de leyenda',legend,{'fill':'#04151e','shape':'rectangle'})
+    add('legend','Leyenda verificada',legend,{'fit':'contain'},'legend_static')
+    add('text','Variable y unidades',regions['title'],
+        {'text':manifest['variable']+(' · '+manifest['units'] if manifest['units'] else ''),
+         'font_size':max(8,min(48,round(regions['title']['height']*.5))),'color':ink})
+    add('source','Fuente',regions['source'],
+        {'text':manifest['citation'] or manifest['source'],
+         'font_size':max(8,min(24,round(regions['source']['height']*.4))),'color':ink})
+    scene=Scene(id='scene.'+uuid.uuid4().hex,name=record['name'][:180],duration=record['duration'],
+        background=background,elements=elements,map_instances={iid:{'asset_id':aid,
+            'trim_in_frame':0,'trim_out_frame':record['total_frames'],'loop':False}}).to_dict()
+    studio['scenes'].append(scene);studio['timeline'].append(scene['id'])
+    PreparedTimeline(result)
+    return result

@@ -141,7 +141,9 @@ def read_source(record):
 def validate_geography(studio):
     registry=studio.get('geography')
     if registry is None:return
-    if not isinstance(registry,dict) or type(registry.get('version')) is not int or registry['version']!=1 or set(registry)!={'version','sources','regions','views'}:
+    if (not isinstance(registry,dict) or type(registry.get('version')) is not int or registry['version']!=1
+            or not {'version','sources','regions','views'}<=set(registry)
+            or set(registry)-{'version','sources','regions','views','map_workspace'}):
         raise ValueError('Registro geográfico incompatible.')
     if any(not isinstance(registry[k],dict) for k in ('sources','regions','views')):raise ValueError('Registros geográficos deben usar IDs.')
     if len(registry['sources'])>50 or len(registry['regions'])>REGION_LIMIT or len(registry['views'])>100:
@@ -166,6 +168,8 @@ def validate_geography(studio):
     for scene in studio['scenes']:
         vid=scene.get('generation',{}).get('geographic_view_id')
         if vid is not None and vid not in registry['views']:raise ValueError('Escena vinculada a una vista geográfica inexistente.')
+    from studio_sig_layers import validate_map_workspace
+    validate_map_workspace(registry)
 
 
 def import_geojson(project,content,name,provenance):

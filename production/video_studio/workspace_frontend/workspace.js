@@ -122,12 +122,14 @@ export default function(component){
   }else if(tab==='media'){
    button('Importar multimedia',()=>send('upload'),body,'plus');
    if(data.project.project_meta?.scientific_revision)button('Preparar mapa temporal',()=>send('temporal_map'),body,'video');
+   if(data.project.project_meta?.scientific_revision)button('Preparar capas cartográficas',()=>send('temporal_layers'),body,'image');
    const asMap=field(body,'Insertar imágenes como mapa',false,{type:'checkbox'});
    const assets=Object.entries(data.project.studio.media);
    if(!assets.length)body.append(el('p','Importa imágenes y videos locales para añadirlos al canvas.','empty-state'));
    assets.forEach(([id,a])=>{
     if(a.kind==='temporal_map'){
-     card(body,a.name,'Mapa estructurado · '+a.variable+' · '+a.period.join(' — ')+' · '+a.units+' · inserción guiada pendiente',null,{icon:'image'}).disabled=true;
+     const resource=card(body,a.name,'Mapa de capas · '+a.variable+' · '+a.period.join(' — ')+' · '+a.units+' · revisar e insertar',()=>send('review_map_layers',{asset_id:id}),{icon:'image'});
+     resource.setAttribute('aria-label','Revisar e insertar capas: '+a.name);
      return;
     }
     const m=a.temporal_map;

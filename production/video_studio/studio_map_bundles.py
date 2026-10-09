@@ -143,12 +143,13 @@ class BundleFrames:
             raise ValueError('Directorio de bundle cambiado o fuera del almacenamiento interno.')
         content=_read(_path(self.root,'manifest.json'),MANIFEST_LIMIT)
         if _digest(content)!=self.record['manifest_sha256']:raise ValueError('Manifiesto cartográfico cambiado.')
-        span=self.manifest['intervals'][bisect_right(self.starts,source_frame)-1]
+        position=bisect_right(self.starts,source_frame)-1
+        span=self.manifest['intervals'][position]
         index=span['source_index'];images={}
         try:
             for lid in layer_ids:
                 item=(self.manifest['auxiliaries'][lid] if lid in self.manifest.get('auxiliaries',{})
-                      else self.manifest['observations'][index]['layers'][lid])
+                      else self.manifest['observations'][position]['layers'][lid])
                 content=_png_content(self.root,item)
                 key=('map-tile',self.record['manifest_sha256'],'static' if lid in self.manifest.get('auxiliaries',{}) else index,lid,item['sha256'])
                 image=self.cache.image(key)
@@ -159,7 +160,7 @@ class BundleFrames:
                 images[lid]=image
             from studio_temporal import bundle_observation
             return {'images':images,'observation':bundle_observation(self.manifest,source_frame,starts=self.starts),
-                'coverage':{lid:self.manifest['observations'][index]['layers'][lid]['state'] for lid in layer_ids if lid in self.manifest['layers']}}
+                    'coverage':{lid:self.manifest['observations'][position]['layers'][lid]['state'] for lid in layer_ids if lid in self.manifest['layers']}}
         except Exception:
             for image in images.values():image.close()
             raise
@@ -204,12 +205,30 @@ def _schema(manifest):
             raise ValueError('Grid cartográfico cambiado.')
     if sum(math.prod(g['size']) for g in layers.values())>80_000_000: raise ValueError('Pareja superior a 80 MP.')
     records,intervals,observations=manifest['source_records'],manifest['intervals'],manifest['observations']
-    if not isinstance(records,list) or not records or len(records)!=len(intervals) or len(records)!=len(observations):
+    if not isinstance(records,list) or not records or not isinstance(intervals,list) or not intervals or len(intervals)!=len(observations):
         raise ValueError('Bundle sin correspondencia de observaciones.')
-    cursor=0;previous=None
-    for i,(source,span,obs) in enumerate(zip(records,intervals,observations)):
+    selection=manifest.get('observation_selection')
+    if selection is None:
+        indices=list(range(len(records)))
+    else:
+        if (not isinstance(selection,dict) or set(selection)!={'mode','source_index'}
+                or selection['mode']!='single_observation' or type(selection['source_index']) is not int
+                or not 0<=selection['source_index']<len(records)):
+            raise ValueError('Selección de observación inválida.')
+        indices=[selection['source_index']]
+    if len(indices)!=len(observations):raise ValueError('La selección no coincide con las observaciones.')
+    previous=None
+    for source in records:
         date=dt.date.fromisoformat(source['date'])
-        if (type(span['source_index']) is not int or span['source_index']!=i or type(obs['source_index']) is not int or obs['source_index']!=i
+        if (previous is not None and date<=previous or type(source['band']) is not int or source['band']<1
+                or not isinstance(source['file'],str) or not re.fullmatch('[0-9a-f]{64}',str(source.get('sha256')))):
+            raise ValueError('Registro científico completo inválido.')
+        previous=date
+    cursor=0;previous=None
+    for i,(source_index,span,obs) in enumerate(zip(indices,intervals,observations)):
+        source=records[source_index]
+        date=dt.date.fromisoformat(source['date'])
+        if (type(span['source_index']) is not int or span['source_index']!=source_index or type(obs['source_index']) is not int or obs['source_index']!=source_index
                 or source['date']!=span['date'] or source['date']!=obs['date'] or previous is not None and date<=previous
                 or type(span['start_frame']) is not int or span['start_frame']!=cursor
                 or type(span['end_frame']) is not int or not cursor<span['end_frame']<=total
@@ -258,7 +277,7 @@ def read_bundle(record, *, verify_tiles=True):
         _schema(manifest)
         if any(record.get(k)!=manifest[k] for k in ('scientific_revision','scientific_identity','fps','total_frames','duration','variable','units','state')):
             raise ValueError('Header y manifiesto no coinciden.')
-        if (record.get('period')!=[manifest['source_records'][0]['date'],manifest['source_records'][-1]['date']]
+        if (record.get('period')!=[manifest['observations'][0]['date'],manifest['observations'][-1]['date']]
                 or any(record.get(k)!=manifest[k] for k in ('source','citation','generated_at','thumbnail'))
                 or record.get('layers')!={lid:{'name':g['name'],'size':g['size']} for lid,g in manifest['layers'].items()}):
             raise ValueError('Metadata compacta distinta del bundle.')
@@ -279,17 +298,34 @@ def read_bundle(record, *, verify_tiles=True):
     return manifest
 
 
-def prepare_bundle(project,duration,*,continent_size=None,galapagos_size=None,progress=None,cancelled=None):
+def observed_native_crs(observation,source,provider):
+    """Recover CHIRPS CRS omitted by the legacy loader, from source metadata."""
+    native=observation.get('native_crs')
+    if native is not None or provider!='chirps':return native
+    import gzip
+    from rasterio.io import MemoryFile
+    with MemoryFile(gzip.decompress(Path(source['file']).read_bytes())) as memory:
+        with memory.open() as raster:
+            if not raster.crs:raise ValueError('La observación CHIRPS no declara su CRS nativo.')
+            return str(raster.crs)
+
+
+def prepare_bundle(project,duration,*,continent_size=None,galapagos_size=None,progress=None,cancelled=None,source_index=None):
     """Paint observations through the existing painter; return only a verified header."""
     def check():
         if cancelled and cancelled(): raise InterruptedError('Bundle cancelado; proyecto activo intacto.')
     check()
     if type(duration) not in (int,float) or not math.isfinite(duration) or not 0<duration<=7200:
         raise ValueError('Duración del bundle: más de cero y hasta 7200 segundos.')
+    snapshot=restored_snapshot(project)
+    if snapshot is None:raise ValueError('Revisión científica ausente.')
+    records=snapshot['source_records']
+    if source_index is not None and (type(source_index) is not int or not 0<=source_index<len(records)):
+        raise ValueError('Índice de observación fuera de la revisión científica.')
+    indices=list(range(len(records))) if source_index is None else [source_index]
     painter=MapLayerPainter(project,continent_size=continent_size,galapagos_size=galapagos_size)
     settings=painter.cartographic_settings
-    snapshot=restored_snapshot(project);records=snapshot['source_records']
-    counts=frame_counts(len(records),duration)
+    counts=frame_counts(len(indices),duration)
     if any(n<1 for n in counts): raise ValueError('Cada observación necesita al menos un fotograma.')
     total=sum(counts)
     if not 1<=total<=216000: raise ValueError('Duración de bundle fuera del límite.')
@@ -308,10 +344,11 @@ def prepare_bundle(project,duration,*,continent_size=None,galapagos_size=None,pr
         return {'path':name,'sha256':_digest(content),'bytes':len(content),'size':list(image.size),'mode':'RGBA'}
     observations=[];intervals=[];cursor=0;rules=None;warnings=set();thumbnail=Image.new('RGBA',(480,320))
     try:
-        for index,(source,count) in enumerate(zip(records,counts)):
+        for index,(scientific_index,count) in enumerate(zip(indices,counts)):
+            source=records[scientific_index]
             check()
-            if progress: progress(index,len(records),'Pintando '+source['date'])
-            pair=painter.render_observation(index)
+            if progress: progress(index,len(indices),'Pintando '+source['date'])
+            pair=painter.render_observation(scientific_index)
             try:
                 observation=pair['observation']
                 tiles={}
@@ -323,12 +360,13 @@ def prepare_bundle(project,duration,*,continent_size=None,galapagos_size=None,pr
                         with tile['image'].copy() as preview:
                             preview.thumbnail((230,300))
                             thumbnail.alpha_composite(preview,((0 if lid=='continent' else 240)+(240-preview.width)//2,(320-preview.height)//2))
-                observations.append({'source_index':index,'date':observation['date'],'native_crs':observation['native_crs'],'layers':tiles})
-                intervals.append({'date':source['date'],'source_index':index,'start_frame':cursor,'end_frame':cursor+count})
+                observations.append({'source_index':scientific_index,'date':observation['date'],
+                    'native_crs':observed_native_crs(observation,source,settings['source']),'layers':tiles})
+                intervals.append({'date':source['date'],'source_index':scientific_index,'start_frame':cursor,'end_frame':cursor+count})
                 cursor+=count;rules=pair['rules'];warnings.update(pair['warnings'])
             finally:
                 for tile in pair['layers'].values(): tile['image'].close()
-            if progress: progress(index+1,len(records),'Observación verificada '+source['date'])
+            if progress: progress(index+1,len(indices),'Observación verificada '+source['date'])
         check();verify_sources(project,snapshot,cancelled=cancelled)
         thumb=save(thumbnail,'thumbnail.png')
     finally: thumbnail.close()
@@ -342,17 +380,18 @@ def prepare_bundle(project,duration,*,continent_size=None,galapagos_size=None,pr
         'fps':30,'total_frames':total,'duration':total/30,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
         'temporal_interpolation':False,'nodata':{'override':settings.get('nodata'),'rule':rules['alpha']},
         'rules':rules,'warnings':sorted(warnings),'thumbnail':thumb,'auxiliaries':{'legend_static':legend}}
+    if source_index is not None:manifest['observation_selection']={'mode':'single_observation','source_index':source_index}
     _schema(manifest);content=_bytes(manifest)
     if len(content)>MANIFEST_LIMIT or used+len(content)>BUNDLE_LIMIT: raise ValueError('Manifiesto o bundle superior al presupuesto.')
     check()
     with (destination/'manifest.json').open('xb') as stream: stream.write(content)
-    record={'kind':'temporal_map','representation':REPRESENTATION,'name':'Mapa RGBA '+settings['variable']+' · '+records[0]['date']+' — '+records[-1]['date'],
+    record={'kind':'temporal_map','representation':REPRESENTATION,'name':('Observación RGBA ' if source_index is not None else 'Mapa RGBA ')+settings['variable']+' · '+observations[0]['date']+' — '+observations[-1]['date'],
         'manifest_path':str(destination/'manifest.json'),'manifest_sha256':_digest(content),'bytes':used+len(content),
         'source_dataset':'sources.'+manifest['scientific_revision'],
-        'period':[records[0]['date'],records[-1]['date']],
+        'period':[observations[0]['date'],observations[-1]['date']],
         'layers':{lid:{'name':g['name'],'size':g['size']} for lid,g in manifest['layers'].items()},
         **{k:manifest[k] for k in ('source','citation','generated_at','thumbnail')},
         **{k:manifest[k] for k in ('scientific_revision','scientific_identity','fps','total_frames','duration','variable','units','state')}}
-    if progress: progress(len(records),len(records),'Verificando y sellando bundle privado')
+    if progress: progress(len(indices),len(indices),'Verificando y sellando bundle privado')
     check();read_bundle(record);verify_sources(project,snapshot,cancelled=cancelled);check()
     return record

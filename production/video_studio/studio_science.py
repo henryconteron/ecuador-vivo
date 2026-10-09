@@ -19,6 +19,19 @@ def _hash(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,allow_nan=False).encode('utf-8')).hexdigest()
 
 
+def result_display_name(identifier, result):
+    """Editorial meaning of existing indicators, without changing stored results."""
+    key=identifier.rsplit('.',1)[-1]
+    labels={'mean_period':'Media del período', 'peak_pixel_value':'Máximo de píxel',
+            'minimum_pixel_value':'Mínimo de píxel', 'peak_date_mean':'Máximo de medias por fecha',
+            'province_rank':'Resumen provincial'}
+    if key=='peak_month_value':
+        provenance=result.get('provenance',{})
+        period=provenance.get('period_kind','month')
+        labels[key]='Máximo de agregados · '+{'month':'mes','year':'año','quarter':'trimestre'}.get(period,str(period))
+    return result['variable']+' · '+labels.get(key,key)
+
+
 def _mark(scene, revision, role, template):
     scene['generation']={'scientific_revision':revision,'role':role,'template':template,
                          'initial_content_sha256':_hash(scene)}
@@ -65,7 +78,7 @@ def generate_scientific_project(source, snapshot, profile, *, theme='Ecuador Viv
     scalars=[rid for rid in ids if 'rows' not in registry[rid] and registry[rid].get('value') is not None]
     tables=[rid for rid in ids if any(row.get('value') is not None for row in registry[rid].get('rows',[]))]
     citation=str(source.get('citation') or 'Consultar procedencia de los resultados')
-    period=str(source.get('start',''))+' → '+str(source.get('end',''))
+    period=str(source.get('start',''))+' a '+str(source.get('end',''))
     credit=citation+' · '+period
     scenes=[]
 
@@ -84,7 +97,9 @@ def generate_scientific_project(source, snapshot, profile, *, theme='Ecuador Viv
     for rid in scalars:
         scene=make('metric_focus','metric',{'metric':{'result_id':rid,'field':'value'}})
         scene['name']=registry[rid]['variable']+' · '+rid.rsplit('.',1)[-1]
-        next(e for e in scene['elements'] if e['id']=='title')['style']['text']=registry[rid]['variable']
+        label=result_display_name(rid,registry[rid])
+        next(e for e in scene['elements'] if e['id']=='title')['style']['text']=label
+        next(e for e in scene['elements'] if e['type']=='metric')['style']['visualization']['style']['title']=label
         _mark(scene,revision,'metric','metric_focus')
     for rid in tables:
         scene=make('ranking_focus','chart',{'ranking':{'result_id':rid,'field':'rows'}})
