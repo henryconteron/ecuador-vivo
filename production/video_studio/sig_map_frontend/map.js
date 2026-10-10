@@ -2,6 +2,18 @@ export default function(component){
  const {data,parentElement,setTriggerValue}=component,root=parentElement.querySelector('#sig-map');
  const svg=root.querySelector('svg'),q=id=>root.querySelector('#'+id),ns='http://www.w3.org/2000/svg';
  let box=[...data.view.bbox],pending=false,drag=null;
+ root.classList.toggle('sig-workspace',Boolean(data.workspace_layout));
+ const layout=data.workspace_layout;
+ root.style.setProperty('--sig-map-height',`max(140px, calc(100dvh - ${(layout?.top_height??56)+(layout?.time_height??36)+(layout?.dock_height??0)+106}px))`);
+ let compact;const resize=()=>{const next=window.innerWidth<=1000;if(next!==compact){compact=next;setTriggerValue('ui_event',{action:'viewport',width:window.innerWidth})}};
+ // An unchanged SVG rerun must not publish another presentation hint.
+ const marker=root.dataset.compact;compact=marker===undefined?undefined:marker==='true';
+ resize();root.dataset.compact=String(compact);
+ window.addEventListener('resize',resize);
+ const preview=q('sig-temporal-preview');preview.hidden=!data.temporal_preview;
+ if(data.temporal_preview){preview.querySelector('img').src=data.temporal_preview.image;preview.querySelector('figcaption').textContent=data.temporal_preview.caption}
+ svg.toggleAttribute('inert',Boolean(data.temporal_preview));
+ root.querySelector('.tools').hidden=Boolean(data.temporal_preview);
  root.querySelectorAll('button').forEach(b=>b.disabled=false);
  root.dataset.version=String(data.version);root.dataset.active=data.active_layer||'';
  const status=text=>q('sig-map-status').textContent=text;
@@ -15,10 +27,17 @@ export default function(component){
   if(!layer.visible)continue;
   const group=document.createElementNS(ns,'g');group.dataset.layer=layer.id;
   for(const feature of layer.features){
-   const path=document.createElementNS(ns,'path'),polygons=feature.geometry.type==='Polygon'?[feature.geometry.coordinates]:feature.geometry.coordinates;
-   const d=polygons.flatMap(poly=>poly.map(ring=>ring.map((p,i)=>(i?'L':'M')+p[0]+' '+(-p[1])).join(' ')+'Z')).join(' ');
-   path.setAttribute('d',d);path.setAttribute('fill',layer.style.fill);path.setAttribute('stroke',layer.style.stroke);path.setAttribute('fill-opacity',layer.style.opacity);
+   const kind=feature.geometry.type,c=feature.geometry.coordinates;
+   const path=document.createElementNS(ns,'path');
+   const line=ring=>ring.map((p,i)=>(i?'L':'M')+p[0]+' '+(-p[1])).join(' ');
+   const polygons=kind==='Polygon'?[c]:kind==='MultiPolygon'?c:[];
+   const lines=kind==='LineString'?[c]:kind==='MultiLineString'?c:[];
+   const points=kind==='Point'?[c]:kind==='MultiPoint'?c:[];
+   const radius=6*(box[2]-box[0])/Math.max(1,svg.clientWidth);
+   const d=polygons.flatMap(poly=>poly.map(ring=>line(ring)+'Z')).join(' ')+lines.map(line).join(' ')+points.map(p=>`M${p[0]-radius} ${-p[1]} a${radius} ${radius} 0 1 0 ${2*radius} 0 a${radius} ${radius} 0 1 0 ${-2*radius} 0`).join(' ');
+   path.setAttribute('d',d);path.setAttribute('fill',layer.style.fill);path.setAttribute('stroke',layer.style.stroke);path.setAttribute('fill-opacity',layer.style.opacity);path.setAttribute('stroke-opacity',layer.style.opacity);
    path.setAttribute('fill-rule','evenodd');path.setAttribute('stroke-width','1.5');path.setAttribute('vector-effect','non-scaling-stroke');
+   if(lines.length)path.setAttribute('fill','none');
    path.classList.add('geo-feature');path.dataset.region=feature.region_id;path.dataset.layer=layer.id;
    if(data.active_layer===layer.id&&data.selection.includes(feature.region_id))path.classList.add('selected');
    group.appendChild(path);
@@ -38,4 +57,5 @@ export default function(component){
   if(previous.changed)send('view',{bbox:box});else if(previous.target.dataset.region)send('select',{layer_id:previous.target.dataset.layer,region_id:previous.target.dataset.region});else send('clear_selection')};
  svg.onpointercancel=()=>{if(drag){box=drag.box;paintBox();drag=null}};
  svg.onkeydown=e=>{if(e.key==='+'||e.key==='='){e.preventDefault();zoom(.8)}else if(e.key==='-'){e.preventDefault();zoom(1.25)}else if(e.key==='Escape')send('clear_selection')};
+ return ()=>window.removeEventListener('resize',resize);
 }

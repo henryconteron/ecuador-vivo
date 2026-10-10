@@ -1,15 +1,20 @@
 // CCv2 controlled data + trigger commands; never interpolate authored content as HTML.
 // https://docs.streamlit.io/develop/api-reference/custom-components/st.components.v2.component
 export default function(component){
- const {parentElement:root,data,setTriggerValue}=component;
+ const {parentElement:root,data}=component;let trigger=component.setTriggerValue;
+ const signature=JSON.stringify(['presentation-20261009-v4',data.version,data.scene,data.frame,data.layers,data.entries,data.background,data.project,data.error]);
+ const cleanup=()=>{setTimeout(()=>{if(!root.host?.isConnected&&!root.isConnected)root.__evsDispose?.()},0)};
+ if(root.__evsSignature===signature&&root.__evsUpdate){root.__evsUpdate(component);return cleanup}
  // CCv2 can call the renderer again with the same ShadowRoot on data changes.
  // Dispose the previous controller before mounting the next controlled snapshot.
  root.__evsDispose?.();
+ root.__evsSignature=signature;
  const q=id=>root.querySelector('#'+id),shell=root.querySelector('.evs');
  shell.dataset.version=String(data.version);shell.dataset.scene=data.scene;
  const paths={undo:'M8 4 3 9l5 5M3 9h10a6 6 0 0 1 0 12',redo:'m16 4 5 5-5 5M21 9H11a6 6 0 0 0 0 12',play:'m8 4 13 8-13 8Z',pause:'M8 4v16M16 4v16',layers:'m12 3 10 5-10 5L2 8Zm-10 9 10 5 10-5M2 16l10 5 10-5',settings:'M4 5h16M4 12h16M4 19h16M8 2v6M16 9v6M10 16v6',menu:'M4 5h16M4 12h16M4 19h16',plus:'M12 4v16M4 12h16',copy:'M9 9h12v12H9ZM3 15V3h12',trash:'M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7',up:'m5 14 7-7 7 7',down:'m5 10 7 7 7-7',group:'M3 3h18v18H3ZM7 7h4v4H7ZM13 13h4v4h-4Z',ungroup:'M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M7 7h4v4H7ZM13 13h4v4h-4Z',eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm10-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6',hidden:'m3 3 18 18M2 12s4-7 10-7c6 0 10 7 10 7-1 2-2 3-4 4M6 6 2 12s4 7 10 7c2 0 4-1 5-2',lock:'M6 10h12v11H6ZM8 10V7a4 4 0 0 1 8 0v3',unlock:'M6 10h12v11H6ZM8 10V7a4 4 0 0 1 8 0',text:'M3 4h18M12 4v17M8 21h8',image:'M3 3h18v18H3ZM3 17l6-6 4 4 3-3 5 5M16 7h.01',video:'M3 6h13v12H3Zm13 4 5-3v10l-5-3',chart:'M4 3v18h17M8 17v-6M13 17V7M18 17V4',shape:'M4 4h16v16H4Z',audio:'M3 10v4h4l5 5V5l-5 5ZM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14',mute:'M3 10v4h4l5 5V5l-5 5ZM16 9l5 6M21 9l-5 6',folder:'M3 5h7l2 3h9v12H3Z'};
  const svg=kind=>{const el=document.createElementNS('http://www.w3.org/2000/svg','svg');el.setAttribute('viewBox','0 0 24 24');el.setAttribute('aria-hidden','true');const path=document.createElementNS(el.namespaceURI,'path');path.setAttribute('d',paths[kind]||paths.shape);el.append(path);return el};
  for(const [id,icon] of Object.entries({undo:'undo',redo:'redo',play:'play','project-menu':'menu','toggle-left':'layers','toggle-right':'settings',layerup:'up',layerdown:'down',group:'group',ungroup:'ungroup',delete:'trash','scene-add':'plus','scene-duplicate':'copy','scene-remove':'trash','timeline-collapse':'down'}))q(id).replaceChildren(svg(icon));
+ for(const [tab,icon] of Object.entries({scenes:'folder',layers:'layers',media:'image',data:'chart',templates:'group'})){const button=root.querySelector('.resource-nav [data-tab="'+tab+'"]');button.querySelector('svg')?.remove();button.prepend(svg(icon))}
  let ui={tab:'layers',zoom:'fit',guides:true,snap:true,ids:[],selected:null,timeZoom:100,left:false,right:false,collapsed:false,mode:'edit',movieTime:0};
  try{Object.assign(ui,JSON.parse(sessionStorage.getItem(data.ui_key)||'{}'))}catch{}
  if(ui.scene!==data.scene){ui.ids=[];ui.selected=null;if(ui.mode==='movie')ui.mode='edit'}ui.scene=data.scene;
@@ -21,8 +26,9 @@ export default function(component){
   if(disposed||busy)return;
   if(q('workspace-dialog').open)q('workspace-dialog').close();
   clearTimeout(saveTimer);const s=state();ui.ids=s.ids;ui.selected=s.selected;saveUi();
-  busy=true;q('save-state').textContent='Guardando…';q('save-state').dataset.state='dirty';
-  setTriggerValue('command',{action,scene:data.scene,version:data.version,entries:s.entries,ids:s.ids,...values,nonce:Date.now()});
+  busy=true;
+  if(!['status','play','export','cancel','select','seek','navigate','native_preview','review_map_layers','temporal_map','temporal_layers','upload','import_project','regenerate','regenerate_structure'].includes(action)){q('save-state').textContent='Guardando…';q('save-state').dataset.state='dirty'}
+  trigger('command',{action,scene:data.scene,version:data.version,entries:s.entries,ids:s.ids,...values,nonce:Date.now()});
  }
  let failedEntries=null;
  const autosave=()=>{clearTimeout(saveTimer);if(data.error&&failedEntries===JSON.stringify(state().entries))return;if(!disposed&&!busy&&component.canvasApi?.hasPending())saveTimer=setTimeout(()=>{if(!component.canvasApi.isGesture())send('canvas');else autosave()},350)};
@@ -104,6 +110,7 @@ export default function(component){
   body.append(el('p','Abrir una copia conserva el archivo original y empieza otro historial.','panel-note'));
  })}
  q('project-menu').onclick=projectDialog;
+ q('nav-home').onclick=()=>send('navigate',{phase:'Inicio'});q('nav-sig').onclick=()=>send('navigate',{phase:'SIG'});
  q('help').onclick=()=>openDialog('Atajos y ayudas',body=>{
   for(const line of ['Mayús + clic: selección múltiple · Ctrl+A: todos','Flechas: mover 1 px · Mayús + flechas: 10 px','Arrastre de esquina: resize · Alt + arrastre: pan','Supr: eliminar · Escape: cancelar gesto o seleccionar escena','Ctrl+Z / Ctrl+Mayús+Z: historial · Ctrl+D: duplicar','Ctrl+C / Ctrl+V: copiar y pegar · Ctrl+G: agrupar','Espacio: reproducir/pausar · Guías y selección no se exportan'])body.append(el('p',line));
  });
@@ -220,7 +227,13 @@ export default function(component){
    }
    if(element.temporal_binding){
     const linked=section(body,'Referencia científica');
-    linked.append(el('p',element.temporal_binding.instance_id+' · '+element.temporal_binding.channel,'source-info'));
+    const instance=data.scene_data.map_instances[element.temporal_binding.instance_id];
+    const resource=data.project.studio.media[instance.asset_id];
+    linked.append(el('p',resource.variable+' · '+resource.units,'source-info'));
+    linked.append(el('p',resource.period.join(' — '),'panel-note'));
+    linked.append(el('p','Serie y calendario vinculados. La composición conserva los valores originales.','panel-note'));
+    const advanced=section(linked,'Referencias técnicas',false);
+    advanced.append(el('p',element.temporal_binding.instance_id+' · '+element.temporal_binding.channel+' · revisión '+resource.scientific_revision,'source-info'));
    }
    if(['image','logo','video','map'].includes(element.type)&&!element.temporal_binding){
     const media=section(body,'Recurso y encuadre');
@@ -273,7 +286,7 @@ export default function(component){
  const total=data.rows.at(-1).end_frame;q('total').textContent=data.rows.length+' escenas · '+(total/30).toFixed(2)+' s';q('playhead').max=total-1;q('playhead').value=data.frame;
  function timePosition(frame){const row=data.rows.find(r=>r.start_frame<=frame&&frame<r.end_frame)||data.rows.at(-1);const card=[...q('scenes').children].find(b=>b.dataset.scene===row.id);return card?card.offsetLeft-q('scenes').offsetLeft+(frame-row.start_frame)/row.frames*card.offsetWidth:0}
  let updateCalendar=()=>{};
- function clock(frame){frame=Math.max(0,Math.min(total-1,frame));q('time').textContent=(frame/30).toFixed(2)+' / '+(total/30).toFixed(2)+' s';q('timeline-playhead').style.left=(q('scenes').offsetLeft+timePosition(frame))+'px';[...q('scenes').children].forEach(b=>b.dataset.playing=String(ui.mode==='movie'&&data.rows.some(r=>r.id===b.dataset.scene&&r.start_frame<=frame&&frame<r.end_frame)));updateCalendar(frame)}clock(data.frame);
+ function clock(frame){if(ui.mode==='movie'&&Number.isInteger(ui.presentedFrame))frame=ui.presentedFrame;frame=Math.max(0,Math.min(total-1,frame));q('time').textContent=(frame/30).toFixed(2)+' / '+(total/30).toFixed(2)+' s';q('timeline-playhead').style.left=(q('scenes').offsetLeft+timePosition(frame))+'px';[...q('scenes').children].forEach(b=>b.dataset.playing=String(ui.mode==='movie'&&data.rows.some(r=>r.id===b.dataset.scene&&r.start_frame<=frame&&frame<r.end_frame)));updateCalendar(frame)}clock(data.frame);
  let dragged=null;
  function timeline(){
   q('scenes').replaceChildren();q('time-ruler').replaceChildren();const zoom=Number(q('time-zoom').value)/100,width=Math.max(1,q('scenes').clientWidth);
@@ -302,25 +315,39 @@ export default function(component){
   const dates=(data.scientific_calendar||[]).flatMap(c=>c.intervals.filter(i=>i.start_frame<=frame&&frame<i.end_frame).map(i=>i.date));
   observation.textContent=dates.length?'Fecha científica · '+[...new Set(dates)].join(' / '):'';observation.hidden=!dates.length;
  }
- updateCalendar=calendar;calendar(data.frame);
- q('playhead').oninput=()=>clock(Number(q('playhead').value));q('playhead').onchange=()=>{
+ updateCalendar=calendar;clock(ui.mode==='frame'?(ui.previewFrame??data.frame):ui.mode==='edit'?(ui.canvasFrame??data.frame):data.frame);
+ component.onPixels=()=>{ui.canvasFrame=data.frame;if(ui.mode==='edit')clock(data.frame)};
+ q('playhead').oninput=()=>{q('time').textContent='Buscar · '+(Number(q('playhead').value)/30).toFixed(2)+' s'};q('playhead').onchange=()=>{
   const frame=Number(q('playhead').value);
-  if(movieReady&&ui.mode==='movie'){q('movie').currentTime=frame/30;clock(frame)}else{ui.mode='frame';saveUi();send('seek',{frame})}
+  if(movieReady&&ui.mode==='movie'){q('movie').currentTime=frame/30}else{ui.mode='frame';saveUi();send('seek',{frame})}
  };
  function editMode(){ui.mode='edit';saveUi();q('movie').pause();root.querySelector('.preview-surface').hidden=true;viewport.hidden=false;q('canvas-mode').textContent='EDICIÓN';q('play').replaceChildren(svg('play'));q('play').setAttribute('aria-label','Reproducir');component.canvasApi.resizeView()}
  q('back-edit').onclick=editMode;
- const movie=q('movie');q('frame-preview').src=data.preview;
+ const movie=q('movie');
+ const previewGeneration=root.__previewGeneration=(root.__previewGeneration||0)+1;
+ const frameImage=new Image();frameImage.src=data.preview;
+ frameImage.decode().then(()=>{if(root.__previewGeneration!==previewGeneration)return;q('frame-preview').src=data.preview;ui.previewFrame=data.frame;if(ui.mode==='frame')clock(data.frame)}).catch(()=>status('No se decodificó el cuadro; se conserva el anterior.'));
  function movieMode(autoplay=false){
   ui.mode='movie';saveUi();root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=false;q('frame-preview').hidden=true;q('canvas-mode').textContent='PREVIEW · MISMO MP4 DE EXPORTACIÓN';
   if(autoplay)movie.play().catch(()=>status('Preview listo. Pulsa reproducir en el video para escuchar audio.'));
  }
- movie.ontimeupdate=()=>{ui.movieTime=movie.currentTime;const frame=Math.min(total-1,Math.floor(movie.currentTime*30+1e-7));q('playhead').value=frame;clock(frame)};
+ // Scientific labels follow the frame actually presented, not a seek request.
+ let videoFrameRequest=null;
+ function presented(seconds,exact=false){ui.movieTime=seconds;const frame=Math.min(total-1,exact?Math.round(seconds*30):Math.floor(seconds*30+1e-7));ui.presentedFrame=frame;q('playhead').value=frame;if(ui.mode==='movie')clock(frame)}
+ function watchFrame(now,metadata){if(disposed)return;presented(metadata.mediaTime,true);videoFrameRequest=movie.requestVideoFrameCallback(watchFrame)}
+ if(movie.requestVideoFrameCallback)videoFrameRequest=movie.requestVideoFrameCallback(watchFrame);
+ movie.ontimeupdate=()=>{if(!movie.requestVideoFrameCallback&&!movie.seeking&&movie.readyState>=2)presented(movie.currentTime)};
+ movie.onseeked=()=>{if(!movie.requestVideoFrameCallback&&movie.readyState>=2)presented(movie.currentTime)};
  movie.onplay=()=>{q('play').replaceChildren(svg('pause'));q('play').setAttribute('aria-label','Pausar')};movie.onpause=()=>{q('play').replaceChildren(svg('play'));q('play').setAttribute('aria-label','Reproducir')};
- movie.onloadedmetadata=()=>{movie.currentTime=Math.min(ui.movieTime||data.frame/30,movie.duration);if(ui.mode==='movie')movieMode(true)};
+ movie.onloadedmetadata=()=>{movieReady=true;movie.currentTime=Math.min(ui.movieTime||data.frame/30,movie.duration);if(ui.mode==='movie')movieMode(true)};
  movie.onerror=()=>{movieReady=false;status('Reproducción integrada no disponible con este arranque. Abre el preview nativo.');q('play').onclick=()=>send('native_preview');q('play').setAttribute('title','Abrir preview audiovisual nativo');};
- if(data.movie_url){movieReady=true;movie.src=data.movie_url;if(ui.mode==='movie')movieMode(false)}
+ function loadMovie(url){
+  if(movie.getAttribute('src')===url){movieReady=movie.readyState>=2;return}
+  movieReady=false;ui.presentedFrame=data.frame;movie.poster=data.preview;movie.src=url;
+ }
+ if(data.movie_url){loadMovie(data.movie_url);if(ui.mode==='movie')movieMode(false)}
  else if(ui.mode==='frame'){
-  root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=true;q('frame-preview').hidden=false;q('canvas-mode').textContent='CUADRO · '+(data.frame/30).toFixed(2)+' s';
+  root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=true;q('frame-preview').hidden=false;q('canvas-mode').textContent='CUADRO · '+(data.frame/30).toFixed(2)+' s';clock(ui.previewFrame??data.frame);
  }else if(ui.mode==='movie'&&!['queued','running'].includes(data.job.state)){ui.mode='edit';editMode()}
  q('play').onclick=()=>{if(movieReady){if(ui.mode!=='movie')movieMode(true);else if(movie.paused)movie.play().catch(()=>{});else movie.pause()}else{ui.mode='movie';saveUi();send('play')}};
  q('export').onclick=()=>openDialog('Exportación del proyecto',body=>{
@@ -336,7 +363,29 @@ export default function(component){
  if(!data.error){if(data.notice)status(data.notice);else if(data.job_stale)status('El documento cambió. Prepara una nueva reproducción/exportación.');
  else if(['queued','running'].includes(data.job.state)){status((data.job.message||'Preparando reproducción')+' · '+Math.round((data.job.progress||0)*100)+'%')}
  else if(data.job.state==='failed')status('Exportación fallida: '+data.job.message);else if(data.job.state==='complete')status('MP4 listo · preview y exportación comparten el mismo archivo.');else status('Autosave activo · los cambios de diseño conservan datos, unidades y fuentes.');}
- if(['queued','running'].includes(data.job.state))pollTimer=setTimeout(()=>send('status'),1000);
+ function refreshJob(){
+  clearTimeout(pollTimer);
+  const running=!data.job_stale&&['queued','running'].includes(data.job.state);shell.dataset.preparing=String(running);
+  q('preparation').hidden=!running;q('preparation-label').textContent=data.job.message||'Preparando reproducción';q('preparation-progress').value=data.job.progress||0;
+  if(data.job_stale){status('El documento cambió. Prepara una nueva reproducción/exportación.');return}
+  if(running){status((data.job.message||'Preparando reproducción')+' · '+Math.round((data.job.progress||0)*100)+'%');pollTimer=setTimeout(async()=>{
+   if(!data.job_status_url){send('status');return}
+   try{
+    const response=await fetch(data.job_status_url,{cache:'no-store'});if(!response.ok)throw new Error('Estado no disponible');
+    const result=await response.json();if(disposed)return;
+    Object.assign(data,result);if(result.movie_url)loadMovie(result.movie_url);refreshJob();
+   }catch(error){if(!disposed){status('No se pudo consultar el progreso. Tu escena sigue disponible.');pollTimer=setTimeout(refreshJob,1000)}}
+  },1000)}
+  else if(data.job.state==='complete')status('MP4 listo · preview y exportación comparten el mismo archivo.');
+  else if(data.job.state==='failed')status('Exportación fallida: '+data.job.message);
+ }
+ root.__evsUpdate=next=>{
+  trigger=next.setTriggerValue;Object.assign(data,next.data);busy=false;
+  if(!component.canvasApi.hasPending()){q('save-state').textContent=data.error?'Cambio no aplicado':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=data.error?'dirty':'saved'}
+  if(data.movie_url)loadMovie(data.movie_url);
+  refreshJob();
+ };
+ refreshJob();
  q('save-state').textContent=data.error?'Cambio no aplicado':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=data.error?'dirty':'saved';
  if(data.error)failedEntries=JSON.stringify(state().entries);
  if(component.canvasApi.hasPending()&&!data.error){component.onPending(true);autosave()}
@@ -352,13 +401,16 @@ export default function(component){
  if(ui.focus){const active=(ui.focus.id?q(ui.focus.id):null)||[...q('context-fields').querySelectorAll('input,select,textarea')].find(e=>e.closest('label')?.firstChild?.textContent===ui.focus.label);if(active){active.focus({preventScroll:true});if(ui.focus.start!==null&&active.setSelectionRange&&['text','textarea'].includes(active.type))active.setSelectionRange(ui.focus.start,ui.focus.end)}}
  const dispose=()=>{
   if(disposed)return;
-  disposed=true;clearTimeout(saveTimer);clearTimeout(pollTimer);monitored.disconnect();timelineObserver.disconnect();if(timelineFrame!==null)cancelAnimationFrame(timelineFrame);
+  disposed=true;clearTimeout(saveTimer);clearTimeout(pollTimer);monitored.disconnect();timelineObserver.disconnect();if(timelineFrame!==null)cancelAnimationFrame(timelineFrame);if(videoFrameRequest!==null)movie.cancelVideoFrameCallback?.(videoFrameRequest);
   const active=root.activeElement;ui.focus=active?{id:active.id||'',label:active.closest?.('label')?.firstChild?.textContent,start:active.selectionStart??null,end:active.selectionEnd??null}:null;
   ui.draftVersion=data.version;ui.draftFor=state().ids.join('|');ui.draftControls=Object.fromEntries([...q('context-fields').querySelectorAll('input,select,textarea')].map(input=>[input.closest('label')?.firstChild?.textContent,input.type==='checkbox'?input.checked:input.value]));
   rememberDetails();
   ui.movieTime=movie.currentTime||ui.movieTime;ui.ids=state().ids;ui.selected=state().selected;saveUi();
-  movie.pause();movie.removeAttribute('src');movie.load();root.removeEventListener('change',autosave);root.removeEventListener('keydown',keyboard);window.removeEventListener('resize',applyPanels);disposeCanvas?.();
+  if(!shell.isConnected||ui.mode!=='movie')movie.pause();
+  // A controlled update is not a media teardown. Keep its decoded buffer and
+  // source; only loadMovie assigns a different, verified export URL.
+  root.removeEventListener('change',autosave);root.removeEventListener('keydown',keyboard);window.removeEventListener('resize',applyPanels);disposeCanvas?.();
  };
  root.__evsDispose=dispose;
- return dispose;
+ return cleanup;
 }

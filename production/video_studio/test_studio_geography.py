@@ -79,7 +79,7 @@ class GeographyTests(unittest.TestCase):
     def test_invalid_geometry_crs_coordinates_ids_and_metadata_rejected(self):
         from studio_geography import import_geojson
         changes=[lambda g:g.update(crs={'type':'name','properties':{'name':'EPSG:3857'}}),
-            lambda g:g['features'][0]['geometry'].update(type='Point',coordinates=[0,0]),
+            lambda g:g['features'][0]['geometry'].update(type='GeometryCollection',geometries=[]),
             lambda g:g['features'][0]['geometry'].update(coordinates=[[[179,0],[-179,0],[-179,2],[179,2],[179,0]]]),
             lambda g:g['features'][0]['geometry'].update(coordinates=[[[0,89],[2,89],[2,90],[0,89]]]),
             lambda g:g['features'][0]['geometry'].update(coordinates=[[[0,0],[1,1],[1,0],[0,1],[0,0]]]),

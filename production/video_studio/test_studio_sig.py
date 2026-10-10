@@ -110,6 +110,7 @@ class SigTests(unittest.TestCase):
             app.session_state['project_document'] = old
             app.session_state['science_job'] = str(job)
             app.run(); self.assertFalse(app.exception)
+            app.selectbox(key=workspace_key(old)+'_sig_tool').select('Ciencia').run()
             self.assertTrue(app.selectbox(key='science_profile_'+job.name).disabled)
             self.assertEqual(app.selectbox(key='science_profile_'+job.name).value, 'youtube')
             with patch('studio_preparation.verify_sources'), patch('data.load_values', side_effect=AssertionError('UI recalculated')):

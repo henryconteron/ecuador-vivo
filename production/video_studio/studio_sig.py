@@ -65,76 +65,8 @@ def send_map(session, record):
 
 def show_sig(source):
     from studio_workspace import WorkspaceSession
-    from studio_scientific_ui import show_scientific_assistant
+    from studio_sig_map_ui import show_sig_map
     document = st.session_state['project_document']
     key = workspace_key(document)
     session = WorkspaceSession(st.session_state, key, source, canonical=True)
-    st.title('Ecuador Vivo · SIG')
-    st.caption('Preparación geográfica y resultados científicos · mismo proyecto que Studio')
-    with st.container(horizontal=True):
-        if st.button('Inicio', key='sig_home'):
-            st.session_state['section'] = 'Inicio'; st.rerun()
-        if st.button('Abrir Studio', key='sig_studio', icon=':material/movie:'):
-            request_studio_navigation(st.session_state); st.rerun()
-    st.write('**Proyecto activo:** '+str(session.project.get('name','Proyecto sin título')))
-    from studio_sig_map_ui import show_sig_map
     show_sig_map(session)
-    from studio_geographic_ui import show_geography
-    with st.expander('Vistas estáticas SIG-G1 y envío compatible a Studio',key='sig_g1_views',on_change='rerun') as views:
-        if views.open:show_geography(session,show_import=False)
-    snapshot = restored_snapshot(session.project)
-    if snapshot:
-        st.subheader('Revisión disponible en el proyecto')
-        st.caption(str(session.project.get('citation',''))+' · '+str(session.project.get('start',''))+' → '+str(session.project.get('end','')))
-        st.dataframe([{'Resultado':rid,'Variable':r['variable'],'Unidad':r['units'],
-            'Valor':r.get('value'),'Filas':len(r.get('rows',[]))} for rid,r in snapshot['results'].items()],
-            hide_index=True, alt='Resultados científicos de la revisión compartida')
-        with st.expander('Fechas, archivos y procedencia'):
-            st.dataframe(snapshot['source_records'], hide_index=True, alt='Fechas, bandas y hashes de origen')
-        if st.button('Preparar mapa temporal', key='sig_prepare_map', icon=':material/map:'):
-            st.session_state[key+'_dialog'] = 'temporal_map'; st.rerun()
-        st.caption('Enviar resultados añade métricas y gráficos. Para incluir un mapa, prepara una fecha observada y revisa sus capas antes de enviarlas.')
-        dates=[r['date'] for r in snapshot['source_records']]
-        date=st.selectbox('Fecha observada del mapa de capas',dates,key='sig_layer_date',persist_state='session')
-        if st.button('Preparar mapa de la fecha observada',key='sig_prepare_layers',icon=':material/map:'):
-            for suffix in ('_layer_review_base','_layer_review_asset'):st.session_state.pop(key+suffix,None)
-            st.session_state[key+'_layer_source_index']=dates.index(date)
-            st.session_state[key+'_dialog']='observation_layers';st.rerun()
-    maps = {aid:r for aid,r in session.project['studio']['media'].items() if 'temporal_map' in r}
-    if maps:
-        from studio_media import AssetFrames
-        from studio_temporal import observation
-        aid = st.selectbox('Mapas del proyecto', list(maps), format_func=lambda k:maps[k]['name'], key='sig_map_view', persist_state='session')
-        record = maps[aid]
-        frame = st.slider('Fotograma del mapa', 0, record['temporal_map']['total_frames']-1, 0,
-                          key='sig_map_frame_'+record['temporal_manifest_sha256'][:16]) if record['temporal_map']['total_frames'] > 1 else 0
-        current = observation(record, {}, frame)
-        st.caption('Fecha observada: '+current['date']+' · '+record['temporal_map']['citation']+' · '+record['temporal_map']['units'])
-        with AssetFrames({aid:record},cache=session.cache.media) as assets:
-            image = assets.at(frame/30,[{'id':'sig.preview','type':'video','style':{'asset_id':aid}}])['video.sig.preview']
-            st.image(image, width=360, alt='Mapa temporal verificado de la fecha observada')
-        st.caption('Recurso 4a opaco: inset y overlays incrustados. Para regiones independientes, prepara una fecha observada con la nueva ruta de capas.')
-        if st.button('Enviar mapa a Studio', key='sig_send_map', type='primary'):
-            send_map(session,record); st.rerun()
-    def accept(proposal):
-        candidate, selected = merge_scientific_proposal(session.project, proposal)
-        if candidate != session.project: session.commit(candidate)
-        st.session_state[key+'_selected'] = selected
-    with st.expander('Preparar datos y enviar resultados a Studio', expanded=snapshot is None):
-        st.caption('El envío conserva las escenas Studio existentes. El montaje anterior permanece archivado en el documento. Elige el formato actual del proyecto; los archivos locales siguen siendo necesarios al reabrir.')
-        show_scientific_assistant(session.project, accept, publish_label='Enviar resultados a Studio',
-                                  shared_profile=session.project['studio']['output_profile'])
-    if st.session_state.get(key+'_dialog') == 'temporal_map':
-        from studio_map_ui import show_map_dialog
-        st.subheader('Mapa temporal · preparación y revisión')
-        show_map_dialog(session,key,publish_label='Enviar mapa a Studio',publisher=lambda record:send_map(session,record))
-    if st.session_state.get(key+'_dialog') == 'observation_layers':
-        from studio_map_ui import show_map_dialog
-        def publish_layers(candidate):
-            session.commit(candidate)
-            st.session_state[key+'_selected']=candidate['studio']['timeline'][-1]
-            st.session_state.pop(key+'_dialog',None)
-            request_studio_navigation(st.session_state)
-        st.subheader('Observación cartográfica · preparación y revisión')
-        show_map_dialog(session,key,publish_label='Enviar capas a Studio',publisher=publish_layers,
-            representation='rgba_observation_bundle',source_index=st.session_state.get(key+'_layer_source_index'))

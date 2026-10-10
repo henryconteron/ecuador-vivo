@@ -99,10 +99,14 @@ def validate_maps(project):
             raise ValueError('El mapa no corresponde a su dataset científico inmutable.')
         # Reconstruct each retained revision from its original registry, including
         # older maps after the current source changes. This is pure JSON, no raster IO.
-        from studio_science import restored_snapshot
-        restored_snapshot({**project,'project_meta':{**project.get('project_meta',{}),
-            'scientific_revision':manifest['scientific_revision'],
-            'scientific_identity':manifest['scientific_identity']}})
+        if manifest.get('source_scope')=='canonical_geography':
+            from studio_sig_raster import verify_series_binding
+            verify_series_binding(project,manifest)
+        else:
+            from studio_science import restored_snapshot
+            restored_snapshot({**project,'project_meta':{**project.get('project_meta',{}),
+                'scientific_revision':manifest['scientific_revision'],
+                'scientific_identity':manifest['scientific_identity']}})
     for scene in studio['scenes']:
         instances=scene.get('map_instances',{})
         for iid,instance in instances.items():
@@ -256,6 +260,9 @@ def review_map_layers(project, record):
     manifest=read_bundle(record)
     if 'legend_static' not in manifest.get('auxiliaries',{}):
         raise ValueError('Este recurso antiguo no incluye una leyenda completa. Prepara explícitamente un nuevo mapa de capas; el original se conserva.')
+    if manifest.get('source_scope')=='canonical_geography':
+        from studio_sig_raster import verify_series_binding
+        verify_series_binding(project,manifest);return manifest
     if project['studio']['datasets'].get(record['source_dataset'])!=manifest['source_records']:
         raise ValueError('Faltan las fuentes de esta revisión en el proyecto. Abre el proyecto que contiene su revisión científica.')
     snapshot=restored_snapshot({**project,'project_meta':{**project.get('project_meta',{}),
@@ -274,7 +281,16 @@ def attach_map_layers(project, record, *, base_sha256=None):
     if base_sha256 is not None and _hash(project)!=base_sha256:
         raise ValueError('El proyecto cambió durante la revisión. Cierra y revisa el recurso otra vez.')
     manifest=review_map_layers(project,record)
+    if manifest.get('source_scope')=='canonical_geography':
+        intended=manifest['geographic_binding'].get('output_profile')
+        if intended is not None and intended!=project['studio']['output_profile']:
+            raise ValueError('El formato cambió después de preparar el recurso. Prepara y revisa el encuadre otra vez.')
     result=copy.deepcopy(project);studio=result['studio']
+    if manifest.get('source_scope')=='canonical_geography':
+        dataset=record['source_dataset']
+        if dataset in studio['datasets'] and studio['datasets'][dataset]!=manifest['source_records']:
+            raise ValueError('No se puede sustituir el dataset científico inmutable.')
+        studio['datasets'][dataset]=copy.deepcopy(manifest['source_records'])
     matches=[aid for aid,r in studio['media'].items() if r.get('manifest_sha256')==record['manifest_sha256']]
     aid=matches[0] if matches else 'map.'+record['manifest_sha256']
     if aid in studio['media'] and studio['media'][aid]!=record:
@@ -283,6 +299,7 @@ def attach_map_layers(project, record, *, base_sha256=None):
     profile=profile_for(studio['output_profile']);regions=adaptive_regions(profile)
     map_box=regions['map'];side=regions['metric'];gap=max(2,min(profile.width,profile.height)*.015)
     mainland={**map_box,'width':map_box['width']*.72}
+    if manifest.get('source_scope')=='canonical_geography':mainland=map_box.copy()
     inset={'x':map_box['x']+mainland['width']+gap,'y':map_box['y'],
            'width':max(1,map_box['width']-mainland['width']-gap),'height':map_box['height']*.4}
     date_h=min(60,max(20,side['height']*.18))
@@ -294,8 +311,11 @@ def attach_map_layers(project, record, *, base_sha256=None):
         elements.append(Element(id='element.'+uuid.uuid4().hex,type=kind,name=name,
             transform=box,style=style,z_index=len(elements),
             temporal_binding={'instance_id':iid,'channel':channel} if channel else None).to_dict())
-    add('map','Ecuador continental',contain_bounds(record['layers']['continent']['size'],mainland),{'fit':'contain'},'continent')
-    add('map','Galápagos',contain_bounds(record['layers']['galapagos']['size'],inset),{'fit':'contain'},'galapagos')
+    map_style={'fit':'contain'}
+    if manifest.get('source_scope')=='canonical_geography':map_style['opacity']=manifest['geographic_binding'].get('opacity',1.)
+    add('map',record['layers']['continent']['name'],contain_bounds(record['layers']['continent']['size'],mainland),map_style,'continent')
+    if manifest.get('source_scope')!='canonical_geography':
+        add('map','Galápagos',contain_bounds(record['layers']['galapagos']['size'],inset),{'fit':'contain'},'galapagos')
     add('text','Fecha observada',{**side,'height':date_h},
         {'font_size':max(8,min(40,round(date_h*.5))),'color':ink},'date')
     add('shape','Fondo de leyenda',legend,{'fill':'#04151e','shape':'rectangle'})
@@ -303,8 +323,15 @@ def attach_map_layers(project, record, *, base_sha256=None):
     add('text','Variable y unidades',regions['title'],
         {'text':manifest['variable']+(' · '+manifest['units'] if manifest['units'] else ''),
          'font_size':max(8,min(48,round(regions['title']['height']*.5))),'color':ink})
+    credit=manifest['citation'] or manifest['source']
+    if manifest.get('source_scope')=='canonical_geography':
+        # Full citations, hashes and records remain sealed in the manifest.
+        # Technical parent hashes do not belong in the audiovisual credit line.
+        citations=[studio['geography']['sources'][entry['id']]['provenance']['citation']
+                   for entry in manifest['geographic_binding']['sources']]
+        credit=' | '.join(dict.fromkeys(c.split(' · original gzip SHA256 ')[0] for c in citations))
     add('source','Fuente',regions['source'],
-        {'text':manifest['citation'] or manifest['source'],
+        {'text':credit,
          'font_size':max(8,min(24,round(regions['source']['height']*.4))),'color':ink})
     scene=Scene(id='scene.'+uuid.uuid4().hex,name=record['name'][:180],duration=record['duration'],
         background=background,elements=elements,map_instances={iid:{'asset_id':aid,

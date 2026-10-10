@@ -1,0 +1,55 @@
+#sig-map{font-family:var(--st-font,sans-serif);color:var(--st-text-color);background:var(--st-secondary-background-color);border-radius:.6rem;padding:.6rem}
+.sig-toolbar{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem}
+.sig-toolbar button{color:inherit;background:var(--st-background-color);border:1px solid var(--st-border-color);border-radius:.4rem;padding:.4rem .7rem;cursor:pointer}
+#sig-geographic-map{height:500px;width:100%;background:#071d2b;touch-action:none}
+.sig-status{display:flex;justify-content:space-between;gap:.5rem;font-size:.8rem;margin-top:.45rem;min-height:1.6rem}
+#sig-engine,#sig-notice{font-size:.8rem;margin-top:.3rem}
+#sig-notice{color:#eebd65}
+@media(max-width:900px){#sig-geographic-map{height:360px}}
+.sig-viewport{position:relative;overflow:hidden}
+#sig-temporal-preview{position:absolute;inset:0;margin:0;display:flex;flex-direction:column;background:#071d2b}
+#sig-temporal-preview[hidden]{display:none}
+#sig-temporal-preview img{width:100%;height:calc(100% - 26px);object-fit:contain;min-height:0}
+#sig-temporal-preview figcaption{height:26px;font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:3px 6px}
+#sig-map.sig-workspace{border-radius:3px;padding:6px}
+.sig-workspace #sig-geographic-map{height:var(--sig-map-height)}
+.sig-workspace .sig-toolbar{margin-bottom:4px;min-height:28px}
+.sig-workspace .sig-toolbar button{padding:3px 7px;font-size:12px;min-height:28px}
+.sig-workspace .sig-status{margin-top:3px;min-height:20px;font-size:11px}
+.sig-workspace #sig-engine{display:none}
+.sig-workspace #sig-notice:empty{display:none}
+
+/* Reference-led SIG chrome; geographic data and renderer are unchanged. */
+#sig-map.sig-workspace{position:relative;border:1px solid #354f5c;padding:0;border-radius:4px;background:#0b1d27;color:#edf5f7}
+.sig-workspace .sig-toolbar{position:absolute;left:12px;top:12px;z-index:3;display:flex;flex-direction:column;gap:4px;margin:0;padding:4px;background:#102129;border:1px solid #718a96;border-radius:4px}
+.sig-workspace .sig-toolbar button{font-size:20px;width:34px;height:34px;padding:0;border:0;background:transparent;color:#edf5f7;border-radius:3px}
+.sig-workspace .sig-toolbar button:hover{background:#264751}.sig-workspace .sig-toolbar button:disabled{opacity:.4}
+.sig-workspace .sig-toolbar:not(:has(button:not([hidden]))){display:none}
+.sig-workspace .sig-toolbar button:focus-visible,#sig-empty-import:focus-visible,#sig-geographic-map:focus-visible{outline:2px solid #71dcc8;outline-offset:2px}
+.sig-workspace #sig-retry,.sig-workspace #sig-discard{width:auto;max-width:180px;font-size:12px;padding:4px}
+.sig-workspace .sig-status{padding:3px 8px;margin:0;min-height:22px;color:#afc7d1;font-size:11px;background:#102129}
+#sig-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:#0b1d27;z-index:1}
+#sig-empty[hidden]{display:none}#sig-empty svg{width:48px;height:48px;fill:none;stroke:#71dcc8;stroke-width:2;margin-bottom:16px}
+#sig-empty h2{font-size:20px;font-weight:600;margin:0 0 12px}#sig-empty p{font-size:14px;max-width:360px;line-height:1.5;color:#afc7d1;margin:0 0 20px}#sig-empty small{font-size:12px;max-width:360px;color:#afc7d1;margin-top:16px}
+#sig-empty-import{background:#71dcc8;color:#07231e;font-weight:600;border:0;border-radius:4px;padding:10px 20px;font-size:14px;cursor:pointer}
+#sig-legend{position:absolute;bottom:12px;right:12px;max-width:min(220px,50%);max-height:calc(100% - 24px);overflow:auto;box-sizing:border-box;padding:8px 12px;background:#102129eF;border:1px solid #718a96;border-radius:4px;pointer-events:auto}
+#sig-legend[hidden]{display:none}#sig-legend div{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 0}
+#sig-legend div span:first-child{flex:0 0 18px;width:18px;height:18px;border:2px solid;border-radius:2px}#sig-legend div span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1000px){.sig-workspace .sig-toolbar{left:8px;top:8px}.sig-workspace .sig-status{font-size:10px}#sig-empty h2{font-size:18px}}
+#sig-raster-controls{position:absolute;bottom:44px;left:12px;right:12px;display:flex;gap:12px;align-items:center;padding:8px;background:#0a202bed;border:1px solid #2a5563;border-radius:4px;z-index:4;font:12px sans-serif}
+#sig-raster-controls[hidden]{display:none}#sig-raster-controls button{background:#165666;color:#e8f9fc;border:1px solid #3a8290;padding:6px;border-radius:4px;cursor:pointer}#sig-raster-controls input{width:110px;accent-color:#45d4cd}#sig-raster-query{position:absolute;left:12px;top:12px;max-width:80%;background:#0a202bed;color:#e8f9fc;padding:6px;font:12px sans-serif;pointer-events:none}#sig-raster-query:empty{display:none}#sig-basemap-credit{position:absolute;bottom:8px;left:12px;background:#0a202bed;color:#d4e7ee;font:11px sans-serif;padding:4px}
+#sig-map #sig-raster-query{left:70px}.sig-has-raster-time #sig-legend{bottom:104px;max-height:calc(100% - 116px);max-width:min(300px,60%)}.sig-has-raster-time #sig-legend div span:first-child{flex-basis:48px}.sig-has-raster-time #sig-legend div span:last-child{white-space:normal}
+#sig-legend:focus-visible{outline:2px solid #71dcc8;outline-offset:2px}
+#sig-output-frame{position:absolute;border:2px solid #71dcc8;pointer-events:none;z-index:5;box-sizing:border-box}
+#sig-output-frame>span{position:absolute;top:3px;right:4px;color:#e5fff8;background:#09282fe8;padding:3px 6px;font:11px/1.4 system-ui;border-radius:3px;white-space:nowrap}
+#sig-safe-guides{position:absolute;border:1px dashed #c5efe5a0;pointer-events:none}
+/* A single transport below the geographic viewport, never covering the map. */
+#sig-map #sig-raster-controls{position:relative;inset:auto;margin:0;border:0;border-top:1px solid #354f5c;border-radius:0;min-height:64px;display:flex;flex-wrap:wrap;gap:8px 12px;background:#102129;font:13px/1.4 'Segoe UI',sans-serif}
+#sig-map #sig-raster-controls[hidden]{display:none}
+#sig-map #sig-raster-date{flex:1;min-width:120px;width:auto}
+#sig-map #sig-raster-calendar{font-variant-numeric:tabular-nums;font-weight:600;color:#edf5f7}
+#sig-map #sig-raster-summary{font-size:11px;color:#b1c7d0}
+#sig-map #sig-raster-send{background:#71dcc8;color:#07231e;font-weight:650;padding:8px 12px;margin-left:auto}
+#sig-map.sig-has-raster-time #sig-legend{bottom:12px;max-height:calc(100% - 24px)}
+#sig-raster-controls :focus-visible{outline:2px solid #71dcc8;outline-offset:2px}
+@media(max-width:1000px){#sig-map #sig-raster-summary{display:none}#sig-map #sig-raster-controls{font-size:12px}}

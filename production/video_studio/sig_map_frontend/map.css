@@ -9,3 +9,13 @@ svg{display:block;width:100%;height:500px;background:var(--st-background-color,#
 .status{display:flex;justify-content:space-between;gap:6px;padding:7px;font-size:12px}
 .help{padding:0 8px 8px;font-size:12px;opacity:.8}
 @media(max-width:700px){svg{height:360px}.tools{font-size:12px}}
+.sig-workspace svg{height:var(--sig-map-height)}
+.sig-workspace .tools{padding:6px;min-height:38px}
+.sig-workspace .tools button{padding:3px 7px;font-size:12px}
+.sig-workspace .help{display:none}
+.sig-workspace .status{padding:4px 6px;font-size:11px}
+.sig-viewport{position:relative}
+#sig-temporal-preview{position:absolute;inset:0;margin:0;display:flex;flex-direction:column;background:#071d2b}
+#sig-temporal-preview[hidden],.tools[hidden]{display:none}
+#sig-temporal-preview img{width:100%;height:calc(100% - 26px);object-fit:contain;min-height:0}
+#sig-temporal-preview figcaption{height:26px;font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:3px 6px}

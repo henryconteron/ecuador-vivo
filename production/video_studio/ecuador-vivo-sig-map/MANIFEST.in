@@ -1,0 +1,3 @@
+recursive-include ecuador_vivo_sig_map/frontend/build *
+include pyproject.toml
+include THIRD-PARTY-NOTICES.md

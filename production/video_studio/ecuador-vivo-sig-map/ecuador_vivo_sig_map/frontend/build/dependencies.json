@@ -1,0 +1,36 @@
+{
+  "runtime": [
+    {
+      "name": "ol",
+      "version": "10.11.0",
+      "license": "BSD-2-Clause",
+      "notices": [
+        "LICENSE.md"
+      ]
+    },
+    {
+      "name": "quickselect",
+      "version": "3.0.0",
+      "license": "ISC",
+      "notices": [
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "rbush",
+      "version": "4.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ]
+    }
+  ],
+  "geotiff_decoder_bundled": false,
+  "assets": {
+    "build-modules.json": "c287a4d137194097ed385257ff1c4ba45c6dde64b59842900cd522b33a0b3cf7",
+    "index-u20.css": "e61036a1cce5df23f2d682f81bcc2253f8787d6297e02eb1fdfb542e05f4d960",
+    "index-u20.js": "b281b1a5cce02ed393ad7a8dffe65cab7388e9661dab86445a21f7d3047d2a64",
+    "textOverlay-BiFf-c0Z.js": "14c93d54c8d6a28849dacbd477ab4f961a8353d3ce2a9413f871926fb93bf65c"
+  },
+  "lock_sha256": "95bfef1361d07c689f9ab4b57f37ce608499f18bdc810f237611dd2166da91d5"
+}

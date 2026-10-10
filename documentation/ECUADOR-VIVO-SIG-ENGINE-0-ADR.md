@@ -2,6 +2,14 @@
 
 Fecha: 2026-10-09. Auditoría y prueba de concepto terminadas; migración de producción pendiente. Evidencia reproducible: `tmp/ecuador-vivo-sig-engine-0-audit.md`. Esta decisión define el camino de SIG-U2; no afirma que el motor nuevo esté integrado.
 
+## Adopción aprobada y evidencia integrada · 2026-10-09
+
+Usuario aceptó esta arquitectura; SIG-U2.0 integrado y funcionalmente validado. El párrafo inicial se conserva como fecha de decisión previa a integración. Estado vigente: checkpoint principal; informe tmp/ecuador-vivo-sig-u20-report.md. OpenLayers10.11.0 retenido/encapsulado, SVG conservado, WebGL con Canvas explícito en fallo/context loss; fuentes/IDs/CRS/science originales, intentos secuenciados y cache íntegra, sin otro reloj/proyecto.
+
+Gate integrado v5000 mediana p95 rAF **16.900 ms**, cumple ≤33; baseline de este corte **83.305 ms** (no mezclar con standalone ENGINE-0). Persistencia v1000 N=10 / sondeo20ms p95 **1202.54 ms**, no cumple ≤500. Equivalencia funcional cerrada, rendimiento de confirmación pendiente. 50 Python + 5 UI posteriores, build/typecheck, 11 Chrome y snapshots/reapertura verificados. Memoria total, rendimiento fallback Canvas y formatos adicionales no demostrados en este corte.
+
+Dependencias distribuidas fijadas/avisos: ol BSD2, rbush MIT, quickselect ISC; sin decoder GeoTIFF beta en build runtime. No distribución pública ni datos personales incluidos. U2.1 plan únicamente; gate persistencia antes de ampliar. Mantener GDAL/GEOS/PROJ y Studio, ninguna sustitución extra por anticipado.
+
 ## Decisión
 
 Conservar un proyecto canónico y las transacciones existentes. Mantener Rasterio/GDAL para I/O/ventanas/warps, Shapely/GEOS para geometría e índices y pyproj/PROJ para CRS/mediciones adecuadas. Mantener Studio, sus once plantillas, MapLayerPainter, raster_alpha, bundles/decoder/cache, calendario/CFR, validadores, recibos y exportación existentes.
@@ -50,3 +58,8 @@ Mantener BYOD, fuentes personales fuera del paquete y ejemplos con permisos. Lic
 Presupuestos propuestos, **no resultados implementados**: cámara rAF p95 ≤33 ms en fixture v5000 controlado; disponibilidad del mapa caliente ≤2 s para 1000 entidades; cambio de selección/cámara reconocido y persistido p95 ≤500 ms en loopback con fuente validada; límites de RAM explícitos medidos con procesos aislados antes de subir límites. Si el backend sigue tardando segundos, resolver el parseo repetido antes de añadir formatos. Pruebas CI deben contemplar variación; estos valores son objetivos para el corte, no gates ya cumplidos por producción.
 
 Decisiones abiertas de implementación: build/version estable y API WebGL exactos, formatos/codec de tile y servidor local integrado con permisos, cache budget/evicción/integridad, PROJ grids offline permitidos, protocolo selección/tablas y escala masiva/context loss. No cambian la elección de responsabilidades ni obligan a otro modelo/render audiovisual. No se inició SIG-U2 en esta auditoría.
+
+
+## Continuidad de SIG analítico vectorial · 2026-10-09
+
+El SIG analiza y exporta datos sin requerir video. Operaciones propias usan bibliotecas geoespaciales instaladas y producen derivados verificables dentro del workspace profesional, sin reconstruir Studio. La navegación Inicio→SIG es explícita y vence la cola de Studio; inspector siempre conserva una sección activa. Contratos/evidencia/limitaciones vigentes: tmp/ecuador-vivo-sig-vector-analysis-report.md y checkpoint único. No se cierra el rendimiento, ráster/temporal universal o observation_layers mediante este corte.

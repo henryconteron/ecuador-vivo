@@ -1,6 +1,102 @@
 # Ecuador Vivo Studio 2.0 · contratos incrementales
 
-## ESTADO VIGENTE · SIG-U0 y SIG-U1 implementados y validados · 2026-10-08
+## ESTADO VIGENTE · presentación y estabilidad en pausa · 2026-10-09
+
+Contratos científicos y proyecto único conservados. Presentación RGBA retiene último cuadro hasta decodificación, fecha/leyenda coherentes y descarte de respuestas obsoletas; reproducción visual separada del guardado. Studio usa calendario de cuadros CFR presentados y progreso autorizado sin polling documental. Reutilizar render completo exige preflight, hashes/presentación idénticos; si cambia únicamente identidad/revisión documental, publicar recibo actual con procedencia explícita del cache hit, nunca el recibo antiguo sin aclaración. No proxies ni nuevo reloj/motor.
+
+**Cierre UX no validado:** atenuación Streamlit0,33 confirmada; último testeditor fallaUndo deshabilitado, causa de selección/espera no determinada. Guardar/reabrir/MP4 correctos no cierran ese bloqueo. Reporte/evidencias/límites: tmp/ecuador-vivo-visual-stability-report.md; único checkpoint en pausa explícita. No ampliar funcionalidades hasta nueva petición del usuario.
+
+## HISTORIAL · contrato aditivo de timelapse multifecha, referencias y encuadre · 2026-10-09
+
+Se mantiene el contrato GeoTIFF/ventanas/CRS/valores/máscara/alfa/integridad/cálculos del bloque histórico inmediato. Extensiones compatibles: fecha null permitida también para fuente estática, no solo derivado; group opcionalreference/files/results. Referencias identificadas por contenido/licencia/procedencia, coordenadas originales; vacíoSIGprecargaEcuador pero nunca sobrescribe vista/geografía de proyecto no vacío. NaturalEarth20países público/generalizado y geoBoundariesCCBY4no se anuncian oficiales.
+
+map_workspace.raster_time conserva fields layers/index/compare y añade duration/cadence/safe_guides opcionales.2–32IDsdistintos, fechas reales únicas crecientes y variable/unidad/significado compatibles; compare=true solo con2. Índice0..N−1; duration0,1..120s y CFRsuficiente≥Nframes; cadencedaily/monthly/irregular. Ausencias advertidas y nunca completadas. Monthly requiere como máximo una observación por mes; no agrega ni cambia intervalo/unidad original. Igualtiempodevideoporobservación, no inferencia de cadencia científica desdeFPS. Cambiosdate confirmados en canalversionado existente antes de imagen/fecha; soloobsactiva (doscompare) tienePNGpayload, verificando todas las fuentes y cachéacotada. Datos/cámara/selección/catálogo/proyecto siguen susdueñosexistentes.
+
+Perfil mediantecomandoexistente/adapt_profile y regionesadaptativas. output_frame deriva bbox de área de mapa/perfil/vista, resolución y guías editoriales. RepresentaciónSIGligera512máximo, exportación al tamaño real del slot hasta3840, GDALnearest/máscaraoriginal/colorizador existente; mayor tamaño visual no es mejor resolucióncientífica. Bindingnuevo incluye output_profile/cadence opcionales, metadataSHA/fuentes/extent/escala/opacidad y basemap_included:false. Metadata compacta conserva[primera,últimafecha], manifest/records conservanNfechas completas. Legacy2fechas conservaextent previo y bindingssinfields nuevos permanecen válidos.
+
+Preparación/lectura/sealingbundleRGBA v2, decoder, MapLayerPainter,CFR/renderer existentes, unarchivoobservacióncada vez. Canalprimario universal; canalGalápagosdisabled para esta ventana, no fakeinset ni capa inventada. Review/inserción compruebaformatonuevo coincideantesdecommit; ediciónposterior presentacional puedeusar mismo recurso sin nueva ciencia. Transaccióncompleta registradataset/media/scene/map/dateprotegida/legend/título/fuente y referencias. No cambiar revisiones publicadas nihomogeneizaropacidadesdistintas silenciosamente. El crédito mostrado puedeabreviarse sin truncar provenance/hash almacenados.
+
+EjemploCHIRPS3observaciones locales: recorte rectangular de celdasnativas sinresample, fuente/hash/cadencia/mm/día reales; −9999 declarado en derivado segúnFAQ porque originaltagausente, bytesoriginales inmutables. No promedioanual ni coberturaGal inventada. Ejemplo personal BYOD no empaquetado público. Fuente/software/dependencias tienenlicenciasseparadas; panelproveedoresinformativo no promesa de descargaautomática. Catálogo/progreso/cancelación, serieslargas/COG, puntostemporales, capasestáticas/basemapoptin y plantilla arbitraria siguen pendientes.
+
+Validación vigente en checkpoint/informe:15testsafectadosOK+tresincluidosrevalidados, Chrome3fechas/save/reopen/edit/vertical1080×1920/horizontal1920×1080MP4real/hash/recibo/calendario/píxeles; refsBrasil/24/Galreal y captura1920/1366/768. No366reprocesados, sin reclamo de cierre universal/4b.4b/parpadeo/gatep95 ni drivervectorfinal. Elevenplantillas/proyectosprevios/legacyopaque se conservan; no repetir suitesgenerales por cambios de presentación.
+
+## HISTORIAL · contrato aditivo GeoTIFF y transferencia estructurada · 2026-10-09
+
+La dirección es SIG analítico independiente del video con un proyecto compartido. El vectorial anterior sigue disponible. Este contrato amplía fuentes de geographyv1/map_workspacev1 mediante tipo raster; los campos previos no se reinterpretan. Evidencia vigente y límites en el checkpoint, no en resultados históricos inferiores.
+
+Fuente raster: identidad source.SHA256, original confinado e inmutable, bytes≤32MiB, WKT nativo, banda/transform/shape/dtype/scale/offset/NoData y estadísticas finitas, fecha declarada o null solo para derivado, variable/unidades/significado/procedencia/licencia. Hash/autorización y metadatos se comprueban incluso con caché caliente. Sin asumir CRS ni inferir fechas; cero/negativo no es NoData. Lectura nativa por ventanas, representación limitada512px EPSG:4326/GDALnearest/raster_alpha, sin alterar originales ni anunciar más resolución científica. Alfa existente se respeta. SVG compatible queda vectorial y activa explícitamente OpenLayers al usar raster.
+
+map_workspace admite basemap none/osm y raster_time{layers:[dosIDs],index:0|1,compare:bool}: fechas distintas crecientes, variable/unidad/significado compatibles; escala común de metadatos nativos, sin relleno/interpolación. Cámara/selección/fecha usan el canal versionado existente y confirmación durable; queries usan coordenadas nativas y no cambian el documento. GeoTIFF, capas/selección/extent/fechas persisten con undo/recovery/reapertura. BaseOSM requiere Internet/atribución y se excluye por defecto de Studio.
+
+Diferencia B−A y media de2observaciones: CRS/grid/shape/resolución alineados, máscara finita de intersección, unidad conservada, nuevo GeoTIFF con receta sellada/inputhashes/fechas/método/procesamiento. Media no anual ni ponderada por tiempo; sin sumas hasta verificar intervalo/unidades/semántica. Zonal: polígonos reales, centros nativos, cobertura de celdas dentro de intersección con footprint (no del polígono entero ni ponderada por área), nueva capa vectorial/receta/unidades/hashes/fecha. Ausencia produce null, no cero; no capitales en sustitución de provincias.
+
+BundleRGBA v2 canónico: source_scope canonical_geography + geographic_binding contiene fuentes/metadataSHA, escala/extent/método/basemap_included:false y opacidad común opcional (omisión histórica=1). read_bundle/decoder/MapLayerPainter colorizer/CFR/renderer existentes; source_records mantiene paths originales, hashes, bandas y fechas. No MP4 como entrada geográfica. Región universal por canal primario, inset Ecuador explícitamente disabled y no se crea su elemento. Revisión científica no se sobrescribe. Publicar registra dataset/media/escena/fecha protegida/leyenda y bindings en una transacción completa, validada antes del commit; no sustitución de recursos existentes. Opacidades diferentes requieren preparación explícita con opacidad común, no se homogeneizan silenciosamente; alfa científico no se hornea con cambios estéticos.
+
+observation_layers es ahora acción registrada del diálogo global y prepara la observación elegida; apertura/cancelación cubiertas. attach_map_layers se reutiliza sin segundo dispatcher. Esto no cierra por sí solo la prueba manual CHIRPS366, 4b.4b ni parpadeo. El nuevo recorrido de dos GeoTIFF→Studio→MP4 sí tiene evidencia Chrome/píxeles/recibo en el checkpoint. Compatibilidad de mapas opacos y publicaciones anteriores cubierta por regresiones afectadas, sin reejecutar todas las suites históricas ni declarar todoSIG completo.
+
+## HISTORIAL · SIG analítico vectorial: entrega funcional validada · 2026-10-09
+
+La instrucción vigente amplía el producto a un SIG de análisis independiente del video, dentro del único proyecto compartido. El límite histórico de presentación y «no implementar» no restringe esta autorización. OpenLayers/GDAL-GEOS-PROJ y Studio se conservan; no GeoLibre incrustado/código copiado, otro catálogo/reloj ni nuevo motor audiovisual.
+
+Implementado: crear proyecto SIG sin configurar video (corregida navegación pendiente Studio), importar CSV con X/Y/separador/CRS explícito, GeoJSON puntos/líneas/polígonos/multipartes y GeoPackage/FlatGeobuf autónomos con CRS nativo. Copia inmutable, SHA/bytes/WKT/opciones y representación CRS84 identificada; integridad incluso con caché caliente, no ballpark, sin filas/NoData inventados. Buffer/medidas métricas en CRS apropiado explícito, recorte/intersección/disolución, filtro y calculadora inicial de campo con constante sin código ni sobrescritura. Cada operación genera capa nueva y registra entradas/hashes/parámetros/unidades/fecha/motores, con commit/undo/recovery existentes. Renombrar/exportar GeoJSON/original, resultados y tipo de geometría reales; mapa retenido con símbolos y opacidad de puntos/líneas, inspector siempre mantiene una sección activa.
+
+Validación: 53 Python OK (94.025 s) + FlatGeobuf 1 OK (0.975 s), 11 revalidaciones de metadatos/errores GEOS (22.420 s); regresión final de inspector registrada en sig-analysis-inspector-final.log. Typecheck/build y sintaxis SVG OK. Chrome principal c60c38c8, 5 grupos OK: nuevo SIG → CSV real 2661 USGS → consulta/píxeles → filtro/buffer → undo/redo → paneles → guardar/abrir copia → SIG↔Studio, a 1920/1366/768 sin overflow. Esperar revisión NUEVA confirmada, no Guardado de una revisión anterior. Fixtures analíticas sintéticas separadas del catálogo real; buffer no es modelo de riesgo. No nuevos benchmarks ni 366 CHIRPS. Regresiones científicas G1/MP4 afectadas pasaron; no validación nueva de serie universal en Studio.
+
+No completado: GeoTIFF/ventanas/consulta de píxeles, estadísticas zonales/calculadora ráster, temporal geográfico/comparación/transferencia estructurada a Studio, basemaps/grupos/categorías/graduados, reproyección nativa exportable y calculadora de expresiones completa. No declarar SIG-U2.1/U3/U4/U6 o todo el SIG terminados. Dispatcher global omite observation_layers; attach_map_layers existe y requiere integración validada; parpadeo Studio/4b.4b y gate durable p95≤500 ms (anterior1202.54) siguen abiertos. F01–F25/BYOD/licencias separadas vigentes; recursos personales no redistribuidos.
+
+Validación final de descargas/opacidad/Resultados aún pendiente; no declarar ese recorrido completo hasta que sig-analysis-final-views-results.json tenga estado OK.
+
+Archivos de esta entrega: `production/video_studio/studio_sig_vector.py`, `production/video_studio/studio_sig_vector_ui.py`, `production/video_studio/test_sig_vector.py`, `production/video_studio/test_sig_vector_ui.py`, `production/video_studio/THIRD-PARTY-VECTOR-NOTICES.md`, `production/video_studio/studio_geography.py`, `production/video_studio/studio_sig_layers.py`, `production/video_studio/studio_sig_workspace.py`, `production/video_studio/studio_sig_inspector.py`, `production/video_studio/studio_home.py`, `production/video_studio/sig_map_frontend/map.js`, `production/video_studio/ecuador-vivo-sig-map/ecuador_vivo_sig_map/frontend/src/index.ts`, `production/video_studio/requirements.txt`, `production/video_studio/test_studio_geography.py`. Assets/avisos del paquete recompilados; cambios previos/untracked íntegros. Lista/evidencias/limitaciones completas en `tmp/ecuador-vivo-sig-vector-analysis-report.md`.
+
+
+Contrato aditivo: catálogo/map_workspace v1 conservados; geometrías 2D generales y metadatos opcionales origin/operation verificados contra bytes originales/representación. Calculadora crea campo nuevo/capa, sin eval; buffer/medidas requieren CRS proyectado métrico explícito dentro del área de uso. Cero/null separados. Exportación GeoJSON lleva receta/procedencia; original CSV/OGR permanece accesible. No raster fingido en el catálogo vectorial ni calendario nuevo.
+
+Reanudar exactamente: leer este bloque, dirección tmp/ecuador-vivo-sig-analysis-direction.md e informe; verificar HEAD/status/runtime y conservar cambios anteriores. Abrir http://127.0.0.1:8526 → Inicio → Nuevo proyecto SIG, o abrir como COPIA el borrador de sig-analysis-browser-results.json. Para CSV: catalog.csv del caso memoria-sismica-1900-2025, longitude/latitude/EPSG:4326, procedencia/condiciones; Análisis→Filtrar id cent19010107002900000→Buffer1000m/EPSG:32717. Acciones de capa exporta; guardar/abrir copia y Resultados. No tocar LLUVIA EN ECUADOR. Siguiente entrega: ampliar formatos/gestión mediante U2.1 GeoTIFF aditivo versionado y ventanas nativas/máscara/CRS; completar vectorial, después ráster/estadísticas y temporal/Studio, sin motores duplicados. No repetir auditorías/ciencia/benchmarks.
+
+Instancia propia 8526, PID/launcher/cwd/CommandLine actuales en tmp/sig-analysis-server.json, verificar antes de tmp/sig-analysis-restart.py; 8510–8525 preservados. Si 8526 libre ejecutar Python existente -X utf8 -B tmp/sig-analysis-serve.py desde raíz. HEAD externo802ff70b40c958c0327c76688049c5b22781c75f conservado; sin commit/push/reset/clean/borrados. Dependencias ya instaladas declaradas/fijadas, avisos completos; sin instalación ni descarga masiva. Historial inferior conservado, ZIP anterior sin actualizar automáticamente.
+
+
+## HISTORIAL · SIG profesional según referencias, validado · 2026-10-09
+
+Estado/evidencias vigentes: checkpoint principal e informe `tmp/ecuador-vivo-sig-professional-interface-report.md`. Los contratos científicos y transaccionales anteriores siguen vigentes. Este corte cambia presentación, no esquema ni procesamiento.
+
+- Inspector/layers se separan como presentación sobre el catálogo existente. Búsqueda no modifica catálogo ni visibilidad. Fuente, unidades/CRS/procedencia originales preservados; campos ausentes no se convierten en cero.
+- `ui_event` admite exclusivamente importación visual y hints de viewport/cierre, validados en Python; no lleva comandos científicos ni crea historial/commit. `workspace_layout` incluye top/time/dock height transitorios. Breakpoint conserva elección del usuario mientras no se cruza; drawers exclusivos a 768 px.
+- Mapa/fuentes retenidos; ResizeObserver ajusta al bbox canónico y aplaza el ajuste durante gestos/ack pendientes. Resize/layout no crean cámara científica nueva ni restablecen Ecuador sobre otra geografía. `commands` versionados/ledger/confirmación durable/caché autorizada sin cambios.
+- Dock de altura ajustable y calendario/cursor son UI de sesión. Consulta de recurso opaco usa observación/decoder/CFR existentes y se identifica como prerenderizado. Abrir Studio no envía; envío compatible sigue siendo transaccional e idempotente.
+- Diseño oscuro/turquesa sobre keys propios, widgets públicos y frontera Streamlit fijada; detalles técnicos avanzados separados. Foco/teclado y contraste de selección comprobados, sin declarar auditoría completa de accesibilidad.
+
+Validación nueva: 24+6 ejecuciones Python (25 métodos distintos), typecheck/build y 11+5 grupos Chrome; tres anchos, píxeles, errores sin parciales, atributos/estilos/orden/visibilidad, persistencia/ciencia, calendario y zoom/undo/redo. No nuevo MP4 ni benchmark. SIG universal, GeoTIFF/CRS arbitrarios, calculadoras, play temporal universal, RGBA global observation_layers/attach_map_layers, parpadeo y 4b.4b/U6 siguen pendientes. F01–F25/BYOD/licencias separadas se conservan.
+
+## HISTORIAL · workspace SIG integrado validado; capacidades universales pendientes · 2026-10-09
+
+Estado operativo único: `tmp/ecuador-vivo-studio-2-checkpoint.md`; evidencia exacta en `tmp/ecuador-vivo-sig-interface-report.md`. La estructura SIG integrada usa el mismo `project_document`, `WorkspaceSession`, catálogo y `map_workspace` v1; no cambia el esquema científico ni sus fuentes/hashes/CRS/revisiones.
+
+- `workspace_layout` y `temporal_preview` son payloads transitorios de presentación. Paneles/herramientas/cursor temporal son preferencias de sesión por proyecto; no un reloj científico independiente. Colapsar paneles no crea commits. SDK/fuentes retenidos, `updateSize` ajusta el mapa.
+- Tabla de atributos original y de solo lectura, seleccionable por IDs estables mediante comandos existentes. Rechazar revisión obsoleta, fila inválida o fallo de guardado sin cambios parciales; no convertir ausentes/null en cero.
+- Abrir valida primero y guarda durablemente una nueva copia antes de sustituir el estado vivo; el original permanece intacto. Guardado visible significa confirmación durable existente, no optimismo visual. Undo/recovery/protocolo/caché autorizada siguen vigentes.
+- Preparación SIG se aísla en claves de sesión propias; cancelar/cerrar no reabre automáticamente ni envía una acción al dispatcher Studio. No prueba por sí sola la publicación de capas RGBA estructuradas: observation_layers/attach_map_layers siguen pendientes globales.
+- Preview temporal central de mapas publicados usa decoder/observación/CFR existentes y representa un recurso opaco prerenderizado, no ráster georreferenciado universal ni un time lapse inventado. G1 y exportación MP4 reutilizan rutas existentes. Fecha, unidades, NoData, leyenda, ciencia y recibos no se recalculan al presentar.
+
+Validación: 27 pruebas (26 + 1 focalizada), typecheck/build, 14 checks agrupados Chrome y MP4 real comparado con renderer/calendario. Tamaños 1366×768/1920×1080 sin overflow, paneles con scroll y contracción manual. No se certifica móvil ni autocontracción. Gate de persistencia ≤500 ms sigue incumplido (p95 anterior 1202.54 ms); otros CRS/GeoTIFF, edición/calculadoras, play temporal universal, parpadeo, 4b.4b y U6 no implementados. F01–F25/BYOD/licencias de software/dependencias/datasets separadas conservados.
+
+## Historial anterior conservado
+
+## HISTORIAL · contrato SIG-U2.0 funcional / persistencia pendiente · 2026-10-09
+
+Estado operativo único en tmp/ecuador-vivo-studio-2-checkpoint.md; evidencia/gates en tmp/ecuador-vivo-sig-u20-report.md. Arquitectura aprobada OpenLayers 2D + procesamiento GDAL/GEOS/PROJ + Studio; no segundo catálogo/proyecto/reloj. Se mantiene `geography.map_workspace` v1 y las fuentes/regiones originales. El payload efímero agrega `representation_revision`; objetos SDK y ledger de intentos son transitorios, no documento científico.
+
+OpenLayers 10.11.0 retenido y predeterminado; SVG alternativo explícito conservado. Cámara/selección locales; lista completa de intentos pendientes con cliente, secuencia y base. Valida todo antes de una transacción WorkspaceSession, acuse solo tras snapshot durable; duplicados idempotentes, respuestas atrasadas ignoradas, base externa incompatible rechazada con reintentar/descartar. Límites: 64 comandos/envelope y 4 clientes en ledger de sesión. No se pierden silenciosamente gestos ni se oculta error con acuse optimista.
+
+Caché 8 entradas/64 MiB serializados: hash/revisión/raíz/límites, bytes y metadatos/procedencia/confinamiento comprobados en cada acceso incluso caliente, invalidación por corrupción/cambio, retornos independientes. Es autorización local existente, no aislamiento multiusuario nuevo ni límite de RAM total. Representaciones no reemplazan fuente original ni resultados.
+
+Pan/zoom/fit, selección/atributos, geometrías con huecos/multipartes, visibilidad/orden/estilos y undo/recovery equivalentes a U1, con mapa/fuentes retenidos en rerun. Native OGC:CRS84; display EPSG:4326 x=longitud/y=latitud, sin mutar originales. Otros CRS/ráster corresponden a U2.1; no mediciones métricas sobre vista angular. WebGLVector encapsulado/fijado; inicialización fallida/context loss activa Canvas con aviso de menor rendimiento. SVG no retirado ni Canvas anunciado como igual de rápido.
+
+Validado: 50 pruebas Python + 5 UI posteriores, typecheck/build y 11 comprobaciones Chrome; gate cámara v5000 cumplido. Gate durable ≤500 ms pendiente con N=10, no completo por cambio de SDK. No nuevo MP4 ni prueba pública/multiusuario, datos científicos intactos y once plantillas conservadas. Paquete software reservado y avisos de dependencias separados; fixtures sintéticos CC0/BYOD sin incluir fuentes personales. U2.1 solo planificado. observation_layers/attach_map_layers/parpadeo/4b.4b/SIG-U6 siguen pendientes.
+
+## Historial de contratos preservado
+
+## HISTORIAL · SIG-U0 y SIG-U1 implementados y validados · 2026-10-08
 
 Este bloque sustituye los estados históricos inferiores. Estrategia oficial: `tmp/ecuador-vivo-sig-universal-master.md`, leído íntegramente en UTF-8; verificación estricta de secciones 0–21 y decisión final. La investigación aislada de observation_layers fue detenida por mandato del usuario. Escape dejó inspecciones, sin nuevos cambios de producción de esa investigación; se conservaron todos los cambios útiles existentes.
 
@@ -59,7 +155,7 @@ Toda mutación aceptada usa WorkspaceSession/prepare_commit/PreparedTimeline/sav
 
 ## Historial conservado — los bloques inferiores no sustituyen el estado vigente
 
-## ESTADO VIGENTE · SIG-U0 validado; SIG-U1 siguiente · 2026-10-08
+## HISTORIAL · SIG-U0 validado; SIG-U1 siguiente · 2026-10-08
 
 Mandato oficial: tmp/ecuador-vivo-sig-universal-master.md leído completo en UTF-8 (secciones 0–21 y decisión final). Sustituye prioridad anterior de resolver observation_layers aisladamente/4b.4b antes de SIG. Escape no dejó nuevos cambios de producción: solo inspecciones; git status/diff previos conservados.
 
@@ -73,7 +169,7 @@ F01–F25/BYOD conservados; software/dependencias/datos con licencias separadas,
 
 ## Historial previo al mandato SIG universal, conservado
 
-## ESTADO VIGENTE · corrección prioritaria SIG → Studio validada · 2026-10-08
+## HISTORIAL · corrección prioritaria SIG → Studio validada · 2026-10-08
 
 ### Contrato aditivo · publicación científica visible y observación elegida
 

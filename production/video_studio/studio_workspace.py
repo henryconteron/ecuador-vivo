@@ -23,8 +23,11 @@ from output_profiles import PRESETS
 import layout_editor
 
 ASSETS=Path(__file__).with_name('workspace_frontend')
+SOURCE_MTIME=Path(__file__).stat().st_mtime_ns
+SOURCE_ASSET_MTIMES=tuple((ASSETS/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','workspace.js'))
 
 def _register():
+    """Register presentation assets once; normal progress updates reuse the root."""
     return st.components.v2.component('ecuador_vivo_workspace',
         html=(ASSETS/'workspace.html').read_text(encoding='utf-8'),
         css=layout_editor.CSS+'\n'+(ASSETS/'workspace.css').read_text(encoding='utf-8-sig'),
@@ -117,10 +120,12 @@ class WorkspaceSession:
             self.state[self.key+'_clipboard']=copy.deepcopy(selected)
             self.state[self.key+'_clipboard_maps']={iid:copy.deepcopy(scene['map_instances'][iid]) for iid in instances}
 
+@st.fragment
 def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=False):
     global _COMPONENT
     try:session=WorkspaceSession(st.session_state,key,source_project,canonical=canonical)
     except (ValueError,TypeError,KeyError,OSError) as error:st.error('No se pudo abrir el workspace: '+str(error));return
+    if st.session_state.pop(key+'_navigate_app',False):st.rerun(scope='app')
     component_key=key+'_workspace'
     def changed():
         message=st.session_state.get(component_key,{}).get('command')
@@ -132,6 +137,7 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
                 session.dispatch({**message,'action':'save'})
                 if message['phase'] in ('Inicio','SIG'):st.session_state['section']=message['phase']
                 else:st.session_state['studio_phase']=message['phase']
+                st.session_state[key+'_navigate_app']=True
                 return
             if action=='status':return
             if action=='upload':
@@ -223,6 +229,9 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
                 if cursor['frame'] is not None: cursor['frame'].close()
         job=st.session_state.get(key+'_job');payload['job']=read_json(Path(job)/'status.json',{}) if job else {}
         payload['job_stale']=bool(job and st.session_state.get(key+'_job_hash')!=digest)
+        if job and not payload['job_stale']:
+            from studio_delivery import register_job_status
+            payload['job_status_url']=register_job_status(job)
         if job and payload['job'].get('state')=='complete' and not payload['job_stale']:
             from studio_delivery import register_movie
             payload['movie_url']=register_movie(job)
@@ -235,17 +244,32 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
     except (ValueError,TypeError,KeyError,OSError) as error:st.error('No se pudo dibujar la escena: '+str(error));return
 
     if st.session_state.get(key+'_dialog'):
-        @st.dialog({'upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico','temporal_layers':'Preparar capas cartográficas','map_layers':'Revisar e insertar capas'}[st.session_state[key+'_dialog']],width='medium',
-                   on_dismiss=lambda:st.session_state.pop(key+'_dialog',None))
+        def dismiss_map_dialog():
+            from studio_map_ui import clear_review_state
+            clear_review_state(st.session_state,key)
+        @st.dialog({'upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico','temporal_layers':'Preparar capas cartográficas','observation_layers':'Preparar observación cartográfica','map_layers':'Revisar e insertar capas'}[st.session_state[key+'_dialog']],width='medium',
+                   on_dismiss=dismiss_map_dialog)
         def upload_dialog():
             mode=st.session_state[key+'_dialog']
             if mode=='map_layers':
                 from studio_map_ui import show_layer_review
                 show_layer_review(session,key,session.project['studio']['media'].get(st.session_state.get(key+'_layer_review_asset'),{}))
                 return
-            if mode in ('temporal_map','temporal_layers'):
+            if mode in ('temporal_map','temporal_layers','observation_layers'):
                 from studio_map_ui import show_map_dialog
-                show_map_dialog(session,key,representation='rgba_observation_bundle' if mode=='temporal_layers' else 'opaque_prerendered_map')
+                structured=mode in ('temporal_layers','observation_layers')
+                index=None
+                if mode=='observation_layers':
+                    from studio_science import restored_snapshot
+                    snapshot=restored_snapshot(session.project)
+                    if snapshot is None:
+                        st.error('Falta una revisión científica. Cierra y prepara o abre la revisión antes de elegir una fecha.')
+                        if st.button('Cerrar preparación',key=key+'_observation_close'):dismiss_map_dialog();st.rerun()
+                        return
+                    dates=[row['date'] for row in snapshot['source_records']]
+                    date=st.selectbox('Fecha observada',dates,key=key+'_observation_date',persist_state='session')
+                    index=dates.index(date)
+                show_map_dialog(session,key,representation='rgba_observation_bundle' if structured else 'opaque_prerendered_map',source_index=index)
                 return
             if mode=='regenerate_structure':
                 from studio_science import propose_structure,apply_structure,restore_structure

@@ -102,6 +102,32 @@ class SigObservationMapTests(unittest.TestCase):
             self.assertEqual(observed_native_crs({'native_crs':None},{**source,'file':str(compressed)},'chirps'),expected)
             self.assertEqual(observed_native_crs({'native_crs':'EPSG:3857'},source,'geotiff'),'EPSG:3857')
 
+    def test_studio_dispatcher_opens_observation_dialog_and_cancel_clears_review(self):
+        from streamlit.testing.v1 import AppTest
+        from studio_project import workspace_key
+        key=workspace_key(self.project)
+        def script():
+            import streamlit as st
+            from studio_workspace import show_workspace
+            from studio_project import source_projection,workspace_key
+            project=st.session_state['project_document']
+            show_workspace(source_projection(project),key=workspace_key(project),canonical=True)
+        app=AppTest.from_function(script,default_timeout=20)
+        app.session_state['project_document']=self.project
+        app.session_state[key+'_dialog']='observation_layers'
+        with patch('studio_workspace.STORE',Path(self.temp.name)):
+            app.run();self.assertFalse(app.exception,[e.value for e in app.exception])
+            app.selectbox(key=key+'_observation_date').select('2025-01-03').run()
+            self.assertFalse(app.exception)
+            app.session_state[key+'_layer_review_base']={'stale':'test'}
+            app.session_state[key+'_layer_review_asset']='obsolete'
+            app.button(key=key+'_map_close').click().run()
+            self.assertFalse(app.exception)
+        self.assertNotIn(key+'_dialog',app.session_state)
+        self.assertNotIn(key+'_layer_review_base',app.session_state)
+        self.assertNotIn(key+'_layer_review_asset',app.session_state)
+        self.assertEqual(app.session_state['project_document']['studio'],self.project['studio'])
+
     def test_sig_pending_dates_are_isolated_and_accept_uses_durable_commit(self):
         from streamlit.testing.v1 import AppTest
         from studio_map_bundles import prepare_bundle

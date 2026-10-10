@@ -1,0 +1,72 @@
+/* SIG-owned keys; the pinned Streamlit layout boundary is isolated here. */
+[data-testid="stMain"]:has(.st-key-sig_shell){overflow:hidden;background:#0b171d}
+[data-testid="stMainBlockContainer"]:has(.st-key-sig_shell){padding:4px 8px!important;max-width:none}
+body:has(.st-key-sig_shell) [data-testid="stHeader"]{height:0;min-height:0}
+.st-key-sig_shell{--sig-left:280px;--sig-right:320px;--sig-top:56px;--sig-time:36px;--sig-dock:0px;display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:var(--sig-top) 20px minmax(0,1fr) calc(38px + var(--sig-dock));height:calc(100dvh - 8px)!important;gap:4px!important;flex:none!important;width:100%!important;color:#edf5f7}
+.st-key-sig_shell > [data-testid="stLayoutWrapper"]{height:100%!important;width:100%!important;min-height:0;overflow:hidden}
+.st-key-sig_topbar,.st-key-sig_save_status,.st-key-sig_body,.st-key-sig_left,.st-key-sig_right,.st-key-sig_time,.st-key-sig_dock{flex:none!important;width:100%!important}
+.st-key-sig_topbar{height:var(--sig-top);flex-wrap:nowrap!important;gap:4px!important;align-items:center!important;border-bottom:1px solid #354f5c;background:#102129;padding:4px 8px}
+.st-key-sig_topbar > *{flex:0 0 auto!important;width:auto!important;min-width:0}
+.st-key-sig_topbar [data-testid="stHtml"]{display:flex;align-items:center;height:36px}
+#sig-brand{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:16px}
+#sig-brand svg{width:28px;height:28px;fill:none;stroke:#71dcc8;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#sig-brand strong{font-size:22px;color:#71dcc8}
+#sig-project-name{font-size:13px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:1px solid #354f5c;padding-left:12px;margin-left:8px}
+.st-key-sig_topbar button{min-height:36px;padding:4px 8px;font-size:13px;border-radius:4px}
+.st-key-sig_current_workspace button{color:#71dcc8!important;opacity:1!important;background:#17343c!important;border-bottom:2px solid #71dcc8!important}
+.st-key-sig_save_status{height:20px!important;overflow:hidden;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:16px!important;padding:0 8px}
+.st-key-sig_save_status > *{width:auto!important;flex:0 0 auto!important}
+.st-key-sig_save_status p{margin:0;font-size:11px;white-space:nowrap;color:#afc7d1}
+.st-key-sig_body,.st-key-sig_body > [data-testid="stLayoutWrapper"]{min-height:0;height:100%!important}
+.st-key-sig_body > [data-testid="stLayoutWrapper"] > [data-testid="stHorizontalBlock"]{display:grid!important;grid-template-columns:var(--sig-left) minmax(0,1fr) var(--sig-right);gap:4px;align-items:start;height:100%!important}
+.st-key-sig_body [data-testid="stColumn"]{width:auto!important;min-width:0;height:100%}
+.st-key-sig_left,.st-key-sig_right{height:calc(100dvh - var(--sig-top) - 78px - var(--sig-dock))!important;overflow:auto;overscroll-behavior:contain;background:#102129;border:1px solid #354f5c;border-radius:4px;padding:8px;gap:8px!important}
+.st-key-sig_left > *,.st-key-sig_right > *{flex-shrink:0}
+.st-key-sig_left button,.st-key-sig_right button{min-height:32px;font-size:13px}
+.st-key-sig_toggle_left button,.st-key-sig_toggle_right button{border:0;background:transparent;font-weight:600;justify-content:flex-start;padding:2px;font-size:16px}
+.st-key-sig_left p,.st-key-sig_right p{overflow-wrap:anywhere}
+.st-key-sig_right [data-testid="InputInstructions"]{pointer-events:none}
+.st-key-sig_left [class*="st-key-sig_layer_row_"]{border:0;border-radius:4px;padding:2px;gap:0;min-height:36px}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] button{border:0;background:transparent;justify-content:flex-start;padding:2px 4px;min-width:0}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] button[kind="primary"]{background:#204c50;color:#edf5f7;border-left:2px solid #71dcc8}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] [data-testid="stCheckbox"]{width:22px!important;flex:0 0 22px!important}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] [data-testid="stHtml"]{width:20px!important;flex:0 0 20px!important}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] p{margin:0;font-size:12px}
+.sig-swatch{display:block;width:18px;height:18px;border:2px solid;border-radius:3px}
+.sig-layer-title strong{display:block;font-size:15px;overflow-wrap:anywhere}.sig-layer-title small{display:block;color:#afc7d1;font-size:12px;margin-top:4px}
+.st-key-sig_right form{border:0;padding:0}
+.st-key-sig_right [data-testid="stWidgetLabel"] p{font-size:12px}
+.st-key-sig_center{min-width:0;gap:4px!important}
+.st-key-sig_time{height:var(--sig-time)!important;overflow:auto;gap:2px!important;background:#102129;border:1px solid #354f5c;border-radius:4px;padding:2px 6px}
+.st-key-sig_time > *{flex-shrink:0}.st-key-sig_time p{font-size:12px;margin:0}.st-key-sig_time button{min-height:28px;font-size:12px;padding:2px 6px}
+.st-key-sig_time [data-testid="stSelectbox"]{max-width:320px}
+.st-key-sig_dock{height:calc(38px + var(--sig-dock))!important;overflow:auto;gap:2px!important;border:1px solid #354f5c;background:#102129;border-radius:4px;padding:2px 8px}
+.st-key-sig_dock > *{flex-shrink:0}.st-key-sig_dock button{min-height:30px;font-size:12px}.st-key-sig_dock [data-testid="stTabs"]{min-height:0}
+.st-key-sig_shell button:focus-visible,.st-key-sig_shell input:focus-visible{outline:2px solid #71dcc8!important;outline-offset:2px}
+@media(max-width:1500px){.st-key-sig_shell{--sig-left:260px;--sig-right:300px}#sig-project-name{max-width:200px}}
+@media(max-width:1000px){
+ .st-key-sig_shell{--sig-left:44px!important;--sig-right:44px!important;--sig-top:88px!important}
+ .st-key-sig_topbar{flex-wrap:wrap!important;align-content:center;row-gap:2px!important}#sig-project-name{max-width:220px}
+ .st-key-sig_body{position:relative}
+ .st-key-sig_left,.st-key-sig_right{padding:6px;position:relative}
+ .st-key-sig_left:has([data-testid="stTextInput"]){position:absolute;left:0;top:0;width:min(300px,85vw)!important;z-index:5;box-shadow:12px 0 32px #0008}
+ .st-key-sig_right:has([data-testid="stSelectbox"]){position:absolute;right:0;top:0;width:min(320px,85vw)!important;z-index:5;box-shadow:-12px 0 32px #0008}
+ .st-key-sig_toggle_left button,.st-key-sig_toggle_right button{font-size:0;width:30px;padding:2px}
+ .st-key-sig_left:has([data-testid="stTextInput"]) .st-key-sig_toggle_left button,.st-key-sig_right:has([data-testid="stSelectbox"]) .st-key-sig_toggle_right button{font-size:16px;width:100%}
+}
+@media(prefers-reduced-motion:reduce){.st-key-sig_shell *{scroll-behavior:auto!important}}
+
+.st-key-sig_home button,.st-key-sig_studio button{border:0;background:transparent}
+.st-key-sig_right button[role="radio"][aria-checked="true"],.st-key-sig_dock [role="tab"][aria-selected="true"]{color:#71dcc8!important;background:#17343c!important;border-bottom:2px solid #71dcc8}
+.st-key-sig_shell [tabindex]:focus-visible,.st-key-sig_center [data-testid="stBidiComponentIsolated"]:focus-within{outline:2px solid #71dcc8!important;outline-offset:2px}
+.st-key-sig_left:not(:has([data-testid="stTextInput"])) .st-key-sig_toggle_left button,.st-key-sig_right:not(:has([data-testid="stSelectbox"])) .st-key-sig_toggle_right button{font-size:0;width:28px;padding:2px}
+.st-key-sig_left:not(:has([data-testid="stTextInput"])) .st-key-sig_toggle_left button p,.st-key-sig_right:not(:has([data-testid="stSelectbox"])) .st-key-sig_toggle_right button p{font-size:0!important;line-height:0}
+.st-key-sig_left [class*="st-key-sig_layer_row_"]{min-height:36px;height:auto!important}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] [data-testid="stHorizontalBlock"]{flex-wrap:nowrap!important}
+.st-key-sig_left [class*="st-key-sig_layer_row_"] [data-testid="stButton"]{min-width:0;flex:1 1 0!important}
+.st-key-sig_toggle_left button p,.st-key-sig_toggle_right button p{font-size:inherit}
+@media(max-width:1000px){#sig-brand span{display:none}}
+.st-key-sig_time [data-testid="stCaptionContainer"]{min-height:22px!important;padding:2px 0!important}.st-key-sig_time [data-testid="stHorizontalBlock"]{gap:8px!important}
+.st-key-sig_time > [data-testid="stLayoutWrapper"]{flex:0 0 auto!important;height:auto!important;min-height:min-content!important}
+.st-key-sig_time{gap:4px!important}.st-key-sig_time p{line-height:18px}
+.st-key-sig_time [data-testid="stElementContainer"]:has([data-testid="stCaptionContainer"]),.st-key-sig_time [data-testid="stMarkdown"]:has([data-testid="stCaptionContainer"]){min-height:26px!important;height:auto!important}

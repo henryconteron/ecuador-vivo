@@ -1,0 +1,8 @@
+# Ship a minimal metadata file that can be picked up by Streamlit at runtime.
+[project]
+name = "ecuador-vivo-sig-map"
+version = "0.1.0"
+
+[[tool.streamlit.component.components]]
+name = "ecuador_vivo_sig_map"
+asset_dir = "frontend/build"

@@ -10,6 +10,7 @@ from studio_editing import new_workspace
 from studio_templates import TEMPLATES, TEMPLATE_BINDINGS, THEMES, template_scene
 from studio_project import replace_document, validate_document
 from studio_recovery import recover_snapshot
+SOURCE_MTIME=Path(__file__).stat().st_mtime_ns
 
 
 def project_files(folder):
@@ -40,43 +41,46 @@ def create_project(mode, profile, *, template='blank', theme='Ecuador Vivo', nam
 
 def show_home(open_project, *, store=None, document=None):
     store=Path(store or STORE)
-    st.html('''<style>
-      .evs-home-brand{display:flex;align-items:center;gap:14px;color:#edf3f5}
-      .evs-home-mark{border:1px solid #82e4ca;border-radius:10px;padding:12px;color:#82e4ca;font-weight:700}
-      .evs-home-brand h1{margin:0;font-size:1.8rem;letter-spacing:-.04em}
-      .evs-home-brand p{margin:2px 0;color:#afc0c9}
-      .evs-home-intro{max-width:780px;margin:28px 0 20px}
-      .evs-home-intro h2{margin:0;font-size:2.4rem;line-height:1.2}
-      .evs-home-intro p{color:#afc0c9;line-height:1.6}
-      @media(max-width:800px){.evs-home-intro h2{font-size:1.8rem}}
-      </style><div class="evs-home-brand"><span class="evs-home-mark">EV</span>
-      <div><h1>Ecuador Vivo</h1><p>SIG y Studio · un proyecto compartido</p></div></div>
-      <div class="evs-home-intro"><h2>Tu próxima historia empieza aquí.</h2>
-      <p>Abre SIG para preparar mapas y resultados, o entra directamente en Studio para crear un video.
-      Ambos espacios conservan el mismo proyecto.</p></div>''')
-    with st.container(horizontal=True):
-        if st.button('Crear proyecto',type='primary',icon=':material/add:',key='home_new'):
-            st.session_state['home_mode']='free'
-        if st.button('Continuar en Studio',icon=':material/movie:',key='home_continue'):
-            st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
-        if st.button('Crear/abrir mapa · SIG',icon=':material/map:',key='home_sig'):
-            st.session_state['section']='SIG';st.rerun()
-        if st.button('Datos científicos',icon=':material/science:',key='home_data'):
-            st.session_state['section']='Obtener datos';st.rerun()
-        if st.button('Montaje anterior',icon=':material/history:',key='home_legacy'):
-            st.session_state['section']='Editor';st.session_state['studio_phase']='Datos';st.rerun()
-    st.subheader('Crear con un punto de partida')
+    from studio_home_visual import launch,recents
+    recent_paths=project_files(store/'projects')[:3]
+    launch(document,recent_paths)
+    st.markdown('### Empieza con una idea')
     columns=st.columns(3)
     choices=[('free','Proyecto libre','Grabaciones, imágenes, títulos y composición.','home_free'),
              ('template','Desde plantilla','Un diseño editable para empezar a contar.','home_template'),
              ('scientific','Desde datos científicos','Preparar fuentes y resultados verificables.','home_scientific')]
     for column,(mode,title,description,key) in zip(columns,choices):
-        with column,st.container(border=True):
+        with column,st.container(border=True,key='ev_home_choice_'+mode):
             st.markdown('**'+title+'**');st.caption(description)
             if st.button('Elegir '+title.lower(),key=key,width='stretch'):
                 st.session_state['home_mode']=mode
+    recents(recent_paths,open_project,validate_document)
+    with st.expander('Ayuda y ejemplo científico',expanded=False,key='home_help_panel',on_change='rerun'):
+        if st.button('Abrir ejemplo real · CHIRPS 1–3 enero 2024',key='home_chirps_example',icon=':material/calendar_month:'):
+            try:
+                from studio_sig_references import local_chirps_example
+                with st.spinner('Verificando originales locales…'):project=local_chirps_example()
+                open_project(project);st.session_state.pop('_pending_studio_navigation',None)
+                st.session_state['section']='SIG';st.rerun()
+            except (ValueError,OSError,KeyError,TypeError) as error:st.error(str(error))
+        st.caption('Tres observaciones ambientales reales disponibles en la caché personal. No se incluyen en la distribución pública.')
+        st.markdown('1. Importa y consulta tus datos en SIG.\n2. Preparar timelapse: revisa fechas, periodo, duración y encuadre.\n3. Enviar a Studio: revisa el recurso y confirma.\n4. Edita la escena, guarda y exporta el MP4.')
     mode=st.session_state.get('home_mode')
-    if mode=='scientific':
+    if mode=='gis':
+        st.subheader('Proyecto SIG')
+        name=st.text_input('Nombre del proyecto','Proyecto SIG sin título',key='home_sig_name',max_chars=200)
+        st.caption('Importa, consulta y analiza datos sin preparar un video. Studio estará disponible en el mismo proyecto.')
+        if st.button('Crear proyecto SIG',type='primary',key='home_create_sig'):
+            try:
+                from studio_sig_references import initial_map
+                open_project(initial_map(create_project('free',{'id':'youtube'},name=name)))
+                st.session_state.pop('home_mode',None)
+                # replace_project queues Studio for legacy consumers. This
+                # explicit SIG destination must survive the next app rerun.
+                st.session_state.pop('_pending_studio_navigation',None)
+                st.session_state['section']='SIG';st.rerun()
+            except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
+    elif mode=='scientific':
         from studio_scientific_ui import show_scientific_assistant
         try:
             show_scientific_assistant(document or st.session_state.get('project_document',default_project()),open_project)
@@ -98,6 +102,16 @@ def show_home(open_project, *, store=None, document=None):
                 template=st.selectbox('Plantilla inicial',templates,index=templates.index('cover'),format_func=lambda k:TEMPLATES[k],key='home_initial_template')
                 st.caption('Los diseños de métricas y gráficos requieren resultados y se eligen en Studio.')
             theme=st.selectbox('Estilo',list(THEMES),key='home_theme')
+            if st.button('Crear proyecto SIG',key='home_create_sig',icon=':material/layers:'):
+                try:
+                    project=create_project(mode,profile,template=template,theme=theme,name=name)
+                    from studio_sig_references import initial_map
+                    project=initial_map(project)
+                    open_project(project)
+                    st.session_state.pop('home_mode',None)
+                    st.session_state.pop('_pending_studio_navigation',None)
+                    st.session_state['section']='SIG';st.rerun()
+                except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
             if st.button('Crear proyecto en Studio',type='primary',key='home_create'):
                 try:
                     project=create_project(mode,profile,template=template,theme=theme,name=name)
@@ -105,39 +119,19 @@ def show_home(open_project, *, store=None, document=None):
                     st.session_state.pop('home_mode',None)
                     st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
                 except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
-    st.divider()
-    st.subheader('Abrir y recuperar')
-    with st.container(horizontal=True):
-        chosen=st.selectbox('Proyecto guardado',[None]+project_files(store/'projects'),format_func=lambda p:'Selecciona una copia…' if p is None else p.stem,key='home_saved')
-        if st.button('Abrir copia',disabled=chosen is None,key='home_open'):
+    with st.expander('Abrir e importar un proyecto',expanded=False,key='home_open_panel',on_change='rerun'):
+        with st.container(horizontal=True):
+            chosen=st.selectbox('Proyecto guardado',[None]+project_files(store/'projects'),format_func=lambda p:'Selecciona una copia…' if p is None else p.stem,key='home_saved')
+            if st.button('Abrir copia',disabled=chosen is None,key='home_open'):
+                try:
+                    project,previous=recover_snapshot(chosen)
+                    open_project(validate_document(project))
+                    st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
+                except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
+        upload=st.file_uploader('Importar proyecto JSON',type=['json'],key='home_import_file')
+        if st.button('Importar proyecto',disabled=upload is None,key='home_import'):
             try:
-                project,previous=recover_snapshot(chosen)
-                open_project(validate_document(project))
+                open_project(validate_document(json.loads(upload.getvalue())))
                 st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
             except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
-    upload=st.file_uploader('Importar proyecto JSON',type=['json'],key='home_import_file')
-    if st.button('Importar proyecto',disabled=upload is None,key='home_import'):
-        try:
-            open_project(validate_document(json.loads(upload.getvalue())))
-            st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
-        except (ValueError,TypeError,KeyError,OSError) as error:st.error(str(error))
-    st.caption('Abrir crea una copia de trabajo. Los archivos originales se conservan. El JSON referencia recursos locales; no incluye los archivos multimedia.')
-    recent=project_files(store/'projects')[:6]
-    if recent:
-        st.subheader('Proyectos recientes')
-        for index,path in enumerate(recent):
-            try:
-                data=json.loads(path.read_text(encoding='utf-8'))
-                if not isinstance(data,dict) or not isinstance(data.get('studio',{}),dict):
-                    raise ValueError('Documento de proyecto inválido.')
-                studio=data.get('studio',{})
-                name=data.get('name',path.stem)
-                label='Studio · '+str(len(studio.get('timeline',[])))+' escenas' if studio else 'Montaje anterior'
-                with st.container(border=True):
-                    st.markdown('**'+html.escape(str(name))+'**')
-                    st.caption(label+' · '+path.name)
-                    if st.button('Abrir',key='home_recent_'+str(index)):
-                        open_project(validate_document(data))
-                        st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio';st.rerun()
-            except (ValueError,TypeError,KeyError,OSError) as error:
-                st.warning(path.name+': '+str(error))
+        st.caption('Abrir crea una copia de trabajo. Los archivos originales se conservan. El JSON referencia recursos locales; no incluye los archivos multimedia.')

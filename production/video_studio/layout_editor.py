@@ -163,9 +163,22 @@ export default function(component){
  q('guides').disabled=frameW/frameH!==1080/1920;
  if(q('guides').disabled)q('guides').checked=false;
  const imgs=new Map();
- board.innerHTML='';
- const bg=document.createElement('img');bg.src=data.background;bg.alt='';bg.style.cssText='position:absolute;pointer-events:none';bg.style.width=authorW+'px';bg.style.height=authorH+'px';board.append(bg);
- layers.forEach(row=>{const el=document.createElement('img');el.src=row.src;el.className='piece';el.alt=row.label;el.draggable=false;el.dataset.id=row.id;el.style.pointerEvents=row.editable?'auto':'none';imgs.set(row.id,el);board.append(el)});
+ // Reconcile pixel surfaces across controlled snapshots; do not blank the board.
+ const generation=board.dataset.generation=String(Number(board.dataset.generation||0)+1);
+ const pixelTasks=[],pixelUpdates=[];
+ const setPixels=(element,src)=>{if(element.getAttribute('src')===src)return;const next=new Image();next.src=src;pixelTasks.push(next.decode().then(()=>{pixelUpdates.push([element,src])}))};
+ const bg=board.querySelector('img[data-background]')||document.createElement('img');bg.dataset.background='true';setPixels(bg,data.background);bg.alt='';bg.style.cssText='position:absolute;pointer-events:none';bg.style.width=authorW+'px';bg.style.height=authorH+'px';if(!bg.isConnected)board.append(bg);
+ const retained=new Set(layers.map(row=>row.id));
+ layers.forEach(row=>{const el=[...board.querySelectorAll('.piece')].find(el=>el.dataset.id===row.id)||document.createElement('img');setPixels(el,row.src);el.className='piece';el.alt=row.label;el.draggable=false;el.dataset.id=row.id;el.style.pointerEvents=row.editable?'auto':'none';imgs.set(row.id,el)});
+ Promise.all(pixelTasks).then(()=>{
+  if(board.dataset.generation!==generation)return;
+  // The scientific date/background and cartographic pieces change together.
+  // Keep the previous composition during decode, including a scene switch.
+  for(const [element,src] of pixelUpdates)element.src=src;
+  board.querySelectorAll('.piece').forEach(el=>{if(!retained.has(el.dataset.id))el.remove()});
+  for(const element of imgs.values())if(!element.isConnected)board.append(element);
+  component.onPixels?.();
+ }).catch(()=>{if(board.dataset.generation===generation)q('notice').textContent='No se pudo decodificar la composición; se conserva el último cuadro válido.'});
  const guide=document.createElement('div');guide.className='guide';guide.setAttribute('aria-hidden','true');guide.style.cssText='left:60px;top:190px;width:900px;height:1330px';board.append(guide);
  const box=document.createElement('div');box.className='selected';box.setAttribute('aria-hidden','true');const handle=document.createElement('div');handle.className='handle';box.append(handle);board.append(box);
  function choices(){
@@ -285,7 +298,7 @@ export default function(component){
    choose:(id,extend=false)=>{choose(id,extend);paint();inspect()},resizeView,
    isGesture:()=>!!(drag||marquee),hasPending:()=>JSON.stringify(entries)!==originalEntries};
  }
- paint();inspect();pending();return()=>{cancelGesture();observer.disconnect();if(viewFrame!==null)cancelAnimationFrame(viewFrame);stage.onpointerdown=null;stage.onpointermove=null;stage.onpointerup=null;stage.onpointercancel=null;stage.onkeydown=null;if(data.workspace_mode){handle.remove();box.remove();guide.remove();marqueeBox.remove();bg.remove();imgs.forEach(el=>el.remove())}};
+ paint();inspect();pending();return()=>{cancelGesture();observer.disconnect();if(viewFrame!==null)cancelAnimationFrame(viewFrame);stage.onpointerdown=null;stage.onpointermove=null;stage.onpointerup=null;stage.onpointercancel=null;stage.onkeydown=null;if(data.workspace_mode){handle.remove();box.remove();guide.remove();marqueeBox.remove()}};
 }
 """
 

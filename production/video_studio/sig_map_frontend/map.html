@@ -6,7 +6,10 @@
     <button id="sig-fit-layer">Ajustar capa activa</button>
     <button id="sig-clear">Limpiar selección</button>
   </div>
-  <svg id="sig-geographic-map" role="img" aria-label="Mapa interactivo lon/lat de capas GeoJSON" tabindex="0" preserveAspectRatio="xMidYMid meet"></svg>
+  <div class="sig-viewport">
+    <svg id="sig-geographic-map" role="img" aria-label="Mapa interactivo lon/lat de capas GeoJSON" tabindex="0" preserveAspectRatio="xMidYMid meet"></svg>
+    <figure id="sig-temporal-preview" hidden><img alt="Observación cartográfica prerenderizada con su fecha científica"><figcaption></figcaption></figure>
+  </div>
   <div class="status"><span id="sig-coordinate">Lon/lat · OGC:CRS84</span><span id="sig-map-status"></span></div>
   <div class="help">Arrastra para desplazar · rueda o +/− para zoom · clic en un polígono para identificar · vista angular, sin medición métrica ni mapa base externo</div>
 </div>

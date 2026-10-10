@@ -8,6 +8,11 @@ from studio_map_jobs import start_map_job, map_status, read_resource, read_bundl
 from studio_temporal import attach_map, attach_map_layers, review_map_layers, _hash
 
 
+def clear_review_state(state,key):
+    for suffix in ('_dialog','_layer_review_base','_layer_review_asset','_frame'):
+        state.pop(key+suffix,None)
+
+
 def show_layer_review(session,key,record,*,publish_label='Insertar capas',publisher=None,prepared_job_key=None,
                       prepare_dialog='temporal_layers'):
     """Native review for a prepared or retained library resource; explicit commit."""
@@ -25,15 +30,19 @@ def show_layer_review(session,key,record,*,publish_label='Insertar capas',publis
         st.write('Fuente: '+(manifest['citation'] or manifest['source']))
         st.caption(f'Revisión {manifest["scientific_revision"][:12]} · perfil {profile.name} · {profile.width} × {profile.height} · 30 FPS')
         from maqueta import MAIN_BOX
-        if manifest['region']!=list(MAIN_BOX):st.warning('Dominio continental parcial: se conserva el encuadre preparado; no representa todo Ecuador continental. Consulta los límites en los detalles.')
+        universal=manifest.get('source_scope')=='canonical_geography'
+        if universal:st.info('Región geográfica SIG, con valores nativos consultables y encuadre revisado. El inset de Ecuador está desactivado y el mapa base se excluye.')
+        elif manifest['region']!=list(MAIN_BOX):st.warning('Dominio continental parcial: se conserva el encuadre preparado; no representa todo Ecuador continental. Consulta los límites en los detalles.')
         st.image(str(Path(record['manifest_path']).parent/manifest['thumbnail']['path']),
             width=240,alt='Vista de las capas preparadas; cada región conserva su transparencia')
         covered={lid:sum(o['layers'][lid]['state']=='covered' for o in manifest['observations']) for lid in manifest['layers']}
         for lid,name in (('continent','Continente'),('galapagos','Galápagos')):
+            if universal and lid=='galapagos':continue
+            if universal:name='Región SIG'
             text=f'{name}: {covered[lid]}/{len(manifest["observations"])} observaciones con cobertura.'
             if covered[lid]<len(manifest['observations']):st.warning(text+' Las fechas sin cobertura serán transparentes, sin sustituir datos.')
             else:st.caption(text)
-        st.caption('Se añadirá una escena con regiones independientes, fecha protegida, leyenda verificada, variable/unidades y fuente. El proyecto actual se conserva.')
+        st.caption('Se añadirá una escena con mapa RGBA, fecha protegida, leyenda verificada, variable/unidades y fuente. El proyecto actual se conserva.')
         with st.expander('Escala, calendario y procedencia'):
             st.image(str(Path(record['manifest_path']).parent/manifest['auxiliaries']['legend_static']['path']),
                 alt='Leyenda completa y sellada de los valores representados')
@@ -66,9 +75,7 @@ def show_layer_review(session,key,record,*,publish_label='Insertar capas',publis
         st.session_state[key+'_dialog']=prepare_dialog
         st.rerun()
     if st.button('Cerrar sin insertar',key=key+'_layers_close'):
-        st.session_state.pop(key+'_layer_review_base',None)
-        st.session_state.pop(key+'_layer_review_asset',None)
-        st.session_state.pop(key+'_dialog',None)
+        clear_review_state(st.session_state,key)
         st.rerun()
 
 
@@ -151,4 +158,4 @@ def show_map_dialog(session, key, *, publish_label='Insertar mapa y escena en St
         except (ValueError,TypeError,KeyError,OSError) as error: st.error(str(error))
     if st.button('Cerrar sin insertar',key=key+'_map_close'):
         # The private worker can finish while its dialog is closed; reopening resumes it.
-        st.session_state.pop(key+'_dialog',None); st.rerun()
+        clear_review_state(st.session_state,key); st.rerun()

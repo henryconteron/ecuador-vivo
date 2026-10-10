@@ -12,9 +12,13 @@ from pathlib import Path
 import re
 from urllib.parse import urlsplit
 import uuid
+from collections import OrderedDict
+import pickle
+from threading import RLock
 import numpy as np
 from PIL import Image
 from shapely.geometry import shape
+from shapely.errors import GEOSException
 from rasterio.features import geometry_mask
 from rasterio.transform import from_bounds
 from model import STORE
@@ -25,6 +29,16 @@ REGION_LIMIT=5000
 COORDINATE_LIMIT=250_000
 CRS='OGC:CRS84'
 METHOD='angular_lonlat_pixel_center_v1'
+REPRESENTATION_REVISION='geojson-features-v2'
+SOURCE_CACHE_BYTES=64*1024*1024
+SOURCE_CACHE_ENTRIES=8
+_SOURCE_CACHE=OrderedDict()
+_SOURCE_CACHE_LOCK=RLock()
+
+
+def clear_source_cache():
+    """Discard transient representations only; never touch source files."""
+    with _SOURCE_CACHE_LOCK:_SOURCE_CACHE.clear()
 
 
 def _hash(content):return hashlib.sha256(content).hexdigest()
@@ -78,16 +92,25 @@ def parse_geojson(content):
             if key in identifiers:raise ValueError('IDs GeoJSON duplicados.')
             identifiers.add(key)
         geometry=feature.get('geometry')
-        if not isinstance(geometry,dict) or 'crs' in geometry or geometry.get('type') not in ('Polygon','MultiPolygon'):
-            raise ValueError('Este corte admite Polygon/MultiPolygon 2D; otros tipos siguen pendientes.')
-        polygons=[geometry.get('coordinates')] if geometry['type']=='Polygon' else geometry.get('coordinates')
-        if not isinstance(polygons,list) or not polygons:raise ValueError('Polígono vacío.')
+        if not isinstance(geometry,dict) or 'crs' in geometry or geometry.get('type') not in ('Point','MultiPoint','LineString','MultiLineString','Polygon','MultiPolygon'):
+            raise ValueError('Importa puntos, líneas o polígonos 2D; GeometryCollection no está soportado.')
+        def positions(value):
+            if not isinstance(value,list) or not value:raise ValueError('Coordenadas ausentes.')
+            if all(not isinstance(v,list) for v in value):
+                if len(value)!=2 or any(type(v) not in (int,float) or not math.isfinite(v) for v in value):
+                    raise ValueError('Se requieren posiciones 2D finitas, sin coordenada Z ni booleanos.')
+                yield value
+            else:
+                for child in value:yield from positions(child)
+        coordinates=list(positions(geometry.get('coordinates')));points+=len(coordinates)
+        if points>COORDINATE_LIMIT:raise ValueError('GeoJSON superior a 250000 posiciones.')
+        if any(not -180<=p[0]<=180 or not -90<p[1]<90 for p in coordinates):
+            raise ValueError('Coordenadas fuera de lon/lat WGS84 o polos no soportados; comprueba CRS y ejes.')
+        polygons=[geometry.get('coordinates')] if geometry['type']=='Polygon' else geometry.get('coordinates') if geometry['type']=='MultiPolygon' else []
         for polygon in polygons:
             if not isinstance(polygon,list) or not polygon:raise ValueError('Anillos ausentes.')
             for ring in polygon:
                 if not isinstance(ring,list) or len(ring)<4 or ring[0]!=ring[-1]:raise ValueError('Anillo debe estar cerrado y contener al menos cuatro posiciones.')
-                points+=len(ring)
-                if points>COORDINATE_LIMIT:raise ValueError('GeoJSON superior a 250000 posiciones.')
                 for point in ring:
                     if (not isinstance(point,list) or len(point)!=2 or any(type(v) not in (int,float) or not math.isfinite(v) for v in point)
                             or not -180<=point[0]<=180 or not -90<=point[1]<=90):
@@ -95,9 +118,14 @@ def parse_geojson(content):
                     if abs(point[1])==90:raise ValueError('Polos no soportados en esta vista angular.')
                 if any(abs(a[0]-b[0])>180 for a,b in zip(ring,ring[1:])):raise ValueError('Cruce del antimeridiano no soportado en este corte.')
         try:geometry_shape=shape(geometry)
-        except (TypeError,ValueError) as error:raise ValueError('Geometría GeoJSON inválida.') from error
-        if geometry_shape.is_empty or not geometry_shape.is_valid or geometry_shape.area<=0:
-            raise ValueError('Polígono inválido, vacío o con autointersección; no se repara automáticamente.')
+        except (TypeError,ValueError,GEOSException) as error:raise ValueError('Geometría GeoJSON inválida.') from error
+        if (geometry_shape.is_empty or not geometry_shape.is_valid or
+                geometry['type'] in ('Polygon','MultiPolygon') and geometry_shape.area<=0 or
+                geometry['type'] in ('LineString','MultiLineString') and geometry_shape.length<=0):
+            raise ValueError('Geometría inválida, vacía o degenerada; no se repara automáticamente.')
+        lines=[geometry['coordinates']] if geometry['type']=='LineString' else geometry['coordinates'] if geometry['type']=='MultiLineString' else []
+        if any(abs(a[0]-b[0])>180 for line in lines for a,b in zip(line,line[1:])):
+            raise ValueError('Cruce del antimeridiano no soportado.')
         if geometry_shape.bounds[2]-geometry_shape.bounds[0]>180:raise ValueError('Extensión angular superior a 180 grados no soportada.')
         box=list(geometry_shape.bounds);bounds.append(box)
         for item in (feature,geometry):
@@ -123,7 +151,7 @@ def _registry(project):
     return project['studio'].get('geography',{'version':1,'sources':{},'regions':{},'views':{}})
 
 
-def read_source(record):
+def _verified_source(record):
     if (not isinstance(record,dict) or record.get('native_crs')!=CRS or type(record.get('bytes')) is not int
             or not 0<record['bytes']<=SOURCE_LIMIT or not re.fullmatch('[0-9a-f]{64}',str(record.get('sha256')))):
         raise ValueError('Referencia geográfica inválida.')
@@ -135,7 +163,33 @@ def read_source(record):
         raise ValueError('Fuente ausente, cambiada o fuera del almacenamiento geográfico interno.')
     with path.open('rb') as stream:content=stream.read(SOURCE_LIMIT+1)
     if len(content)!=record['bytes'] or _hash(content)!=record['sha256']:raise ValueError('Los bytes GeoJSON originales cambiaron.')
-    return parse_geojson(content)
+    if 'origin' in record:
+        from studio_sig_vector import verify_origin
+        verify_origin(record['origin'])
+    # Metadata, confinement and every original byte are checked BEFORE cache lookup.
+    # Size/mtime alone is not an integrity check. Limits are part of parser revision.
+    key=(str(ROOT.resolve()),record['sha256'],REPRESENTATION_REVISION,SOURCE_LIMIT,REGION_LIMIT,COORDINATE_LIMIT)
+    with _SOURCE_CACHE_LOCK:
+        cached=_SOURCE_CACHE.get(key)
+        if cached is not None:
+            _SOURCE_CACHE.move_to_end(key)
+            return pickle.loads(cached)
+    document=parse_geojson(content);sid='source.'+record['sha256']
+    regions={}
+    for index,feature in enumerate(_features(document)):
+        region=_region(sid,index,feature);regions[region['id']]=region
+    # Pickle contains only our validated in-memory primitives, never external input.
+    # A new copy on each read prevents callers poisoning the shared cache.
+    cached=pickle.dumps((document,regions),protocol=5)
+    with _SOURCE_CACHE_LOCK:
+        if len(cached)<=SOURCE_CACHE_BYTES and SOURCE_CACHE_ENTRIES>0:
+            _SOURCE_CACHE[key]=cached;_SOURCE_CACHE.move_to_end(key)
+            while len(_SOURCE_CACHE)>SOURCE_CACHE_ENTRIES or sum(map(len,_SOURCE_CACHE.values()))>SOURCE_CACHE_BYTES:
+                _SOURCE_CACHE.popitem(last=False)
+    return document,regions
+
+
+def read_source(record):return _verified_source(record)[0]
 
 
 def validate_geography(studio):
@@ -151,10 +205,27 @@ def validate_geography(studio):
     expected_regions={};used=0
     for sid,source in registry['sources'].items():
         if not isinstance(source,dict) or sid!='source.'+str(source.get('sha256')) or source.get('id')!=sid:raise ValueError('Identidad de fuente inválida.')
-        document=read_source(source);used+=source['bytes']
-        if used>64*1024*1024:raise ValueError('Fuentes del proyecto superiores a 64 MiB.')
-        for index,feature in enumerate(_features(document)):
-            region=_region(sid,index,feature);expected_regions[region['id']]=region
+        if source.get('type')=='raster':
+            from studio_sig_raster import verify_source
+            verify_source(source);used+=source['bytes']
+            if used>256*1024*1024:raise ValueError('Fuentes superiores al presupuesto de 256 MiB.')
+            for entry in source.get('raster_operation',{}).get('inputs',[]):
+                original=registry['sources'].get(entry.get('source_id'))
+                if original is None or original.get('sha256')!=entry.get('sha256') or original.get('date')!=entry.get('date'):
+                    raise ValueError('Operación ráster sin sus entradas originales.')
+            continue
+        document,regions=_verified_source(source);used+=source['bytes']
+        if 'origin' in source:
+            metadata=document.get('ecuador_vivo_import',{})
+            if any(metadata.get(key)!=source['origin'][other] for key,other in
+                   [('format','format'),('input_sha256','sha256'),('native_crs','native_crs'),('options','options')]):
+                raise ValueError('La representación no corresponde al original y su conversión declarada.')
+        if used>256*1024*1024:raise ValueError('Fuentes del proyecto superiores a 256 MiB.')
+        expected_regions.update(regions)
+        if 'operation' in source:
+            from studio_sig_vector import validate_operation
+            validate_operation(source['operation'],registry)
+            if document.get('ecuador_vivo_operation')!=source['operation']:raise ValueError('Los parámetros de la operación cambiaron.')
     if registry['regions']!=expected_regions:raise ValueError('Regiones distintas de sus geometrías originales.')
     for vid,view in registry['views'].items():
         if not isinstance(view,dict) or view.get('id')!=vid or view.get('region_id') not in expected_regions or view.get('display_crs')!=CRS or view.get('method')!=METHOD:
@@ -215,7 +286,10 @@ def _view_grid(box):
 
 def render_region(project,region_id):
     from maqueta import projector,iter_polygons,outline_layer
-    feature=region_feature(project,region_id);box,size=_view_grid(_registry(project)['regions'][region_id]['bbox'])
+    feature=region_feature(project,region_id)
+    if feature['geometry']['type'] not in ('Polygon','MultiPolygon'):
+        raise ValueError('La vista editorial G1 admite polígonos. Un punto o línea no sustituye un dominio de estadísticas zonales.')
+    box,size=_view_grid(_registry(project)['regions'][region_id]['bbox'])
     width,height=size
     mask=geometry_mask([feature['geometry']],out_shape=(height,width),transform=from_bounds(*box,width,height),invert=True)
     image=Image.new('RGBA',(width,height),'#13bfd1')

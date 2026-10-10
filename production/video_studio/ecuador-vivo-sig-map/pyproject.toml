@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecuador-vivo-sig-map"
+version = "0.1.0"
+description = "Canonical SIG presentation adapter"
+readme = "README.md"
+license = "LicenseRef-Ecuador-Vivo"
+license-files = ["LICENSE", "THIRD-PARTY-NOTICES.md"]
+requires-python = ">=3.10"
+authors = [{ name = "Ecuador Vivo" }]
+dependencies = ["streamlit == 1.65.0"]
+
+[project.optional-dependencies]
+devel = [
+  "wheel",
+  "pytest==7.4.0",
+  "playwright==1.48.0",
+  "requests==2.31.0",
+  "pytest-playwright-snapshot==1.0",
+  "pytest-rerunfailures==12.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["ecuador_vivo_sig_map*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+ecuador_vivo_sig_map = ["frontend/build/**/*", "pyproject.toml"]

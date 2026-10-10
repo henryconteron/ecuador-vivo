@@ -182,6 +182,14 @@ def _artifact(item, path, size):
 
 def _schema(manifest):
     from maqueta import GALAPAGOS_BOX
+    if manifest.get('source_scope') not in (None,'canonical_geography'):
+        raise ValueError('Ámbito de fuentes cartográficas desconocido.')
+    if manifest.get('source_scope')=='canonical_geography':
+        from studio_temporal import _hash
+        binding=manifest['geographic_binding']
+        if (manifest['scientific_identity']!=_hash(binding) or manifest['scientific_revision']!=_hash([binding,manifest['source_records']])
+                or binding['basemap_included'] is not False or binding['bbox']!=manifest['region']):
+            raise ValueError('Bundle sin su vínculo geográfico verificable.')
     total=manifest.get('total_frames')
     if (type(manifest.get('version')) is not int or manifest['version']!=2 or manifest.get('representation')!=REPRESENTATION
             or type(manifest.get('fps')) is not int or manifest['fps']!=30
@@ -296,6 +304,86 @@ def read_bundle(record, *, verify_tiles=True):
             if verify_tiles:_png(root,item)
     except (KeyError,TypeError,IndexError,AttributeError) as error: raise ValueError('Estructura de bundle incompleta.') from error
     return manifest
+
+
+def prepare_geographic_bundle(project,duration=3.):
+    """Canonical GeoTIFF provider adapter for the existing sealed RGBA contract.
+
+    The primary channel is a universal region. The Ecuador inset is explicitly
+    disabled, never fabricated. Decoder, calendar, legend and renderer are shared.
+    """
+    from studio_sig_layers import workspace_for
+    from studio_sig_raster import verify_source,compatible,settings,representation,verify_series_binding
+    from studio_temporal import _hash
+    import numpy as np
+    state=workspace_for(project);time=state.get('raster_time')
+    if not time:raise ValueError('Configura y revisa las fechas geográficas antes de preparar la serie.')
+    if type(duration) not in (int,float) or not math.isfinite(duration) or not .1<=duration<=120:raise ValueError('Duración de comprobación: de 0,1 a 120 segundos.')
+    sources=[project['studio']['geography']['sources'][state['layers'][lid]['source_id']] for lid in time['layers']]
+    compatible(sources)
+    opacities=[state['layers'][lid]['style']['opacity'] for lid in time['layers']]
+    if any(v!=opacities[0] for v in opacities):raise ValueError('La serie utiliza una opacidad común. Iguala la opacidad de sus fechas antes de enviarla; no se alterarán sus datos.')
+    from studio_sig_timelapse import output_frame,gaps
+    frame=output_frame(project);box=frame['bbox'];scale=settings(sources)
+    if scale is None:raise ValueError('Ambas fechas carecen de datos finitos. No se puede preparar una leyenda numérica verificable.')
+    binding={'sources':[{'id':s['id'],'metadata_sha256':_hash(s)} for s in sources],
+        'bbox':box,'scale':scale,'opacity':opacities[0],'method':'GDAL nearest, finite native mask, RGBA','basemap_included':False}
+    if 'duration' in time:binding.update(output_profile=copy.deepcopy(project['studio']['output_profile']),cadence=time.get('cadence','irregular'))
+    records=[{'file':s['path'],'date':s['date'],'band':s['raster']['band'],'sha256':s['sha256'],'source_url':s['provenance'].get('url','')} for s in sources]
+    identity=_hash(binding);revision=_hash([binding,records]);counts=frame_counts(len(sources),duration);total=sum(counts)
+    cartography={**scale,'source':'local','variable':sources[0]['variable'],'bbox':box,'show_galapagos':False,
+        'citation':' | '.join(dict.fromkeys(s['provenance']['citation'] for s in sources)),'source_url':None}
+    destination=_root()/uuid.uuid4().hex;destination.mkdir(parents=True)
+    used=0
+    def save(image,name):
+        nonlocal used
+        path=_path(destination,name);path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open('xb') as stream:image.save(stream,format='PNG')
+        content=_read(path,PNG_LIMIT);used+=len(content)
+        if used>BUNDLE_LIMIT:raise ValueError('Bundle superior al presupuesto.')
+        return {'path':name,'sha256':_digest(content),'bytes':len(content),'size':list(image.size),'mode':'RGBA'}
+    from maqueta import GALAPAGOS_BOX
+    observations=[];intervals=[];cursor=0;specs={}
+    with Image.new('RGBA',(480,320)) as thumbnail:
+        for index,(source,count) in enumerate(zip(sources,counts)):
+            image,_=representation(source,scale,size=max(frame['map_width'],frame['map_height']),box=box)
+            try:
+                if not specs:
+                    for lid,bbox,size in [('continent',box,image.size),('galapagos',list(GALAPAGOS_BOX),(34,37))]:
+                        specs[lid]={'id':lid,'name':'Región SIG · '+source['variable'] if lid=='continent' else 'Inset desactivado',
+                            'bbox':bbox,'crs':'EPSG:4326','size':list(size),'transform':list(from_bounds(*bbox,*size))}
+                pixels=int((np.asarray(image.getchannel('A'))>0).sum());tiles={}
+                tile=save(image,f'observations/{index:06d}/continent.png')
+                tile.update(state='covered' if pixels else 'no_coverage',data_pixels=pixels,borders_painted=False,provinces_painted=False);tiles['continent']=tile
+                with Image.new('RGBA',(34,37)) as inset:
+                    tile=save(inset,f'observations/{index:06d}/galapagos.png');tile.update(state='disabled',data_pixels=0,borders_painted=False,provinces_painted=False);tiles['galapagos']=tile
+                if index==0:
+                    with image.copy() as thumb:
+                        thumb.thumbnail((480,320));thumbnail.alpha_composite(thumb,((480-thumb.width)//2,(320-thumb.height)//2))
+                observations.append({'source_index':index,'date':source['date'],'native_crs':source['native_crs'],'layers':tiles})
+                intervals.append({'date':source['date'],'source_index':index,'start_frame':cursor,'end_frame':cursor+count});cursor+=count
+            finally:image.close()
+        thumb=save(thumbnail,'thumbnail.png')
+    with paint_legend(cartography) as legend:
+        auxiliary=save(legend,'legend.png');auxiliary['spec']=legend_spec(cartography)
+    manifest={'version':2,'representation':REPRESENTATION,'state':'ready','renderer':'shared RGBA colorizer / GDAL nearest',
+        'source_scope':'canonical_geography','geographic_binding':binding,'scientific_revision':revision,'scientific_identity':identity,
+        'source':'local','variable':sources[0]['variable'],'units':sources[0]['units'],'region':box,'citation':cartography['citation'],
+        'source_url':None,'cartographic_settings':cartography,'layers':specs,'source_records':records,'observations':observations,'intervals':intervals,
+        'fps':30,'total_frames':total,'duration':total/30,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
+        'temporal_interpolation':False,'nodata':{'override':None,'rule':'native mask AND finite samples'},
+        'rules':{'alpha':'native mask AND finite samples'},'warnings':['Inset Ecuador desactivado; región universal de la vista SIG.',
+            'Igual tiempo por observación real; sin interpolación ni relleno de fechas.']+
+            [f"Intervalos ausentes: {gap['missing_intervals']} entre {gap['after']} y {gap['before']}." for gap in gaps([s['date'] for s in sources],time.get('cadence','irregular'))],
+        'thumbnail':thumb,'auxiliaries':{'legend_static':auxiliary}}
+    _schema(manifest);verify_series_binding(project,manifest);content=_bytes(manifest)
+    with (destination/'manifest.json').open('xb') as stream:stream.write(content)
+    record={'kind':'temporal_map','representation':REPRESENTATION,'name':'Serie SIG '+sources[0]['variable']+' · '+sources[0]['date']+' — '+sources[-1]['date'],
+        'manifest_path':str(destination/'manifest.json'),'manifest_sha256':_digest(content),'bytes':used+len(content),
+        'source_dataset':'sources.'+revision,'period':[sources[0]['date'],sources[-1]['date']],
+        'layers':{lid:{'name':g['name'],'size':g['size']} for lid,g in specs.items()},
+        **{k:manifest[k] for k in ('source','citation','generated_at','thumbnail','scientific_revision','scientific_identity','fps','total_frames','duration','variable','units','state')}}
+    read_bundle(record);verify_series_binding(project,manifest);return record
 
 
 def observed_native_crs(observation,source,provider):

@@ -33,12 +33,15 @@ def _atomic(path,content):
         if owned: temp.unlink(missing_ok=True)
 
 
-def _read(path):
+def _read_document(path):
     path=Path(path)
     if path.stat().st_size>MAX_BYTES: raise ValueError('El borrador supera el presupuesto de 64 MiB.')
     with path.open('rb') as stream: content=stream.read(MAX_BYTES+1)
     if len(content)>MAX_BYTES: raise ValueError('El borrador supera el presupuesto de 64 MiB.')
-    return _document(json.loads(content))[0]
+    return _document(json.loads(content))
+
+
+def _read(path):return _read_document(path)[0]
 
 
 def _previous(path):
@@ -50,8 +53,8 @@ def save_snapshot(path,project):
     path=Path(path);document,content=_document(project)
     if path.exists():
         # Do not replace a malformed primary or consume the only good backup.
-        previous=_read(path)
-        _atomic(_previous(path),_document(previous)[1])
+        previous,previous_content=_read_document(path)
+        _atomic(_previous(path),previous_content)
     _atomic(path,content)
 
 

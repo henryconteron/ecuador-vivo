@@ -1,6 +1,7 @@
 <div class="editor evs" lang="es">
  <header class="topbar" aria-label="Proyecto y reproducción">
   <div class="brand"><span class="brand-mark" aria-hidden="true">EV</span><div>Ecuador Vivo<span>STUDIO</span></div></div>
+  <nav class="workspace-navigation" aria-label="Espacios compartidos"><button id="nav-home">Inicio</button><button id="nav-sig">SIG</button><span aria-current="page">Studio</span></nav>
   <label class="sr-only" for="project-name">Nombre del proyecto</label><input id="project-name" maxlength="180" aria-label="Nombre del proyecto">
   <span id="save-state" role="status" aria-live="polite"></span>
   <div class="history-tools"><button id="undo" title="Deshacer · Ctrl+Z" aria-label="Deshacer"></button><button id="redo" title="Rehacer · Ctrl+Mayús+Z" aria-label="Rehacer"></button></div>
@@ -11,10 +12,11 @@
  </header>
  <div class="workspace">
   <aside class="layers-panel" aria-label="Recursos y capas">
-   <nav class="resource-nav" aria-label="Biblioteca"><button data-tab="scenes">Escenas</button><button data-tab="layers">Capas</button><button data-tab="media">Multimedia</button><button data-tab="data">Datos científicos</button><button data-tab="visuals">Visualizaciones</button><button data-tab="templates">Templates</button><button data-tab="project">Proyecto</button></nav>
+   <nav class="resource-nav" aria-label="Biblioteca"><button data-tab="scenes">Escenas</button><button data-tab="layers">Capas</button><button data-tab="media">Multimedia</button><button data-tab="data">Datos</button><button data-tab="templates">Plantillas</button></nav>
    <div class="panel-body"><div class="panel-heading"><h2 id="resource-title">Capas</h2><button id="close-left" class="mobile-only" aria-label="Cerrar recursos">×</button></div>
     <div id="layer-content"><div class="layer-actions"><button id="layerup" title="Subir capa" aria-label="Subir capa"></button><button id="layerdown" title="Bajar capa" aria-label="Bajar capa"></button><button id="group" title="Agrupar · Ctrl+G" aria-label="Agrupar"></button><button id="ungroup" title="Desagrupar" aria-label="Desagrupar"></button></div><div id="layers"></div><p class="panel-note">Mayús + clic para seleccionar varios.</p></div>
     <div id="library-content"></div>
+    <div class="library-secondary"><button data-tab="visuals">Visualizaciones</button><button data-tab="project">Proyecto y recuperación</button></div>
    </div>
   </aside>
   <main class="canvas-area" aria-label="Edición visual">
@@ -25,6 +27,7 @@
     <button id="toggle-right" title="Inspector" aria-label="Mostrar u ocultar inspector"></button>
    </div>
    <div class="canvas-heading"><span id="scene-label"></span><span id="canvas-mode">EDICIÓN</span></div>
+   <div id="preparation" hidden role="status"><span id="preparation-label"></span><progress id="preparation-progress" max="1" value="0" aria-label="Preparación del video"></progress></div>
    <div class="viewport"><div class="stage" id="canvas-stage" tabindex="0" aria-label="Lienzo editable del video" aria-describedby="keyboard-help"><div class="board"></div></div></div>
    <div class="preview-surface" hidden><video id="movie" playsinline controls></video><img id="frame-preview" alt="Cuadro de la timeline"><button id="back-edit">Volver a editar</button></div>
    <div class="canvas-status"><span id="keyboard-help">Mayús + clic: selección · Flechas: mover · Alt + arrastre: pan</span><span id="pending" role="status" aria-live="polite"></span></div>

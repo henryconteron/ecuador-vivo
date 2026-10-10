@@ -1,5 +1,13 @@
 # Ecuador Vivo Studio Design System y contrato UX
 
+## ESTADO VIGENTE · pausa y cierre visual NO validado · 2026-10-09
+
+Inicio/SIG/Studio reorganizados con componentes/backend existentes. Detalle y capturas reales: tmp/ecuador-vivo-visual-stability-report.md y único checkpoint. Mantener IMG y evitar cambios de src redujo reconstrucciones, pero la medición posterior confirmó atenuación del contenedor Streamlit (mínimo0,33;368/4001muestras). No afirmar cierre del parpadeo ni ocultarlo con CSS. Último recorrido editor falló antes de Undo; selección/ack/persistencia y retorno de preview/calendario requieren diagnóstico. Diseño aún difiere de las referencias en densidad/acabado; no considerar las capturas asentadas evidencia suficiente de estabilidad. Desarrollo detenido por petición del usuario, sin nuevas tareas hasta autorización.
+
+## HISTORIAL · SIG profesional · presentación · 2026-10-09
+
+Las tres referencias del usuario fueron visualizadas. SIG usa barra compartida, capas compactas/buscables, mapa protagonista retenido, inspector Estilo/Datos/Procedencia, tiempo contraíble y dock ajustable. Laterales con scroll interno/drawers exclusivos a ≤1000 px. 1920×1080,1366×768 y ancho 768, teclado/foco, nombres largos y errores comprobados; capturas finales comparadas y corregidas. Se conserva Studio; no proyecto/reloj/motor adicional ni herramientas ficticias. Informe/archivos/límites: `tmp/ecuador-vivo-sig-professional-interface-report.md`. Los resultados anteriores inferiores son historial; no sumar sus pruebas ni MP4 al corte de diseño.
+
 ## Continuidad Studio 2.0 · 2026-10-08
 
 El cierre UX de 301 tests/85 checks que se conserva abajo pertenece al rediseño anterior. Studio 2.0 incorpora Inicio separado (libre/template, abrir/importar/recientes y acceso a preparación científica) con widgets públicos; el editor mantiene el CCv2 profesional. Volver a Inicio y regresar conserva documento/historial. No se aplican hacks sobre clases internas de Streamlit.
@@ -58,3 +66,8 @@ Los siete incrementos están validados: **301 tests (283.806 s) OK**, **85 compr
 Capturas reales inspeccionadas: [antes 1366](../tmp/ux-redesign/before-1366.png), [multimedia después 1366](../tmp/ux-redesign/after-media-1366.png), [ciencia después 1366](../tmp/ux-redesign/after-science-1366.png), [1920](../tmp/ux-redesign/after-final-1920.png), [768](../tmp/ux-redesign/after-media-768.png). El canvas vertical del baseline aparecía fuera de pantalla a 1366 px; ahora se ve entero con paneles/timeline simultáneos. A 1920 px la superficie visible del canvas vertical es aproximadamente tres veces la anterior; zoom/pan y colapso de paneles/timeline permiten ampliar el área de trabajo. La superficie del formato horizontal ocupa prácticamente el ancho central.
 
 Reproducción y exportación usan el mismo archivo; los 30 cuadros del MP4 descargado se compararon con el render canónico: diferencia media máxima 2.1852/255 por compresión del códec, pico AAC decodificado 0.04818. No se declara identidad binaria de PNG con video comprimido. Logs autoritativos `tmp/ux-redesign-final-tests.log`, `tmp/ux-redesign-final-browser.log` y `tmp/ux-redesign/download-verification.json`. Diff y whitespace de 29 archivos OK. Sin dependencias nuevas, commit ni push.
+
+
+## Continuidad de SIG analítico vectorial · 2026-10-09
+
+El SIG analiza y exporta datos sin requerir video. Operaciones propias usan bibliotecas geoespaciales instaladas y producen derivados verificables dentro del workspace profesional, sin reconstruir Studio. La navegación Inicio→SIG es explícita y vence la cola de Studio; inspector siempre conserva una sección activa. Contratos/evidencia/limitaciones vigentes: tmp/ecuador-vivo-sig-vector-analysis-report.md y checkpoint único. No se cierra el rendimiento, ráster/temporal universal o observation_layers mediante este corte.

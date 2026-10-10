@@ -22,6 +22,8 @@ class SigMapUiTests(unittest.TestCase):
             show_sig_map(session)
         app=AppTest.from_function(script,default_timeout=20)
         publish_document(app.session_state,document or self.project)
+        from studio_project import workspace_key
+        app.session_state[workspace_key(document or self.project)+'_sig_engine']='SVG compatible'
         return app
     def component(self,**kwargs):
         import streamlit as st
@@ -51,8 +53,10 @@ class SigMapUiTests(unittest.TestCase):
             app.session_state['test_map_command']={'action':'select','layer_id':lid,'region_id':rid,'version':self.payload['version']}
             app.run();self.assert_clean(app)
             self.assertEqual(self.payload['selection'],[rid])
-            attributes=json.loads(app.json[-1].value)
-            self.assertEqual(attributes,{'name':'Brasil sintético','population':0,'signed':-5})
+            app.segmented_control[0].set_value('Datos').run();self.assert_clean(app)
+            attributes=dict(zip(app.table[0].value['Campo'],app.table[0].value['Valor']))
+            self.assertEqual(attributes,{'name':'Brasil sintético','population':'0','signed':'-5'})
+            app.segmented_control[0].set_value('Estilo').run();self.assert_clean(app)
             app.slider[0].set_value(.3)
             next(b for b in app.button if b.label=='Aplicar estilo').click().run();self.assert_clean(app)
             self.assertEqual(self.payload['layers'][0]['style']['opacity'],.3)
@@ -103,5 +107,20 @@ class SigMapUiTests(unittest.TestCase):
             app.button(key='sig_u1_import_submit').click().run()
             self.assertFalse(app.exception);self.assertTrue(app.error)
             self.assertEqual(app.session_state['project_document'],before)
+
+    def test_openlayers_sequence_confirmation_and_native_undo_redo(self):
+        from studio_sig_layers import add_geojson_layer
+        from studio_project import workspace_key
+        project,lid=add_geojson_layer(self.project,self.content,'regions.geojson',self.provenance);app=self.app(project)
+        key=workspace_key(project)
+        with self.patches(),patch('studio_sig_map_ui._OL_COMPONENT',self.component):
+            app.run();app.selectbox(key=key+'_sig_engine').select('OpenLayers · WebGL / Canvas').run();self.assert_clean(app)
+            rid=next(iter(project['studio']['geography']['regions']))
+            message={'client':'b'*32,'version':self.payload['version'],'sequence':1,
+                'commands':[{'sequence':1,'action':'select','layer_id':lid,'region_id':rid}]}
+            app.session_state['test_map_command']=message;app.run();self.assert_clean(app)
+            self.assertEqual(self.payload['confirmation']['status'],'saved');self.assertEqual(self.payload['selection'],[rid])
+            app.button(key='sig_undo').click().run();self.assert_clean(app);self.assertEqual(self.payload['selection'],[])
+            app.button(key='sig_redo').click().run();self.assert_clean(app);self.assertEqual(self.payload['selection'],[rid])
 
 if __name__=='__main__':unittest.main()

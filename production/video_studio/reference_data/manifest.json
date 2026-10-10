@@ -1,0 +1,54 @@
+{
+  "ecuador-national": {
+    "sha256": "98693737df0434ed2da986b961f5891af6a62d7451475d462591c5a1e5b52546",
+    "bytes": 151187,
+    "features": 1,
+    "source_url": "https://github.com/wmgeolab/geoBoundaries/blob/9469f09/releaseData/gbOpen/ECU/ADM0/geoBoundaries-ECU-ADM0.geojson",
+    "original_sha256": "523cf48366449bb98d562f61e05ef0a3de9afb82f8c3be7b7409a29d508b1fbf",
+    "license": "geoBoundaries gbOpen · CC BY 4.0 · atribución requerida",
+    "notes": "Referencia geoBoundaries; no se presenta como límite oficial ecuatoriano. Galápagos en coordenadas originales.",
+    "normalization": "Declared CRS84/EPSG:4326 to RFC7946; coordinates and properties unchanged, bbox declarations removed"
+  },
+  "ecuador-provinces": {
+    "sha256": "aacd7e7a6ab2eca966509afc2a625bd11f9c58d74cee5f23b74aef41aede0eab",
+    "bytes": 531326,
+    "features": 24,
+    "source_url": "https://github.com/wmgeolab/geoBoundaries/blob/9469f09/releaseData/gbOpen/ECU/ADM1/geoBoundaries-ECU-ADM1.geojson",
+    "original_sha256": "8b0083c7f7ba221600dfa13c5e2cb75ac25c697ead5bf5f16f0a6b1434d358d7",
+    "license": "geoBoundaries gbOpen · CC BY 4.0 · atribución requerida",
+    "notes": "Referencia geoBoundaries; no se presenta como límite oficial ecuatoriano. Galápagos en coordenadas originales.",
+    "normalization": "Declared CRS84/EPSG:4326 to RFC7946; coordinates and properties unchanged, bbox declarations removed"
+  },
+  "latin-america": {
+    "sha256": "214b49aac795ede7307f5e80b324778d7b25fd7bbb8c342b67cfbcc93681b786",
+    "bytes": 97877,
+    "features": 20,
+    "source_url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_110m_admin_0_countries.geojson",
+    "original_sha256": "6866c877d39cba9c357620878839b336d569f8c662d3cfab4cb1dbe2d39c977f",
+    "license": "Natural Earth v5.1.2 · dominio público",
+    "notes": "20 países soberanos de América de lengua española, portuguesa o francesa; excluye territorios y Caribe anglófono. Referencia generalizada 1:110M, límites de facto; no cartografía oficial ni dominio estadístico detallado.",
+    "normalization": "Declared CRS84/EPSG:4326 to RFC7946; coordinates and properties unchanged, bbox declarations removed",
+    "countries": [
+      "Argentina",
+      "Chile",
+      "Haití",
+      "República Dominicana",
+      "México",
+      "Uruguay",
+      "Brasil",
+      "Bolivia",
+      "Perú",
+      "Colombia",
+      "Panamá",
+      "Costa Rica",
+      "Nicaragua",
+      "Honduras",
+      "El Salvador",
+      "Guatemala",
+      "Venezuela",
+      "Ecuador",
+      "Cuba",
+      "Paraguay"
+    ]
+  }
+}

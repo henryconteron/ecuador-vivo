@@ -1,0 +1,17 @@
+LICENSE
+MANIFEST.in
+README.md
+THIRD-PARTY-NOTICES.md
+pyproject.toml
+ecuador_vivo_sig_map/__init__.py
+ecuador_vivo_sig_map/pyproject.toml
+ecuador_vivo_sig_map.egg-info/PKG-INFO
+ecuador_vivo_sig_map.egg-info/SOURCES.txt
+ecuador_vivo_sig_map.egg-info/dependency_links.txt
+ecuador_vivo_sig_map.egg-info/requires.txt
+ecuador_vivo_sig_map.egg-info/top_level.txt
+ecuador_vivo_sig_map/frontend/build/build-modules.json
+ecuador_vivo_sig_map/frontend/build/dependencies.json
+ecuador_vivo_sig_map/frontend/build/index-u20.css
+ecuador_vivo_sig_map/frontend/build/index-u20.js
+ecuador_vivo_sig_map/frontend/build/textOverlay-BiFf-c0Z.js

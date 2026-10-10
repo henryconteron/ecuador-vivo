@@ -71,6 +71,18 @@ _layout_module = sys.modules.get('layout_editor')
 if _layout_module and getattr(_layout_module, 'SOURCE_MTIME', None) != Path(_layout_module.__file__).stat().st_mtime_ns:
     importlib.reload(_layout_module)
 
+_workspace_module = sys.modules.get('studio_workspace')
+if _workspace_module:
+    _workspace_assets = Path(_workspace_module.__file__).with_name('workspace_frontend')
+    _workspace_mtimes = tuple((_workspace_assets/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','workspace.js'))
+    if (getattr(_workspace_module,'SOURCE_MTIME',None) != Path(_workspace_module.__file__).stat().st_mtime_ns
+            or getattr(_workspace_module,'SOURCE_ASSET_MTIMES',None) != _workspace_mtimes):
+        importlib.reload(_workspace_module)
+for _presentation_name in ('studio_home_visual','studio_home'):
+    _presentation_module=sys.modules.get(_presentation_name)
+    if _presentation_module and getattr(_presentation_module,'SOURCE_MTIME',None)!=Path(_presentation_module.__file__).stat().st_mtime_ns:
+        importlib.reload(_presentation_module)
+
 boundary = _data.boundary
 load_values = _data.load_values
 store_upload = _data.store_upload

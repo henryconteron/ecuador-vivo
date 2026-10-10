@@ -1,0 +1,23 @@
+/* Owned launch surface, shared Ecuador Vivo typography and colors. */
+[data-testid=stMainBlockContainer]:has(.st-key-ev_home_entries){max-width:1320px;padding:20px 40px 32px}
+body:has(.st-key-ev_home_entries) [data-testid=stHeader]{height:0;min-height:0}
+.st-key-ev_home_nav{padding:8px 0 18px;border-bottom:1px solid #334b56;gap:12px;flex-wrap:nowrap!important}
+.st-key-ev_home_nav>*{flex:0 0 auto!important;width:auto!important}
+.home-brand{display:flex;align-items:center;gap:12px;font:600 20px/1.4 'Segoe UI',sans-serif;margin-right:28px}
+.home-brand span{color:#71dcc8;border:1px solid #71dcc8;border-radius:8px;padding:8px;font-size:14px}
+.home-project{display:block;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#b8cbd1;margin-left:24px}
+.home-hero{text-align:center;padding:20px 0 18px}.home-hero h1{font:650 36px/1.2 'Segoe UI',sans-serif;letter-spacing:-1px;margin:0 0 12px;color:#edf5f7}.home-hero p{color:#b8cbd1;font-size:15px;margin:0}
+.st-key-ev_home_sig,.st-key-ev_home_studio{position:relative;min-height:232px;padding:24px!important;background:#152730;border:1px solid #41616d;border-radius:12px;overflow:hidden}
+.st-key-ev_home_entries h2{font-size:26px;margin:0}.home-entry-copy{max-width:65%;color:#b8cbd1;font-size:15px;line-height:1.5;margin:0 0 16px}
+.home-entry-icon{color:#71dcc8;font-size:26px}.st-key-ev_home_entries button{position:relative;z-index:1;min-width:145px}
+.home-map-art,.home-film-art{position:absolute;right:18px;top:40px;width:29%;height:145px;opacity:.8;pointer-events:none}
+.home-map-art img{width:100%;height:125px}.home-map-art small{display:block;font-size:9px;text-align:right;color:#b8cbd1}
+.home-map-art i{position:absolute;inset:20% 0;border:2px solid #71dcc8;transform:skewY(-18deg);background:#1e5360}.home-map-art i:nth-child(2){top:35%;bottom:5%}.home-map-art i:nth-child(3){top:50%;bottom:-10%}
+.home-film-art{transform:none;border:1px solid #71dcc8;border-radius:6px;background:#0c1e26}.home-film-art i{position:absolute;left:8%;right:8%;height:24%;background:#326572;border-radius:3px}.home-film-art i:nth-child(1){top:10%}.home-film-art i:nth-child(2){top:40%}.home-film-art i:nth-child(3){top:70%}
+.home-recent-image{width:100%;height:100px;object-fit:contain;background:#08191f;border-radius:6px}
+.home-film-art:has(img){width:35%;height:145px;background:#08191f;overflow:hidden}.home-film-art img{width:100%;height:100%;object-fit:contain}
+.st-key-ev_home_entries button[kind=primary]{background:#71dcc8;border-color:#71dcc8;color:#08242b;font-weight:600}
+[class*=st-key-ev_home_choice_]{padding:12px!important;gap:6px!important;background:#13252d;border-color:#334e5b}
+[class*=st-key-ev_home_recent_]{padding:12px!important;background:#13252d;border-color:#334e5b}
+[class*=st-key-ev_home_recent_] p{overflow-wrap:anywhere}
+@media(max-width:800px){[data-testid=stMainBlockContainer]:has(.st-key-ev_home_entries){padding:12px 16px}.home-project{display:none}.home-brand{margin-right:0;font-size:16px}.home-hero{padding:24px 0 16px}.home-hero h1{font-size:28px}.st-key-ev_home_entries [data-testid=stHorizontalBlock]{flex-wrap:wrap}.st-key-ev_home_entries [data-testid=stColumn]{width:100%;flex:1 1 100%}.st-key-ev_home_sig,.st-key-ev_home_studio{min-height:210px}}
