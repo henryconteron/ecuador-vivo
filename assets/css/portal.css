@@ -1,5 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
-:root{--site-main-width:1440px;--forest:#102b28;--paper:#f1ede2;--portal-ink:#132d29;--portal-muted:#52645e;--lime:#c6df7e;--portal-line:#c6ccbf;--sage:#b4c8b5;--coral:#ed8d74}
+@font-face{font-family:'EV Lora';src:url('../fonts/Lora-Variable.ttf') format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:'EV Atkinson';src:url('../fonts/AtkinsonHyperlegible-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'EV Atkinson';src:url('../fonts/AtkinsonHyperlegible-Bold.ttf') format('truetype');font-weight:600 800;font-display:swap}
+:root{--site-main-width:1440px;--forest:#132B46;--paper:#FFF5DF;--portal-ink:#132B46;--portal-muted:#526174;--lime:#9ddbc1;--portal-line:#d6cdb9;--sage:#b8d5ca;--coral:#F27662}
 *{box-sizing:border-box}body.portal{margin:0;background:var(--paper);color:var(--portal-ink);font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;color-scheme:light}
 .portal [hidden],[hidden]{display:none!important}
 .portal a{color:inherit;text-underline-offset:.24em}.portal img{max-width:100%}.portal button,.portal input,.portal select{font:inherit}.portal button{cursor:pointer}.portal [hidden]{display:none!important}
@@ -28,3 +30,24 @@
 .portal :is(button,.button):active:not(:disabled){transform:translateY(1px);transition-duration:60ms}
 .portal .home-hero .button-secondary{color:var(--paper);border-color:var(--sage)}
 [data-site-admin-hidden="true"],[data-admin-disabled="true"]{display:none!important}
+/* Expedition identity shared by the public portal, not scientific symbology. */
+body.portal{font-family:'EV Atkinson','Segoe UI',sans-serif}
+.portal :is(h1,h2,h3){font-family:'EV Lora',Georgia,serif}
+.portal-header{background:var(--paper);color:var(--portal-ink);border-color:var(--portal-line);min-height:80px;padding-block:16px}
+.portal-brand{font:700 23px/1 'EV Atkinson','Segoe UI',sans-serif;letter-spacing:-.6px;gap:12px}
+.portal-mark{border:0;padding:0;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center}
+.portal-mark img{width:44px;height:44px}
+.portal-nav a{font-size:14px;border-bottom-width:2px}
+.portal-nav a:hover,.portal-nav [aria-current=page]{color:#176f5c;border-color:#238e77}
+.portal-header button{color:var(--portal-ink);border-color:#a99f8d;border-radius:6px;width:40px;height:36px}
+.portal .portal-header :focus-visible{outline-color:#176f5c}
+.portal :focus-visible{outline-color:#176f5c}
+.portal .button{background:#176f5c;color:#fff9ec;border-radius:6px}
+.portal .button:hover{background:#115846}
+.portal .button-secondary{background:transparent;color:#176f5c;border-color:#738778}
+.portal .button-secondary:hover{background:#e5edda}
+.portal .eyebrow{letter-spacing:.14em}
+.portal .topic-strip a{font-family:'EV Atkinson','Segoe UI',sans-serif;font-size:15px}
+.portal .home-paths .eyebrow{color:#176f5c}
+.portal-footer{background:#f6ecd8}
+@media(max-width:650px){.portal-header{min-height:64px}.portal-brand{font-size:21px}.portal-nav a{font-size:13px}.portal-mark,.portal-mark img{width:36px;height:36px}}

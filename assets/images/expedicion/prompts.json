@@ -1,0 +1,15 @@
+{
+  "tool": "OpenAI image_gen (integrated)",
+  "direction": "01 · Expedición anime andina + 04 · Ciencia en dioramas",
+  "reference": "Five visual directions approved by user; local 01-anime-andino.png",
+  "prompts": [
+    {
+      "key": "hero",
+      "prompt": "Use case: illustration-story. Asset type: production wide website hero background, aspect 2:1, as large as possible. Image 1 is STYLE REFERENCE ONLY: recreate the full-bleed ANDES LANDSCAPE seen behind the public website upper-left quadrant, not the interface. Original hand-painted anime adventure landscape of Ecuador: deep forested foreground, winding turquoise river and fertile Andean valley, snow-capped conical volcano in the upper-right distance, luminous blue sky and peach-white clouds. Small back-facing explorer standing on a rock lower center-right, subtle wildflowers in foreground. Rich painterly forest silhouettes left third, dark enough for white headline overlay, bright open landscape center/right. Palette ink navy #132B46, sky #67BEE7, jade #238E77, warm cream #FFF5DF, coral light #F27662. Exact mood and fine ink/watercolor/cel-painting detail of reference. No text, logo, map, borders, UI, numbers, controls, arrows, typography or watermark. One continuous landscape only."
+    },
+    {
+      "key": "diorama",
+      "prompt": "Use case: scientific-educational. Asset type: isolated illustration for editable scientific-resource library. Image 1 is STYLE REFERENCE for hand-painted anime Andean mountains and forest only, not UI. A beautiful detailed Ecuadorian Andean-to-Amazon WATER LANDSCAPE diorama/cutaway: snow-capped volcanic mountain on left center, montane forest descending to right, river feeding a small pool on right, visible layered earth/soil cutaway beneath with roots and rocky strata, two cloud clusters in sky, sunlight left, subtle rain streaks beneath right cloud. Three-quarter isometric scientific exhibit, a single wide continuous terrain slab isolated on genuine TRANSPARENT background, centered and not cropped. Colors warm forest jade, blue water, cream snow, warm brown earth; crisp painterly anime illustration with subtle dimensional material shading. This is schematic illustration, not geographical map or observed data. NO labels, text, arrows, logos, numbers, border, UI, legend or watermarks; these will be editable overlays separately. Not a simulation or fake measured values."
+    }
+  ]
+}

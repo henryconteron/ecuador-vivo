@@ -6,3 +6,16 @@
 @media(prefers-reduced-motion:reduce){.catalog-card{transition:none}}
 
 .catalog-detail::-webkit-scrollbar{width:.5rem;height:.5rem}.catalog-detail::-webkit-scrollbar-track{background:#102b28}.catalog-detail::-webkit-scrollbar-thumb{border:2px solid #102b28;border-radius:999px;background:#6c8677}.catalog-detail::-webkit-scrollbar-thumb:hover{background:#91a895}
+/* Expedition library / data catalogue. Keep scientific cover art untouched. */
+.portal .catalog-main{color:var(--portal-ink);background:var(--paper)}
+.portal .catalog-intro h1,.portal .catalog-card-title,.portal .catalog-detail h2,.portal .catalog-crosslink h2{font-family:'EV Lora',Georgia,serif}
+.portal .catalog-search input{background:#fffaf0;color:#132b46;border-color:#acb4a9}
+.portal .catalog-filters select,.portal .catalog-policy,.portal .catalog-card{color:#132b46}
+.portal .catalog-card:hover{background:#f0ead9}
+.portal .catalog-card[aria-pressed=true]{background:#e4eddb;box-shadow:inset 3px 0 #238e77}
+.portal .catalog-card-source,.portal .catalog-count,.portal .catalog-filter-note,.portal .catalog-scope{color:#526174}
+.portal .catalog-detail{background:#132b46;color:#fff5df;border-radius:8px}
+.portal .catalog-detail :is(h3,a,summary,.catalog-copy-status){color:#9ddbc1}
+.portal .catalog-detail .button{background:#9ddbc1;border-color:#9ddbc1;color:#132b46}
+.portal .catalog-main :focus-visible{outline-color:#176f5c}
+.portal .catalog-detail :focus-visible{outline-color:#9ddbc1}

@@ -11,6 +11,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="assets/js/portal.js" type="module"></script>
   <script src="assets/js/andes-pulso.js" type="module"></script>
+  <script src="assets/js/studio-evidence.js" type="module"></script>
 </head>
 <body class="portal" data-portal-page="andes-pulso">
   <a class="skip-link" href="#main" data-es="Saltar al contenido" data-en="Skip to content">Saltar al contenido</a>
@@ -30,6 +31,31 @@
       <p class="eyebrow" data-es="Andes Pulso / Historias que puedes comprobar" data-en="Andes Pulso / Stories you can check">Andes Pulso / Historias que puedes comprobar</p>
       <h1 data-es="Una historia. Toda su evidencia." data-en="One story. Its evidence, in view.">Una historia. Toda su evidencia.</h1>
       <p class="case-intro" data-es="El video despierta la pregunta. Aquí puedes mirar los datos, explorar el territorio y entender hasta dónde llega la explicación." data-en="The video sparks a question. Here you can inspect the data, explore the territory and understand the limits of the explanation.">El video despierta la pregunta. Aquí puedes mirar los datos, explorar el territorio y entender hasta dónde llega la explicación.</p>
+    </section>
+    <section id="studio-stories" class="case-section studio-stories" aria-labelledby="studio-stories-heading">
+      <div class="case-section-heading"><div><p class="eyebrow" data-es="Del mapa al relato / Studio" data-en="From map to story / Studio">Del mapa al relato / Studio</p><h2 id="studio-stories-heading" data-es="No te quedes con el video. Compruébalo." data-en="Go beyond the video. Check it.">No te quedes con el video. Compruébalo.</h2></div></div>
+      <p id="studio-stories-status" role="status" aria-live="polite" data-es="Cargando las historias revisadas de Studio…" data-en="Loading reviewed Studio stories…">Cargando las historias revisadas de Studio…</p>
+      <label id="studio-story-picker" class="studio-story-picker" hidden><span data-es="Elige una historia" data-en="Choose a story">Elige una historia</span><select id="studio-story"></select></label>
+      <article id="studio-case-view" hidden aria-labelledby="studio-case-title">
+        <h3 id="studio-case-title"></h3><p id="studio-case-period"></p>
+        <div class="studio-evidence-layout">
+          <div class="studio-evidence-film"><video id="studio-video" controls playsinline preload="metadata" aria-label="Video final del caso de Studio"></video><p id="studio-author"></p></div>
+          <div class="studio-evidence-cartography">
+            <div class="studio-observation-heading"><strong data-es="Los mapas del video" data-en="The video's maps">Los mapas del video</strong><output id="studio-observed-date" for="studio-date">—</output></div>
+            <div id="studio-map-pane" class="studio-map-pane" aria-busy="false"></div>
+            <label class="studio-date-control"><span data-es="Recorre las fechas disponibles" data-en="Explore available dates">Recorre las fechas disponibles</span><input id="studio-date" type="range" min="0" max="0" value="0" step="1"></label>
+            <p id="studio-map-status" role="status" aria-live="polite"></p>
+            <div id="studio-map-legend"></div><p id="studio-map-method"></p>
+          </div>
+        </div>
+        <div class="studio-evidence-notebook">
+          <section><h4 data-es="Qué dicen los cálculos" data-en="What the calculations say">Qué dicen los cálculos</h4><div id="studio-metric-list"></div></section>
+          <section><h4 data-es="Qué no demuestra" data-en="What it cannot demonstrate">Qué no demuestra</h4><ul id="studio-limit-list"></ul></section>
+        </div>
+        <details class="studio-source-details"><summary data-es="Procedencia y condiciones de uso" data-en="Provenance and usage terms">Procedencia y condiciones de uso</summary><ul id="studio-source-list"></ul></details>
+        <nav id="studio-downloads" class="case-actions" aria-label="Descargas del caso"></nav>
+      </article>
+      <noscript><p>Las historias de Studio requieren JavaScript. El catálogo se puede descargar en <a href="data/cases/studio-index.json">JSON</a>.</p></noscript>
     </section>
     <article aria-labelledby="case-title">
       <div class="case-layout">

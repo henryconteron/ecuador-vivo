@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "collection": "expedicion",
+  "items": [
+    {
+      "id": "expedicion.andes",
+      "name": "Paisaje andino ilustrado",
+      "category": "Geología",
+      "type": "asset",
+      "author": "Henry P. Conteron Moreta",
+      "generated_by": "OpenAI image_gen",
+      "license": "Sin licencia de reutilización pública asignada · Ecuador Vivo",
+      "source": "generated:exec-5bc45767-6b2d-4967-8382-8da96ce6c467",
+      "original": "andes-hero.webp",
+      "image": "andes-hero.webp",
+      "sha256": "5a8b0a8021065ca49f154ed7a303eed9fa8ec37b8a53568e6f40f228a8a7deed",
+      "asset_sha256": "5a8b0a8021065ca49f154ed7a303eed9fa8ec37b8a53568e6f40f228a8a7deed",
+      "source_sha256": "62a685f5125603ab2dba1c8aeb5899f5f8d894aeaf740fcc26a1121c60d1c5cd",
+      "observational_data": false,
+      "summary": "Ilustración conceptual generada con IA bajo dirección creativa de Henry P. Conteron Moreta. No es fotografía, mapa ni dato observado de un lugar real."
+    },
+    {
+      "id": "expedicion.agua",
+      "name": "Cuenca andina en diorama",
+      "category": "Clima",
+      "type": "asset",
+      "author": "Henry P. Conteron Moreta",
+      "generated_by": "OpenAI image_gen",
+      "license": "Sin licencia de reutilización pública asignada · Ecuador Vivo",
+      "source": "generated:exec-aa617b17-4556-43ef-abf7-fadc5be5c2a3",
+      "original": "agua-diorama.webp",
+      "image": "agua-diorama.webp",
+      "sha256": "73bf009ad0cdf34f04714aa349c28a2bb5e3567173c9864b02515d495ef9b02f",
+      "asset_sha256": "73bf009ad0cdf34f04714aa349c28a2bb5e3567173c9864b02515d495ef9b02f",
+      "source_sha256": "05e461f9ad0d02f10867a6391562ae17760b04ff2bab8f10b4d28dc610231d64",
+      "observational_data": false,
+      "summary": "Ilustración conceptual generada con IA bajo dirección creativa de Henry P. Conteron Moreta. Diorama 2D, no modelo 3D editable; estratos y paisaje esquemáticos, sin escala ni mediciones."
+    }
+  ]
+}

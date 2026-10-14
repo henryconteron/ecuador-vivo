@@ -23,7 +23,7 @@
     "check:rivers": "node tests/test-rivers.mjs && node scripts/validate-rivers.mjs",
     "check:fluvial": "eslint assets/js/fluvial-science.js assets/js/fluvial-lab.js tests/test-fluvial.mjs && node tests/test-fluvial.mjs",
     "check:river-sample": "node tests/test-napo-river-sample.mjs && node scripts/prepare_napo_river_sample.mjs --check",
-    "check:portal": "eslint assets/js/portal.js assets/js/portal-catalog.js assets/js/andes-pulso.js tests/test-portal.mjs tests/test-andes-pulso.mjs && node tests/test-portal.mjs && node tests/test-andes-pulso.mjs"
+    "check:portal": "eslint assets/js/portal.js assets/js/portal-catalog.js assets/js/andes-pulso.js assets/js/studio-evidence.js tests/test-portal.mjs tests/test-andes-pulso.mjs tests/test-studio-evidence.mjs && node tests/test-portal.mjs && node tests/test-andes-pulso.mjs && node tests/test-studio-evidence.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
