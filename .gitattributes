@@ -5,6 +5,17 @@
 *.mjs text eol=lf
 *.py text eol=lf
 pnpm-lock.yaml text eol=lf
+.gitignore text eol=lf
+*.md text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.ps1 text eol=lf
+
+# Generated library code is checked through its build, not hand-formatted.
+**/frontend/build/** -whitespace
+# Preserve the original third-party notice bytes rather than reformat licenses.
+**/*NOTICES.md -text
 
 # Frozen case inputs retain original bytes (including original line endings).
 /data/cases/** -text

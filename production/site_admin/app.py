@@ -6,6 +6,7 @@ import json
 import hashlib
 import datetime as dt
 import uuid
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -51,9 +52,10 @@ def save_path(relative: str, content: str | bytes, expected=None) -> None:
     if not target.is_relative_to(ROOT.resolve()) or any(part.startswith('.') for part in Path(relative).parts):
         raise ValueError('Ruta fuera del sitio o archivo privado.')
     if (relative not in editor.PAGE_FILES and relative not in {
-            'assets/js/i18n.js', 'assets/css/portal.css', 'data/site-settings.json',
+            'assets/js/i18n.js', 'assets/css/portal.css', 'data/site-settings.json', 'data/cases/studio-index.json',
             *(item[0] for item in manager.CATALOGS.values())}
-            and not relative.startswith('assets/media/editor/')):
+            and not relative.startswith('assets/media/editor/')
+            and not re.fullmatch(r'data/cases/studio/studio-[a-f0-9]{24}/(?:case\.json|video\.mp4|maps/\d{4}-[a-zA-Z0-9_-]{1,32}\.png)',relative)):
         raise ValueError('El panel no escribe código ejecutable ni archivos internos.')
     if expected is not None and (not target.is_file() or target.read_text(encoding='utf-8') != expected):
         raise ValueError('El archivo cambió fuera del panel. Recarga antes de guardar para conservar esos cambios.')
@@ -155,6 +157,9 @@ with elements_tab:
 
 with catalogs_tab:
     manager.show_catalogs(ROOT, save_path)
+    st.divider()
+    from studio_import_ui import show_studio_import
+    show_studio_import(ROOT,save_path)
 
 with resources_tab:
     manager.show_resources(ROOT, save_path)

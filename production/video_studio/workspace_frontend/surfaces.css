@@ -1,0 +1,38 @@
+/* Native page chrome only: Inicio and Recursos. Never matches the SIG. */
+[data-testid="stMain"]:has(.st-key-ev_home_nav),[data-testid="stMain"]:has(.st-key-ev_resources_library){background:#0b1821}
+[data-testid="stMainBlockContainer"]:has(.st-key-ev_home_nav),[data-testid="stMainBlockContainer"]:has(.st-key-ev_resources_library){max-width:1480px;padding:16px 40px 40px}
+body:has(.st-key-ev_home_nav) [data-testid="stHeader"],body:has(.st-key-ev_resources_library) [data-testid="stHeader"]{height:0;min-height:0}
+.st-key-ev_home_nav,.st-key-ev_resources_nav{display:flex;align-items:center;gap:8px;border-bottom:1px solid #3c5867;padding:0 0 12px;min-height:64px}
+.st-key-ev_home_nav>*,.st-key-ev_resources_nav>*{flex:0 0 auto;width:auto}
+.home-brand{display:flex;align-items:center;gap:12px;font:650 18px/1.4 'Segoe UI',sans-serif;letter-spacing:-.4px;margin-right:24px;white-space:nowrap;color:#edf3f5}
+.home-brand span{font-size:27px;font-weight:800;letter-spacing:-2px;color:#70d9c5}
+.home-project{display:block;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:1px solid #3c5867;padding-left:20px;margin-left:12px;color:#b1c3cd;font:13px/1.5 'Segoe UI',sans-serif}
+.st-key-ev_home_nav button,.st-key-ev_resources_nav button{border-color:transparent;background:transparent;font-size:14px;min-height:38px;border-radius:4px}
+.st-key-ev_home_nav button:disabled,.st-key-ev_resources_nav button:disabled{opacity:1;color:#70d9c5;background:#203b49;border-bottom:2px solid #70d9c5;border-radius:4px 4px 0 0}
+.st-key-ev_home_actions button,.st-key-ev_resources_library button{min-height:38px;border-radius:5px;font-size:14px}
+.st-key-ev_home_actions button[kind="primary"],.st-key-ev_resources_library button[kind="primary"]{color:#092a32;background:#70d9c5;border-color:#70d9c5;font-weight:650}
+.st-key-ev_home_nav button:focus-visible,.st-key-ev_resources_nav button:focus-visible,.st-key-ev_home_actions button:focus-visible,.st-key-ev_resources_library button:focus-visible{outline:2px solid #edf3f5;outline-offset:3px}
+.st-key-ev_resources_library label,.st-key-ev_resources_library input,.st-key-ev_resources_library [data-baseweb="select"]{font-size:14px}
+.st-key-ev_resources_library [data-testid="stCaptionContainer"] p{color:#b1c3cd;line-height:1.55;font-size:13px}
+@media(max-width:1000px){.home-project{max-width:180px}.home-brand{margin-right:8px}.st-key-ev_home_nav,.st-key-ev_resources_nav{gap:4px}}
+@media(max-width:760px){[data-testid="stMainBlockContainer"]:has(.st-key-ev_home_nav),[data-testid="stMainBlockContainer"]:has(.st-key-ev_resources_library){padding:12px 16px 28px}.home-project{display:none}.st-key-ev_home_nav,.st-key-ev_resources_nav{flex-wrap:wrap;gap:4px}.home-brand{font-size:16px;margin-right:8px}.home-brand span{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.st-key-ev_home_nav *,.st-key-ev_resources_library *{transition:none!important;animation:none!important}}
+/* Paper launch, isolated from the scientific and video workspaces. */
+[data-testid="stMain"]:has(.st-key-ev_home_nav){background:#fff5df;color:#132b46}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"]{--st-text-color:#132b46;--st-background-color:#fff5df;--st-secondary-background-color:#f3e9d3;--st-primary-color:#176f5c;--st-border-color:#d6cdb9;color:#132b46}
+.st-key-ev_home_nav{border-color:#d6cdb9;padding-bottom:12px}
+.st-key-ev_home_nav .home-brand{color:#132b46;font-size:21px;letter-spacing:-.6px}
+.home-brand img{display:block;width:44px;height:44px}
+.st-key-ev_home_nav .home-project{color:#526174;border-color:#d6cdb9}
+.st-key-ev_home_nav button{color:#132b46}
+.st-key-ev_home_nav button:disabled{color:#176f5c;background:#e4eddb;border-bottom-color:#238e77}
+.st-key-ev_home_actions button{background:transparent;color:#132b46;border-color:#acb4a9;border-radius:5px}
+.st-key-ev_home_actions button[kind="primary"]{background:#176f5c;color:#fff9ec;border-color:#176f5c}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] :is(h2,h3,label,[data-testid="stMarkdownContainer"]){color:#132b46}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] [data-testid="stCaptionContainer"]{color:#526174}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] :is(input,textarea,[data-baseweb="select"]>div){background:#fffaf0;color:#132b46;border-color:#acb4a9}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] input::placeholder{color:#657263}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] :is(button,input,select,summary):focus-visible{outline:2px solid #176f5c;outline-offset:3px}
+/* Native button labels are Markdown too; keep them readable on jade. */
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] button:is([kind="primary"],[kind="primaryFormSubmit"]) [data-testid="stMarkdownContainer"]{color:#fff9ec}
+body:has(.st-key-ev_home_nav) [data-testid="stMainBlockContainer"] button:disabled{opacity:.55}

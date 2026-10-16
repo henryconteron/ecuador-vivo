@@ -30,16 +30,24 @@ def _presentation_hash(project):
     return _document_hash(value)
 
 
-def start_studio_job(project):
+def preview_identity(project):
+    value=copy.deepcopy(project);value.pop('name',None)
+    return _presentation_hash(value)
+
+
+def start_studio_job(project, *, mode='final'):
+    if mode not in ('preview','final'):raise ValueError('Tipo de entrega desconocido.')
     validate_export(project)
     # Reopening an identical, validated document may reuse its complete product.
     # No incomplete worker or changed input/receipt/hash is accepted as a cache hit.
     identity=_document_hash(project);presentation=_presentation_hash(project)
-    candidates=sorted((STORE/'jobs').glob('studio-*'),key=lambda path:path.stat().st_mtime,reverse=True)[:32]
+    prefix='preview-' if mode=='preview' else 'studio-'
+    candidates=sorted((STORE/'jobs').glob(prefix+'*'),key=lambda path:path.stat().st_mtime,reverse=True)[:32]
     for previous in candidates:
         try:
             if read_json(previous/'status.json',{}).get('state')!='complete':continue
             receipt=read_json(previous/'receipt.json',{})
+            if receipt.get('delivery_kind','final')!=mode:continue
             original=read_json(previous/'request.json',{})
             if receipt.get('project_sha256')!=_document_hash(original) or _presentation_hash(original)!=presentation:continue
             movie=previous/'video.mp4'
@@ -48,12 +56,17 @@ def start_studio_job(project):
         except (ValueError,TypeError,OSError):continue
         from studio_media import AssetFrames
         with AssetFrames(project['studio']['media']):pass
-        if original==project:return previous
+        if original==project:
+            if mode=='final':
+                from studio_package import prepare_package
+                prepare_package(previous,project)
+            return previous
         # A copy/undo has its own document identity: issue a new coherent receipt,
         # explicitly naming the reused product, rather than returning an old receipt.
-        cached=STORE/'jobs'/('studio-'+dt.datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:8])
+        cached=STORE/'jobs'/(prefix+dt.datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:8])
         cached.mkdir(parents=True)
         write_json(cached/'request.json',project)
+        write_json(cached/'options.json',{'mode':mode})
         write_json(cached/'status.json',{'state':'queued','progress':0,'message':'Verificando render reutilizable','updated':time.time()})
         try:
             partial=cached/'.video.studio-partial.mp4';shutil.copyfile(movie,partial)
@@ -64,13 +77,17 @@ def start_studio_job(project):
                 'method':'identical presentation; only canonical document id/revision excluded'}
             write_json(cached/'project.json',project);write_json(cached/'receipt.json',receipt)
             os.replace(partial,cached/'video.mp4')
+            if mode=='final':
+                from studio_package import prepare_package
+                prepare_package(cached,project)
             write_json(cached/'status.json',{'state':'complete','progress':1,'message':'Render reutilizado · documento y recursos verificados','updated':time.time()})
         except Exception as error:
             write_json(cached/'status.json',{'state':'failed','message':str(error),'updated':time.time()});raise
         return cached
-    job=STORE/'jobs'/('studio-'+dt.datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:8])
+    job=STORE/'jobs'/(prefix+dt.datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:8])
     job.mkdir(parents=True)
     write_json(job/'request.json',project)
+    write_json(job/'options.json',{'mode':mode})
     write_json(job/'status.json',{'state':'queued','progress':0,'message':'Preparando escenas Studio','updated':time.time()})
     with (job/'worker.log').open('w',encoding='utf-8') as log:
         try:
@@ -89,8 +106,12 @@ def execute(job):
     try:
         project=read_json(job/'request.json')
         status('running','Componiendo escenas')
-        export_movie(project,job/'video.mp4',progress=lambda value:status('running','Componiendo escenas',value),
+        mode=read_json(job/'options.json',{}).get('mode','final')
+        export_movie(project,job/'video.mp4',preview_max_side=640 if mode=='preview' else None,progress=lambda value:status('running','Preparando previsualización' if mode=='preview' else 'Exportando resolución final',value),
                      cancelled=lambda:(job/'cancel.request').exists())
+        if mode=='final':
+            from studio_package import prepare_package
+            prepare_package(job,project)
         status('complete','Video Studio terminado',1)
     except InterruptedError as error: status('cancelled',str(error))
     except Exception as error:

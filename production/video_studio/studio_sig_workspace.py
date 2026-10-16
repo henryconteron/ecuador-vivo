@@ -13,7 +13,7 @@ import streamlit as st
 from studio_sig_layers import workspace_for,layer_command
 from studio_geography import read_source,_features
 
-TOOLS=['Propiedades','Datos','Análisis vectorial','Ráster y tiempo','Preparar timelapse','Serie para Studio','Ciencia','Mapa observado','Secuencia temporal','Publicar vista']
+TOOLS=['Propiedades','Datos','Análisis vectorial','Ráster y tiempo','Preparar timelapse','Serie para Studio','Ciencia','Mapa observado','Secuencia temporal','Publicar vista','Exportar capa','Procesos']
 ASSETS=Path(__file__).with_name('sig_map_frontend')
 
 
@@ -57,7 +57,14 @@ def presentation_event(session,message):
         if message.get('version')!=session.version or lid not in state['layers'] or state['layers'][lid]['type']!='raster':
             raise ValueError('La capa cambió. Vuelve a consultar el mapa actualizado.')
         source=session.project['studio']['geography']['sources'][state['layers'][lid]['source_id']]
-        session.state[session.key+'_sig_pixel']=query(source,message.get('lon'),message.get('lat'))
+        value=query(source,message.get('lon'),message.get('lat'))
+        from studio_territory import options_for,territory_payload
+        options=options_for(session.project)
+        if options['territory']!='view':
+            from shapely.geometry import shape,Point
+            if not any(shape(f['geometry']).covers(Point(message['lon'],message['lat'])) for f in territory_payload(options)['features']):
+                value.update(value=None,status='Fuera del territorio seleccionado')
+        session.state[session.key+'_sig_pixel']=value
     else:raise ValueError('Acción visual desconocida.')
 
 
@@ -180,9 +187,9 @@ def toolbar(session):
         st.caption('Fuentes y resultados vinculados al proyecto')
 
 
-def import_panel(session):
+def import_panel(session,*,show_heading=True):
     from studio_sig_layers import add_geojson_layer
-    st.markdown('**Incorporar datos**')
+    if show_heading:st.markdown('**Incorporar datos**')
     from studio_sig_vector_ui import import_general
     if import_general(session):return
     st.caption('GeoJSON RFC7946 · puntos, líneas y polígonos · hasta 8 MiB')
@@ -203,28 +210,43 @@ def import_panel(session):
     st.caption('Tus fuentes no se redistribuyen automáticamente. Conexiones avanzadas pendientes.')
 
 
-def tools_panel(session):
+def tools_panel(session,*,fixed_tool=None):
     ui=preferences(session)
-    tool=st.selectbox('Herramienta',TOOLS,key=session.key+'_sig_tool',
+    tool=fixed_tool if fixed_tool is not None else st.selectbox('Herramienta',TOOLS,key=session.key+'_sig_tool',
         persist_state='session',label_visibility='collapsed')
     previous=ui['tool'];ui['tool']=tool
     if tool!=previous:
         # A new explicit tool choice may reopen its preparation; a rerun cannot.
         session.state.pop(session.key+'_sig_preparation_'+('observation' if tool=='Mapa observado' else 'sequence')+'_opened',None)
-    if tool=='Datos':import_panel(session);return
+    if tool=='Datos':import_panel(session,show_heading=fixed_tool is None);return
     if tool=='Análisis vectorial':
         from studio_sig_vector_ui import analysis_panel
-        analysis_panel(session);return
+        analysis_panel(session,show_heading=fixed_tool is None);return
     if tool=='Ráster y tiempo':
         from studio_sig_raster_ui import analysis_panel
-        analysis_panel(session);return
+        analysis_panel(session,show_heading=fixed_tool is None);return
     if tool=='Preparar timelapse':
         from studio_sig_raster_ui import timelapse_panel
-        timelapse_panel(session);return
+        timelapse_panel(session,show_heading=fixed_tool is None);return
     if tool=='Serie para Studio':
         from studio_sig_raster_ui import series_review
         series_review(session);return
     if tool=='Propiedades':return # Existing properties are rendered by the map surface.
+    if tool=='Procesos':
+        from studio_sig_analysis_ui import monitor
+        monitor(session);return
+    if tool=='Exportar capa':
+        state=workspace_for(session.project);layer=state['layers'].get(state['active_layer'])
+        if not layer:st.info('Selecciona una capa para exportarla.');return
+        st.caption(layer['name'])
+        if layer['type']=='vector':
+            from studio_sig_vector_ui import export_controls
+            export_controls(session,layer['id'])
+        else:
+            source=session.project['studio']['geography']['sources'][layer['source_id']]
+            st.download_button('Descargar GeoTIFF original',Path(source['path']).read_bytes(),file_name=source['name'],key='sig_export_original_raster')
+            st.caption('Archivo nativo, no la imagen suavizada de pantalla. Para video usa Enviar a Studio.')
+        return
     if tool=='Publicar vista':
         from studio_geographic_ui import show_geography
         show_geography(session,show_import=False);return

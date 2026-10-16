@@ -34,7 +34,7 @@ def _digest(content): return hashlib.sha256(content).hexdigest()
 def legend_spec(settings):
     """Frozen display semantics; never derives statistics from rendered pixels."""
     keys=('kind','legend','units','classes') if settings['kind']=='categorical' else ('kind','legend','units','stops','palette')
-    return copy.deepcopy({key:settings[key] for key in keys})
+    return copy.deepcopy({key:settings[key] for key in (*keys,'normalization','saturation') if key in settings})
 
 
 def paint_legend(settings):
@@ -47,6 +47,21 @@ def paint_legend(settings):
     labels=([str(row['value'])+' · '+row['label'] for row in spec['classes']]
             if spec['kind']=='categorical' else [f'{v:g}' for v in spec['stops']])
     if not labels:raise ValueError('La leyenda necesita valores explícitos.')
+    if settings.get('compact_legend') and spec['kind']=='continuous':
+        width=880;image=Image.new('RGBA',(width,120));draw=ImageDraw.Draw(image);font=studio_font(24)
+        draw.text((8,2),title,font=font,fill='white')
+        values=(np.interp(np.linspace(0,len(spec['stops'])-1,width-32),np.arange(len(spec['stops'])),spec['stops'])
+                if spec.get('normalization')=='piecewise_linear_equal_knots' else np.linspace(spec['stops'][0],spec['stops'][-1],width-32))
+        with Image.fromarray(colorize(values[None,:],settings)).convert('RGBA') as bar:
+            image.alpha_composite(bar.resize((width-32,24)),(16,40))
+        # Five rounded display ticks; the scale and endpoint values stay exact
+        # in the sealed spec. No visual saturation or scientific clipping.
+        ticks=spec['stops'] if spec.get('normalization') else np.linspace(spec['stops'][0],spec['stops'][-1],5)
+        for index,value in enumerate(ticks):
+            label=f'{value:.3g}'+('+' if spec.get('saturation') and index==len(ticks)-1 else '');x=16+index*(width-32)/(len(ticks)-1)
+            x=max(8,min(width-font.getlength(label)-8,x-font.getlength(label)/2))
+            draw.text((x,72),label,font=font,fill='white')
+        return image
     # Size follows complete labels, never truncates classes or crops units.
     width=max(640,math.ceil(font.getlength(title))+32,max(math.ceil(font.getlength(s))+72 for s in labels))
     height=64+32*len(labels)
@@ -190,6 +205,13 @@ def _schema(manifest):
         if (manifest['scientific_identity']!=_hash(binding) or manifest['scientific_revision']!=_hash([binding,manifest['source_records']])
                 or binding['basemap_included'] is not False or binding['bbox']!=manifest['region']):
             raise ValueError('Bundle sin su vínculo geográfico verificable.')
+        if 'presentation' in binding:
+            from studio_territory import validate,method
+            options=validate(binding['presentation'])
+            if (binding['method'] not in (method(options),method(options,revision=2)) or manifest['cartographic_settings'].get('presentation')!=options
+                    or manifest['cartographic_settings'].get('boundaries')!=binding['boundaries']
+                    or manifest['cartographic_settings']['show_galapagos']!=(options['territory']=='ecuador')):
+                raise ValueError('Metadata territorial distinta de su representación sellada.')
     total=manifest.get('total_frames')
     if (type(manifest.get('version')) is not int or manifest['version']!=2 or manifest.get('representation')!=REPRESENTATION
             or type(manifest.get('fps')) is not int or manifest['fps']!=30
@@ -291,6 +313,8 @@ def read_bundle(record, *, verify_tiles=True):
             raise ValueError('Metadata compacta distinta del bundle.')
         if record.get('source_dataset')!='sources.'+manifest['scientific_revision']:
             raise ValueError('Referencia de procedencia inválida.')
+        if 'geographic_presentation' in record and record['geographic_presentation']!=manifest.get('geographic_binding'):
+            raise ValueError('Presentación compacta distinta del manifiesto.')
         size=len(content)+manifest['thumbnail']['bytes']+sum(item['bytes'] for obs in manifest['observations'] for item in obs['layers'].values())+sum(item['bytes'] for item in manifest.get('auxiliaries',{}).values())
         if size>BUNDLE_LIMIT or record.get('bytes')!=size: raise ValueError('Bundle superior al presupuesto o tamaño incorrecto.')
         # Validate every relative path even when the future decoder requests metadata only.
@@ -307,11 +331,7 @@ def read_bundle(record, *, verify_tiles=True):
 
 
 def prepare_geographic_bundle(project,duration=3.):
-    """Canonical GeoTIFF provider adapter for the existing sealed RGBA contract.
-
-    The primary channel is a universal region. The Ecuador inset is explicitly
-    disabled, never fabricated. Decoder, calendar, legend and renderer are shared.
-    """
+    """Seal the chosen export territory, without changing the SIG work view."""
     from studio_sig_layers import workspace_for
     from studio_sig_raster import verify_source,compatible,settings,representation,verify_series_binding
     from studio_temporal import _hash
@@ -324,14 +344,23 @@ def prepare_geographic_bundle(project,duration=3.):
     opacities=[state['layers'][lid]['style']['opacity'] for lid in time['layers']]
     if any(v!=opacities[0] for v in opacities):raise ValueError('La serie utiliza una opacidad común. Iguala la opacidad de sus fechas antes de enviarla; no se alterarán sus datos.')
     from studio_sig_timelapse import output_frame,gaps
-    frame=output_frame(project);box=frame['bbox'];scale=settings(sources)
+    from studio_territory import options_for,boundaries,recover_insets,method,NOTE,territory_label
+    presentation=options_for(project)
+    frame=output_frame(project);box=frame['bbox']
+    territorial=presentation['territory']=='ecuador'
+    inset_sources,warnings=recover_insets(project,sources) if territorial else ([None]*len(sources),[])
+    scale=settings(sources+[s for s in inset_sources if s is not None],rainfall=time.get('template')=='rainfall',palette=time.get('palette'))
     if scale is None:raise ValueError('Ambas fechas carecen de datos finitos. No se puede preparar una leyenda numérica verificable.')
     binding={'sources':[{'id':s['id'],'metadata_sha256':_hash(s)} for s in sources],
-        'bbox':box,'scale':scale,'opacity':opacities[0],'method':'GDAL nearest, finite native mask, RGBA','basemap_included':False}
+        'bbox':box,'scale':scale,'opacity':opacities[0],'method':method(presentation),'basemap_included':False,
+        'presentation':presentation,'boundaries':boundaries()[1] if presentation['territory']!='view' else [],'inset_sources':inset_sources}
     if 'duration' in time:binding.update(output_profile=copy.deepcopy(project['studio']['output_profile']),cadence=time.get('cadence','irregular'))
+    if time.get('template'):binding['template']=time['template']
+    if time.get('palette'):binding['palette']=time['palette']
     records=[{'file':s['path'],'date':s['date'],'band':s['raster']['band'],'sha256':s['sha256'],'source_url':s['provenance'].get('url','')} for s in sources]
     identity=_hash(binding);revision=_hash([binding,records]);counts=frame_counts(len(sources),duration);total=sum(counts)
-    cartography={**scale,'source':'local','variable':sources[0]['variable'],'bbox':box,'show_galapagos':False,
+    cartography={**scale,'source':'local','variable':sources[0]['variable'],'bbox':box,'show_galapagos':territorial,
+        'presentation':presentation,'boundaries':binding['boundaries'],'compact_legend':True,
         'citation':' | '.join(dict.fromkeys(s['provenance']['citation'] for s in sources)),'source_url':None}
     destination=_root()/uuid.uuid4().hex;destination.mkdir(parents=True)
     used=0
@@ -346,39 +375,57 @@ def prepare_geographic_bundle(project,duration=3.):
     observations=[];intervals=[];cursor=0;specs={}
     with Image.new('RGBA',(480,320)) as thumbnail:
         for index,(source,count) in enumerate(zip(sources,counts)):
-            image,_=representation(source,scale,size=max(frame['map_width'],frame['map_height']),box=box)
+            image,_=representation(source,scale,size=max(frame['map_width'],frame['map_height']),box=box,presentation=presentation)
+            inset_size=max(256,round(min(frame['map_width'],frame['map_height'])*.32))
+            if inset_sources[index] is not None:
+                inset,_=representation(inset_sources[index],scale,size=inset_size,box=list(GALAPAGOS_BOX),presentation=presentation)
+            else:
+                inset=Image.new('RGBA',(round(inset_size*34/37),inset_size))
             try:
                 if not specs:
-                    for lid,bbox,size in [('continent',box,image.size),('galapagos',list(GALAPAGOS_BOX),(34,37))]:
-                        specs[lid]={'id':lid,'name':'Región SIG · '+source['variable'] if lid=='continent' else 'Inset desactivado',
+                    for lid,bbox,size in [('continent',box,image.size),('galapagos',list(GALAPAGOS_BOX),inset.size)]:
+                        specs[lid]={'id':lid,'name':('Ecuador continental' if territorial else territory_label(presentation))+' · '+source['variable'] if lid=='continent' else 'Galápagos · inset editorial',
                             'bbox':bbox,'crs':'EPSG:4326','size':list(size),'transform':list(from_bounds(*bbox,*size))}
                 pixels=int((np.asarray(image.getchannel('A'))>0).sum());tiles={}
                 tile=save(image,f'observations/{index:06d}/continent.png')
-                tile.update(state='covered' if pixels else 'no_coverage',data_pixels=pixels,borders_painted=False,provinces_painted=False);tiles['continent']=tile
-                with Image.new('RGBA',(34,37)) as inset:
-                    tile=save(inset,f'observations/{index:06d}/galapagos.png');tile.update(state='disabled',data_pixels=0,borders_painted=False,provinces_painted=False);tiles['galapagos']=tile
+                tile.update(state='covered' if pixels else 'no_coverage',data_pixels=pixels,borders_painted=presentation['territory']!='view' and presentation['borders'],provinces_painted=presentation['territory']!='view' and presentation['provinces']);tiles['continent']=tile
+                pixels=int((np.asarray(inset.getchannel('A'))>0).sum())
+                tile=save(inset,f'observations/{index:06d}/galapagos.png')
+                tile.update(state=('covered' if pixels else 'no_coverage') if territorial else 'disabled',data_pixels=pixels,
+                    borders_painted=territorial and presentation['borders'] and pixels>0,provinces_painted=territorial and presentation['provinces'] and pixels>0)
+                tiles['galapagos']=tile
                 if index==0:
                     with image.copy() as thumb:
-                        thumb.thumbnail((480,320));thumbnail.alpha_composite(thumb,((480-thumb.width)//2,(320-thumb.height)//2))
+                        thumb.thumbnail((350,300));thumbnail.alpha_composite(thumb,((350-thumb.width)//2,(320-thumb.height)//2))
+                    with inset.copy() as thumb:
+                        thumb.thumbnail((120,150));thumbnail.alpha_composite(thumb,(355,160))
                 observations.append({'source_index':index,'date':source['date'],'native_crs':source['native_crs'],'layers':tiles})
                 intervals.append({'date':source['date'],'source_index':index,'start_frame':cursor,'end_frame':cursor+count});cursor+=count
-            finally:image.close()
+            finally:image.close();inset.close()
         thumb=save(thumbnail,'thumbnail.png')
+    if not any(o['layers']['continent']['data_pixels'] or o['layers']['galapagos']['data_pixels'] for o in observations):
+        raise ValueError('La fuente no tiene datos válidos en el territorio elegido para estas fechas. No se generó un mapa con valores inventados; cambia la fuente, las fechas o los límites.')
+    for observation in observations:
+        if not observation['layers']['continent']['data_pixels']:
+            warnings.append(observation['date']+': sin cobertura del mapa principal; se conserva transparente.')
     with paint_legend(cartography) as legend:
         auxiliary=save(legend,'legend.png');auxiliary['spec']=legend_spec(cartography)
-    manifest={'version':2,'representation':REPRESENTATION,'state':'ready','renderer':'shared RGBA colorizer / GDAL nearest',
+    manifest={'version':2,'representation':REPRESENTATION,'state':'ready','renderer':'maqueta shared mask/colorizer/outline / '+method(presentation),
         'source_scope':'canonical_geography','geographic_binding':binding,'scientific_revision':revision,'scientific_identity':identity,
         'source':'local','variable':sources[0]['variable'],'units':sources[0]['units'],'region':box,'citation':cartography['citation'],
         'source_url':None,'cartographic_settings':cartography,'layers':specs,'source_records':records,'observations':observations,'intervals':intervals,
         'fps':30,'total_frames':total,'duration':total/30,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
         'temporal_interpolation':False,'nodata':{'override':None,'rule':'native mask AND finite samples'},
-        'rules':{'alpha':'native mask AND finite samples'},'warnings':['Inset Ecuador desactivado; región universal de la vista SIG.',
-            'Igual tiempo por observación real; sin interpolación ni relleno de fechas.']+
+        'rules':{'alpha':'nearest native support AND finite samples AND territorial mask after value resampling',
+                 'presentation':presentation,'scientific_data':'native originals unchanged'},'warnings':warnings+
+            (['Galápagos reubicado y a distinta escala; referencia geoBoundaries, CC BY 4.0.'] if territorial else [])+
+            ([NOTE] if presentation['resampling']=='bilinear' else [])+['Igual tiempo por observación real; sin interpolación ni relleno de fechas.']+
             [f"Intervalos ausentes: {gap['missing_intervals']} entre {gap['after']} y {gap['before']}." for gap in gaps([s['date'] for s in sources],time.get('cadence','irregular'))],
         'thumbnail':thumb,'auxiliaries':{'legend_static':auxiliary}}
     _schema(manifest);verify_series_binding(project,manifest);content=_bytes(manifest)
     with (destination/'manifest.json').open('xb') as stream:stream.write(content)
     record={'kind':'temporal_map','representation':REPRESENTATION,'name':'Serie SIG '+sources[0]['variable']+' · '+sources[0]['date']+' — '+sources[-1]['date'],
+        'geographic_presentation':copy.deepcopy(binding),
         'manifest_path':str(destination/'manifest.json'),'manifest_sha256':_digest(content),'bytes':used+len(content),
         'source_dataset':'sources.'+revision,'period':[sources[0]['date'],sources[-1]['date']],
         'layers':{lid:{'name':g['name'],'size':g['size']} for lid,g in specs.items()},

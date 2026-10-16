@@ -59,7 +59,7 @@ class VariableDetection(unittest.TestCase):
             (dict(units='m/s', cadence='Diaria', variable='Viento'), 'mean'),
             (dict(units='%', cadence='Diaria', variable='Nube'), 'mean'),
             (dict(units='°C', cadence='Mensual', variable='Anomalía'), 'mean'),
-            (dict(units='', cadence='Diaria', variable='???'), 'mean'),
+            (dict(units='', cadence='Diaria', variable='???'), None),
         ]
         for case, expected in cases:
             self.assertEqual(detect_profile(case)['aggregation'], expected, case)
@@ -67,7 +67,8 @@ class VariableDetection(unittest.TestCase):
     def test_rate_with_wrong_cadence_is_not_summed(self):
         prof = detect_profile(dict(units='mm/día', cadence='Mensual',
                                    variable='Lluvia'))
-        self.assertEqual(prof['aggregation'], 'mean')
+        self.assertIsNone(prof['aggregation'])
+        self.assertFalse(prof['supported'])
         self.assertTrue(prof['warnings'])
 
     def test_manual_sum_of_temperature_is_rejected(self):
@@ -124,7 +125,8 @@ class Accumulation(unittest.TestCase):
         # Una serie importada se valida sin duplicados; esta prueba conserva
         # la defensa aquí para que una llamada programática no pueda hacer
         # pasar dos veces el 1 de febrero por el 29 de febrero.
-        for _ in range(29):
+        acc.observe('2024-02-01', np.full((70, 65), 5.0, 'float32'))
+        with self.assertRaisesRegex(ValueError, 'Fecha duplicada'):
             acc.observe('2024-02-01', np.full((70, 65), 5.0, 'float32'))
         out = acc.to_dict()
         self.assertTrue(any('Ningún mes está completo' in w

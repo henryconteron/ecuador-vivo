@@ -39,3 +39,33 @@ assets/images/raw/
 /production/monitor/.streamlit/secrets.toml
 /tools/biblioteca/original/data/posts.json
 /output/conceptos-ecuador-vivo-20261004/
+
+# Producción audiovisual pendiente de publicación: conservar solo localmente.
+/videos/
+.hyperframes/
+/tests/test_enso_*.py
+/tests/test_expedicion_*.py
+/tests/test_expedicion_*.mjs
+/dev/*enso*
+/dev/*expedicion*
+/dev/*social_pilots*
+
+# Metadatos regenerables e instalaciones; no son código fuente.
+*.egg-info/
+*.egg
+.venv/
+*.log
+*.tmp
+*.bak
+*.orig
+*.pem
+*.key
+
+# No admitir nuevos videos, voces ni paquetes de entrega por accidente.
+# Las piezas públicas ya versionadas no se retiran con estas reglas.
+*.mp4
+*.mov
+*.webm
+*.mp3
+*.wav
+*.zip

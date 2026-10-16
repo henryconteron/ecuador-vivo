@@ -1,0 +1,2 @@
+# Isolated optional renderer, not a dependency of the Studio startup environment.
+manim==0.22.0

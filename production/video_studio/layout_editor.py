@@ -149,7 +149,7 @@ export default function(component){
  const {parentElement:root,data,setTriggerValue}=component;
  const q=id=>root.querySelector('#'+id), board=root.querySelector('.board'), stage=root.querySelector('.stage');
  const layers=structuredClone(data.layers), entries=structuredClone(data.entries||{});
- const originalEntries=JSON.stringify(entries);
+ let originalEntries=JSON.stringify(entries);
  let recoveryWarning='';
  const pending=()=>{const dirty=JSON.stringify(entries)!==originalEntries;q('pending').textContent=(dirty?(data.workspace_mode?'Cambios pendientes · guardado automático':'Cambios pendientes: pulsa OK para confirmar el diseño.'):'Sin cambios por aplicar.')+recoveryWarning;component.onPending?.(dirty)};
  let selected=layers.find(x=>x.editable)?.id, selection=new Set(selected?[selected]:[]), scale=1, history=[], future=[], drag=null, pan=null, marquee=null;
@@ -168,6 +168,10 @@ export default function(component){
  const pixelTasks=[],pixelUpdates=[];
  const setPixels=(element,src)=>{if(element.getAttribute('src')===src)return;const next=new Image();next.src=src;pixelTasks.push(next.decode().then(()=>{pixelUpdates.push([element,src])}))};
  const bg=board.querySelector('img[data-background]')||document.createElement('img');bg.dataset.background='true';setPixels(bg,data.background);bg.alt='';bg.style.cssText='position:absolute;pointer-events:none';bg.style.width=authorW+'px';bg.style.height=authorH+'px';if(!bg.isConnected)board.append(bg);
+ const captionImg=board.querySelector('img[data-captions]')||document.createElement('img');captionImg.dataset.captions='true';captionImg.alt='Subtítulos del fotograma';captionImg.draggable=false;
+ if(!captionImg.isConnected){captionImg.hidden=true;board.append(captionImg)}
+ const placeCaption=next=>{const c=next.caption_overlay;captionImg.hidden=!c;if(c)captionImg.style.cssText='position:absolute;pointer-events:none;z-index:30000;left:'+c.x+'px;top:'+c.y+'px;width:'+c.width+'px;height:'+c.height+'px';};
+ if(data.caption_overlay)setPixels(captionImg,data.caption_overlay.src);
  const retained=new Set(layers.map(row=>row.id));
  layers.forEach(row=>{const el=[...board.querySelectorAll('.piece')].find(el=>el.dataset.id===row.id)||document.createElement('img');setPixels(el,row.src);el.className='piece';el.alt=row.label;el.draggable=false;el.dataset.id=row.id;el.style.pointerEvents=row.editable?'auto':'none';imgs.set(row.id,el)});
  Promise.all(pixelTasks).then(()=>{
@@ -177,8 +181,9 @@ export default function(component){
   for(const [element,src] of pixelUpdates)element.src=src;
   board.querySelectorAll('.piece').forEach(el=>{if(!retained.has(el.dataset.id))el.remove()});
   for(const element of imgs.values())if(!element.isConnected)board.append(element);
+  placeCaption(data);
   component.onPixels?.();
- }).catch(()=>{if(board.dataset.generation===generation)q('notice').textContent='No se pudo decodificar la composición; se conserva el último cuadro válido.'});
+ }).catch(()=>{if(board.dataset.generation===generation){const message='No se pudo decodificar la composición; se conserva el último cuadro válido.';q('notice').textContent=message;component.onPixelError?.(message)}});
  const guide=document.createElement('div');guide.className='guide';guide.setAttribute('aria-hidden','true');guide.style.cssText='left:60px;top:190px;width:900px;height:1330px';board.append(guide);
  const box=document.createElement('div');box.className='selected';box.setAttribute('aria-hidden','true');const handle=document.createElement('div');handle.className='handle';box.append(handle);board.append(box);
  function choices(){
@@ -229,7 +234,7 @@ export default function(component){
   const small=layers.filter(x=>x.editable&&!x.hidden&&!x.deleted&&x.kind==='text'&&x.font_size&&x.font_size<20).length;
   q('notice').textContent=small?small+' textos tienen menos de 20 px: revisa su legibilidad.':'';
  }
- function inspect(){const row=current();if(!row){['x','y','w','h','font','text','color','icon','hidden','front','back'].forEach(k=>q(k).disabled=true);q('hint').textContent='No quedan elementos seleccionables. Recupera un elemento o añade texto.';return}['x','y','w','h','hidden','front','back'].forEach(k=>q(k).disabled=false);q('object').value=selected;['x','y','w','h'].forEach(k=>q(k).value=row[k]);q('font').disabled=!row.font_size;q('font').value=row.font_size||'';q('text').disabled=!row.content_editable;q('text').value=row.changedText??entries[row.id]?.text??row.text??'';q('color').disabled=row.kind!=='text';q('color').value=/^#[0-9a-f]{6}$/i.test(row.changedColor||row.color)?(row.changedColor||row.color):'#ffffff';q('icon').disabled=row.kind!=='icon';q('icon').value=row.changedIcon||entries[row.id]?.icon||'Original';q('hidden').checked=!!row.hidden;q('hint').textContent=row.kind==='map'?'Arrastra el mapa completo; al ampliar, se amplían también su norte y distancia.':!row.content_editable&&row.kind==='text'?'Cifra/fecha vinculada a datos. Puedes moverla, ajustar letra/color o quitarla del diseño, pero no cambiar su valor.':'Arrastra o ajusta las medidas. OK redibuja el texto en este mismo lienzo.'}
+ function inspect(){const row=current();if(!row){['x','y','w','h','font','text','color','icon','hidden','front','back'].forEach(k=>q(k).disabled=true);q('hint').textContent='No quedan elementos seleccionables. Recupera un elemento o añade texto.';return}['x','y','w','h','hidden','front','back'].forEach(k=>q(k).disabled=false);q('object').value=selected;['x','y','w','h'].forEach(k=>q(k).value=row[k]);q('font').disabled=!row.font_size;q('font').value=row.font_size||'';q('text').disabled=!row.content_editable;q('text').value=row.changedText??entries[row.id]?.text??row.text??'';q('color').disabled=row.kind!=='text';q('color').value=/^#[0-9a-f]{6}$/i.test(row.changedColor||row.color)?(row.changedColor||row.color):'#ffffff';q('icon').disabled=row.kind!=='icon';q('icon').value=row.changedIcon||entries[row.id]?.icon||'Original';q('hidden').checked=!!row.hidden;q('hint').textContent=row.kind==='map'?'Arrastra el mapa completo; su proporción geográfica se conserva.':!row.content_editable&&row.kind==='text'?'Cifra/fecha vinculada a datos. Puedes moverla, ajustar letra/color o quitarla del diseño, pero no cambiar su valor.':'Arrastra o ajusta las medidas. OK redibuja el texto en este mismo lienzo.'}
  const inspectBase=inspect;
  q('hint').setAttribute('role','status');q('hint').setAttribute('aria-live','polite');stage.setAttribute('aria-keyshortcuts','ArrowLeft ArrowRight ArrowUp ArrowDown Delete Control+a Control+z Control+y');
  inspect=()=>{inspectBase();const row=current();q('name').disabled=!row;q('locked').disabled=!row;q('name').value=row?.label||'';q('locked').checked=!!row?.locked;if(row?.locked){['x','y','w','h','font','text','color','icon','hidden','front','back'].forEach(id=>q(id).disabled=true);q('hint').textContent='Elemento bloqueado. Desbloquéalo para editarlo.'}if(selection.size>1){['x','y','w','h','font','text','color','icon','hidden','front','back','name','locked','layerup','layerdown'].forEach(id=>q(id).disabled=true);q('hint').textContent=selection.size+' elementos seleccionados. Arrastra o usa flechas para mover juntos; esquina para escalar. Los bloqueados permanecen fijos.'}};
@@ -295,6 +300,27 @@ export default function(component){
   const baseInspect=inspect;inspect=()=>{baseInspect();component.onSelection?.([...selection],selected)};
   const basePaint=paint;paint=()=>{basePaint();component.onPaint?.()};
   component.canvasApi={state:()=>({entries:structuredClone(entries),ids:[...selection],selected}),
+   update:next=>{
+    if(drag||marquee)return false;
+    Object.assign(data,next);
+    for(const key of Object.keys(entries))delete entries[key];originalEntries=JSON.stringify(entries);
+    const wanted=new Set(next.layers.map(row=>row.id));
+    for(const row of [...layers])if(!wanted.has(row.id)){imgs.get(row.id)?.remove();imgs.delete(row.id);layers.splice(layers.indexOf(row),1);selection.delete(row.id)}
+    const updates=[],tasks=[];const stamp=board.dataset.generation=String(Number(board.dataset.generation||0)+1);
+    function pixels(img,src){if(img.getAttribute('src')===src)return;const decoded=new Image();decoded.src=src;tasks.push(decoded.decode().then(()=>updates.push([img,src])))}
+    pixels(bg,next.background);
+    if(next.caption_overlay)pixels(captionImg,next.caption_overlay.src);
+    for(const nextRow of next.layers){
+     let row=layers.find(row=>row.id===nextRow.id);
+     if(row)Object.assign(row,structuredClone(nextRow));else{row=structuredClone(nextRow);layers.push(row)}
+     let img=imgs.get(row.id);
+     if(!img){img=document.createElement('img');img.className='piece';img.draggable=false;img.dataset.id=row.id;imgs.set(row.id,img);board.append(img)}
+     img.alt=row.label;img.style.pointerEvents=row.editable?'auto':'none';pixels(img,row.src);
+    }
+     Promise.all(tasks).then(()=>{if(board.dataset.generation===stamp){for(const [img,src] of updates)img.src=src;placeCaption(next);paint();component.onPixels?.()}}).catch(()=>{if(board.dataset.generation===stamp){const message='No se actualizó la imagen. Se conserva la última representación válida.';q('notice').textContent=message;component.onPixelError?.(message)}});
+    if(selected&&!wanted.has(selected))selected=null;
+    choices();paint();inspect();pending();return true;
+   },
    choose:(id,extend=false)=>{choose(id,extend);paint();inspect()},resizeView,
    isGesture:()=>!!(drag||marquee),hasPending:()=>JSON.stringify(entries)!==originalEntries};
  }

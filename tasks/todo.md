@@ -1,6 +1,91 @@
 # Ecuador Vivo Studio: tareas
 
-## ESTADO VIGENTE · PAUSA SOLICITADA · presentación y estabilidad incompleta · 2026-10-09
+## Recursos científico · 13 octubre · avance autorizado
+
+- [x] Lienzo independiente, biblioteca contextual, nuevas/guardadas y envío a Studio.
+- [x] Instalar cuatro editores abiertos, paquete CCv2 y puente PNG + original editable.
+- [x] Cinco ilustraciones CC0; Manim aislado; reutilizar Blender sin reinstalar.
+- [x] Pruebas AppTest/Node/compilación y render de imagen real vertical/horizontal.
+- [ ] Aceptación visual/gestos/WASM/WebGL en navegador (preferencia denegada).
+- [ ] RC4–RC7 completos: anclajes nativos, acabado 3D, keyframes y video revisado.
+
+Informe: documentation/RECURSOS-CIENTIFICOS-IMPLEMENTACION-20261013.md.
+Los criterios completos originales inferiores siguen abiertos donde falta evidencia.
+
+## Propuesta original de Recursos científico · 13 octubre · histórico
+
+Replanificación del mismo creador 2D/3D; no sustituye pendientes. Detalle:
+documentation/RECURSOS-CANVAS-CIENTIFICO-20261013.md. La entrega original era
+investigación/maqueta; luego aprobada arriba. Dependencias RC1→RC2→RC3→RC4;
+RC5 depende de RC2; RC6 de RC4/RC5; RC7 de RC6.
+
+- [ ] RC1: Biblioteca contextual y lienzo compartido. Abrir seis plantillas/lienzo
+  libre sin formulario largo, paneles plegables, sin controles ficticios.
+  Verificar AppTest de rutas y revisión visual a 1366/1920 px. Alcance medio:
+  studio_resources_ui.py, workspace.html/js/css y pruebas.
+- [ ] RC2: Recurso → guardar/reabrir → Studio → video. Conservar objetos/fuentes,
+  Undo y composición 9:16/16:9. Verificar pruebas de proyectos/recursos y cuadros
+  de MP4. Alcance medio: studio_resource_projects.py, integración y entrega.
+- [ ] Punto de revisión tras RC2: aprobar ese flujo antes de ampliar catálogo
+  o cambiar el motor del lienzo.
+- [ ] RC3: Colección pequeña con búsqueda/favoritos/procedencia. Licencia por
+  objeto y descarga bajo petición. Verificar filtros, persistencia y fuente
+  desconocida. Alcance medio: catálogo/metadatos, biblioteca y pruebas.
+- [ ] RC4: Conectores/llamadas. Anclajes al mover/duplicar/agrupar y exportación
+  equivalente. Verificar ciclo editable, modelo/render/gestos. Alcance medio:
+  contrato de elemento, lienzo, render y tests.
+- [ ] RC5: Mejorar receta 3D existente. Cámara/materiales/tiempo recuperables,
+  textos separados y vista/final coherentes. Verificar tres instantes,
+  cancelación/caché en equipo real. Alcance medio: receta/visor, Blender y tests.
+- [ ] Punto de revisión tras RC4/RC5: calidad y fluidez reales sin catálogo
+  masivo ni instalación anticipada de motores.
+- [ ] RC6: Pasos/fotogramas clave. Orden y duración guardados, reloj único y
+  reproducción/exportación equivalentes. Verificar seek/Undo/30 FPS sin inventar
+  observaciones. Alcance medio: receta, timeline local, render y tests.
+- [ ] RC7: Un paquete revisado por incremento. Video demostrativo, fuentes,
+  licencias/límites, legibilidad en teléfono, teclado y fallback GPU. Manim y
+  Ketcher solo tras prueba/decisión. Alcance pequeño/medio por paquete.
+
+> El estado vigente está en `documentation/ESTADO.md`; las secciones inferiores son histórico.
+
+## Propuesta pendiente · Recursos como creador 2D/3D · 12 octubre
+
+- [x] Revisar carencias reales: galería 2D, sin objetos/cámara/luces/exportación 3D; encontrar modelos Three.js existentes.
+- [x] Revisar Konva/Three.js/Theatre/Blender, licencias y límites; registrar plan específico y aceptación.
+- [ ] Aprobación del plan `documentation/RECURSOS-CREADOR-2D-3D-20261012.md` antes de cambiar arquitectura.
+- [ ] Prueba completa orográfica 3D editable → Studio → MP4, con revisión visual autorizada/manual.
+- [ ] Biblioteca/lienzo/inspector integrados sin otro editor ni reloj.
+- [ ] Fotogramas clave reutilizables y recursos de escorrentía, El Niño y fallas con fuentes/límites.
+
+
+## Incremento cerrado · Inicio y Recursos · 12 octubre
+
+- [x] Medir arranque, eliminar render de portada e importar motores solo en sus rutas.
+- [x] Reordenar Inicio, Crear/Abrir arriba y tres portadas nuevas; SIG directo sin formulario previo.
+- [x] Crear Recursos desde cero/plantillas y abrir el mismo lienzo, sin convertir videos anteriores.
+- [x] Biblioteca de diseños propios y copia/inserción segura por escena; 21 formas/símbolos editables.
+- [x] Agrupar opacidad temporal y reutilizar PNG sin omitir verificación científica.
+- [x] 137 regresiones focalizadas, typecheck/build, sintaxis JS y guard de ocho pilotos; documentar mediciones/límites.
+- [ ] Revisión estética en navegador con el usuario; denegación anterior vigente, no eludir.
+
+
+## ESTADO VIGENTE · mantenimiento previo a Recursos · 2026-10-11/12
+
+- [x] Inventario de archivos/carpetas, dependencias actuales y protección de ocho pilotos.
+- [x] Retirar 161 perfiles QA y 622 derivados de video/capturas; conservar originales y fuentes.
+- [x] Archivar 654 proyectos antiguos con autorización y hashes; solo ocho pilotos activos.
+- [x] Corregir Inicio sin proyecto falso, búsqueda, páginas, abrir y cerrar; pruebas focalizadas y guard posterior.
+- [x] Alinear launcher 8534 y cerrar Studio obsoletos; preservar panel web 8511.
+- [ ] Revisión visual con el usuario: navegador denegó acceso, no eludir.
+- [ ] Retirada adicional propuesta de 43 jobs y fixture sintético: no realizada, bloqueo de herramienta registrado.
+- [x] Recursos 2D para temperatura/lluvia/comparaciones/El Niño integrados y exportados; no otro motor de cálculo.
+- [x] Pistas de voz independientes y subtítulos manuales/SRT/VTT en Studio, usando el audio existente; guardado/reapertura/exportación real comprobados.
+- [ ] Transcripción automática con el ASR local existente (sin descargar otro modelo por defecto).
+- [ ] Puente 3D determinista posterior al primer recorrido completo validado.
+
+Detalles en `documentation/LIMPIEZA-STUDIO-20261011.md`. Historial inferior preservado, no vuelve a ser el estado vigente.
+
+## HISTORIAL · PAUSA SOLICITADA · presentación y estabilidad incompleta · 2026-10-09
 
 No continuar hasta nueva petición. Estado y evidencias: checkpoint único e informe tmp/ecuador-vivo-visual-stability-report.md. Cambios científicos previos preservados.
 

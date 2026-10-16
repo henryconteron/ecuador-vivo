@@ -42,8 +42,8 @@ def _json(value):
         payload = json.dumps(value, allow_nan=False, ensure_ascii=False)
     except (ValueError, TypeError, OverflowError, RecursionError) as error:
         raise ValueError('El modelo Studio debe ser JSON finito sin objetos ejecutables.') from error
-    if len(payload) > 4_000_000:
-        raise ValueError('El modelo Studio excede el presupuesto de 4 MB de texto.')
+    if len(payload) > 16_000_000:
+        raise ValueError('El modelo Studio excede el presupuesto de 16 MB de texto; divide periodos mayores. No limita el calendario a pocas observaciones.')
 
 
 def validate_binding(binding):
@@ -99,7 +99,7 @@ def validate_element(element):
     temporal=element.get('temporal_binding')
     if 'temporal_binding' in element and temporal is None:raise ValueError('Binding temporal nul no admitido; omite el campo opcional.')
     if temporal is not None:
-        kinds={'continent':'map','galapagos':'map','date':'text','legend_static':'legend'}
+        kinds={'continent':'map','galapagos':'map','date':'text','counter':'text','legend_static':'legend'}
         if (not isinstance(temporal,dict) or set(temporal)!={'instance_id','channel'}
                 or temporal.get('channel') not in kinds or element['type']!=kinds[temporal['channel']]):
             raise ValueError('Binding temporal o consumidor incompatible.')
@@ -213,6 +213,13 @@ def validate_studio(studio):
                 result = studio['calculations'].get(binding['result_id'])
                 if not isinstance(result, dict) or binding['field'] not in result:
                     raise ValueError('Binding apunta a un resultado/campo inexistente.')
+    # Optional additive tracks. Use precisely the scene timeline's CFR clock;
+    # validation never reads media or changes scientific registries.
+    total_frames = sum(max(1, round(by_id[value]['duration'] * 30)) for value in timeline)
+    from studio_voice import validate_audio_tracks
+    from studio_captions import validate_captions
+    validate_audio_tracks(studio, total_frames)
+    validate_captions(studio, total_frames)
     _json(studio)
     return studio
 

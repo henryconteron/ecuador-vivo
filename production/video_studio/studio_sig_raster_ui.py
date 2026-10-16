@@ -60,12 +60,13 @@ def inspector(session,layer,source,commit):
     st.download_button('Descargar GeoTIFF original',Path(source['path']).read_bytes(),file_name=source['name'],key='sig_raster_export')
 
 
-def analysis_panel(session):
-    state=workspace_for(session.project);registry=session.project['studio']['geography']
+def analysis_panel(session,*,show_heading=True):
+    state=workspace_for(session.project);registry=session.project['studio'].get('geography',{'sources':{}})
     rasters=[lid for lid in state['order'] if state['layers'][lid]['type']=='raster']
     if not rasters:st.info('Importa al menos un GeoTIFF con fecha y unidades.');return
     name=lambda lid:state['layers'][lid]['name']
-    tool=st.selectbox('Operación ráster',['Comparar fechas','Diferencia B − A','Media de dos observaciones','Estadísticas zonales'],key='sig_raster_tool')
+    from studio_sig_tool_catalog import RASTER_TOOLS
+    tool=st.selectbox('Operación ráster',[item['label'] for item in RASTER_TOOLS],key='sig_raster_tool')
     with st.form('sig_raster_operation'):
         first=st.selectbox('Ráster A',rasters,format_func=name,key='sig_raster_first')
         if tool=='Estadísticas zonales':
@@ -76,7 +77,7 @@ def analysis_panel(session):
         else:
             second=st.selectbox('Ráster B',rasters,index=min(1,len(rasters)-1),format_func=name,key='sig_raster_second')
             st.caption('Misma variable y unidad. Los cálculos requieren cuadrículas alineadas. La media es de dos observaciones, no un promedio anual.')
-        accept=st.form_submit_button('Aplicar operación',key='sig_raster_run')
+        accept=st.form_submit_button('Aplicar comparación' if tool=='Comparar fechas' else 'Calcular en segundo plano',key='sig_raster_run')
     if accept:
         try:
             if tool=='Comparar fechas':
@@ -85,12 +86,11 @@ def analysis_panel(session):
                 candidate=layer_command(candidate,{'action':'raster_date','index':0})
                 session.commit(candidate);preferences(session)['time']=True;choose_tool(session,'Propiedades');st.rerun()
             elif tool=='Estadísticas zonales':
-                from studio_sig_raster import zonal_layer
-                candidate,_=zonal_layer(session.project,first,second)
-                session.commit(candidate);choose_tool(session,'Propiedades');preferences(session)['dock']=True;st.rerun()
+                from studio_sig_analysis_ui import queue
+                queue(session,{'kind':'raster','layers':[first,second],'tool':'zonal','name':'Estadísticas zonales'});st.rerun()
             else:
-                candidate,_=calculate(session.project,[first,second],'difference' if tool.startswith('Diferencia') else 'mean',tool+'.tif')
-                session.commit(candidate);choose_tool(session,'Propiedades');st.rerun()
+                from studio_sig_analysis_ui import queue
+                queue(session,{'kind':'raster','layers':[first,second],'tool':'difference' if tool.startswith('Diferencia') else 'mean','name':tool+'.tif'});st.rerun()
         except (ValueError,TypeError,KeyError,OSError) as error:st.error('No se aplicó la operación: '+str(error))
 
 
@@ -119,25 +119,64 @@ def time_strip(session):
         st.caption(f"{len(sources)} observaciones · {duration:g} s de video · igual tiempo por observación · mapa base excluido de Studio")
 
 
-def timelapse_panel(session):
+def timelapse_panel(session,*,show_heading=True):
     from output_profiles import PRESETS,profile_for
     from studio_sig_timelapse import configure,gaps
-    state=workspace_for(session.project);registry=session.project['studio']['geography'];previous=state.get('raster_time',{})
-    rasters=[lid for lid in state['order'] if state['layers'][lid]['type']=='raster' and registry['sources'][state['layers'][lid]['source_id']]['date'] is not None]
-    st.markdown('**Preparar timelapse**')
-    st.caption('Capas geográficas consultables. Inicio y final se eligen mediante las observaciones incluidas; no se rellenan huecos.')
-    if len(rasters)<2:st.info('Añade al menos dos GeoTIFF con fechas. Las capas estáticas permanecen en el mapa.');return
+    if show_heading:st.markdown('**Preparar timelapse**')
+    st.caption('Fuente → variable → fechas → territorio → formato → Studio. Sin rellenar fechas ni alterar datos originales.')
+    from studio_sig_series_ui import acquire_panel
+    from studio_sig_series import series_groups
+    acquire_panel(session)
+    state=workspace_for(session.project);registry=session.project['studio'].get('geography',{'sources':{}});previous=state.get('raster_time',{})
+    groups=series_groups(session.project)
+    if not groups:st.info('Todavía no hay observaciones fechadas. Descarga una serie o importa tus GeoTIFF desde el selector de fuente. Los DEM y otras capas estáticas no se animan.');return
+    # Dependent choices must rerun immediately, outside the atomic apply form.
+    imported=set(session.state.get(session.key+'_series_imported',previous.get('layers',[])))
+    import hashlib
+    inventory=hashlib.sha256(str([(g['id'],len(g['layers'])) for g in groups]).encode()).hexdigest()[:12]
+    origins=list(dict.fromkeys(g['source'] for g in groups))
+    preferred=next((g for g in groups if imported.intersection(g['layers'])),groups[0])
+    origin=st.selectbox('Fuente y producto disponibles',origins,index=origins.index(preferred['source']),key=session.key+'_series_origin_'+inventory)
+    candidates=[g for g in groups if g['source']==origin]
+    gid=st.selectbox('Variable y unidad',list(range(len(candidates))),index=candidates.index(preferred) if preferred in candidates else 0,
+        format_func=lambda i:candidates[i]['variable']+' · '+candidates[i]['units'],key=session.key+'_series_variable_'+origin+'_'+inventory)
+    group=candidates[gid];signature=group['id'];rasters=group['layers']
+    from datetime import date
+    lo=date.fromisoformat(group['dates'][0]);hi=date.fromisoformat(group['dates'][-1])
+    period=st.date_input('Periodo a animar',value=(lo,hi),min_value=lo,max_value=hi,key=session.key+'_series_period_'+signature)
+    if len(period)!=2:st.info('Selecciona también la fecha final.');return
+    rasters=[lid for lid in rasters if period[0].isoformat()<=registry['sources'][state['layers'][lid]['source_id']]['date']<=period[1].isoformat()]
+    if len(rasters)<2:st.info('El periodo seleccionado necesita al menos dos observaciones reales. Amplía las fechas o incorpora más datos.');return
+    if len(rasters)>3600:st.warning('Este video admite como máximo 3600 observaciones en 120 segundos. Reduce el periodo; no se descartarán fechas automáticamente.');return
     current=session.project['studio']['output_profile'];pid=current['id']
+    from studio_territory import options_for,province_names
+    presentation=options_for(session.project)
+    territories=['ecuador','continent','galapagos','province','view']
+    territory=st.selectbox('Territorio de salida',territories,index=territories.index(presentation['territory']),
+        format_func=lambda value:{'ecuador':'Ecuador continental + Galápagos','continent':'Solo Ecuador continental','galapagos':'Solo Galápagos','province':'Una provincia','view':'Región de la vista SIG'}[value],key='sig_export_territory')
+    province=None
+    if territory=='province':
+        names=province_names();province=st.selectbox('Provincia',names,index=names.index(presentation.get('province','Napo')),key='sig_export_province')
+    st.caption(f"{len(rasters)} observaciones disponibles · {group['variable']} · {group['units']} · una escala común. No se mezclarán otros productos ni variables.")
     with st.form('sig_timelapse_plan'):
-        ids=st.multiselect('Observaciones',rasters,default=previous.get('layers',rasters[:32]),
-            format_func=lambda lid:registry['sources'][state['layers'][lid]['source_id']]['date']+' · '+state['layers'][lid]['name'],key='sig_timelapse_layers')
-        cadence=st.selectbox('Cadencia científica',['daily','monthly','irregular'],index=['daily','monthly','irregular'].index(previous.get('cadence','irregular')),
-            format_func=lambda v:{'daily':'Diaria','monthly':'Mensual','irregular':'Otra / irregular'}[v],key='sig_timelapse_cadence',
+        selected_previous=[lid for lid in previous.get('layers',[]) if lid in rasters]
+        ids=st.multiselect('Observaciones',rasters,default=selected_previous or rasters,
+            format_func=lambda lid:registry['sources'][state['layers'][lid]['source_id']]['date']+' · '+state['layers'][lid]['name'],key='sig_timelapse_layers_'+signature+'_'+str(period))
+        default_cadence=previous.get('cadence','irregular') if selected_previous else ('daily' if imported.intersection(rasters) else 'irregular')
+        cadence=st.selectbox('Cadencia científica',['daily','monthly','irregular'],index=['daily','monthly','irregular'].index(default_cadence),
+            format_func=lambda v:{'daily':'Diaria','monthly':'Mensual','irregular':'Otra / irregular'}[v],key='sig_timelapse_cadence_'+signature,
             help='Cadencia declarada de las observaciones seleccionadas. No agrega datos ni cambia el intervalo o las unidades originales del producto.')
-        duration=st.number_input('Duración del video (s)',min_value=.1,max_value=120.,value=float(previous.get('duration',3.)),step=.1,key='sig_timelapse_duration')
-        options=['youtube','tiktok','instagram_square','custom']
+        import math
+        minimum=max(.1,math.ceil(len(rasters)/3)/10)
+        duration=st.number_input('Duración del video (s)',min_value=minimum,max_value=120.,value=min(120.,max(minimum,float(previous.get('duration',max(3.,len(rasters)/10))))),step=.1,key='sig_timelapse_duration_'+signature+'_'+str(len(rasters)))
+        resampling=st.selectbox('Presentación',['nearest','bilinear'],index=['nearest','bilinear'].index(presentation['resampling']),
+            format_func=lambda value:'Celdas nativas' if value=='nearest' else 'Suavizado visual',key='sig_export_resampling')
+        borders=st.checkbox('Contorno del territorio',value=presentation['borders'],key='sig_export_borders')
+        provinces=st.checkbox('Límites provinciales',value=presentation['provinces'],key='sig_export_provinces')
+        st.caption('Suavizado visual; resolución original conservada. Los cálculos y las descargas usan las celdas originales. La navegación SIG sigue libre.')
+        options=list(PRESETS)+['custom']
         selected=st.selectbox('Formato de salida',options,index=options.index(pid) if pid in options else 0,
-            format_func=lambda v:{'youtube':'Horizontal 16:9 · YouTube','tiktok':'Vertical 9:16 · Reels / Shorts / TikTok','instagram_square':'Cuadrado 1:1','custom':'Dimensiones personalizadas'}[v],key='sig_timelapse_profile')
+            format_func=lambda v:(f'{PRESETS[v][0]} · {PRESETS[v][1]} × {PRESETS[v][2]}' if v in PRESETS else 'Dimensiones personalizadas'),key='sig_timelapse_profile')
         # Always visible: forms submit atomically, so changing a selector cannot
         # silently submit stale dimensions or force an intermediate rerun.
         w=st.number_input('Ancho personalizado (px)',160,3840,int(profile_for(current).width),2,key='sig_timelapse_width')
@@ -149,7 +188,10 @@ def timelapse_panel(session):
         try:
             profile={'id':selected}
             if selected=='custom':profile.update(width=int(w),height=int(h))
-            candidate=configure(session.project,ids,duration=duration,cadence=cadence,profile=profile,safe_guides=guides)
+            options={'territory':territory,'resampling':resampling,'borders':borders,'provinces':provinces}
+            if province:options['province']=province
+            candidate=configure(session.project,ids,duration=duration,cadence=cadence,profile=profile,safe_guides=guides,
+                presentation=options)
             session.commit(candidate);preferences(session)['time']=True;choose_tool(session,'Propiedades');st.rerun()
         except (ValueError,KeyError,TypeError,OSError) as error:st.error('No se configuró la serie: '+str(error))
     if previous:
@@ -157,6 +199,8 @@ def timelapse_panel(session):
         holes=gaps(dates,previous.get('cadence','irregular'))
         if holes:st.warning('Hay intervalos sin observación; no se interpolarán.');st.table(holes)
         st.caption('El marco turquesa indica la ventana geográfica enviada; título, fecha, leyenda y créditos se añaden como elementos editables en Studio.')
+        if session.project['studio'].get('sig_transfer') or session.project['studio'].get('sig_map_transfer'):
+            st.info('Studio conserva la última serie enviada con sus propios datos. Aplica esta preparación y pulsa Enviar a Studio para actualizar el video; cambiar la selección del SIG no reemplaza un video ya armado.')
 
 
 def series_review(session):
@@ -168,7 +212,7 @@ def series_review(session):
         time=workspace_for(session.project).get('raster_time')
         if not time:st.info('Prepara primero el timelapse en el mapa.');return
         st.caption(f"{len(time['layers'])} observaciones reales · RGBA · fecha protegida · escala común · originales vinculados.")
-        st.caption('Se conserva la extensión y la opacidad común de ambas capas. Si difieren, iguálalas antes de preparar.')
+        st.caption('Se usa el territorio de salida elegido y la opacidad común de las fechas. El mapa base se excluye. Galápagos sin cobertura verificable queda transparente.')
         duration=st.number_input('Duración del video de comprobación (s)',min_value=.1,max_value=120.,value=float(time.get('duration',3.)),step=.1,key='sig_series_duration')
         if st.button('Preparar y revisar serie',key='sig_series_prepare'):
             try:
@@ -181,6 +225,7 @@ def series_review(session):
     def publish(candidate):
         session.commit(candidate);session.state[session.key+'_selected']=candidate['studio']['timeline'][-1]
         session.state.pop(key+'_record',None)
+        session.state.pop(session.key+'_sig_dialog',None)
         from studio_project import request_studio_navigation
         request_studio_navigation(session.state)
     show_layer_review(session,key,record,publish_label='Enviar serie a Studio',publisher=publish)

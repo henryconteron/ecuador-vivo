@@ -200,7 +200,10 @@ def validate_geography(studio):
             or set(registry)-{'version','sources','regions','views','map_workspace'}):
         raise ValueError('Registro geográfico incompatible.')
     if any(not isinstance(registry[k],dict) for k in ('sources','regions','views')):raise ValueError('Registros geográficos deben usar IDs.')
-    if len(registry['sources'])>50 or len(registry['regions'])>REGION_LIMIT or len(registry['views'])>100:
+    from studio_sig_raster import MAX_OBSERVATIONS
+    raster_count=sum(isinstance(s,dict) and s.get('type')=='raster' for s in registry['sources'].values())
+    if (raster_count>MAX_OBSERVATIONS or len(registry['sources'])-raster_count>50
+            or len(registry['regions'])>REGION_LIMIT or len(registry['views'])>100):
         raise ValueError('Registro geográfico superior al presupuesto.')
     expected_regions={};used=0
     for sid,source in registry['sources'].items():

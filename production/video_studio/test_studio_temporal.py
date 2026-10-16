@@ -39,7 +39,8 @@ def raster_project():
         {'date':'2025-01-03','path':str(path),'band':2}],cadence='Por observación',
         start='2025-01-01',end='2025-01-03',
         bbox=[-80,-3,-78,-1],clip_ecuador=False,show_galapagos=False,show_provinces=False,
-        width=720,duration=7/30,layout='original',citation='Synthetic raster fixture',units='mm/día')
+        # Synthetic amounts per observation, not an undeclared daily rate.
+        width=720,duration=7/30,layout='original',citation='Synthetic raster fixture',units='mm')
     snapshot['scientific_identity']=scientific_identity(source)
     snapshot['source_records']=[{'date':r['date'],'band':r['band'],'file':str(path),
                                 'sha256':sha256(path),'source_url':None} for r in source['entries']]

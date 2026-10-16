@@ -18,7 +18,12 @@ async def job_route(request):
     from studio_delivery import job_response
     return await job_response(request)
 
+async def scientific_font_route(request):
+    from studio_resource_static import font_response
+    return await font_response(request)
+
 app=st.App(Path(__file__).with_name('app.py'),
     routes=[Route('/studio-media/{token}',movie_route,methods=['GET','HEAD']),
             Route('/sig-display/{token}',raster_route,methods=['GET']),
-            Route('/studio-status/{token}',job_route,methods=['GET'])])
+            Route('/studio-status/{token}',job_route,methods=['GET']),
+            Route('/resource-tool-assets/{path:path}',scientific_font_route,methods=['GET','HEAD'])])

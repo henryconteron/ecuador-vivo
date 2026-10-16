@@ -1,0 +1,79 @@
+/* Expedición andina / scientific illustration desk.
+   Cream is reserved for authoring surfaces. The user's artboard, maps and data
+   retain their own colors; every selector is scoped to this workspace. */
+.evs .science-tools{display:none}
+.evs.resource-mode{
+ --bg:#fff5df;--surface:#fff8e8;--raised:#fffcf5;--line:#d7d0be;--control-line:#7b8d91;
+ --muted:#526575;--focus:#177762;--text:#132b46;--accent:#238e77;
+ --chrome:#f2ead7;--hover:#e7efdf;--selected:#dcecdf;--artboard:#eee5d1;--timeline:176px;
+ color-scheme:light;
+}
+.evs.resource-mode .topbar{padding-inline:20px;gap:24px;background:#132b46;color:#fff5df;border-bottom-color:#36536b;color-scheme:dark}
+.evs.resource-mode .brand>div{font-size:16px}
+.evs.resource-mode .brand>div span{display:none}
+.evs.resource-mode .brand-mark{font-size:28px;color:#77d7bf}
+.evs.resource-mode .workspace-navigation button{color:#c6d5df}
+.evs.resource-mode .workspace-navigation button:hover:not(:disabled){background:#203c57;border-color:#77d7bf}
+.evs.resource-mode .workspace-navigation [aria-current=page]{color:#77d7bf;border-bottom:2px solid #77d7bf;background:#10273e}
+.evs.resource-mode .workspace-navigation span:not([aria-current]){color:#c6d5df;border-color:transparent;background:transparent;font-weight:400}
+.evs.resource-mode #save-state{color:#c6d5df}
+.evs.resource-mode #save-state[data-state=dirty]{color:#ffdc96}
+.evs.resource-mode .topbar #project-menu{color:#fff5df}
+.evs.resource-mode .topbar #project-menu:hover{background:#203c57;border-color:#77d7bf}
+.evs.resource-mode .primary{background:#177762;border-color:#177762;color:#fffdf3}
+.evs.resource-mode .primary:hover:not(:disabled){background:#126351;border-color:#126351}
+.evs.resource-mode .topbar :is(button,input,select):focus-visible{outline-color:#77d7bf}
+.evs.resource-mode .projectbar{background:var(--bg);padding-inline:20px}
+.evs.resource-mode #project-name{font:600 16px/1.3 'Bahnschrift','Segoe UI',sans-serif;letter-spacing:-.2px}
+.evs.resource-mode #export{font-size:13px;min-height:32px}
+.evs.resource-mode .topbar #save-resource{min-height:32px;border:1px solid #829bb0;padding:5px 12px;font-size:12px;color:#fff5df;background:transparent}
+.evs.resource-mode .topbar #save-resource:hover{border-color:#77d7bf;background:#203c57}
+.evs.resource-mode .studio-tools>.resource-nav,.evs.resource-mode .studio-tools>.library-secondary,.evs.resource-mode .studio-tools>.workspace-tools{display:none}
+.evs.resource-mode .science-tools{display:flex;align-items:stretch;gap:2px;width:100%;min-width:max-content}
+.evs.resource-mode .science-tools button{border:0;border-radius:4px;background:transparent;padding:4px 12px;min-height:32px;gap:8px;font-size:12px;white-space:nowrap}
+.evs.resource-mode .science-tools button[aria-expanded=true]{background:var(--focus);color:#fffdf3;box-shadow:none}
+.evs.resource-mode .science-tools button:hover:not(:disabled){background:var(--selected)}
+.evs.resource-mode .science-tools button[aria-expanded=true]:hover{background:#126351}
+.evs.resource-mode .studio-tools{padding:2px 12px;background:var(--surface)}
+.evs.resource-mode .canvas-heading{color:var(--muted);padding-inline:20px}
+.evs.resource-mode .viewport{background:var(--artboard)}
+.evs.resource-mode .stage{border-color:#84918d;box-shadow:0 7px 20px #132b4624}
+.evs.resource-mode .layers-panel,.evs.resource-mode .inspector{box-shadow:0 10px 26px #132b4626;border-color:#b3b8ab;border-radius:8px}
+.evs.resource-mode [data-window-drag]{background:var(--surface);padding:8px 12px}
+.evs.resource-mode .panel-body{padding:12px;scrollbar-gutter:auto}
+.evs.resource-mode .panel-heading h2{font-size:14px;font-weight:650}
+.evs.resource-mode .panel-note{font-size:12px;line-height:1.5;padding-top:6px}
+.evs.resource-mode .collection-search label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);margin-top:12px}
+.evs.resource-mode .collection-search input{width:100%;background:var(--raised);min-height:36px;border-radius:5px}
+.evs.resource-mode .collection-search input::placeholder{color:var(--muted);opacity:1}
+.evs.resource-mode .collection-filters{display:flex;align-items:flex-end;gap:10px;margin:12px 0}
+.evs.resource-mode .collection-filters>label{display:flex;flex-direction:column;gap:4px;font-size:12px;min-width:0}
+.evs.resource-mode .collection-filters>.checkbox-label{display:flex;flex-direction:row;align-items:center;font-size:11px;min-height:32px;white-space:nowrap}
+.evs.resource-mode .collection-filters select{font-size:12px;max-width:170px}
+.evs.resource-mode .scientific-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px;margin-top:14px}
+.evs.resource-mode .scientific-tile{position:relative;min-width:0}
+.evs.resource-mode .scientific-object{display:flex;flex-direction:column;align-items:stretch;width:100%;padding:0;border:0;background:transparent;text-align:left;border-radius:5px;gap:3px;justify-content:flex-start}
+.evs.resource-mode .scientific-object>img,.evs.resource-mode .scientific-object>svg{width:100%;height:112px;object-fit:contain;background:var(--chrome);border:1px solid var(--line);border-radius:5px;padding:8px}
+.evs.resource-mode .scientific-object>svg{padding:32px;stroke:var(--focus)}
+.evs.resource-mode .scientific-object>strong{font-size:12px;font-weight:600;margin-top:3px;overflow-wrap:anywhere;line-height:1.4}
+.evs.resource-mode .scientific-object>small{font-size:11px;color:var(--muted);font-weight:400}
+.evs.resource-mode .scientific-object:hover:not(:disabled){background:transparent}
+.evs.resource-mode .scientific-object:hover>:is(img,svg){border-color:var(--focus);background:#e8ecdc}
+.evs.resource-mode .scientific-favorite{position:absolute;right:4px;top:4px;padding:0;width:26px;height:26px;min-height:26px;background:var(--surface);border-color:var(--control-line);font-size:18px;border-radius:50%;color:var(--muted)}
+.evs.resource-mode .scientific-favorite[aria-pressed=true]{color:#925a10;background:#fff1c9;border-color:#b89158}
+.evs.resource-mode .engine-item{padding:14px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:13px}
+.evs.resource-mode .engine-item small{grid-column:1/-1;color:var(--muted);font-size:12px}
+.evs.resource-mode .engine-item a{color:var(--focus);font-size:12px}
+.evs.resource-mode .timeline-toolbar>strong{font-size:13px}
+.evs.resource-mode #scenes button[aria-current=true]{box-shadow:inset 0 2px var(--focus)}
+.evs.resource-mode .inspector summary{font-size:13px}
+.evs.resource-mode .inspector-fields{padding:12px 16px 28px}
+.evs.resource-mode .canvas-toolbar{left:20px;transform:none;bottom:36px;box-shadow:0 4px 14px #132b4620}
+.evs.resource-mode #selection-properties,.evs.resource-mode #focus-exit{box-shadow:0 4px 14px #132b4620}
+.evs.resource-mode #notice{color:#86530b}
+.evs.resource-mode dialog{box-shadow:0 12px 36px #132b4633}
+.evs.resource-mode dialog::backdrop{background:#132b4666}
+.evs.resource-mode.timeline-collapsed{--timeline:42px}
+.evs.resource-mode.focus-video{--timeline:0px}
+@media(max-width:1000px){.evs.resource-mode .topbar{gap:10px;padding-inline:12px}.evs.resource-mode .brand>div{display:none}.evs.resource-mode #project-name{font-size:15px}.evs.resource-mode .canvas-toolbar{left:12px;max-width:calc(100% - 24px)}}
+@media(max-width:600px){.evs.resource-mode .topbar #save-resource{display:none}.evs.resource-mode .science-tools button{padding-inline:10px}.evs.resource-mode .canvas-toolbar{left:50%;transform:translateX(-50%)}.evs.resource-mode .brand-mark{font-size:25px}}

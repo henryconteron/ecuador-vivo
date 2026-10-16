@@ -1,0 +1,2 @@
+recursive-include ecuador_vivo_scientific_tools/frontend/build *
+include pyproject.toml

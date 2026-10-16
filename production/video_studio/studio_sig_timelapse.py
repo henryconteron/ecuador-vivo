@@ -6,15 +6,28 @@ from output_profiles import profile_for,adaptive_regions
 from studio_sig_layers import workspace_for,layer_command
 
 
-def configure(project,lids,*,duration=3.,cadence='irregular',profile=None,safe_guides=True):
-    state=workspace_for(project);registry=project['studio']['geography']
+def configure(project,lids,*,duration=3.,cadence='irregular',profile=None,safe_guides=True,presentation=None):
+    state=workspace_for(project);registry=project['studio'].get('geography',{'sources':{}})
+    if not isinstance(lids,list) or len(lids)<2:
+        raise ValueError('Selecciona al menos dos observaciones con fechas distintas.')
+    for lid in lids:
+        layer=state['layers'].get(lid)
+        source=registry['sources'].get(layer['source_id']) if layer else None
+        if not source or layer['type']!='raster' or not source.get('date'):
+            raise ValueError('Cada observación debe ser un ráster del proyecto con fecha declarada.')
     ids=sorted(lids,key=lambda lid:registry['sources'][state['layers'][lid]['source_id']].get('date') or '')
+    from studio_territory import options_for,validate
+    presentation=validate(presentation or options_for(project))
     candidate=layer_command(project,{'action':'raster_time','value':{'layers':ids,'index':0,'compare':False,
-        'duration':duration,'cadence':cadence,'safe_guides':safe_guides}})
+        'duration':duration,'cadence':cadence,'safe_guides':safe_guides,'presentation':presentation,
+        **({'palette':state['raster_time']['palette']} if state.get('raster_time',{}).get('palette') else {})}})
     if profile is not None:
         from studio_workspace_commands import workspace_command
         candidate=workspace_command(candidate,candidate['studio']['timeline'][0],{'action':'profile','profile':profile})
-    return layer_command(candidate,{'action':'raster_date','index':0})
+    candidate=layer_command(candidate,{'action':'raster_date','index':0})
+    if presentation['territory']!='view':
+        candidate=layer_command(candidate,{'action':'view','bbox':output_frame(candidate)['bbox']})
+    return candidate
 
 
 def output_frame(project):
@@ -27,7 +40,18 @@ def output_frame(project):
     state=workspace_for(project);time=state.get('raster_time',{})
     profile=profile_for(project['studio']['output_profile']);slot=adaptive_regions(profile)['map']
     box=state['view']['bbox'].copy()
-    if 'duration' in time:
+    from studio_territory import options_for
+    presentation=options_for(project)
+    if presentation['territory']!='view':
+        from studio_social_template import regions
+        slot=regions(profile)['continent']
+        from studio_territory import territory_bbox
+        box=territory_bbox(presentation)
+        ratio=slot['width']/slot['height'];cx=(box[0]+box[2])/2;cy=(box[1]+box[3])/2
+        # Expand for the full country, never crop it to the social format.
+        width=max(box[2]-box[0],(box[3]-box[1])*ratio);height=width/ratio
+        box=[cx-width/2,cy-height/2,cx+width/2,cy+height/2]
+    elif 'duration' in time:
         ratio=slot['width']/slot['height'];cx=(box[0]+box[2])/2;cy=(box[1]+box[3])/2
         width=min(box[2]-box[0],(box[3]-box[1])*ratio);height=width/ratio
         box=[cx-width/2,cy-height/2,cx+width/2,cy+height/2]

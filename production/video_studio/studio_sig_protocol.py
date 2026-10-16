@@ -6,8 +6,27 @@ Only this client's uninterrupted commit chain may rebase an older envelope.
 """
 import re
 from studio_sig_layers import layer_command
+from studio_sig_read_scope import native_read_scope
 
 
+def prepare_ui_event(session,message):
+    """Flush resident-map gestures before an action, never across external edits."""
+    if not isinstance(message,dict):raise ValueError('Evento SIG inválido.')
+    prepared=dict(message);envelope=prepared.pop('map_intents',None)
+    if envelope is None:return prepared,None
+    if not isinstance(envelope,dict) or prepared.get('version')!=envelope.get('version'):
+        raise ValueError('La acción y su encuadre no pertenecen a la misma versión.')
+    previous=session.state.get(session.key+'_sig_clients',{}).get(envelope.get('client'))
+    if previous and session.version!=previous['version'] and (
+            envelope.get('version')!=session.version or type(envelope.get('sequence')) is not int
+            or envelope['sequence']<=previous['sequence']):
+        raise ValueError('El proyecto cambió fuera del mapa; revisa los gestos pendientes.')
+    confirmation=apply_map_intents(session,envelope)
+    prepared['version']=confirmation['version']
+    return prepared,confirmation
+
+
+@native_read_scope()
 def apply_map_intents(session, message):
     if not isinstance(message, dict):raise ValueError('Comando de mapa inválido.')
     client=message.get('client');base=message.get('version');sequence=message.get('sequence')

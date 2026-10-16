@@ -4,10 +4,11 @@ from io import BytesIO
 from pathlib import Path
 from PIL import ImageFont
 
-FONT_FAMILIES = ('Barlow Condensed', 'Atkinson Hyperlegible', 'Lora')
+FONT_FAMILIES = ('Barlow Condensed', 'Barlow Condensed Display', 'Atkinson Hyperlegible', 'Lora')
 FONT_ROLES = {'title':'título', 'body':'cuerpo', 'source':'fuente / créditos', 'data':'datos'}
 _FILES = {
     'Barlow Condensed': ('BarlowCondensed-Regular.ttf', 'BarlowCondensed-SemiBold.ttf'),
+    'Barlow Condensed Display': ('BarlowCondensed-SemiBold.ttf', 'BarlowCondensed-ExtraBold.ttf'),
     'Atkinson Hyperlegible': ('AtkinsonHyperlegible-Regular.ttf', 'AtkinsonHyperlegible-Bold.ttf'),
     'Lora': ('Lora-Variable.ttf', 'Lora-Variable.ttf'),
 }

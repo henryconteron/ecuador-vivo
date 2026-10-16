@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecuador-vivo-scientific-tools"
+version = "0.0.1"
+description = "Optional scientific resource authoring tools"
+readme = "README.md"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Henry P. Conteron Moreta" }]
+dependencies = ["streamlit >= 1.51"]
+
+[project.optional-dependencies]
+devel = [
+  "wheel",
+  "pytest==7.4.0",
+  "playwright==1.48.0",
+  "requests==2.31.0",
+  "pytest-playwright-snapshot==1.0",
+  "pytest-rerunfailures==12.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["ecuador_vivo_scientific_tools*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+ecuador_vivo_scientific_tools = ["frontend/build/**/*", "pyproject.toml"]

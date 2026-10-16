@@ -2,6 +2,8 @@
 .sig-toolbar{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem}
 .sig-toolbar button{color:inherit;background:var(--st-background-color);border:1px solid var(--st-border-color);border-radius:.4rem;padding:.4rem .7rem;cursor:pointer}
 #sig-geographic-map{height:500px;width:100%;background:#071d2b;touch-action:none}
+#sig-island-inset{position:absolute;top:18%;left:5%;width:min(140px,23%);margin:0;z-index:3;background:#04151e;cursor:help}
+#sig-island-inset[hidden]{display:none}#sig-island-inset img{width:100%;display:block}#sig-island-inset figcaption{font-size:11px;text-align:center;color:#afc7d1}
 .sig-status{display:flex;justify-content:space-between;gap:.5rem;font-size:.8rem;margin-top:.45rem;min-height:1.6rem}
 #sig-engine,#sig-notice{font-size:.8rem;margin-top:.3rem}
 #sig-notice{color:#eebd65}

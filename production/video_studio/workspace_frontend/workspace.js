@@ -4,21 +4,29 @@ export default function(component){
  const {parentElement:root,data}=component;let trigger=component.setTriggerValue;
  const signature=JSON.stringify(['presentation-20261009-v4',data.version,data.scene,data.frame,data.layers,data.entries,data.background,data.project,data.error]);
  const cleanup=()=>{setTimeout(()=>{if(!root.host?.isConnected&&!root.isConnected)root.__evsDispose?.()},0)};
- if(root.__evsSignature===signature&&root.__evsUpdate){root.__evsUpdate(component);return cleanup}
+ const mountKey=JSON.stringify([data.scene,data.width,data.height,data.frame_width,data.frame_height]);
+ if(root.__evsMountKey===mountKey&&root.__evsUpdate){root.__evsSignature=signature;root.__evsUpdate(component);return cleanup}
  // CCv2 can call the renderer again with the same ShadowRoot on data changes.
  // Dispose the previous controller before mounting the next controlled snapshot.
  root.__evsDispose?.();
  root.__evsSignature=signature;
+ root.__evsMountKey=mountKey;root.__evsMounts=(root.__evsMounts||0)+1;
  const q=id=>root.querySelector('#'+id),shell=root.querySelector('.evs');
+ shell.classList.toggle('resource-mode',!!data.resource_mode);
  shell.dataset.version=String(data.version);shell.dataset.scene=data.scene;
  const paths={undo:'M8 4 3 9l5 5M3 9h10a6 6 0 0 1 0 12',redo:'m16 4 5 5-5 5M21 9H11a6 6 0 0 0 0 12',play:'m8 4 13 8-13 8Z',pause:'M8 4v16M16 4v16',layers:'m12 3 10 5-10 5L2 8Zm-10 9 10 5 10-5M2 16l10 5 10-5',settings:'M4 5h16M4 12h16M4 19h16M8 2v6M16 9v6M10 16v6',menu:'M4 5h16M4 12h16M4 19h16',plus:'M12 4v16M4 12h16',copy:'M9 9h12v12H9ZM3 15V3h12',trash:'M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7',up:'m5 14 7-7 7 7',down:'m5 10 7 7 7-7',group:'M3 3h18v18H3ZM7 7h4v4H7ZM13 13h4v4h-4Z',ungroup:'M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5M7 7h4v4H7ZM13 13h4v4h-4Z',eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm10-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6',hidden:'m3 3 18 18M2 12s4-7 10-7c6 0 10 7 10 7-1 2-2 3-4 4M6 6 2 12s4 7 10 7c2 0 4-1 5-2',lock:'M6 10h12v11H6ZM8 10V7a4 4 0 0 1 8 0v3',unlock:'M6 10h12v11H6ZM8 10V7a4 4 0 0 1 8 0',text:'M3 4h18M12 4v17M8 21h8',image:'M3 3h18v18H3ZM3 17l6-6 4 4 3-3 5 5M16 7h.01',video:'M3 6h13v12H3Zm13 4 5-3v10l-5-3',chart:'M4 3v18h17M8 17v-6M13 17V7M18 17V4',shape:'M4 4h16v16H4Z',audio:'M3 10v4h4l5 5V5l-5 5ZM16 8a6 6 0 0 1 0 8M19 5a10 10 0 0 1 0 14',mute:'M3 10v4h4l5 5V5l-5 5ZM16 9l5 6M21 9l-5 6',folder:'M3 5h7l2 3h9v12H3Z'};
  const svg=kind=>{const el=document.createElementNS('http://www.w3.org/2000/svg','svg');el.setAttribute('viewBox','0 0 24 24');el.setAttribute('aria-hidden','true');const path=document.createElementNS(el.namespaceURI,'path');path.setAttribute('d',paths[kind]||paths.shape);el.append(path);return el};
  for(const [id,icon] of Object.entries({undo:'undo',redo:'redo',play:'play','project-menu':'menu','toggle-left':'layers','toggle-right':'settings',layerup:'up',layerdown:'down',group:'group',ungroup:'ungroup',delete:'trash','scene-add':'plus','scene-duplicate':'copy','scene-remove':'trash','timeline-collapse':'down'}))q(id).replaceChildren(svg(icon));
  for(const [tab,icon] of Object.entries({scenes:'folder',layers:'layers',media:'image',data:'chart',templates:'group'})){const button=root.querySelector('.resource-nav [data-tab="'+tab+'"]');button.querySelector('svg')?.remove();button.prepend(svg(icon))}
- let ui={tab:'layers',zoom:'fit',guides:true,snap:true,ids:[],selected:null,timeZoom:100,left:false,right:false,collapsed:false,mode:'edit',movieTime:0};
+ for(const [tab,kind] of Object.entries({elements:'shape',explain:'layers',audio:'audio',visuals:'chart',project:'folder'})){const button=root.querySelector('.library-secondary [data-tab="'+tab+'"]');button.querySelector('svg')?.remove();button.prepend(svg(kind))}
+ for(const [id,kind] of Object.entries({addtext:'text',addshape:'shape',export:'video','save-resource':'folder'})){const button=q(id);button.querySelector('svg')?.remove();button.prepend(svg(kind))}
+ q('toggle-right').append(document.createTextNode('Propiedades'));
+ let ui={tab:'layers',zoom:'fit',guides:true,snap:true,ids:[],selected:null,timeZoom:100,left:false,right:false,collapsed:true,mode:'edit',movieTime:0};
  try{Object.assign(ui,JSON.parse(sessionStorage.getItem(data.ui_key)||'{}'))}catch{}
+ ui=studioWindowState(ui);
+ if(data.resource_mode&&!ui.scienceLayout){ui.scienceLayout=1;ui.left=true;ui.right=true;ui.collapsed=true;ui.tab='science_objects'}
  if(ui.scene!==data.scene){ui.ids=[];ui.selected=null;if(ui.mode==='movie')ui.mode='edit'}ui.scene=data.scene;
- let disposed=false,busy=false,saveTimer=null,pollTimer=null,contextKey=null,movieReady=false;
+ let disposed=false,busy=false,saveTimer=null,pollTimer=null,visualTimer=null,contextKey=null,movieReady=false,pixelPending=true,pixelError='';
  const saveUi=()=>{try{sessionStorage.setItem(data.ui_key,JSON.stringify(ui))}catch{q('workspace-status').textContent='No se pudieron conservar las preferencias por pestaña.'}};
  const state=()=>component.canvasApi?.state()||{entries:{},ids:[],selected:null};
  const status=text=>q('workspace-status').textContent=text;
@@ -27,16 +35,19 @@ export default function(component){
   if(q('workspace-dialog').open)q('workspace-dialog').close();
   clearTimeout(saveTimer);const s=state();ui.ids=s.ids;ui.selected=s.selected;saveUi();
   busy=true;
+  // Inputs cannot accept an edit that send() would discard while a command is
+  // awaiting acknowledgement. Restore only controls disabled by this request.
+  for(const input of q('context-fields').querySelectorAll('input,select,textarea'))if(!input.disabled){input.dataset.awaitingCommand='1';input.disabled=true}
   if(!['status','play','export','cancel','select','seek','navigate','native_preview','review_map_layers','temporal_map','temporal_layers','upload','import_project','regenerate','regenerate_structure'].includes(action)){q('save-state').textContent='Guardando…';q('save-state').dataset.state='dirty'}
   trigger('command',{action,scene:data.scene,version:data.version,entries:s.entries,ids:s.ids,...values,nonce:Date.now()});
  }
  let failedEntries=null;
  const autosave=()=>{clearTimeout(saveTimer);if(data.error&&failedEntries===JSON.stringify(state().entries))return;if(!disposed&&!busy&&component.canvasApi?.hasPending())saveTimer=setTimeout(()=>{if(!component.canvasApi.isGesture())send('canvas');else autosave()},350)};
- component.onPending=dirty=>{if(disposed)return;q('save-state').textContent=dirty?'Cambios pendientes':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=dirty?'dirty':'saved';if(dirty)autosave()};
+ component.onPending=dirty=>{if(disposed)return;q('save-state').textContent=dirty?'Cambios pendientes':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=dirty?'dirty':'saved';if(dirty){renderStatus();autosave()}};
  component.onPaint=()=>{q('undo').disabled=!data.can_undo&&!component.canvasApi?.hasPending();q('redo').disabled=!data.can_redo};
  const disposeCanvas=mountCanvas({...component,setTriggerValue:(name,message)=>{
   if(name==='applied')send(({apply:'canvas',generate:'export'}[message.action]||message.action),{entries:message.entries,ids:message.selection});
- },get onPending(){return component.onPending},get onSelection(){return component.onSelection},get onPaint(){return component.onPaint},
+ },get onPending(){return component.onPending},get onSelection(){return component.onSelection},get onPaint(){return component.onPaint},get onPixels(){return component.onPixels},get onPixelError(){return component.onPixelError},
  set canvasApi(value){component.canvasApi=value}});
  const stage=root.querySelector('.stage'),viewport=root.querySelector('.viewport');
  q('zoom').value=ui.zoom;q('guides').checked=ui.guides;q('snap').checked=ui.snap;
@@ -57,20 +68,8 @@ export default function(component){
  q('format').textContent=data.profiles[profile.id]||'Personalizado';q('resolution').textContent=data.frame_width+' × '+data.frame_height+' · 30 FPS';
  q('scene-remove').disabled=data.rows.length===1;
  for(const [id,action] of Object.entries({'scene-add':'scene_add','scene-duplicate':'scene_duplicate','scene-remove':'scene_delete'}))q(id).onclick=()=>send(action);
- function togglePanel(side){
-  if(innerWidth<=1000){ui[side]=!ui[side];ui[side==='left'?'right':'left']=false}
-  else ui[side]=!ui[side];applyPanels();saveUi();
- }
- function applyPanels(){
-  shell.classList.toggle('left-open',innerWidth<=1000&&ui.left);shell.classList.toggle('right-open',innerWidth<=1000&&ui.right);
-  shell.classList.toggle('left-collapsed',innerWidth>1000&&ui.left);shell.classList.toggle('right-collapsed',innerWidth>1000&&ui.right);
-  shell.classList.toggle('timeline-collapsed',!!ui.collapsed);
-  q('toggle-left').setAttribute('aria-expanded',String(innerWidth>1000?!ui.left:ui.left));q('toggle-right').setAttribute('aria-expanded',String(innerWidth>1000?!ui.right:ui.right));
- }
- q('toggle-left').onclick=()=>togglePanel('left');q('toggle-right').onclick=()=>togglePanel('right');
- q('close-left').onclick=()=>{ui.left=false;applyPanels();saveUi()};q('close-right').onclick=()=>{ui.right=false;applyPanels();saveUi()};
- q('timeline-collapse').onclick=()=>{ui.collapsed=!ui.collapsed;applyPanels();saveUi();q('timeline-collapse').setAttribute('aria-label',ui.collapsed?'Expandir timeline':'Colapsar timeline')};
- window.addEventListener('resize',applyPanels);applyPanels();
+ const windows=createStudioWindows({root,ui,save:saveUi});
+ q('selection-properties').onclick=()=>windows.open('right');
  const el=(tag,text='',className='')=>{const e=document.createElement(tag);if(text)e.textContent=text;if(className)e.className=className;return e};
  const button=(text,fn,container,icon)=>{const b=el('button',text);b.type='button';b.onclick=fn;if(icon)b.prepend(svg(icon));container?.append(b);return b};
  function field(container,label,value,{type='text',options=null,min,max,step,onchange,id}={}){
@@ -104,23 +103,42 @@ export default function(component){
   button('Nuevo proyecto · escena vacía',()=>send('project_new'),body,'plus');
   button('Descargar proyecto JSON',()=>download(JSON.stringify(data.project,null,2),'ecuador-vivo-proyecto.json'),body,'folder');
   button('Abrir proyecto JSON',()=>{dialog.close();send('import_project')},body,'folder');
-  for(const [phase,label] of Object.entries({Inicio:'Volver al inicio',SIG:'Abrir SIG',Datos:'1 · Datos',Maqueta:'2 · Maqueta',Montaje:'3 · Montaje',Exportar:'4 · Exportar · montaje anterior'}))button(label,()=>send('navigate',{phase}),body);
+  for(const [phase,label] of Object.entries({Inicio:'Volver al inicio',SIG:'Abrir SIG',Recursos:'Recursos para explicar',Datos:'1 · Datos',Maqueta:'2 · Maqueta',Montaje:'3 · Montaje',Exportar:'4 · Exportar · montaje anterior'}))button(label,()=>send('navigate',{phase}),body);
   const recover=field(body,'Borradores guardados','',{options:{'':'Selecciona una copia',...Object.fromEntries(data.recovery.map(r=>[r.path,r.name]))}});
   button('Abrir copia recuperada',()=>{if(recover.value)send('recover',{path:recover.value})},body);
   body.append(el('p','Abrir una copia conserva el archivo original y empieza otro historial.','panel-note'));
  })}
  q('project-menu').onclick=projectDialog;
  q('nav-home').onclick=()=>send('navigate',{phase:'Inicio'});q('nav-sig').onclick=()=>send('navigate',{phase:'SIG'});
+ q('nav-resources').onclick=()=>send('navigate',{phase:'Recursos'});
+ q('save-resource').onclick=()=>send('save_resource');
+ if(data.resource_mode){
+  root.querySelector('.brand div span').textContent='RECURSOS';root.querySelector('.science-tools').hidden=false;
+  const current=root.querySelector('.workspace-navigation span');current?.removeAttribute('aria-current');q('nav-resources').setAttribute('aria-current','page');
+  if(current){const studio=button('Studio',()=>send('navigate',{phase:'Studio'}));current.replaceWith(studio)}
+  root.querySelector('.statusbar>span').textContent='Esquema conceptual · recursos editables';
+  const save=q('save-resource');save.replaceChildren(svg('folder'),document.createTextNode('Guardar'));root.querySelector('.topbar').insertBefore(save,q('export'));
+  q('export').replaceChildren(svg('video'),document.createTextNode('Enviar a Studio'));
+  q('science-3d').prepend(svg('shape'));q('science-3d').onclick=()=>send('edit_blender');
+  q('science-text').prepend(svg('text'));q('science-text').onclick=()=>send('add_element',{kind:'text'});
+  q('science-import').prepend(svg('image'));q('science-import').onclick=()=>send('upload');
+  q('science-properties').prepend(svg('settings'));q('science-properties').onclick=()=>windows.open('right');
+  q('science-new').prepend(svg('plus'));q('science-new').onclick=()=>send('resource_blank');
+  for(const [tab,icon] of Object.entries({science_objects:'shape',science_templates:'group',science_saved:'folder',science_engines:'settings',visuals:'chart',layers:'layers'}))root.querySelector('.science-tools [data-tab="'+tab+'"]')?.prepend(svg(icon));
+ }
  q('help').onclick=()=>openDialog('Atajos y ayudas',body=>{
   for(const line of ['Mayús + clic: selección múltiple · Ctrl+A: todos','Flechas: mover 1 px · Mayús + flechas: 10 px','Arrastre de esquina: resize · Alt + arrastre: pan','Supr: eliminar · Escape: cancelar gesto o seleccionar escena','Ctrl+Z / Ctrl+Mayús+Z: historial · Ctrl+D: duplicar','Ctrl+C / Ctrl+V: copiar y pegar · Ctrl+G: agrupar','Espacio: reproducir/pausar · Guías y selección no se exportan'])body.append(el('p',line));
  });
- const tabLabels={scenes:'Escenas',layers:'Capas',media:'Multimedia',data:'Datos científicos',visuals:'Visualizaciones',templates:'Templates',project:'Recursos del proyecto'};
+ const tabLabels={science_objects:'Biblioteca científica',science_templates:'Explicaciones editables',science_saved:'Mis recursos',science_engines:'Herramientas especializadas',scenes:'Escenas',layers:'Capas',media:'Multimedia',data:'Datos científicos',elements:'Formas y símbolos',explain:'Recursos para explicar',audio:'Voz y subtítulos',visuals:'Visualizaciones',templates:'Templates',project:'Recursos del proyecto'};
  const rememberDetails=()=>{ui.detailsFor=state().ids.join('|');ui.details=Object.fromEntries([...root.querySelector('.inspector').querySelectorAll('details')].map(d=>[d.querySelector('summary')?.textContent,d.open]));ui.inspectorScroll=root.querySelector('.inspector-fields').scrollTop};
- const restoreDetails=key=>{if(ui.detailsFor===key){root.querySelector('.inspector').querySelectorAll('details').forEach(d=>{const name=d.querySelector('summary')?.textContent;if(ui.details?.[name]!==undefined)d.open=ui.details[name]});root.querySelector('.inspector-fields').scrollTop=ui.inspectorScroll||0}if(ui.draftVersion===data.version&&ui.draftFor===key){q('context-fields').querySelectorAll('input,select,textarea').forEach(input=>{const name=input.closest('label')?.firstChild?.textContent;if(ui.draftControls?.[name]!==undefined){if(input.type==='checkbox')input.checked=ui.draftControls[name];else input.value=ui.draftControls[name]}})}};
- function library(tab){
+ const restoreDetails=key=>{if(ui.detailsFor===key){root.querySelector('.inspector').querySelectorAll('details').forEach(d=>{const name=d.querySelector('summary')?.textContent;if(ui.details?.[name]!==undefined)d.open=ui.details[name]});root.querySelector('.inspector-fields').scrollTop=ui.inspectorScroll||0}if(ui.draftScene===data.scene&&ui.draftVersion===data.version&&ui.draftFor===key){q('context-fields').querySelectorAll('input,select,textarea').forEach(input=>{const name=input.closest('label')?.firstChild?.textContent;if(ui.draftControls?.[name]!==undefined){if(input.type==='checkbox')input.checked=ui.draftControls[name];else input.value=ui.draftControls[name]}})}};
+ function library(tab,open=true){
   ui.tab=tab;saveUi();q('resource-title').textContent=tabLabels[tab];q('layer-content').hidden=tab!=='layers';q('library-content').hidden=tab==='layers';
+  if(open)windows.open('left');else windows.sync();
   root.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.tab===tab)));
   const body=q('library-content');body.replaceChildren();
+  body.className='';
+  if(data.resource_mode&&renderScientificLibrary({body,tab,data,ui,save:saveUi,send,el,button,field,card,svg}))return;
   if(tab==='scenes'){
    data.rows.forEach((r,i)=>card(body,(i+1)+' · '+r.name,r.seconds.toFixed(2)+' s',()=>send('select',{id:r.id}),{thumbnail:r.thumbnail,selected:r.id===data.scene}));
    button('Añadir escena',()=>send('scene_add'),body,'plus');
@@ -131,7 +149,7 @@ export default function(component){
    if(data.project.project_meta?.scientific_revision)button('Preparar mapa temporal',()=>send('temporal_map'),body,'video');
    if(data.project.project_meta?.scientific_revision)button('Preparar capas cartográficas',()=>send('temporal_layers'),body,'image');
    const asMap=field(body,'Insertar imágenes como mapa',false,{type:'checkbox'});
-   const assets=Object.entries(data.project.studio.media);
+   const assets=Object.entries(data.project.studio.media).filter(([,a])=>a.kind!=='audio');
    if(!assets.length)body.append(el('p','Importa imágenes y videos locales para añadirlos al canvas.','empty-state'));
    assets.forEach(([id,a])=>{
     if(a.kind==='temporal_map'){
@@ -143,6 +161,19 @@ export default function(component){
     const subtitle=m?'Mapa temporal · '+m.source+' · '+m.variable+' · '+m.intervals[0].date+' — '+m.intervals.at(-1).date+' · '+m.duration.toFixed(3)+' s · '+m.resolution.join(' × ')+' · listo · generado '+m.generated_at:a.kind+' · '+(a.size||[]).join(' × ');
     card(body,a.name,subtitle,()=>send('add_element',{kind:a.kind==='video'?'video':asMap.checked?'map':'image',asset_id:id,name:a.name}),{thumbnail:data.map_thumbnails?.[id],icon:a.kind==='video'?'video':'image'});
    });
+  }else if(tab==='elements'){
+   body.append(el('p','Añade una forma o símbolo. Puedes cambiar color, posición, tamaño y animación en Propiedades.','panel-note'));
+   Object.entries(data.graphic_elements||{}).forEach(([shape,name])=>card(body,name,'Elemento editable',()=>send('add_element',{kind:'shape',shape,name}),{icon:shape==='icon.cloud'?'image':'shape'}));
+  }else if(tab==='explain'){
+   body.append(el('p','Añade una explicación animada como escena. Sus textos, formas y tiempos siguen siendo editables.','panel-note'));
+   button('Abrir galería y personalizar',()=>send('navigate',{phase:'Recursos'}),body,'settings');
+   button(data.scene_data.resource?.blender?'Editar cámara y materiales 3D':'Crear recurso 3D con Blender',()=>send('edit_blender'),body,'shape');
+   (data.explanation_resources||[]).forEach(r=>card(body,r.name,r.summary,()=>send('resource_insert',{resource_id:r.id}),{icon:'shape'}));
+  }else if(tab==='audio'){
+   button('Editar voz y subtítulos',()=>send('voice_captions'),body,'audio');
+   body.append(el('p','Importa o graba tu voz. Ajusta inicio, recorte y volumen. Escribe subtítulos o importa SRT/VTT.','panel-note'));
+   (data.project.studio.audio_tracks||[]).forEach(t=>card(body,data.project.studio.media[t.asset_id]?.name||t.id,(t.start||0).toFixed(2)+' s · '+(t.mute?'silenciada':'activa'),()=>send('voice_captions'),{icon:t.mute?'mute':'audio'}));
+   body.append(el('p',(data.project.studio.captions?.cues||[]).length+' subtítulos · '+(data.project.studio.captions?.enabled?'visibles en el video':'desactivados'),'panel-note'));
   }else if(tab==='data'){
    button('Vincular revisión cargada',()=>send('attach'),body,'chart').disabled=!data.can_attach;
    const results=Object.entries(data.project.studio.calculations);
@@ -176,7 +207,9 @@ export default function(component){
    body.append(el('p',Object.keys(data.project.studio.media).length+' recursos · '+Object.keys(data.project.studio.calculations).length+' resultados · '+data.project.studio.scenes.length+' escenas conservadas.','panel-note'));
   }
  }
- root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>library(b.dataset.tab));library(ui.tab in tabLabels?ui.tab:'layers');
+ root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{if(ui.left&&ui.tab===b.dataset.tab)windows.close('left');else library(b.dataset.tab)});library(ui.tab in tabLabels?ui.tab:'layers',false);
+ const resourceDrop=event=>{if(!data.resource_mode||!event.dataTransfer.types.includes('application/x-ecuador-resource'))return;event.preventDefault();if(event.type==='drop'){try{const item=JSON.parse(event.dataTransfer.getData('application/x-ecuador-resource'));if(Object.hasOwn(data.graphic_elements,item.shape))send('add_element',{kind:'shape',shape:item.shape,name:item.name})}catch{status('No se pudo insertar esa pieza.')}}};
+ viewport.addEventListener('dragover',resourceDrop);viewport.addEventListener('drop',resourceDrop);
  function decorateLayers(){
   const kinds={text:'Texto',source:'Fuente',shape:'Forma',map:'Mapa',image:'Imagen',video:'Video',metric:'Métrica',chart:'Visualización',ranking:'Ranking',logo:'Logo',background:'Fondo'};
   const defaults={title:'Título',body:'Contenido',source:'Fuentes y créditos',metric:'Métrica',ranking:'Ranking','map.placeholder':'Mapa',context:'Contexto'};
@@ -200,8 +233,11 @@ export default function(component){
   ui.ids=ids;ui.selected=selected;saveUi();
   q('group').disabled=ids.length<2;q('ungroup').disabled=!ids.some(id=>data.scene_data.elements.find(e=>e.id===id)?.group_id);
   const elements=data.scene_data.elements.filter(e=>ids.includes(e.id)),element=elements.find(e=>e.id===selected)||elements[0];
+  q('selection-properties').hidden=!element;q('selection-name').textContent=ids.length>1?ids.length+' elementos':element?readable(element):'';
   const key=ids.join('|');if(key===contextKey)return;contextKey=key;
   const body=q('context-fields');body.replaceChildren();q('selection-common').hidden=!element;
+  if(element?.source_document){const original=section(body,'Documento original');original.append(el('p','Objeto compuesto · '+element.source_document.tool+' · sin revisión científica automática.','panel-note'));button('Editar piezas en el editor original',()=>send('resource_tool',{tool:element.source_document.tool,element_id:element.id}),original,'settings')}
+  if(element?.scientific_provenance){const source=section(body,'Fuente y licencia');const p=element.scientific_provenance;source.append(el('p',p.author+' · '+p.license,'source-info'),el('p',p.summary,'panel-note'));if(p.source?.startsWith('https://github.com/duerrsimon/bioicons/')){const link=el('a','Ver ilustración original');link.href=p.source;link.target='_blank';link.rel='noopener noreferrer';source.append(link)}}
   q('text-properties').hidden=!element||ids.length!==1||!['text','source'].includes(element.type);
   q('recovery-fields').hidden=!element;q('inspector-title').textContent=!element?'Escena':ids.length>1?'Grupo · '+ids.length+' elementos':({text:'Texto',source:'Fuente',video:'Video',image:'Imagen',map:'Mapa',chart:'Visualización',metric:'Métrica',shape:'Forma'}[element.type]||'Elemento');
   if(!element){
@@ -231,13 +267,16 @@ export default function(component){
     const resource=data.project.studio.media[instance.asset_id];
     linked.append(el('p',resource.variable+' · '+resource.units,'source-info'));
     linked.append(el('p',resource.period.join(' — '),'panel-note'));
+    const presentation=resource.geographic_presentation?.presentation;
+    if(presentation){const label=presentation.territory==='province'?presentation.province:({ecuador:'Ecuador continental + Galápagos',continent:'Ecuador continental',galapagos:'Galápagos',view:'Región de la vista SIG'}[presentation.territory]||'Territorio seleccionado');linked.append(el('p',label,'panel-note'));linked.append(el('p',presentation.resampling==='bilinear'?'Suavizado visual; resolución original conservada':'Celdas nativas','panel-note'))}
     linked.append(el('p','Serie y calendario vinculados. La composición conserva los valores originales.','panel-note'));
+    q('hint').textContent='Posición y tamaño editables. La geografía, el calendario y la escala quedan vinculados al recurso revisado.';
     const advanced=section(linked,'Referencias técnicas',false);
     advanced.append(el('p',element.temporal_binding.instance_id+' · '+element.temporal_binding.channel+' · revisión '+resource.scientific_revision,'source-info'));
    }
    if(['image','logo','video','map'].includes(element.type)&&!element.temporal_binding){
     const media=section(body,'Recurso y encuadre');
-    const compatible=Object.entries(data.project.studio.media).filter(([,a])=>(a.kind==='video')===(element.type==='video'));
+    const compatible=Object.entries(data.project.studio.media).filter(([,a])=>a.kind===(element.type==='video'?'video':'image'));
     field(media,'Recurso',style.asset_id,{options:Object.fromEntries(compatible.map(([id,a])=>[id,a.name])),onchange:asset_id=>properties({asset_id})});
     const temporal=data.project.studio.media[style.asset_id]?.temporal_map;
     if(element.type!=='map'&&!temporal)field(media,'Encuadre',style.fit||'contain',{options:{contain:'Completo · contain',cover:'Rellenar · cover'},onchange:fit=>properties({fit})});
@@ -253,12 +292,14 @@ export default function(component){
    }
    if(['shape','background'].includes(element.type)){
     const appearance=section(body,'Forma');field(appearance,'Relleno',style.fill||'#13bfd1',{type:'color',onchange:fill=>properties({fill})});
-    field(appearance,'Forma',style.shape||'rectangle',{options:['rectangle','rounded_rectangle','circle','line','divider'],onchange:shape=>properties({shape})});
+    field(appearance,'Forma / icono',style.shape||'rectangle',{options:['rectangle','rounded_rectangle','circle','line','divider','calendar','panel','pill_outline','play','marker','icon.cloud','icon.calendar','icon.bars','icon.peak','icon.thermometer','icon.wind','icon.index','icon.pin','icon.database','icon.tiktok','icon.instagram','icon.mountain'],onchange:shape=>properties({shape})});
    }
    if(visual){
     const v=section(body,'Visualización');const binding=element.data_binding,r=data.project.studio.calculations[binding?.result_id]||{};
     field(v,'Binding',binding?.result_id,{options:Object.fromEntries(Object.entries(data.project.studio.calculations).filter(([,r])=>('rows'in r)===('rows'in data.project.studio.calculations[binding?.result_id])).map(([id,r])=>[id,(r.variable||id)+' · '+r.units])),onchange:result_id=>send('properties',{data_binding:{result_id,field:binding.field}})});
     const updateVisual=(key,value)=>properties({visualization:{...style.visualization,style:{...target,[key]:value}}});
+    field(v,'Título de la métrica',target.title??r.variable??'',{onchange:value=>updateVisual('title',value)});
+    v.append(el('p','Valor calculado vinculado. Cambiar título o diseño conserva el resultado; una cifra manual debe añadirse como texto editorial.','source-info'));
     field(v,'Tipo',style.visualization?.kind||'metric',{options:'rows'in r?['horizontal_bar','vertical_bar','dot','lollipop','line','ranking','comparison']:['metric'],onchange:kind=>properties({visualization:{...style.visualization,kind}})});
     for(const [key,label,fallback] of [['color','Tinta','#13bfd1'],['background','Fondo','#04151e'],['text','Texto','#f0f5f8']])field(v,label,target[key]||fallback,{type:'color',onchange:value=>updateVisual(key,value)});
     const scale=section(body,'Escala de datos',false),current=target.color_scale;
@@ -283,7 +324,7 @@ export default function(component){
  component.canvasApi.choose(desiredSelected&&data.scene_data.elements.some(e=>e.id===desiredSelected)?desiredSelected:null);
  if(desiredIds.length>1)for(const id of desiredIds){if(id!==desiredSelected&&!state().ids.includes(id))component.canvasApi.choose(id,true)}
  component.canvasApi.resizeView();
- const total=data.rows.at(-1).end_frame;q('total').textContent=data.rows.length+' escenas · '+(total/30).toFixed(2)+' s';q('playhead').max=total-1;q('playhead').value=data.frame;
+ let total=data.rows.at(-1).end_frame;q('total').textContent=data.rows.length+' escenas · '+(total/30).toFixed(2)+' s';q('playhead').max=total-1;q('playhead').value=data.frame;
  function timePosition(frame){const row=data.rows.find(r=>r.start_frame<=frame&&frame<r.end_frame)||data.rows.at(-1);const card=[...q('scenes').children].find(b=>b.dataset.scene===row.id);return card?card.offsetLeft-q('scenes').offsetLeft+(frame-row.start_frame)/row.frames*card.offsetWidth:0}
  let updateCalendar=()=>{};
  function clock(frame){if(ui.mode==='movie'&&Number.isInteger(ui.presentedFrame))frame=ui.presentedFrame;frame=Math.max(0,Math.min(total-1,frame));q('time').textContent=(frame/30).toFixed(2)+' / '+(total/30).toFixed(2)+' s';q('timeline-playhead').style.left=(q('scenes').offsetLeft+timePosition(frame))+'px';[...q('scenes').children].forEach(b=>b.dataset.playing=String(ui.mode==='movie'&&data.rows.some(r=>r.id===b.dataset.scene&&r.start_frame<=frame&&frame<r.end_frame)));updateCalendar(frame)}clock(data.frame);
@@ -310,25 +351,37 @@ export default function(component){
  q('tracks').replaceChildren();const videoElements=data.scene_data.elements.filter(e=>e.type==='video'&&e.visible&&!e.editor_deleted);
  if(videoElements.length)videoElements.forEach(e=>{const chip=el('span',e.name||'Video','track-chip');chip.prepend(svg(e.style.mute??true?'mute':'audio'));chip.title='Video real · trim '+(e.style.trim_in||0)+' s · volumen '+(e.style.volume??1)+' · '+((e.style.mute??true)?'silenciado':'audio activo');q('tracks').append(chip)});
  else q('tracks').append(el('span',data.scene_data.elements.filter(e=>e.visible&&!e.editor_deleted).length+' elementos de escena · duración común'));
+ function refreshNarrationChips(){
+  q('tracks').querySelectorAll('[data-narrative]').forEach(e=>e.remove());
+  for(const t of data.project.studio.audio_tracks||[]){const chip=button('Voz · '+Number(t.start||0).toFixed(1)+' s',()=>send('voice_captions'),q('tracks'),t.mute?'mute':'audio');chip.className='track-chip';chip.dataset.narrative='voice';chip.title=(data.project.studio.media[t.asset_id]?.name||t.id)+' · volumen '+(t.volume??1)+' · recorte '+(t.trim_in||0)+' — '+(t.trim_out??'fin')+' s';}
+  if(data.project.studio.captions?.cues?.length){const chip=button(data.project.studio.captions.cues.length+' subtítulos',()=>send('voice_captions'),q('tracks'),'text');chip.className='track-chip';chip.dataset.narrative='captions';}
+ }
+ refreshNarrationChips();
  const observation=el('span','','track-chip');observation.id='scientific-date';q('tracks').append(observation);
  function calendar(frame){
   const dates=(data.scientific_calendar||[]).flatMap(c=>c.intervals.filter(i=>i.start_frame<=frame&&frame<i.end_frame).map(i=>i.date));
   observation.textContent=dates.length?'Fecha científica · '+[...new Set(dates)].join(' / '):'';observation.hidden=!dates.length;
  }
  updateCalendar=calendar;clock(ui.mode==='frame'?(ui.previewFrame??data.frame):ui.mode==='edit'?(ui.canvasFrame??data.frame):data.frame);
- component.onPixels=()=>{ui.canvasFrame=data.frame;if(ui.mode==='edit')clock(data.frame)};
+ component.onPixels=()=>{pixelPending=false;pixelError='';ui.canvasFrame=data.canvas_frame??data.frame;if(ui.mode==='edit'){q('playhead').value=ui.canvasFrame;clock(ui.canvasFrame)};renderStatus()};
+ component.onPixelError=message=>{pixelPending=false;pixelError=message;renderStatus()};
  q('playhead').oninput=()=>{q('time').textContent='Buscar · '+(Number(q('playhead').value)/30).toFixed(2)+' s'};q('playhead').onchange=()=>{
   const frame=Number(q('playhead').value);
   if(movieReady&&ui.mode==='movie'){q('movie').currentTime=frame/30}else{ui.mode='frame';saveUi();send('seek',{frame})}
  };
- function editMode(){ui.mode='edit';saveUi();q('movie').pause();root.querySelector('.preview-surface').hidden=true;viewport.hidden=false;q('canvas-mode').textContent='EDICIÓN';q('play').replaceChildren(svg('play'));q('play').setAttribute('aria-label','Reproducir');component.canvasApi.resizeView()}
+ function editMode(){ui.mode='edit';saveUi();q('movie').pause();root.querySelector('.preview-surface').hidden=true;viewport.hidden=false;q('canvas-mode').textContent='EDICIÓN';q('play').replaceChildren(svg('play'));q('play').setAttribute('aria-label','Reproducir');component.canvasApi.resizeView();const frame=ui.canvasFrame??data.frame;q('playhead').value=frame;clock(frame)}
  q('back-edit').onclick=editMode;
  const movie=q('movie');
  const previewGeneration=root.__previewGeneration=(root.__previewGeneration||0)+1;
  const frameImage=new Image();frameImage.src=data.preview;
  frameImage.decode().then(()=>{if(root.__previewGeneration!==previewGeneration)return;q('frame-preview').src=data.preview;ui.previewFrame=data.frame;if(ui.mode==='frame')clock(data.frame)}).catch(()=>status('No se decodificó el cuadro; se conserva el anterior.'));
+ function frameMode(){
+  root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=true;q('frame-preview').hidden=false;
+  const src=data.preview,frame=data.frame,stamp=root.__frameRequest=src;
+  const image=new Image();image.src=src;image.decode().then(()=>{if(disposed||root.__frameRequest!==stamp)return;q('frame-preview').src=src;ui.previewFrame=frame;q('canvas-mode').textContent='CUADRO · '+(frame/30).toFixed(2)+' s';if(ui.mode==='frame')clock(frame)}).catch(()=>status('No se decodificó el cuadro; se conserva el anterior.'));
+ }
  function movieMode(autoplay=false){
-  ui.mode='movie';saveUi();root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=false;q('frame-preview').hidden=true;q('canvas-mode').textContent='PREVIEW · MISMO MP4 DE EXPORTACIÓN';
+  ui.mode='movie';saveUi();root.querySelector('.preview-surface').hidden=false;viewport.hidden=true;movie.hidden=false;q('frame-preview').hidden=true;q('canvas-mode').textContent=data.delivery_kind==='preview'?'PREVISUALIZACIÓN · CALIDAD REDUCIDA · 640 PX':'EXPORTACIÓN FINAL';
   if(autoplay)movie.play().catch(()=>status('Preview listo. Pulsa reproducir en el video para escuchar audio.'));
  }
  // Scientific labels follow the frame actually presented, not a seek request.
@@ -352,23 +405,40 @@ export default function(component){
  q('play').onclick=()=>{if(movieReady){if(ui.mode!=='movie')movieMode(true);else if(movie.paused)movie.play().catch(()=>{});else movie.pause()}else{ui.mode='movie';saveUi();send('play')}};
  q('export').onclick=()=>openDialog('Exportación del proyecto',body=>{
   body.append(el('p',data.frame_width+' × '+data.frame_height+' px · 30 FPS · '+(total/30).toFixed(2)+' s · '+data.rows.length+' escenas'));
-  if(data.movie_url&&!data.job_stale){const a=el('a','Descargar video MP4');a.href=data.movie_url+'?download=1';a.download='ecuador-vivo.mp4';body.append(a);button('Abrir preview nativo / descarga alternativa',()=>send('native_preview'),body);button('Ver comprobante JSON',()=>download(JSON.stringify(data.receipt,null,2),'ecuador-vivo-receipt.json'),body)}
+  if(data.movie_url&&!data.job_stale&&data.delivery_kind==='final'){const a=el('a','Descargar video MP4');a.href=data.movie_url+'?download=1';a.download='ecuador-vivo.mp4';body.append(a);button('Abrir video nativo / descarga alternativa',()=>send('native_preview'),body);button('Ver comprobante JSON',()=>download(JSON.stringify(data.receipt,null,2),'ecuador-vivo-receipt.json'),body)}
   else button(['queued','running'].includes(data.job.state)?'Exportación en curso':'Exportar MP4',()=>{dialog.close();send('export')},body).disabled=['queued','running'].includes(data.job.state);
   button('Descargar proyecto JSON',()=>download(JSON.stringify(data.project,null,2),'ecuador-vivo-proyecto.json'),body);
+  if(data.movie_url&&!data.job_stale&&data.delivery_kind==='final'){
+   button('Preparar evidencia para Andes Pulso',()=>{dialog.close();send('publication')},body,'folder');
+   if(data.publication_url){const a=el('a','Descargar paquete público · video, mapas y resultados');a.href=data.publication_url;a.download='andes-pulso-publico.zip';body.append(a)}
+   body.append(el('p','El paquete público excluye el proyecto privado y rutas locales. Se importa como borrador; no publica automáticamente.','panel-note'));
+  }
   const png=el('a','Descargar cuadro PNG · '+(data.frame/30).toFixed(2)+' s');png.href=data.preview;png.download='ecuador-vivo-cuadro-'+data.frame+'.png';body.append(png);
   if(['queued','running'].includes(data.job.state))button('Cancelar exportación',()=>send('cancel'),body);
-  body.append(el('p','Preview audiovisual y descarga utilizan exactamente el mismo archivo del worker.','panel-note'));
+  body.append(el('p','La previsualización usa hasta 640 px. La exportación conserva el formato elegido y genera su propio recibo.','panel-note'));
  });
- if(data.error){status('Cambio no aplicado: '+data.error);q('workspace-status').setAttribute('role','alert');shell.dataset.error='true'}else{q('workspace-status').setAttribute('role','status');delete shell.dataset.error}
- if(!data.error){if(data.notice)status(data.notice);else if(data.job_stale)status('El documento cambió. Prepara una nueva reproducción/exportación.');
- else if(['queued','running'].includes(data.job.state)){status((data.job.message||'Preparando reproducción')+' · '+Math.round((data.job.progress||0)*100)+'%')}
- else if(data.job.state==='failed')status('Exportación fallida: '+data.job.message);else if(data.job.state==='complete')status('MP4 listo · preview y exportación comparten el mismo archivo.');else status('Autosave activo · los cambios de diseño conservan datos, unidades y fuentes.');}
+ if(data.resource_mode)q('export').onclick=()=>send('resource_send');
+ function renderStatus(){
+  const error=data.error?'Cambio no aplicado: '+data.error:data.visual_error?'Preparación visual fallida: '+data.visual_error:pixelError;
+  q('workspace-status').setAttribute('role',error?'alert':'status');shell.dataset.error=String(Boolean(error));
+  shell.dataset.visualPending=String(Boolean(data.visual_pending||pixelPending));
+  if(error){status(error+' · Se conserva la última representación válida.');return}
+  if(component.canvasApi?.hasPending()){status('Cambios pendientes · guardado automático');return}
+  if(data.visual_pending||pixelPending){status('Guardado · actualizando la representación visual…');return}
+  if(data.notice){status(data.notice);return}
+  if(data.job_stale){status('El documento cambió. Prepara una nueva reproducción/exportación.');return}
+  if(['queued','running'].includes(data.job.state)){status((data.job.message||'Preparando reproducción')+' · '+Math.round((data.job.progress||0)*100)+'%');return}
+  if(data.job.state==='failed'){status((data.delivery_kind==='preview'?'Previsualización':'Exportación')+' fallida: '+data.job.message);return}
+  if(data.job.state==='complete'){status(data.delivery_kind==='preview'?'Previsualización lista · calidad reducida; exportación en el formato elegido.':'Exportación final lista · MP4 y recibo verificados.');return}
+  status('Guardado · representación visual actualizada.');
+ }
  function refreshJob(){
   clearTimeout(pollTimer);
   const running=!data.job_stale&&['queued','running'].includes(data.job.state);shell.dataset.preparing=String(running);
   q('preparation').hidden=!running;q('preparation-label').textContent=data.job.message||'Preparando reproducción';q('preparation-progress').value=data.job.progress||0;
-  if(data.job_stale){status('El documento cambió. Prepara una nueva reproducción/exportación.');return}
-  if(running){status((data.job.message||'Preparando reproducción')+' · '+Math.round((data.job.progress||0)*100)+'%');pollTimer=setTimeout(async()=>{
+  renderStatus();
+  if(data.job_stale)return;
+  if(running){pollTimer=setTimeout(async()=>{
    if(!data.job_status_url){send('status');return}
    try{
     const response=await fetch(data.job_status_url,{cache:'no-store'});if(!response.ok)throw new Error('Estado no disponible');
@@ -376,16 +446,32 @@ export default function(component){
     Object.assign(data,result);if(result.movie_url)loadMovie(result.movie_url);refreshJob();
    }catch(error){if(!disposed){status('No se pudo consultar el progreso. Tu escena sigue disponible.');pollTimer=setTimeout(refreshJob,1000)}}
   },1000)}
-  else if(data.job.state==='complete')status('MP4 listo · preview y exportación comparten el mismo archivo.');
-  else if(data.job.state==='failed')status('Exportación fallida: '+data.job.message);
  }
  root.__evsUpdate=next=>{
+  const changed=data.version!==next.data.version||data.background!==next.data.background||JSON.stringify(data.layers)!==JSON.stringify(next.data.layers)||data.frame!==next.data.frame;
+  const oldLibrary=JSON.stringify([data.rows,data.project.studio.media,data.project.studio.audio_tracks,data.project.studio.captions]);
+  const active=root.activeElement,focus=active?{id:active.id,label:active.closest('label')?.firstChild?.textContent,start:active.selectionStart,end:active.selectionEnd}:null;
   trigger=next.setTriggerValue;Object.assign(data,next.data);busy=false;
+  for(const input of q('context-fields').querySelectorAll('[data-awaiting-command]')){input.disabled=false;delete input.dataset.awaitingCommand}
+  for(const key of ['movie_url','receipt','job_status_url','publication_url'])if(!(key in next.data))delete data[key];
+  total=data.rows.at(-1).end_frame;q('total').textContent=data.rows.length+' escenas · '+(total/30).toFixed(2)+' s';q('playhead').max=total-1;
+  q('scene-remove').disabled=data.rows.length===1;q('scene-label').textContent=data.scene_data.name;
+  if(data.job_stale){movieReady=false;movie.pause();if(ui.mode==='movie')editMode()}
+  shell.dataset.version=String(data.version);shell.dataset.scene=data.scene;
+  if(changed){pixelPending=true;pixelError='';component.canvasApi.update(data);contextKey=null;inspector(state().ids,state().selected);}
+  if(oldLibrary!==JSON.stringify([data.rows,data.project.studio.media,data.project.studio.audio_tracks,data.project.studio.captions])){library(ui.tab,false);timeline();refreshNarrationChips();}
+  if(root.activeElement!==q('project-name'))q('project-name').value=data.project.name||'Proyecto sin título';
+  q('undo').disabled=!data.can_undo&&!component.canvasApi.hasPending();q('redo').disabled=!data.can_redo;
   if(!component.canvasApi.hasPending()){q('save-state').textContent=data.error?'Cambio no aplicado':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=data.error?'dirty':'saved'}
   if(data.movie_url)loadMovie(data.movie_url);
+  if(ui.mode==='frame')frameMode();
   refreshJob();
+  pollVisual();
+  if(focus){const input=(focus.id?q(focus.id):null)||[...q('context-fields').querySelectorAll('input,textarea,select')].find(e=>e.closest('label')?.firstChild?.textContent===focus.label);if(input){input.focus({preventScroll:true});if(focus.start!==null&&input.setSelectionRange&&['text','textarea'].includes(input.type))input.setSelectionRange(focus.start,focus.end)}}
  };
+ function pollVisual(){clearTimeout(visualTimer);renderStatus();if(data.visual_pending)visualTimer=setTimeout(()=>{if(!disposed&&!busy)send('status');else if(!disposed)pollVisual()},250)}
  refreshJob();
+ pollVisual();
  q('save-state').textContent=data.error?'Cambio no aplicado':'Guardado'+(data.saved_at?' · '+data.saved_at:'');q('save-state').dataset.state=data.error?'dirty':'saved';
  if(data.error)failedEntries=JSON.stringify(state().entries);
  if(component.canvasApi.hasPending()&&!data.error){component.onPending(true);autosave()}
@@ -393,7 +479,7 @@ export default function(component){
   if(['INPUT','SELECT','TEXTAREA'].includes(e.composedPath()[0]?.tagName)||dialog.open)return;
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='g'){e.preventDefault();send(e.shiftKey?'ungroup':'group');return}
   if(e.code==='Space'){e.preventDefault();q('play').click();return}
-  if(e.key==='Escape'){if(ui.left||ui.right){ui.left=ui.right=false;applyPanels();saveUi()}return}
+  if(e.key==='Escape'){if(ui.focusVideo)windows.focus(false);else{if(ui.left)windows.close('left');if(ui.right)windows.close('right')}return}
   if(e.target!==stage&&(e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())){e.preventDefault();q(e.key.toLowerCase()==='y'||e.shiftKey?'redo':'undo').click()}
  }
  root.addEventListener('keydown',keyboard);
@@ -401,15 +487,15 @@ export default function(component){
  if(ui.focus){const active=(ui.focus.id?q(ui.focus.id):null)||[...q('context-fields').querySelectorAll('input,select,textarea')].find(e=>e.closest('label')?.firstChild?.textContent===ui.focus.label);if(active){active.focus({preventScroll:true});if(ui.focus.start!==null&&active.setSelectionRange&&['text','textarea'].includes(active.type))active.setSelectionRange(ui.focus.start,ui.focus.end)}}
  const dispose=()=>{
   if(disposed)return;
-  disposed=true;clearTimeout(saveTimer);clearTimeout(pollTimer);monitored.disconnect();timelineObserver.disconnect();if(timelineFrame!==null)cancelAnimationFrame(timelineFrame);if(videoFrameRequest!==null)movie.cancelVideoFrameCallback?.(videoFrameRequest);
+  disposed=true;clearTimeout(saveTimer);clearTimeout(pollTimer);clearTimeout(visualTimer);monitored.disconnect();timelineObserver.disconnect();if(timelineFrame!==null)cancelAnimationFrame(timelineFrame);if(videoFrameRequest!==null)movie.cancelVideoFrameCallback?.(videoFrameRequest);
   const active=root.activeElement;ui.focus=active?{id:active.id||'',label:active.closest?.('label')?.firstChild?.textContent,start:active.selectionStart??null,end:active.selectionEnd??null}:null;
-  ui.draftVersion=data.version;ui.draftFor=state().ids.join('|');ui.draftControls=Object.fromEntries([...q('context-fields').querySelectorAll('input,select,textarea')].map(input=>[input.closest('label')?.firstChild?.textContent,input.type==='checkbox'?input.checked:input.value]));
+  ui.draftScene=data.scene;ui.draftVersion=data.version;ui.draftFor=state().ids.join('|');ui.draftControls=Object.fromEntries([...q('context-fields').querySelectorAll('input,select,textarea')].map(input=>[input.closest('label')?.firstChild?.textContent,input.type==='checkbox'?input.checked:input.value]));
   rememberDetails();
   ui.movieTime=movie.currentTime||ui.movieTime;ui.ids=state().ids;ui.selected=state().selected;saveUi();
   if(!shell.isConnected||ui.mode!=='movie')movie.pause();
   // A controlled update is not a media teardown. Keep its decoded buffer and
   // source; only loadMovie assigns a different, verified export URL.
-  root.removeEventListener('change',autosave);root.removeEventListener('keydown',keyboard);window.removeEventListener('resize',applyPanels);disposeCanvas?.();
+  root.removeEventListener('change',autosave);root.removeEventListener('keydown',keyboard);viewport.removeEventListener('dragover',resourceDrop);viewport.removeEventListener('drop',resourceDrop);windows.dispose();disposeCanvas?.();
  };
  root.__evsDispose=dispose;
  return cleanup;

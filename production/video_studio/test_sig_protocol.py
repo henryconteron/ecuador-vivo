@@ -58,5 +58,32 @@ class SigProtocolTests(unittest.TestCase):
         self.assertEqual(s.project,before);self.assertEqual(s.version,version)
         self.assertNotIn(s.key+'_sig_clients',s.state)
 
+    def test_ui_flush_saves_camera_before_rebasing_action(self):
+        from studio_sig_protocol import prepare_ui_event
+        from studio_sig_layers import workspace_for
+        s=self.session();base=s.version
+        entry={'sequence':1,'action':'view','bbox':[-54,-16,-46,-8]}
+        event={'action':'save','version':base,'map_intents':self.message(s,[entry])}
+        prepared,ack=prepare_ui_event(s,event)
+        self.assertEqual(prepared,{'action':'save','version':s.version})
+        self.assertEqual(workspace_for(s.project)['view']['bbox'],entry['bbox'])
+        version=s.version
+        self.assertEqual(prepare_ui_event(s,event)[0],prepared)
+        self.assertEqual(s.version,version);self.assertEqual(ack['status'],'saved')
+
+    def test_ui_flush_rejects_mismatched_or_external_versions_without_mutation(self):
+        from studio_sig_protocol import prepare_ui_event,apply_map_intents
+        s=self.session();base=s.version
+        entry={'sequence':1,'action':'view','bbox':[-54,-16,-46,-8]}
+        message=self.message(s,[entry]);before=copy.deepcopy(s.project)
+        with self.assertRaises(ValueError):prepare_ui_event(s,{'action':'save','version':base+1,'map_intents':message})
+        self.assertEqual(s.project,before)
+        apply_map_intents(s,message);s.commit(s.project,record=False);before=copy.deepcopy(s.project)
+        with self.assertRaises(ValueError):prepare_ui_event(s,{'action':'save','version':base,'map_intents':message})
+        self.assertEqual(s.project,before)
+        fresh={**entry,'sequence':2,'bbox':[-53,-15,-47,-9]}
+        prepared,_=prepare_ui_event(s,{'action':'save','version':s.version,'map_intents':self.message(s,[fresh])})
+        self.assertEqual(prepared['version'],s.version)
+
 
 if __name__=='__main__':unittest.main()

@@ -72,8 +72,12 @@ class VisualizationSpec:
     style: dict = field(default_factory=dict)
     top_n: int | None = None
     descending: bool = True
+    offset: int = 0
+    include_missing: bool = False
 
     def to_dict(self):
+        if type(self.offset) is not int or not 0<=self.offset<=10000 or type(self.include_missing) is not bool:
+            raise ValueError('Paginación de resultados inválida.')
         if not isinstance(self.kind,str) or self.kind not in KINDS:
             raise ValueError('Visualización desconocida.')
         validate_binding(self.binding)
@@ -85,8 +89,19 @@ class VisualizationSpec:
             raise ValueError('Sort/Top N inválido.')
         if self.kind in ('line','comparison') and self.top_n is not None:
             raise ValueError('Line/comparison conserva su secuencia completa; filtra los datos explícitamente.')
-        if not isinstance(self.style,dict) or set(self.style)-{'color','background','text','title','font_size','decimals','font_family','color_scale'}:
+        if not isinstance(self.style,dict) or set(self.style)-{'color','background','text','title','font_size','decimals','font_family','color_scale','label_width','axis_domain','presentation'}:
             raise ValueError('Estilo de visualización desconocido.')
+        presentation=self.style.get('presentation')
+        if presentation is not None:
+            allowed=('editorial_value','editorial_metric') if self.kind in ('kpi','metric') else ('editorial_ranking',) if self.kind in ('ranking','horizontal_bar') else ()
+            if presentation not in allowed or 'color_scale' in self.style:
+                raise ValueError('Presentación editorial incompatible con el tipo de visualización o escala explícita.')
+        if 'axis_domain' in self.style:
+            domain=self.style['axis_domain']
+            if (not isinstance(domain,list) or len(domain)!=2 or any(type(n) not in (float,int) or not math.isfinite(n) for n in domain) or not domain[0]<domain[1]):
+                raise ValueError('Dominio del eje inválido.')
+        if 'label_width' in self.style and (type(self.style['label_width']) not in (float,int) or not .3<=self.style['label_width']<=.55):
+            raise ValueError('Anchura de etiquetas fuera de rango.')
         if 'font_family' in self.style: validate_family(self.style['font_family'])
         if 'color_scale' in self.style: validate_color_scale(self.style['color_scale'])
         for name in ('color','background','text'):
@@ -111,7 +126,8 @@ def _label(value,units,decimals):
 
 def visualization_geometry(spec,registry,size):
     options=spec.to_dict()
-    if (len(size)!=2 or any(type(n) is not int or n<80 or n>3840 for n in size)
+    minimum=8 if spec.style.get('presentation') else 80
+    if (len(size)!=2 or any(type(n) is not int or n<minimum or n>3840 for n in size)
             or size[0]*size[1]>8_294_400):
         raise ValueError('Tamaño de visualización fuera del presupuesto.')
     width,height=size
@@ -150,11 +166,12 @@ def visualization_geometry(spec,registry,size):
             _value(row.get('value'))
         rows=bound
     else:
-        rows=ordered_rows(bound,descending=spec.descending,top_n=spec.top_n)
-        if scale is not None and spec.top_n is None:
+        rows=ordered_rows(bound,descending=spec.descending)
+        if (scale is not None and spec.top_n is None) or spec.include_missing:
             # Explicit scales expose missing rows neutrally after the valid
             # ranking. Default/no-scale ordering remains byte-compatible.
             rows=rows+[dict(row) for row in bound if row.get('value') is None]
+        rows=rows[spec.offset:None if spec.top_n is None else spec.offset+spec.top_n]
     if spec.kind=='comparison' and (len(rows)!=2 or any(r.get('value') is None for r in rows)):
         raise ValueError('Comparison requiere exactamente dos observaciones válidas.')
     if spec.kind=='comparison' and rows[0].get('coverage',1)!=rows[1].get('coverage',1):
@@ -164,8 +181,13 @@ def visualization_geometry(spec,registry,size):
     amplitude=max((abs(v) for v in values),default=1) or 1
     low=min([0]+[v/amplitude for v in values])
     high=max([0]+[v/amplitude for v in values])
+    if 'axis_domain' in spec.style:
+        domain=spec.style['axis_domain']
+        if any(v<domain[0] or v>domain[1] for v in values):raise ValueError('El eje recortaría valores; amplía el dominio.')
+        low,high=(n/amplitude for n in domain)
     if low==high: high=low+1
     plot=(width*.30,height*.18,width*.90,height*.84)
+    if 'label_width' in spec.style:plot=(width*spec.style['label_width'],height*.18,width*.85,height*.84)
     if spec.kind in ('vertical_bar','line','comparison'):
         plot=(width*.12,height*.18,width*.90,height*.78)
     left,top,right,bottom=plot
@@ -205,6 +227,15 @@ def visualization_geometry(spec,registry,size):
 
 def render_visualization(spec,registry,size):
     geometry=visualization_geometry(spec,registry,size)
+    if spec.style.get('presentation'):
+        from studio_editorial import render_data
+        image=render_data(geometry,spec,size)
+        if geometry['warnings']:
+            # Do not suppress the pre-existing warning flag in editorial exports.
+            draw=ImageDraw.Draw(image)
+            font=studio_font(max(8,min(18,round(size[1]*.04))))
+            draw.text((size[0]*.02,size[1]-2),'Cobertura/metodología: consultar procedencia',font=font,fill='#ffcf83',anchor='lb')
+        return image
     width,height=size
     style=spec.style
     image=Image.new('RGBA',size,style.get('background','#04151e'))
@@ -238,8 +269,8 @@ def render_visualization(spec,registry,size):
             write((left,bottom),_label(geometry['minimum'],'',2),anchor='rt')
         else:
             draw.line((zero,top,zero,bottom),fill=text,width=1)
-            write((left,bottom+size_font),_label(geometry['minimum'],'',2))
-            write((right,bottom+size_font),_label(geometry['maximum'],'',2),anchor='rt')
+            write((left,bottom+size_font),_label(geometry['minimum'],'',style.get('decimals',2)))
+            write((right,bottom+size_font),_label(geometry['maximum'],'',style.get('decimals',2)),anchor='rt')
         if 'scale' in geometry:
             for start,end in geometry['segments']:
                 draw.line((*start,*end),fill=text,width=3)
@@ -247,14 +278,14 @@ def render_visualization(spec,registry,size):
             color=mark.get('color',style.get('color','#13bfd1'))
             point=mark['point']
             if point is None:
-                if 'scale' in geometry:
+                if 'scale' in geometry or spec.include_missing:
                     index=geometry['marks'].index(mark)
                     if vertical:
                         x=left+(index+.5)*(right-left)/max(1,len(geometry['marks']))
                         write((x,bottom+size_font),mark['name']+' · Sin datos',anchor='mt',max_width=mark['thickness']*1.6)
                     else:
                         y=top+(index+.5)*(bottom-top)/max(1,len(geometry['marks']))
-                        write((left-size_font*.5,y),mark['name'],anchor='rm',max_width=width*.26)
+                        write((left-size_font*.5,y),mark['name'],anchor='rm',max_width=left-size_font)
                         write((right,y),'Sin datos',anchor='rm',max_width=width*.25)
                 continue
             x,y=point
@@ -272,8 +303,8 @@ def render_visualization(spec,registry,size):
             if vertical:
                 write((x,bottom+size_font),mark['name'],anchor='mt',max_width=mark['thickness']*1.6)
             else:
-                write((left-size_font*.5,y),mark['name'],anchor='rm',max_width=width*.26)
-                write((right+size_font*.5,y),_label(mark['value'],'',style.get('decimals',2)),anchor='lm',max_width=width*.08)
+                write((left-size_font*.5,y),mark['name'],anchor='rm',max_width=left-size_font if 'label_width' in style else width*.26)
+                write((right+size_font*.5,y),_label(mark['value'],'',style.get('decimals',2)),anchor='lm',max_width=width*.11 if 'label_width' in style else width*.08)
         if 'scale' not in geometry:
             for start,end in geometry['segments']:
                 draw.line((*start,*end),fill=color,width=3)
@@ -294,5 +325,5 @@ def render_visualization(spec,registry,size):
         notice=('Periodo/cobertura parcial' if partial else 'Advertencias metodológicas')+' · consultar procedencia'
         if geometry['units']: notice=geometry['units']+' · '+notice
         draw.rectangle((0,height*.92,width,height),fill='#523d18')
-        write((width*.05,height*.95),notice,max_width=width*.9)
+        write((width*.05,height*.98),notice,anchor='lb',max_width=width*.9)
     return image

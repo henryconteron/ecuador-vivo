@@ -1,7 +1,7 @@
 """Bounded audio scheduling/mixing; providers never perform scientific work.
 
 AudioSource is the extension boundary for later narration/music/SFX providers.
-Only the video provider is exposed today. No project version change is needed.
+Independent narration shares the same schedule. No project version change is needed.
 """
 from contextlib import ExitStack
 from dataclasses import asdict, dataclass
@@ -68,6 +68,12 @@ def video_sources(project,rows,assets):
                 row['start_frame'],row['end_frame']-row['start_frame'],round(start*30),
                 max(1,round((end-start)*30)),gain,loop))
     return sources
+
+
+def combined_sources(project,rows,assets):
+    """Keep legacy clip audio and append independently placed narration."""
+    from studio_voice import narration_sources
+    return video_sources(project,rows,assets)+narration_sources(project,rows,assets)
 
 
 def _check_cancel(cancelled):
@@ -198,7 +204,9 @@ def mux_audio(video,sources,total_frames,*,cancelled=None,progress=None):
         else: raise ValueError('El AAC excede el techo de picos; no se publicará.')
         _check_cancel(cancelled);_verify(sources)
         candidate.replace(video)
-        return {'mode':'original_clip_mix','sample_rate':SAMPLE_RATE,'channels':CHANNELS,
+        kinds={source.kind for source in sources}
+        mode=('audiovisual_mix' if 'video' in kinds else 'narration_mix') if 'narration' in kinds else 'original_clip_mix'
+        return {'mode':mode,'sample_rate':SAMPLE_RATE,'channels':CHANNELS,
             'samples_per_frame':SAMPLES_PER_FRAME,'total_samples':total_frames*SAMPLES_PER_FRAME,
             'limiter_ceiling':.90,'lookahead_compensated':True,'decoded_peak':peak,'post_limiter_gain':gain,
             'sources':[source.receipt() for source in sources]}

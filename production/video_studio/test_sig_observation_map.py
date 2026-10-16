@@ -59,9 +59,10 @@ class SigObservationMapTests(unittest.TestCase):
         with (patch('studio_workspace.STORE',Path(self.temp.name)),
               patch('studio_map_ui.start_map_job',return_value=Path(self.temp.name)/'newjob') as start,
               patch('studio_map_ui.map_status',return_value={'state':'queued'})):
-            app.run();self.assertFalse(app.exception)
-            app.selectbox(key='sig_layer_date').select('2025-01-03').run()
-            app.button(key='sig_prepare_layers').click().run()
+            from test_entry_helpers import open_sig_tool
+            from studio_project import workspace_key
+            open_sig_tool(app,self.project,'Mapa observado');self.assertFalse(app.exception)
+            app.selectbox(key=workspace_key(self.project)+'_sig_observed_date').select('2025-01-03').run()
             self.assertFalse(app.exception)
             key=next(b.key for b in app.button if b.key and b.key.endswith('_map_start'))
             app.button(key=key).click().run()
@@ -141,7 +142,8 @@ class SigObservationMapTests(unittest.TestCase):
             show_sig(source_projection(st.session_state['project_document']))
         app=AppTest.from_function(script,default_timeout=20)
         app.session_state['project_document']=self.project
-        key=workspace_key(self.project)
+        workspace=workspace_key(self.project)
+        key=workspace+'_sig_preparation_observation'
         with (patch('studio_workspace.STORE',Path(self.temp.name)),
               patch('studio_map_ui.map_status',return_value={'state':'complete'}),
               patch('studio_map_ui.read_bundle_resource',return_value=record),
@@ -150,8 +152,9 @@ class SigObservationMapTests(unittest.TestCase):
             app.session_state[key+'_layers_map_job']='pending-full-series'
             app.session_state[key+'_layers_map_job_observation_0']='pending-other-date'
             app.session_state[key+'_layers_map_job_observation_1']='verified-date-job'
-            app.selectbox(key='sig_layer_date').select('2025-01-03').run()
-            app.button(key='sig_prepare_layers').click().run()
+            from test_entry_helpers import open_sig_tool
+            open_sig_tool(app,self.project,'Mapa observado')
+            app.selectbox(key=workspace+'_sig_observed_date').select('2025-01-03').run()
             self.assertFalse(app.exception)
             self.assertEqual(app.session_state['project_document'],self.project)
             app.button(key=key+'_layers_prepare_again').click().run()
@@ -163,7 +166,7 @@ class SigObservationMapTests(unittest.TestCase):
             app.button(key=key+'_layers_publish').click().run()
             self.assertTrue(any('proyecto cambió' in e.value for e in app.error))
             self.assertEqual(app.session_state['project_document'],self.project)
-            self.assertFalse(app.session_state[key+'_workspace_history'])
+            self.assertFalse(app.session_state[workspace+'_workspace_history'])
             from studio_temporal import _hash
             app.session_state[key+'_layer_review_base']['project']=_hash(self.project)
             app.button(key=key+'_layers_publish').click().run()
@@ -173,7 +176,7 @@ class SigObservationMapTests(unittest.TestCase):
         self.assertEqual(accepted['studio']['scenes'][:-1],self.project['studio']['scenes'])
         self.assertEqual(len(accepted['studio']['timeline']),len(self.project['studio']['timeline'])+1)
         self.assertTrue(app.session_state['_pending_studio_navigation'])
-        recovered,_=recover_snapshot(app.session_state[key+'_draft'])
+        recovered,_=recover_snapshot(app.session_state[workspace+'_draft'])
         self.assertEqual(recovered,accepted)
         self.assertNotIn(key+'_layers_map_job_observation_1',app.session_state)
         self.assertEqual(app.session_state[key+'_layers_map_job'],'pending-full-series')

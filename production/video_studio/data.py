@@ -235,6 +235,8 @@ def _polygon_stats(src, band, features, *, scale=1.0, offset=0.0,
             mean_value = float(np.mean(physical))
         result[str(name)] = {
             'mean': mean_value,
+            'area_weight_sum': float(area_weights[valid].sum()) if src.crs.is_geographic else float(valid.sum()),
+            'weighted_value_sum': mean_value*(float(area_weights[valid].sum()) if src.crs.is_geographic else float(valid.sum())),
             'max': float(np.max(physical)),
             'min': float(np.min(physical)),
             'valid_pixels': int(valid.sum()),

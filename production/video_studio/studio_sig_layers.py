@@ -2,6 +2,7 @@
 import copy
 import math
 import re
+from studio_sig_read_scope import native_read_scope
 from studio_geography import CRS,_registry,import_geojson,read_source,_features
 
 METHOD='angular_lonlat_interactive_v1'
@@ -69,9 +70,9 @@ def validate_map_workspace(registry):
         if 'raster_time' in state:
             from studio_sig_raster import compatible
             time=state['raster_time'];ids=time['layers']
-            if (not {'layers','index','compare'}<=set(time) or set(time)-{'layers','index','compare','duration','cadence','safe_guides'}
-                    or not isinstance(ids,list) or not 2<=len(ids)<=32 or len(set(ids))!=len(ids)):
-                raise ValueError('Timelapse requiere entre 2 y 32 capas diferentes por preparación.')
+            if (not {'layers','index','compare'}<=set(time) or set(time)-{'layers','index','compare','duration','cadence','safe_guides','presentation','template','palette'}
+                    or not isinstance(ids,list) or not 2<=len(ids)<=3660 or len(set(ids))!=len(ids)):
+                raise ValueError('Timelapse requiere entre 2 y 3660 observaciones distintas; cada una necesita al menos un cuadro.')
             if any(lid not in layers or layers[lid]['type']!='raster' for lid in ids):raise ValueError('Comparación sin sus rásteres.')
             sources=[registry['sources'][layers[lid]['source_id']] for lid in ids];compatible(sources)
             dates=[s['date'] for s in sources]
@@ -86,6 +87,13 @@ def validate_map_workspace(registry):
             if time.get('cadence')=='monthly' and len({d[:7] for d in dates})!=len(dates):
                 raise ValueError('La cadencia mensual requiere una observación por mes. Para varias fechas del mismo mes elige diaria u otra/irregular; no se agregan automáticamente.')
             if type(time.get('safe_guides',True)) is not bool:raise ValueError('Guías de encuadre inválidas.')
+            if 'presentation' in time:
+                from studio_territory import validate
+                validate(time['presentation'])
+            if time.get('template') not in (None,'rainfall'):raise ValueError('Plantilla temporal desconocida.')
+            if 'palette' in time:
+                from studio_sig_palette import validate_palette
+                validate_palette(time['palette'])
     except (KeyError,TypeError,AttributeError) as error:raise ValueError('Contrato SIG de capas/vista incompleto.') from error
 
 def ensure_workspace(project):
@@ -107,6 +115,7 @@ def add_geojson_layer(project,content,name,provenance):
     validate_map_workspace(registry)
     return result,lid
 
+@native_read_scope()
 def layer_command(project,message):
     """Pure reversible presentation command; sources, attributes and science untouched."""
     result=ensure_workspace(project);registry=result['studio']['geography'];state=registry['map_workspace']
@@ -146,40 +155,85 @@ def layer_command(project,message):
     validate_map_workspace(registry)
     return result
 
+def series_visibility_command(project,visible):
+    """Toggle the logical series in one validated copy; observations remain intact."""
+    if type(visible) is not bool:raise ValueError('La visibilidad debe ser verdadera o falsa.')
+    result=ensure_workspace(project);registry=result['studio']['geography'];state=registry['map_workspace']
+    time=state.get('raster_time')
+    if not time:raise ValueError('No hay serie temporal.')
+    for lid in time['layers']:state['layers'][lid]['visible']=visible
+    if not visible and state['active_layer'] in time['layers']:state['selection']=[]
+    validate_map_workspace(registry)
+    return result
+
+
+def series_style_command(project,opacity):
+    """Restyle the whole calendar in one validated, reversible transaction.
+
+    Revalidating the complete registry once for every observation made a
+    30-date opacity change perform 30 copies and 30 full validation passes.
+    The same validation gates now surround a single copy; science is untouched.
+    """
+    if type(opacity) not in (int,float) or not math.isfinite(opacity) or not 0<=opacity<=1:
+        raise ValueError('Opacidad: un número de 0 a 1.')
+    result=ensure_workspace(project);registry=result['studio']['geography'];state=registry['map_workspace']
+    time=state.get('raster_time')
+    if not time:raise ValueError('No hay serie temporal.')
+    for lid in time['layers']:
+        state['layers'][lid]['style']['opacity']=opacity
+    validate_map_workspace(registry)
+    return result
+
+
+@native_read_scope()
 def map_payload(project):
     """Verified geometries for display only; canonical dataset references remain compact."""
     from studio_geography import validate_geography
     validate_geography(project['studio']);state=workspace_for(project);registry=_registry(project);sources={};layers=[]
     pair=state.get('raster_time',{}).get('layers',[])
     from studio_sig_raster import settings
-    common=settings([registry['sources'][state['layers'][k]['source_id']] for k in pair]) if pair else None
+    common=settings([registry['sources'][state['layers'][k]['source_id']] for k in pair],rainfall=state.get('raster_time',{}).get('template')=='rainfall',palette=state.get('raster_time',{}).get('palette')) if pair else None
+    from studio_territory import options_for
+    from studio_sig_timelapse import output_frame
+    presentation=options_for(project)
+    # The live image and lazy playback must use the SAME polygon, grid and
+    # resampler as the sealed output, not the legacy full-source rectangle.
+    display_box=output_frame(project)['bbox'] if pair else None
     for lid in state['order']:
         layer=state['layers'][lid];sid=layer['source_id']
         if layer['type']=='raster':
-            from studio_sig_raster import representation,settings
-            import io,base64,json
+            from studio_sig_raster import encoded_representation,settings
+            import json
             source=registry['sources'][sid];scale=common if lid in pair else settings([source])
             time=state.get('raster_time',{})
             needed=lid not in pair or time.get('compare') or lid==pair[time.get('index',0)]
             box=source['raster']['bbox'];encoded=None
-            if needed and layer['visible']:
-                image,box=representation(source,scale)
-                try:
-                    buffer=io.BytesIO();image.save(buffer,format='PNG');encoded='data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode()
-                finally:image.close()
-            layers.append({**layer,'representation_revision':sid+':'+json.dumps(scale,sort_keys=True),
+            effective_visible=layer['visible'] and (not pair or lid in pair)
+            if needed and effective_visible:
+                encoded,box=encoded_representation(source,scale,size=1000,box=display_box if lid in pair else None,
+                    presentation=presentation)
+            if lid in pair:box=display_box
+            layers.append({**layer,'visible':effective_visible,'representation_revision':sid+':'+json.dumps([scale,presentation,box],sort_keys=True),
                 'features':[],'image':encoded,
-                'bbox':box,'date':source['date'],'units':source['units'],'scale':scale})
+                'bbox':box,'date':source['date'],'variable':source['variable'],'source_sha256':source['sha256'],'units':source['units'],'scale':scale,'presentation':presentation})
             if lid in pair:
                 from studio_delivery import register_raster_display
-                layers[-1]['playback_url']=register_raster_display(source,scale)
+                layers[-1]['playback_url']=register_raster_display(source,scale,box=box,presentation=presentation)
+                if presentation['territory']=='ecuador':
+                    from maqueta import GALAPAGOS_BOX
+                    native=source['raster']['bbox']
+                    # Only the same original/product, never substitute mainland
+                    # samples. A transparent inset honestly means no coverage.
+                    if native[0]<=GALAPAGOS_BOX[0] and native[2]>=GALAPAGOS_BOX[2] and native[1]<=GALAPAGOS_BOX[1] and native[3]>=GALAPAGOS_BOX[3]:
+                        layers[-1]['playback_inset_url']=register_raster_display(source,scale,box=list(GALAPAGOS_BOX),presentation=presentation)
+                        if needed and effective_visible:
+                            layers[-1]['inset_image'],_=encoded_representation(source,scale,size=256,box=list(GALAPAGOS_BOX),presentation=presentation)
             continue
         if sid not in sources:sources[sid]=_features(read_source(registry['sources'][sid]))
         features=[{'region_id':rid,'geometry':sources[sid][r['feature_index']]['geometry']}
                   for rid,r in registry['regions'].items() if r['source_id']==sid]
         from studio_geography import REPRESENTATION_REVISION
         layers.append({**layer,'representation_revision':sid+':'+REPRESENTATION_REVISION,'features':features})
-    from studio_sig_timelapse import output_frame
     return {'view':state['view'],'layers':layers,'selection':state['selection'],'active_layer':state['active_layer'],
             'basemap':state.get('basemap','none'),'raster_time':state.get('raster_time'),
             'output_frame':output_frame(project) if state.get('raster_time') else None}

@@ -1,4 +1,24 @@
 /* SIG-owned keys; the pinned Streamlit layout boundary is isolated here. */
+/* A tool is a contextual window, not a modal scrim over the entire map. */
+.st-key-sig_tool_window{position:fixed!important;top:182px;right:28px;width:min(430px,calc(100vw - 48px))!important;max-height:calc(100dvh - 212px);overflow:auto;overscroll-behavior:contain;z-index:50;background:#fff5df;color:#132b46;border:1px solid #d5c8b1;border-top:3px solid #238e77;border-radius:8px;padding:16px;box-shadow:0 10px 28px #06172750;font-family:'Segoe UI',sans-serif;gap:10px!important;color-scheme:light}
+.st-key-sig_tool_window h3{font-size:16px;line-height:1.3;margin:0;padding:0;color:#132b46}
+.st-key-sig_tool_window p,.st-key-sig_tool_window label,.st-key-sig_tool_window input{font-size:13px;line-height:1.45;color:#132b46}
+.st-key-sig_tool_window [data-testid="stCaptionContainer"] p{font-size:12px;color:#536274}
+.st-key-sig_tool_window button{min-height:32px;font-size:13px;border-radius:5px;background:#fff9ec;color:#132b46;border-color:#d5c8b1}
+.st-key-sig_tool_window button:hover{background:#eee1c8;border-color:#176f5f;color:#132b46}
+.st-key-sig_tool_window button[kind="primary"],.st-key-sig_tool_window button[kind="primaryFormSubmit"]{background:#176f5f;border-color:#176f5f;color:#fff}
+.st-key-sig_tool_window button[kind="primary"] p,.st-key-sig_tool_window button[kind="primaryFormSubmit"] p{color:#fff}
+.st-key-sig_tool_window [data-baseweb="input"],.st-key-sig_tool_window [data-baseweb="select"]>div,.st-key-sig_tool_window [data-baseweb="textarea"]{background:#fff9ec;border-color:#d5c8b1;color:#132b46}
+.st-key-sig_tool_window [data-baseweb="select"] span,.st-key-sig_tool_window [data-baseweb="select"] svg,.st-key-sig_tool_window textarea{color:#132b46}
+.st-key-sig_tool_window :is(button,input,textarea,[tabindex]):focus-visible{outline:2px solid #176f5f;outline-offset:2px}
+.st-key-sig_tool_window [data-testid="stVerticalBlock"]{gap:10px}
+.st-key-sig_tool_window [data-testid="stForm"]{padding:0;border:0}
+.st-key-sig_tool_window [data-testid="stTextInputRootElement"],.st-key-sig_tool_window [data-baseweb="select"]>div{min-height:34px}
+.st-key-sig_tool_window:focus-within{border-color:#238e77}
+@media(max-width:760px){.st-key-sig_tool_window{top:164px;right:16px;max-height:calc(100dvh - 188px)}}
+[data-testid="stMainBlockContainer"]:has(.st-key-sig_integrated_shell){padding:8px!important;max-width:none}
+body:has(.st-key-sig_integrated_shell) [data-testid="stHeader"]{height:0;min-height:0}
+.st-key-sig_integrated_shell{width:100%;min-width:0}
 [data-testid="stMain"]:has(.st-key-sig_shell){overflow:hidden;background:#0b171d}
 [data-testid="stMainBlockContainer"]:has(.st-key-sig_shell){padding:4px 8px!important;max-width:none}
 body:has(.st-key-sig_shell) [data-testid="stHeader"]{height:0;min-height:0}

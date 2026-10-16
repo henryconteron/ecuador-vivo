@@ -149,7 +149,7 @@ def layer_features(project,lid):
 
 def validate_operation(operation,registry):
     if (not isinstance(operation,dict) or set(operation)!={'version','tool','inputs','parameters','units','processed_at','engine'}
-            or operation['version']!=1 or operation['tool'] not in ('buffer','clip','intersection','dissolve','measure','calculate','filter','zonal')
+            or operation['version']!=1 or operation['tool'] not in ('buffer','clip','intersection','dissolve','measure','calculate','filter','zonal','centroid','point_on_surface','convex_hull','boundary')
             or not isinstance(operation['parameters'],dict) or not isinstance(operation['units'],str)
             or not isinstance(operation['inputs'],list) or not 1<=len(operation['inputs'])<=2):
         raise ValueError('Procedencia de operación vectorial inválida.')
@@ -158,6 +158,14 @@ def validate_operation(operation,registry):
         source=registry['sources'].get(value['source_id'])
         if source is None or source['sha256']!=value['sha256']:raise ValueError('Operación sin la fuente de entrada verificada.')
     datetime.fromisoformat(operation['processed_at']);json.dumps(operation,allow_nan=False)
+    if operation['tool'] in ('centroid','point_on_surface','convex_hull','boundary'):
+        params=operation['parameters'];projected=operation['tool']!='boundary'
+        expected={'geometry_method':'projected metric GEOS' if projected else 'planar GEOS in CRS84'}
+        if projected:
+            features=geo._features(geo.read_source(registry['sources'][operation['inputs'][0]['source_id']]))
+            target,_,_=metric_projection(features,params.get('crs',''));expected['crs']=target.to_wkt()
+        if len(operation['inputs'])!=1 or operation['units']!='' or params!=expected:
+            raise ValueError('Método geométrico distinto de su procedencia.')
     if operation['tool']=='zonal':
         inputs=[registry['sources'][v['source_id']] for v in operation['inputs']]
         if len(inputs)!=2 or inputs[0].get('type')!='raster' or inputs[1].get('type')=='raster':raise ValueError('Zonas requieren un ráster y polígonos de origen.')
@@ -186,9 +194,10 @@ def number(value):
     return value
 
 
-def run_operation(project,lid,tool,parameters,*,other=None,name='Resultado vectorial'):
+def run_operation(project,lid,tool,parameters,*,other=None,name='Resultado vectorial',progress=None):
     if not isinstance(name,str) or not name.strip() or len(name)>172:raise ValueError('Nombre de resultado vacío o demasiado largo.')
     source,features=layer_features(project,lid);inputs=[source];params=copy.deepcopy(parameters);units='';output=[]
+    if progress:progress(0,len(features))
     if tool in ('calculate','filter') or tool=='dissolve' and params.get('field'):
         if not any(params.get('field') in (f.get('properties') or {}) for f in features):raise ValueError('El campo elegido no existe en la capa.')
     if tool=='calculate' and params.get('operator')=='divide' and number(params.get('constant'))==0:raise ValueError('No se permite dividir por cero.')
@@ -198,26 +207,36 @@ def run_operation(project,lid,tool,parameters,*,other=None,name='Resultado vecto
         mask_geometries=[shape(f['geometry']) for f in masks]
         if tool=='clip':mask=unary_union(mask_geometries)
         else:mask_index=STRtree(mask_geometries)
-    if tool in ('buffer','measure'):
+    projected=tool in ('buffer','measure','centroid','point_on_surface','convex_hull')
+    if projected:
         target,to_metric,to_view=metric_projection(features,params.get('crs',''));params['crs']=target.to_wkt()
-        units='m' if tool=='buffer' else 'm² / m'
+        units='m' if tool=='buffer' else 'm² / m' if tool=='measure' else ''
+    if tool=='boundary' and any(f['geometry']['type'] not in ('Polygon','MultiPolygon') for f in features):
+        raise ValueError('Extraer contornos requiere una capa de polígonos; no se omitirán entidades.')
     if tool=='buffer':params['quad_segs']=16
-    params['geometry_method']='projected metric GEOS' if tool in ('buffer','measure') else 'planar GEOS in CRS84' if tool in ('clip','intersection','dissolve') else 'attribute operation; geometry unchanged'
+    params['geometry_method']='projected metric GEOS' if projected else 'planar GEOS in CRS84' if tool in ('clip','intersection','dissolve','boundary') else 'attribute operation; geometry unchanged'
     if tool=='dissolve':
         field=params.get('field');groups={}
         for f in features:
             value=(f.get('properties') or {}).get(field) if field else None;key=json.dumps(value,sort_keys=True)
             groups.setdefault(key,[]).append(f)
         for key,group in groups.items():
+            if progress:progress(len(output),len(groups))
             geometry=unary_union([shape(f['geometry']) for f in group])
             output.append({'type':'Feature','properties':{field:json.loads(key)} if field else {},'geometry':mapping(geometry)})
     else:
         for i,f in enumerate(features):
+            if progress:progress(i,len(features))
             g=shape(f['geometry']);properties=f.get('properties') or {};f['properties']=properties;f.pop('bbox',None)
             if tool=='buffer':
                 distance=number(params.get('distance'))
                 if not 0<distance<=1_000_000:raise ValueError('Buffer requiere distancia positiva de hasta 1000000 m.')
                 g=transform(to_view.transform,transform(to_metric.transform,g).buffer(distance,quad_segs=params['quad_segs']))
+            elif tool in ('centroid','point_on_surface','convex_hull'):
+                metric=transform(to_metric.transform,g)
+                derived=metric.centroid if tool=='centroid' else metric.representative_point() if tool=='point_on_surface' else metric.convex_hull
+                g=transform(to_view.transform,derived)
+            elif tool=='boundary':g=g.boundary
             elif tool=='clip':g=g.intersection(mask)
             elif tool=='intersection':
                 for j in sorted(mask_index.query(g,predicate='intersects')):
@@ -262,6 +281,7 @@ def run_operation(project,lid,tool,parameters,*,other=None,name='Resultado vecto
             if g.is_empty:continue
             if g.geom_type=='GeometryCollection':raise ValueError('La operación produjo una GeometryCollection; no se descartarán partes silenciosamente.')
             f['geometry']=mapping(g);output.append(f)
+    if progress:progress(len(features),len(features))
     if not output:raise ValueError('La operación no produjo entidades. No se añadió una capa vacía ni datos ficticios.')
     import shapely,pyproj
     recipe={'version':1,'tool':tool,'inputs':[{'source_id':s['id'],'sha256':s['sha256']} for s in inputs],

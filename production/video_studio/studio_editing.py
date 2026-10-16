@@ -171,7 +171,13 @@ def adapt_profile(project, definition):
            'context':'metric','metric':'metric','ranking':'metric'}
     for scene in result['studio']['scenes']:
         if scene.get('renderer','studio')!='studio': continue
+        from studio_territory import reflow_scene
+        if scene.get('rainfall_template'):
+            from studio_sig_transfer import reflow_rainfall
+            reflowed=reflow_rainfall(scene,result['studio'],profile)
+        else:reflowed=reflow_scene(scene,result['studio'],profile)
         for element in scene['elements']:
+            if element['id'] in reflowed:continue
             t=element.setdefault('transform',{})
             role=element.get('layout_role')
             if role in regions:

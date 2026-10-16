@@ -1,5 +1,21 @@
 # Registro de cambios
 
+## 2026-10-16 — Consolidación de la versión actual, sin videos nuevos
+
+- Guardadas las mejoras vigentes de Inicio, SIG, Studio, Recursos y del puente
+  privado de importación. Fuentes y compilación actual del SIG reunidas;
+  retirados los bundles reemplazados y metadatos generados del índice de Git.
+- Videos, voces, composiciones y sus pruebas/guiones de producción se mantienen
+  locales; no se agregan a esta entrega. Tampoco instalaciones ni datos privados.
+- Corregido el cierre y la publicación de CSV geográficos: conservan su método
+  de conteo/valores originales sin exigir una agregación meteorológica ficticia.
+- Actualizadas pruebas de contratos científicos y navegación para no depender
+  de botones antiguos. Se mantiene el rechazo de variables sin contrato,
+  unidades incompatibles y fechas duplicadas.
+- Añadido control del contenido preparado para Git: rutas privadas, medios,
+  límites de tamaño, firmas de credenciales, sintaxis Python e importaciones
+  de los componentes compilados. Documentada la reinstalación de componentes.
+
 ## 2026-10-05 — Mantenibilidad y controles automáticos
 
 - Separados del coordinador principal el estado de estaciones INAMHI, sus fichas y el filtrado del

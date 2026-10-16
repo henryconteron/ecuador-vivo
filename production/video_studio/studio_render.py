@@ -21,19 +21,28 @@ def _color(value):
     return value
 
 
-def _text_layer(style,size,content):
+def _text_layer(style,size,content, *, preview_scale=1,check_only=False):
     if not isinstance(content,str) or len(content)>2000:
         raise ValueError('Texto de escena inválido.')
     color=_color(style.get('color','#f0f5f8'))
     pixels=style.get('font_size',max(10,round(min(size)*.16)))
     if type(pixels) is not int or not 8<=pixels<=400:
         raise ValueError('Tamaño de fuente fuera de rango.')
+    # Validate authored typography before scaling presentation pixels. Scientific
+    # bindings and the final scene keep their original styles and dimensions.
+    if preview_scale!=1 and 'font_size' in style:pixels=max(1,round(pixels*preview_scale))
+    minimum=max(1,round(8*preview_scale));leading=max(1,round(4*preview_scale))
     alignment=style.get('alignment','left')
     if alignment not in ('left','center','right'): raise ValueError('Alineación de texto desconocida.')
     family=style.get('font_family','Barlow Condensed')
-    def load_font(size): return studio_font(size,family=family,bold=style.get('bold',False))
+    def load_font(size):
+        font=studio_font(max(8,size),family=family,bold=style.get('bold',False))
+        if size<8:
+            font=font.font_variant(size=size)
+            if family=='Lora':font.set_variation_by_axes([600 if style.get('bold',False) else 400])
+        return font
     font=load_font(pixels)
-    if not content: return Image.new('RGBA',size),pixels,color
+    if not content: return (None if check_only else Image.new('RGBA',size)),pixels,color
     paragraphs=[]
     for paragraph in content.split('\n'):
         clusters=[]
@@ -74,17 +83,27 @@ def _text_layer(style,size,content):
             lines.append(current)
         return lines
     lines=lines_for(font)
-    while pixels>8 and (len(lines)*(pixels+4)>size[1] or
+    while pixels>minimum and (len(lines)*(pixels+leading)>size[1] or
                        any(font.getlength(line)>size[0] for line in lines)):
         pixels-=1; font=load_font(pixels);lines=lines_for(font)
-    if len(lines)*(pixels+4)>size[1] or any(font.getlength(line)>size[0] for line in lines):
+    if len(lines)*(pixels+leading)>size[1] or any(font.getlength(line)>size[0] for line in lines):
         raise ValueError('El texto no cabe: amplía el elemento antes de exportar.')
+    if check_only:return None,pixels,color
     image=Image.new('RGBA',size)
     draw=ImageDraw.Draw(image)
     for index,line in enumerate(lines):
         remaining=size[0]-font.getlength(line)
         x=0 if alignment=='left' else remaining/2 if alignment=='center' else remaining
-        draw.text((x,index*(pixels+4)),line,font=font,fill=color,anchor='lt')
+        draw.text((x,index*(pixels+leading)),line,font=font,fill=color,anchor='lt',
+                  stroke_width=max(1,round(2*preview_scale)) if style.get('_cartographic_halo') else 0,
+                  stroke_fill='#04151e')
+    if 'gradient' in style:
+        colors=style['gradient']
+        if not isinstance(colors,list) or len(colors)!=2:raise ValueError('El degradado requiere dos colores.')
+        colors=[_color(color) for color in colors]
+        ramp=Image.linear_gradient('L').rotate(-90).resize((size[0],1)).resize(size)
+        tinted=ImageOps.colorize(ramp,*colors).convert('RGBA')
+        tinted.putalpha(image.getchannel('A'));image.close();ramp.close();image=tinted
     return image,pixels,color
 
 
@@ -93,7 +112,7 @@ def render_scene(scene,profile,registry, *, assets=None, time=None):
     return _render_validated_scene(scene,profile,registry,assets=assets,time=time)
 
 
-def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
+def _render_validated_scene(scene,profile,registry, *, assets=None, time=None,preview_scale=1,check_only=False):
     """Internal renderer for a private, already validated timeline snapshot."""
     if scene.get('renderer','studio')!='studio':
         raise ValueError('Las escenas legacy conservan su render original.')
@@ -101,7 +120,7 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
     width,height=profile.width,profile.height
     background=_color(scene.get('background','#04151e'))
     config={'_layout_capture':True}
-    image=begin_layout(Image.new('RGBA',(width,height),background),config)
+    image=None if check_only else begin_layout(Image.new('RGBA',(width,height),background),config)
     pixel_budget=0
     for element in scene['elements']:
         kind=element['type']
@@ -122,6 +141,9 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
             raise ValueError('Tiempo de cuadro fuera de la escena.')
         x,y,w,h=(round(transform.get(key,default)) for key,default in
                  (('x',0),('y',0),('width',100),('height',100)))
+        if preview_scale!=1 and kind=='shape':
+            # A one-pixel authored rule must survive a downscaled editor preview.
+            w,h=max(1,w),max(1,h)
         if x<0 or y<0 or w<1 or h<1 or x+w>width or y+h>height:
             raise ValueError('Elemento fuera del canvas; corrige sus límites antes de exportar.')
         native_x,native_y=x,y
@@ -133,10 +155,10 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
         context=assets.get('temporal.'+element['id']) if temporal else None
         if temporal and not isinstance(context,dict):raise ValueError('Falta la observación científica del binding temporal.')
         if kind=='legend' and not temporal:raise ValueError('Leyenda semántica pendiente; utiliza el auxiliar verificado del bundle.')
-        fields={'opacity'}|({'text','color','font_size','bold','alignment','font_family'} if kind in ('text','source') else
+        fields={'opacity'}|({'text','color','font_size','bold','alignment','font_family','date_format','gradient'} if kind in ('text','source') else
             {'visualization'} if kind in ('metric','chart','ranking') else
             {'asset_id','fit','trim_in','trim_out','loop','mute','volume'} if kind=='video' else
-            {'asset_id','fit'} if kind in ('map','image','logo','legend') else {'fill','shape'})
+            {'asset_id','fit'} if kind in ('map','image','logo','legend') else {'fill','shape','outline','radius'})
         if set(style)-fields or set(animation)-{'in','out','duration','delay'}:
             raise ValueError('Propiedad de estilo/animación desconocida; no se ignorará.')
         if 'bold' in style and type(style['bold']) is not bool: raise ValueError('Bold debe ser booleano.')
@@ -146,6 +168,8 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
             if binding is None: raise ValueError('La visualización requiere DataBinding explícito.')
             settings=style.get('visualization',{})
             if not isinstance(settings,dict): raise ValueError('VisualizationSpec inválido.')
+            if preview_scale!=1 and settings.get('style',{}).get('presentation'):
+                settings={**settings,'style':{**settings['style'],'font_size':max(8,round(settings['style'].get('font_size',28)*preview_scale))}}
             try:
                 spec=VisualizationSpec(**{'kind':'metric' if kind=='metric' else 'ranking' if kind=='ranking' else 'horizontal_bar',
                                           **settings,'binding':binding})
@@ -165,9 +189,9 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
             fit=style.get('fit','contain')
             if fit not in ('contain','cover') or (kind in ('map','legend') and fit!='contain'):
                 raise ValueError('Un mapa siempre conserva proporción y límites con contain.')
-            tile=(ImageOps.contain(asset.convert('RGBA'),(w,h),Image.Resampling.LANCZOS) if fit=='contain'
+            tile=None if check_only else (ImageOps.contain(asset.convert('RGBA'),(w,h),Image.Resampling.LANCZOS) if fit=='contain'
                   else ImageOps.fit(asset.convert('RGBA'),(w,h),method=Image.Resampling.LANCZOS))
-            x+=(w-tile.width)//2;y+=(h-tile.height)//2
+            if tile is not None:x+=(w-tile.width)//2;y+=(h-tile.height)//2
         elif kind in ('shape','background'):
             tile=Image.new('RGBA',(w,h));draw=ImageDraw.Draw(tile)
             fill=_color(style.get('fill','#13bfd1'))
@@ -176,19 +200,47 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
             if shape=='rectangle': draw.rectangle(box,fill=fill)
             elif shape=='rounded_rectangle': draw.rounded_rectangle(box,radius=min(w,h)*.08,fill=fill)
             elif shape=='circle': draw.ellipse(box,fill=fill)
-            elif shape in ('line','divider'): draw.line((0,h/2,w,h/2),fill=fill,width=max(1,min(4,h)))
+            elif shape=='calendar':
+                from maqueta import draw_calendar_icon
+                large=Image.new('RGBA',(w*3,h*3));pen=ImageDraw.Draw(large)
+                scale=min((w*3-3)/44,(h*3-3)/49)
+                draw_calendar_icon(pen,1,5*scale+1,fill,s=scale)
+                tile=large.resize((w,h),Image.Resampling.LANCZOS);large.close()
+            elif shape in ('panel','pill_outline','play','marker') or shape.startswith('icon.'):
+                from studio_editorial import graphic
+                outline=_color(style['outline']) if 'outline' in style else None
+                radius=style.get('radius')
+                if radius is not None and (type(radius) not in (int,float) or not 0<=radius<=3840):
+                    raise ValueError('Radio de forma fuera de rango.')
+                tile.close()
+                tile=graphic(shape,(w,h),fill,outline=outline,radius=radius)
+            elif shape in ('line','divider'):
+                points=(w/2,0,w/2,h) if h>w else (0,h/2,w,h/2)
+                draw.line(points,fill=fill,width=max(1,min(4,w,h)))
             else: raise ValueError('Forma no soportada.')
         else:
             content=context['date'] if temporal else style.get('text','')
+            if temporal and temporal['channel']=='counter':
+                content=f"OBS. {context['source_index']+1:02d} / {context['observation_count']}"
+            elif temporal and style.get('date_format')=='long_es':
+                import datetime as dt
+                day=dt.date.fromisoformat(context['date'])
+                month=('ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC')[day.month-1]
+                content=f'{day.day:02d} {month} {day.year}'
+            if style.get('date_format') not in (None,'long_es'):raise ValueError('Formato de fecha desconocido.')
             if binding:
                 value=resolve_binding(registry,binding)
                 if not isinstance(value,(str,int,float)) and value is not None:
                     raise ValueError('El texto requiere un binding escalar.')
                 content=content.replace('{{value}}','Sin datos' if value is None else str(value))
-            tile,font_size,color=_text_layer(style,(w,h),content)
+            text_style={**style,'_cartographic_halo':True} if element.get('cartographic_point') else style
+            tile,font_size,color=_text_layer(text_style,(w,h),content,preview_scale=preview_scale,check_only=check_only)
         opacity=style.get('opacity',1)
         if isinstance(opacity,bool) or not isinstance(opacity,(int,float)) or not 0<=opacity<=1:
             raise ValueError('Opacity debe estar entre 0 y 1.')
+        if check_only:
+            if tile is not None:tile.close()
+            continue
         if opacity!=1:
             tile.putalpha(tile.getchannel('A').point(lambda alpha:round(alpha*opacity)))
         if rotation!=0:
@@ -206,6 +258,7 @@ def _render_validated_scene(scene,profile,registry, *, assets=None, time=None):
         row=image.info['_visual_scene'].items[-1]
         row.update(locked=element.get('locked',False),hidden=not element.get('visible',True),
                    z=element.get('z_index',0))
+    if check_only:return None
     result=finish_layout(image)
     result.info['studio_scene_id']=scene['id']
     return result

@@ -34,8 +34,9 @@ def show_scientific_assistant(document, open_project, *, publish_label='Crear pr
             st.markdown('**1 · Fuente y resultados**')
             source = st.session_state.get('science_source')
             if source is None:
-                route = st.selectbox('Datos de partida', ['Proyecto actual','Proyecto guardado','Importar proyecto calculado',
-                    'CHIRPS v2 automático','GeoTIFF propios','CHIRPS v3 / NASA POWER / INAMHI / CSV'], key='science_route')
+                routes = (['Proyecto actual'] if document else []) + ['Proyecto guardado','Importar proyecto calculado',
+                    'CHIRPS v2 automático','GeoTIFF propios','CHIRPS v3 / NASA POWER / INAMHI / CSV']
+                route = st.selectbox('Datos de partida', routes, key='science_route')
                 if route == 'Proyecto actual':
                     source = copy.deepcopy(document)
                 elif route == 'Proyecto guardado':

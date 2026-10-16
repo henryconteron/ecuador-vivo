@@ -553,11 +553,11 @@ def outline_layer(size, groups):
     return layer.resize((width, height), Image.Resampling.LANCZOS)
 
 
-def paint_map_outline(size, rings, provinces=(), *, border_width=2.2):
+def paint_map_outline(size, rings, provinces=(), *, border_width=2.2, province_color=PROVINCE_BORDER):
     """Shared geographic borders; provincial lines are explicit and optional."""
     groups = []
     if provinces:
-        groups.append((provinces, PROVINCE_BORDER, 1.2))
+        groups.append((provinces, province_color, 1.2))
     groups.append((rings, MAP_BORDER, border_width))
     return outline_layer(size, groups)
 

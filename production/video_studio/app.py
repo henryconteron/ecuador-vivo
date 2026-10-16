@@ -17,15 +17,13 @@ from pathlib import Path
 import sys
 import uuid
 
-import pandas as pd
 import streamlit as st
 
-# Streamlit reruns this file in the same Python process. During a hot reload,
-# ``model`` can otherwise remain the old cached module and make a newly added
-# constant (for example TEMPLATE_VERSION) look missing. Reload once here so
-# app.py, render.py and jobs.py all use the same current project schema.
+# Stable use is the default. Explicit development sessions may reload sources.
+DEVELOPMENT_RELOAD = os.environ.get('ECUADOR_VIVO_DEVELOPMENT_RELOAD') == '1'
 import model as _model
-_model = importlib.reload(_model)
+if DEVELOPMENT_RELOAD:
+    _model = importlib.reload(_model)
 default_project = _model.default_project
 upgrade_project = _model.upgrade_project
 validate = _model.validate
@@ -35,70 +33,75 @@ STORE = _model.STORE
 ROOT = _model.ROOT
 TEMPLATE_VERSION = getattr(_model, 'TEMPLATE_VERSION', 1)
 
-# Hot reload keeps imported modules in sys.modules. Reload the renderer graph
-# as one unit: otherwise a previous render.py may still route the new
-# ``maqueta`` layout to the older social renderer and raise KeyError('maqueta').
-import data as _data
-_data = importlib.reload(_data)
-import variables as _variables
-_variables = importlib.reload(_variables)
-if 'layout_engine' in sys.modules:
-    importlib.reload(sys.modules['layout_engine'])
-if 'maqueta' in sys.modules:
-    _maqueta = importlib.reload(sys.modules['maqueta'])
-if 'endcard' in sys.modules:
-    _endcard = importlib.reload(sys.modules['endcard'])
-for module_name in ('editorial', 'comparison_maps'):
-    if module_name in sys.modules:
-        importlib.reload(sys.modules[module_name])
-import render as _render
-_render = importlib.reload(_render)
-import social as _social
-_social = importlib.reload(_social)
-import jobs as _jobs
-_jobs = importlib.reload(_jobs)
-import publication as _publication
-_publication = importlib.reload(_publication)
-import providers as _providers
-_providers = importlib.reload(_providers)
-for module_name in ('storyboard', 'workspace', 'storyboard_ui', 'climate_comparison', 'comparison_video', 'climate_comparison_ui', 'spatial_csv_ui'):
-    if module_name in sys.modules:
-        importlib.reload(sys.modules[module_name])
+def _load_legacy_tools():
+    """Load the old map/provider pipeline only on a route that actually uses it.
+
+    Inicio must paint without importing GDAL, dataframes or video renderers.
+    Explicit development reload retains the complete earlier graph refresh.
+    """
+    global pd, _data, _variables, _render, _social, _jobs, _publication, _providers
+    global boundary, load_values, store_upload, inspect_file, compose, guided_preview
+    global start_job, read_json, write_json, statuses, default_case_id, prepare_case
+    global compose_endcard, summary_for_project, detect_profile, resolve_aggregation
+    import pandas as pd
+    import data as _data
+    import variables as _variables
+    import render as _render
+    import social as _social
+    import jobs as _jobs
+    import publication as _publication
+    import providers as _providers
+    if DEVELOPMENT_RELOAD:
+        _data = importlib.reload(_data)
+        _variables = importlib.reload(_variables)
+        for module_name in ('layout_engine', 'maqueta', 'endcard', 'editorial', 'comparison_maps'):
+            if module_name in sys.modules:
+                importlib.reload(sys.modules[module_name])
+        _render = importlib.reload(_render)
+        _social = importlib.reload(_social)
+        _jobs = importlib.reload(_jobs)
+        _publication = importlib.reload(_publication)
+        _providers = importlib.reload(_providers)
+        for module_name in ('storyboard', 'workspace', 'storyboard_ui', 'climate_comparison', 'comparison_video', 'climate_comparison_ui', 'spatial_csv_ui'):
+            if module_name in sys.modules:
+                importlib.reload(sys.modules[module_name])
+    boundary = _data.boundary
+    load_values = _data.load_values
+    store_upload = _data.store_upload
+    inspect_file = _data.inspect_file
+    compose = _render.compose
+    guided_preview = _social.guided_preview
+    start_job = _jobs.start_job
+    read_json = _jobs.read_json
+    write_json = _jobs.write_json
+    statuses = _jobs.statuses
+    default_case_id = _publication.default_case_id
+    prepare_case = _publication.prepare_case
+    from endcard import compose_endcard, summary_for_project
+    detect_profile = _variables.detect_profile
+    resolve_aggregation = _variables.resolve_aggregation
+
+
+if DEVELOPMENT_RELOAD:
+    _load_legacy_tools()
 
 # CCv2 is registered once per module load, not on every interaction. Refresh
 # its inline assets only when their source changed during local development.
 _layout_module = sys.modules.get('layout_editor')
-if _layout_module and getattr(_layout_module, 'SOURCE_MTIME', None) != Path(_layout_module.__file__).stat().st_mtime_ns:
+if DEVELOPMENT_RELOAD and _layout_module and getattr(_layout_module, 'SOURCE_MTIME', None) != Path(_layout_module.__file__).stat().st_mtime_ns:
     importlib.reload(_layout_module)
 
 _workspace_module = sys.modules.get('studio_workspace')
-if _workspace_module:
+if DEVELOPMENT_RELOAD and _workspace_module:
     _workspace_assets = Path(_workspace_module.__file__).with_name('workspace_frontend')
-    _workspace_mtimes = tuple((_workspace_assets/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','workspace.js'))
+    _workspace_mtimes = tuple((_workspace_assets/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','resource_workspace.css','workspace_windows.js','resource_workspace.js','workspace.js'))
     if (getattr(_workspace_module,'SOURCE_MTIME',None) != Path(_workspace_module.__file__).stat().st_mtime_ns
             or getattr(_workspace_module,'SOURCE_ASSET_MTIMES',None) != _workspace_mtimes):
         importlib.reload(_workspace_module)
 for _presentation_name in ('studio_home_visual','studio_home'):
     _presentation_module=sys.modules.get(_presentation_name)
-    if _presentation_module and getattr(_presentation_module,'SOURCE_MTIME',None)!=Path(_presentation_module.__file__).stat().st_mtime_ns:
+    if DEVELOPMENT_RELOAD and _presentation_module and getattr(_presentation_module,'SOURCE_MTIME',None)!=Path(_presentation_module.__file__).stat().st_mtime_ns:
         importlib.reload(_presentation_module)
-
-boundary = _data.boundary
-load_values = _data.load_values
-store_upload = _data.store_upload
-inspect_file = _data.inspect_file
-compose = _render.compose
-guided_preview = _social.guided_preview
-start_job = _jobs.start_job
-read_json = _jobs.read_json
-write_json = _jobs.write_json
-statuses = _jobs.statuses
-default_case_id = _publication.default_case_id
-prepare_case = _publication.prepare_case
-from endcard import compose_endcard, summary_for_project
-detect_profile = _variables.detect_profile
-resolve_aggregation = _variables.resolve_aggregation
-
 
 # =============================================================================
 # APP
@@ -110,7 +113,8 @@ st.set_page_config(
     layout='wide'
 )
 
-st.session_state.setdefault('project', default_project())
+st.session_state.setdefault('project', None)
+st.session_state.setdefault('project_document', None)
 st.session_state.setdefault('revision', 0)
 st.session_state.setdefault('preview', None)
 st.session_state.setdefault('endcard_preview', None)
@@ -126,12 +130,14 @@ consume_studio_navigation(st.session_state)
 # Streamlit preserves session_state across hot reloads, which otherwise leaves
 # the old "La lluvia cambia" project active even after replacing the files.
 if st.session_state.get('_ecuador_vivo_template_version') != TEMPLATE_VERSION:
-    st.session_state.project = upgrade_project(st.session_state.project)
+    if st.session_state.project is not None:
+        st.session_state.project = upgrade_project(st.session_state.project)
     st.session_state.preview = None
     st.session_state.endcard_preview = None
     st.session_state.revision += 1
     st.session_state['_ecuador_vivo_template_version'] = TEMPLATE_VERSION
-    st.cache_data.clear()
+    # Preview cache keys include TEMPLATE_VERSION; a new session must not evict
+    # every other session's data, provider metadata and expensive thumbnails.
 
 # Provider downloads can be handed into the editor on the next rerun. Consume
 # the queued project before the sidebar widget is created, as Streamlit does
@@ -149,10 +155,11 @@ if pending_provider_section:
 if st.session_state.section != 'Obtener datos':
     st.session_state.pop('science_acquisition', None)
 
-p = upgrade_project(st.session_state.project)
+p = upgrade_project(st.session_state.project) if st.session_state.project is not None else None
 revision = st.session_state.revision
 from studio_project import synchronize_source, source_projection, workspace_key, replace_document, validate_document
-synchronize_source(st.session_state, p)
+if p is not None:
+    synchronize_source(st.session_state, p)
 p = st.session_state.project
 
 # Included in the cached preview key so old PNGs can never survive a renderer
@@ -175,6 +182,7 @@ def replace_project(project):
     st.session_state.pop('climate_comparison', None)
     stored = project.get('comparison_data')
     if stored:
+        import pandas as pd
         restored = copy.deepcopy(stored)
         restored['frames'] = [pd.DataFrame(rows) for rows in stored.get('frames', [])]
         st.session_state.climate_comparison = restored
@@ -313,7 +321,7 @@ def cached_inamhi_parameters(station_id):
 
 def _queue_provider_project(result, provider):
     """Use a downloaded gridded time series without losing the visual template."""
-    candidate = copy.deepcopy(p)
+    candidate = copy.deepcopy(p or default_project())
     candidate.update(
         source='local',
         entries=copy.deepcopy(result['entries']),
@@ -396,9 +404,16 @@ def _queue_provider_project(result, provider):
 
 # Studio owns a bounded viewport. Route before the legacy sidebar/forms, while
 # retaining every earlier phase and the same source project/revision.
+if p is None and st.session_state.section in ('SIG', 'Editor', 'Comparar para video'):
+    st.session_state['home_mode'] = 'gis' if st.session_state.section == 'SIG' else 'free'
+    st.session_state.section = 'Inicio'
 if st.session_state.section == 'Inicio':
     from studio_home import show_home
     show_home(replace_project,document=st.session_state.project_document)
+    st.stop()
+if st.session_state.section == 'Recursos':
+    from studio_resource_workbench import show_resource_workbench
+    show_resource_workbench(st.session_state.get('project_document'))
     st.stop()
 if st.session_state.section == 'SIG':
     from studio_sig import show_sig
@@ -410,6 +425,9 @@ if st.session_state.get('section','Editor')=='Editor' and st.session_state.get('
     document = synchronize_source(st.session_state, p)
     show_workspace(p,key=workspace_key(document),snapshot=st.session_state.get(f'visualizations_{revision}_snapshot'),canonical=True)
     st.stop()
+
+if not DEVELOPMENT_RELOAD:
+    _load_legacy_tools()
 
 with st.sidebar:
     st.markdown('**ECUADOR VIVO**')
@@ -426,6 +444,7 @@ with st.sidebar:
         [
             'Inicio',
             'Editor',
+            'Recursos',
             'Obtener datos',
             'Exportaciones',
             'Cómo usarlo'
@@ -481,9 +500,8 @@ with st.sidebar:
         icon=':material/add:',
         width='stretch',
     ):
-        replace_project(
-            default_project()
-        )
+        st.session_state['home_mode'] = 'free'
+        st.session_state.section = 'Inicio'
         st.rerun()
 
     with st.expander(

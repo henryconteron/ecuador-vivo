@@ -19,7 +19,7 @@ from PIL import Image, ImageColor, ImageDraw
 
 from data import boundary, load_values, province_boundaries
 from rasterio.features import bounds as geometry_bounds
-from variables import endcard_copy, resolve_aggregation, section_2_title
+from variables import detect_profile, endcard_copy, resolve_aggregation, section_2_title
 from layout_engine import (begin_layout, finish_layout, scene_for, attach_layout,
                            place_layer, draw as layout_draw)
 from maqueta import (
@@ -227,6 +227,8 @@ class SummaryAccumulator:
 
     def observe(self, date, values, point_samples=None, province_samples=None,
                 province_extremes=None, *, spatial_stats=None):
+        if any(row['date']==date for row in self.daily) or any(day==date for day,_ in self.spatial_coverage):
+            raise ValueError('Fecha duplicada: no se duplican intervalos científicos.')
         self.n_observed += 1
         values = np.asarray(values, dtype='float32')
         # Values below zero are legitimate for temperature, anomalies and
@@ -1000,7 +1002,9 @@ def compose_endcard(project, summary):
     white = project['text']
     accent = project['accent']
     muted = '#BCD0D8'
-    profile = resolve_aggregation(project)[1]
+    # A geographic CSV already has explicit record counts/original values;
+    # rendering that summary must not invent a meteorological aggregation.
+    profile = detect_profile(project) if summary.get('geographic_records') else resolve_aggregation(project)[1]
     copy = endcard_copy(project, summary, profile)
     if summary.get('comparison_copy'):
         copy.update(summary['comparison_copy'])

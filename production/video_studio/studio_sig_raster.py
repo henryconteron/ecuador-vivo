@@ -1,6 +1,6 @@
 """Windowed BYOD rasters in the canonical geography registry.
 
-Native samples own science; bounded nearest-neighbour RGBA owns presentation.
+Native samples own science; bounded value resampling owns presentation.
 No visual action edits originals, substitutes missing values, or aggregates dates.
 """
 import copy,hashlib,io,json,math,re
@@ -20,8 +20,28 @@ from PIL import Image
 import studio_geography as geo
 
 LIMIT=32*1024*1024
-PALETTE=['#effbfd','#80d7df','#16a7c7','#0878aa','#123875']
-_CACHE=OrderedDict();_IMAGES=OrderedDict();_LOCK=RLock()
+MAX_OBSERVATIONS=3660
+PALETTE=['#073047','#086b9e','#28b6cd','#65d5c0','#c7e6a0','#ffdb63','#ff7845','#ce2060']
+LEGACY_PALETTE=['#effbfd','#80d7df','#16a7c7','#0878aa','#123875']
+_CACHE=OrderedDict();_IMAGES=OrderedDict();_GEOMETRY=OrderedDict();_TAGS=OrderedDict();_DIGESTS=OrderedDict();_LOCK=RLock()
+
+
+def _display_geometry(box,size,presentation,records):
+    """Bounded immutable mask/ink bytes; key includes verified boundary hashes."""
+    from studio_territory import geometry
+    key=json.dumps([box,size,presentation,records],sort_keys=True)
+    with _LOCK:cached=_GEOMETRY.get(key)
+    if cached is not None:
+        mask=Image.frombytes('L',size,cached[0])
+        with Image.open(io.BytesIO(cached[1])) as image:return mask,image.copy()
+    mask,rings,provinces=geometry(box,size,presentation)
+    from maqueta import paint_map_outline
+    lines=paint_map_outline(size,rings,provinces,province_color=(90,125,142,200))
+    stream=io.BytesIO();lines.save(stream,format='PNG');value=(mask.tobytes(),stream.getvalue())
+    with _LOCK:
+        _GEOMETRY[key]=value
+        while len(_GEOMETRY)>8 or sum(len(a)+len(b) for a,b in _GEOMETRY.values())>12*1024*1024:_GEOMETRY.popitem(last=False)
+    return mask,lines
 
 
 def digest(path):
@@ -29,6 +49,40 @@ def digest(path):
     with Path(path).open('rb') as stream:
         for chunk in iter(lambda:stream.read(1024*1024),b''):h.update(chunk)
     return h.hexdigest()
+
+
+def _verified_digest(path):
+    """Reuse an immutable-source hash only while the filesystem revision agrees.
+
+    Raster sources are content-addressed and read repeatedly by the map. Hashing
+    every daily frame on every Streamlit rerun made a 30-date series reread
+    hundreds of MiB although none of its originals had changed. The revision
+    token includes file identity, size, mtime, and NTFS ChangeTime on Windows.
+    A cache miss is hashed and the token is checked again after the read.
+    """
+    from studio_sig_read_scope import revision
+    path=Path(path)
+    token=revision(path)
+    key=str(path)
+    with _LOCK:
+        cached=_DIGESTS.get(key)
+        if cached is not None and cached[0]==token:
+            _DIGESTS.move_to_end(key)
+            actual=cached[1]
+        else:
+            actual=None
+    if actual is None:
+        actual=digest(path)
+        if revision(path)!=token:
+            raise ValueError('El ráster cambió mientras se verificaban sus bytes.')
+        with _LOCK:
+            _DIGESTS[key]=(token,actual);_DIGESTS.move_to_end(key)
+            while len(_DIGESTS)>256:_DIGESTS.popitem(last=False)
+    # Also catches a change after a cache hit, and protects direct callers that
+    # do not have an enclosing native_read_scope.
+    if revision(path)!=token:
+        raise ValueError('El ráster cambió durante la verificación SIG.')
+    return actual
 
 
 def _values(dataset,band,window):
@@ -65,29 +119,47 @@ def metadata(path,band):
 
 def verify_source(source):
     try:
+        from studio_sig_read_scope import known,begin,remember
+        verified=known(source)
+        if verified is not None:return verified
         if source['type']!='raster' or source['id']!='source.'+source['sha256'] or not re.fullmatch('[a-f0-9]{64}',source['sha256']):raise ValueError('Identidad ráster inválida.')
         path=Path(source['path']).resolve();expected=(geo.ROOT/'rasters'/(source['sha256']+'.tif')).resolve()
         if path!=expected or not path.is_relative_to(geo.ROOT.resolve()) or not path.is_file():raise ValueError('Ráster ausente o no autorizado.')
-        if type(source['bytes']) is not int or not 0<source['bytes']<=LIMIT or path.stat().st_size!=source['bytes'] or digest(path)!=source['sha256']:
+        token=begin(path)
+        if type(source['bytes']) is not int or not 0<source['bytes']<=LIMIT or path.stat().st_size!=source['bytes'] or _verified_digest(path)!=source['sha256']:
             raise ValueError('El ráster original cambió; tampoco se utilizará la caché caliente.')
         if not isinstance(source['name'],str) or not 0<len(source['name'])<=180:raise ValueError('Nombre ráster inválido.')
         geo._provenance(source['provenance'])
         if source['date'] is not None:date.fromisoformat(source['date'])
         if source['semantics'] not in ('precipitation','temperature','scalar'):raise ValueError('Significado ráster desconocido.')
         if any(not isinstance(source[k],str) or not 0<len(source[k])<=180 for k in ('variable','units')):raise ValueError('Declara variable y unidad.')
-        # Cache may bypass metadata/statistics computation, never authorization or hash.
+        # This path authorizes and hashes bytes before consulting metadata/tags.
+        # Only the operation-local, revision-checked proof above may reuse a read.
         with _LOCK:
             cache_key=(str(path),source['sha256'],source['raster']['band'])
             cached=_CACHE.get(cache_key)
             if cached is None:
                 cached=metadata(path,source['raster']['band']);_CACHE[cache_key]=cached
-                while len(_CACHE)>8:_CACHE.popitem(last=False)
+                # Small metadata dictionaries, not decoded images. Keep enough
+                # for multi-date series; the per-source hash cache above is
+                # guarded by file identity, size, mtime and NTFS ChangeTime.
+                while len(_CACHE)>128:_CACHE.popitem(last=False)
             if source['raster']!=cached or source['native_crs']!=cached['native_crs']:raise ValueError('Metadatos ráster distintos del original.')
         operation=source.get('raster_operation')
-        with rasterio.open(path) as ds:declared=ds.tags(ns='ecuador_vivo').get('operation')
-        if (json.loads(declared) if declared else None)!=operation:raise ValueError('La receta del resultado difiere de la registrada en su GeoTIFF.')
+        # Bytes were hashed above. The verified content hash
+        # authorizes reuse of the immutable tag, not of the mutable declaration.
+        # Avoid reopening GDAL 182 times for one camera gesture in a month series.
+        tag_key=(str(path),source['sha256'])
+        with _LOCK:
+            if tag_key not in _TAGS:
+                with rasterio.open(path) as ds:declared=ds.tags(ns='ecuador_vivo').get('operation')
+                _TAGS[tag_key]=json.loads(declared) if declared else None
+                while len(_TAGS)>128:_TAGS.popitem(last=False)
+            declared=_TAGS[tag_key];_TAGS.move_to_end(tag_key)
+        if declared!=operation:raise ValueError('La receta del resultado difiere de la registrada en su GeoTIFF.')
         if operation is not None:
             if operation.get('tool') not in ('difference','mean','sum') or len(operation.get('inputs',[]))!=2:raise ValueError('Operación ráster inválida.')
+        remember(source,path,token)
         return path
     except (KeyError,TypeError,AttributeError) as error:raise ValueError('Referencia ráster incompleta.') from error
 
@@ -118,7 +190,7 @@ def add_raster(project,content,name,provenance,*,observed_date,variable,units,se
     registry['sources'][sid]=source;state=registry['map_workspace']
     if lid not in state['layers']:
         state['layers'][lid]={'id':lid,'source_id':sid,'type':'raster','native_crs':meta['native_crs'],
-                            'name':name,'visible':True,'style':copy.deepcopy(DEFAULT_STYLE)}
+                            'name':name,'visible':True,'style':{**copy.deepcopy(DEFAULT_STYLE),'opacity':1.}}
         state['order'].append(lid)
     state.update(active_layer=lid,selection=[]);state['view']['bbox']=_fit([meta['bbox']])
     geo.validate_geography(candidate['studio']);return candidate,lid
@@ -141,30 +213,51 @@ def query(source,lon,lat):
 
 
 def compatible(sources,*,grid=False):
-    if not 2<=len(sources)<=32:raise ValueError('Selecciona entre 2 y 32 rásteres.')
+    if not 2<=len(sources)<=MAX_OBSERVATIONS*2:raise ValueError('Serie fuera del presupuesto de observaciones.')
     for s in sources:verify_source(s)
     if any(sources[0][k]!=s[k] for s in sources[1:] for k in ('variable','units','semantics')):raise ValueError('Variable, unidad y significado deben coincidir; no se impone una escala común a datos distintos.')
     if grid and any(sources[0]['raster'][k]!=s['raster'][k] for s in sources[1:] for k in ('native_crs','shape','transform')):
         raise ValueError('CRS, alineación y resolución distintos. No se remuestrea automáticamente para calcular.')
 
 
-def settings(sources):
+def settings(sources, *, rainfall=False,legacy=False,palette=None):
+    if palette is not None:
+        from studio_sig_palette import validate_palette,PALETTES
+        colors=PALETTES[validate_palette(palette)]['colors'].copy()
+    else:colors=None
     if len(sources)>1:compatible(sources)
     valid=[s['raster']['statistics'] for s in sources if s['raster']['statistics']['valid']]
     if not valid:return None
     lo=min(s['min'] for s in valid);hi=max(s['max'] for s in valid)
     if lo==hi:hi=lo+max(1.,abs(lo)*.01)
+    if rainfall:
+        from studio_sig_summary import rainfall_contract
+        rainfall_contract(sources)
+        return {'kind':'continuous','legend':'Lluvia diaria','units':sources[0]['units'],
+                'stops':[0,1,5,10,20,40,70,120],
+                'palette':colors or PALETTE.copy(),
+                'normalization':'piecewise_linear_equal_knots','saturation':'120+ mm por intervalo diario; datos originales sin recorte'}
+    palette=colors or (LEGACY_PALETTE if legacy else PALETTE)
     return {'kind':'continuous','legend':sources[0]['variable'],'units':sources[0]['units'],
-            'stops':np.linspace(lo,hi,len(PALETTE)).tolist(),'palette':PALETTE}
+            'stops':np.linspace(lo,hi,len(palette)).tolist(),'palette':palette}
 
 
-def representation(source,scale,size=512,box=None):
+def representation(source,scale,size=512,box=None,*,presentation=None):
     if type(size) is not int or not 1<=size<=3840:raise ValueError('Representación: entre 1 y 3840 píxeles por lado.')
     path=verify_source(source);box=source['raster']['bbox'] if box is None else box;w,h=size,max(1,round(size*(box[3]-box[1])/(box[2]-box[0])))
-    cache_key=(str(path),source['sha256'],source['raster']['band'],json.dumps(scale,sort_keys=True),tuple(box),size)
+    from studio_territory import LEGACY,validate
+    presentation=validate(presentation or LEGACY)
+    if scale and scale['kind']=='categorical' and presentation['resampling']!='nearest':
+        raise ValueError('Las categorías requieren celdas nativas; no se interpolan numéricamente.')
+    from studio_territory import boundaries,method
+    boundary_records=boundaries()[1] if presentation['territory']!='view' else []
+    cache_key=(str(path),source['sha256'],source['raster']['band'],json.dumps(scale,sort_keys=True),tuple(box),size,
+               json.dumps([presentation,boundary_records],sort_keys=True),method(presentation))
     with _LOCK:cached=_IMAGES.get(cache_key)
     if cached is not None:
-        with Image.open(io.BytesIO(cached)) as image:return image.copy(),box
+        with Image.open(io.BytesIO(cached)) as image:
+            result=image.copy();result.info['_sig_png_bytes']=cached
+            return result,box
     if h>size:w=max(1,round(size*size/h));h=size
     if scale is None:return Image.new('RGBA',(w,h)),box
     from rasterio.transform import from_bounds
@@ -172,19 +265,46 @@ def representation(source,scale,size=512,box=None):
     with rasterio.open(path) as ds:
         from rasterio.enums import ColorInterp
         has_alpha=ColorInterp.alpha in ds.colorinterp
-        with WarpedVRT(ds,crs='EPSG:4326',transform=from_bounds(*box,w,h),width=w,height=h,
-                       resampling=Resampling.nearest,add_alpha=not has_alpha) as vrt:
+        grid=dict(crs='EPSG:4326',transform=from_bounds(*box,w,h),width=w,height=h,add_alpha=not has_alpha)
+        # Native support is sampled independently: bilinear must never fill a
+        # missing native cell. Zero remains valid, as do signed scalar values.
+        with WarpedVRT(ds,resampling=Resampling.nearest,**grid) as native:
+            support=native.read(source['raster']['band'],masked=True).astype('float64')
+            native_alpha=native.read(native.colorinterp.index(ColorInterp.alpha)+1)>0
+            valid=native_alpha & ~np.ma.getmaskarray(support) & np.isfinite(support.data)
+        with WarpedVRT(ds,resampling=getattr(Resampling,presentation['resampling']),**grid) as vrt:
             values=vrt.read(source['raster']['band'],masked=True).astype('float64')
-            alpha_index=vrt.colorinterp.index(ColorInterp.alpha)+1
-            alpha=vrt.read(alpha_index)>0
-            values=np.where(alpha & ~np.ma.getmaskarray(values),values.data*source['raster']['scale']+source['raster']['offset'],np.nan)
-    with Image.new('L',(w,h),255) as mask:
+            values=np.where(valid & ~np.ma.getmaskarray(values),values.data*source['raster']['scale']+source['raster']['offset'],np.nan)
+    mask,lines=_display_geometry(box,(w,h),presentation,boundary_records)
+    with mask,lines:
         image=paint_raster_layer(values,scale,mask)
+        # Ink must not turn an unobserved island/cell into coverage.
+        from PIL import ImageChops
+        with image.getchannel('A') as support_alpha:
+            with ImageChops.multiply(lines.getchannel('A'),support_alpha) as alpha:lines.putalpha(alpha)
+            image.alpha_composite(lines)
+            image.putalpha(support_alpha)
     buffer=io.BytesIO();image.save(buffer,format='PNG')
+    encoded=buffer.getvalue();image.info['_sig_png_bytes']=encoded
     with _LOCK:
-        _IMAGES[cache_key]=buffer.getvalue()
+        _IMAGES[cache_key]=encoded
         while len(_IMAGES)>8 or sum(len(v) for v in _IMAGES.values())>8*1024*1024:_IMAGES.popitem(last=False)
     return image,box
+
+
+def encoded_representation(source,scale,size=512,box=None,*,presentation=None):
+    """Reuse the renderer's bounded PNG cache, never its authorization decision.
+
+    representation() still verifies confinement, original bytes and native
+    metadata on every call. Only redundant PNG compression is avoided.
+    """
+    import base64
+    image,box=representation(source,scale,size,box,presentation=presentation)
+    with image:
+        encoded=image.info.get('_sig_png_bytes')
+        if encoded is None:
+            buffer=io.BytesIO();image.save(buffer,format='PNG');encoded=buffer.getvalue()
+    return 'data:image/png;base64,'+base64.b64encode(encoded).decode('ascii'),box
 
 
 def verify_series_binding(project,manifest):
@@ -192,8 +312,16 @@ def verify_series_binding(project,manifest):
     from studio_temporal import _hash
     from studio_sig_layers import _bbox
     binding=manifest['geographic_binding']
-    if not {'sources','bbox','scale','method','basemap_included'}<=set(binding) or set(binding)-{'sources','bbox','scale','opacity','method','basemap_included','output_profile','cadence'} or binding['method']!='GDAL nearest, finite native mask, RGBA' or binding['basemap_included'] is not False:
+    if not {'sources','bbox','scale','method','basemap_included'}<=set(binding) or set(binding)-{'sources','bbox','scale','opacity','method','basemap_included','output_profile','cadence','presentation','boundaries','inset_sources','template','palette'} or binding['basemap_included'] is not False:
         raise ValueError('Vínculo geográfico o exclusión del mapa base inválidos.')
+    inset_sources=[]
+    if 'presentation' in binding:
+        from studio_territory import validate,boundaries,method
+        options=validate(binding['presentation'])
+        if binding['method'] not in (method(options),method(options,revision=2)) or binding['boundaries']!=(boundaries()[1] if options['territory']!='view' else []):
+            raise ValueError('Método o límites territoriales distintos de los revisados.')
+    elif binding['method']!='GDAL nearest, finite native mask, RGBA':
+        raise ValueError('Método de presentación desconocido.')
     opacity=binding.get('opacity',1.)
     if type(opacity) not in (int,float) or not 0<=opacity<=1:raise ValueError('Opacidad de presentación inválida.')
     _bbox(binding['bbox'])
@@ -208,8 +336,22 @@ def verify_series_binding(project,manifest):
             raise ValueError('Fuentes o declaración científica diferentes del recurso revisado.')
         verify_source(source);sources.append(source)
     compatible(sources)
+    if 'presentation' in binding:
+        inset_sources=binding['inset_sources']
+        if len(inset_sources)!=len(sources):raise ValueError('Calendario de Galápagos incompleto.')
+        for source,inset in zip(sources,inset_sources):
+            if inset is not None:
+                verify_source(inset)
+                if any(inset[k]!=source[k] for k in ('date','variable','units','semantics')):
+                    raise ValueError('Galápagos difiere en fecha, variable, unidad o producto.')
+                if inset['id']!=source['id']:
+                    from studio_territory import recover_insets
+                    recovered,_=recover_insets(project,[source])
+                    if recovered!=[inset]:raise ValueError('Galápagos no corresponde al original global declarado.')
     records=[{'file':s['path'],'date':s['date'],'band':s['raster']['band'],'sha256':s['sha256'],'source_url':s['provenance'].get('url','')} for s in sources]
-    if (records!=manifest['source_records'] or binding['scale']!=settings(sources)
+    expected=settings(sources+[s for s in inset_sources if s is not None],rainfall=binding.get('template')=='rainfall',
+        legacy=binding['scale'].get('palette')==LEGACY_PALETTE,palette=binding.get('palette'))
+    if (records!=manifest['source_records'] or binding['scale']!=expected
             or manifest['scientific_identity']!=_hash(binding) or manifest['scientific_revision']!=_hash([binding,records])
             or manifest['region']!=binding['bbox']
             or manifest['source']!='local' or manifest['variable']!=sources[0]['variable'] or manifest['units']!=sources[0]['units']
@@ -219,7 +361,7 @@ def verify_series_binding(project,manifest):
     return sources
 
 
-def calculate(project,lids,tool,name):
+def calculate(project,lids,tool,name,*,progress=None):
     if len(lids)!=2:raise ValueError('Este cálculo requiere exactamente dos rásteres; no es una agregación temporal.')
     registry=project['studio']['geography'];state=registry['map_workspace']
     sources=[registry['sources'][state['layers'][lid]['source_id']] for lid in lids];compatible(sources,grid=True)
@@ -236,16 +378,18 @@ def calculate(project,lids,tool,name):
                 out.update_tags(ns='ecuador_vivo',operation=json.dumps(operation,sort_keys=True,allow_nan=False))
                 for y in range(0,a.height,512):
                     for x in range(0,a.width,512):
+                        if progress:progress((y//512)*math.ceil(a.width/512)+x//512,math.ceil(a.width/512)*math.ceil(a.height/512))
                         win=Window(x,y,min(512,a.width-x),min(512,a.height-y));v1=_values(a,sources[0]['raster']['band'],win);v2=_values(b,sources[1]['raster']['band'],win)
                         out.write(v2-v1 if tool=='difference' else (v1+v2)/2,1,window=win)
             content=memory.read()
+    if progress:progress(1,1)
     result,lid=add_raster(project,content,name,{'citation':'Derivado de '+', '.join(s['name'] for s in sources),
         'license':'Conserva las condiciones de ambas fuentes; no autoriza redistribución.','url':''},
         observed_date=None,variable=sources[0]['variable'],units=sources[0]['units'],semantics=sources[0]['semantics'])
     geo.validate_geography(result['studio']);return result,lid
 
 
-def zonal_layer(project,raster_id,zones_id):
+def zonal_layer(project,raster_id,zones_id,*,progress=None):
     """Persist the zonal result using the existing derived vector recipe contract."""
     from studio_sig_layers import workspace_for,add_geojson_layer
     from studio_sig_vector import layer_features
@@ -253,7 +397,7 @@ def zonal_layer(project,raster_id,zones_id):
     state=workspace_for(project)
     source=project['studio']['geography']['sources'][state['layers'][raster_id]['source_id']]
     zones,features=layer_features(project,zones_id)
-    rows=zonal(source,features)
+    rows=zonal(source,features,progress=progress)
     for feature,row in zip(features,rows):feature['properties']=row
     recipe={'version':1,'tool':'zonal','inputs':[{'source_id':s['id'],'sha256':s['sha256']} for s in (source,zones)],
         'parameters':{'band':source['raster']['band'],'date':source['date'],'method':rows[0]['method']},
@@ -266,11 +410,12 @@ def zonal_layer(project,raster_id,zones_id):
     geo.validate_geography(candidate['studio']);return candidate,lid
 
 
-def zonal(source,features):
+def zonal(source,features,*,progress=None):
     """Polygon pixel-centre statistics, windowed native data, explicit coverage."""
     path=verify_source(source);rows=[]
     with rasterio.open(path) as ds:
-        for feature in features:
+        for index,feature in enumerate(features):
+            if progress:progress(index,len(features))
             geom=feature['geometry']
             if geom['type'] not in ('Polygon','MultiPolygon'):raise ValueError('Estadísticas zonales requieren polígonos; no se sustituyen por capitales.')
             from studio_sig_vector import transform_for,crs
@@ -283,6 +428,7 @@ def zonal(source,features):
             if window is not None:
                 for y in range(int(window.row_off),int(window.row_off+window.height),512):
                     for x in range(int(window.col_off),int(window.col_off+window.width),512):
+                        if progress:progress(index,len(features))
                         win=Window(x,y,min(512,int(window.col_off+window.width)-x),min(512,int(window.row_off+window.height)-y))
                         values=_values(ds,source['raster']['band'],win)
                         mask=geometry_mask([geom],values.shape,ds.window_transform(win),invert=True,all_touched=False)

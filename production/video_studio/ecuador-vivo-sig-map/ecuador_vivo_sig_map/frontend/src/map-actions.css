@@ -1,0 +1,18 @@
+/* Own ink/jade field instruments; only presentation controls use these colors. */
+.sig-local-tools{display:flex;align-items:center;gap:2px;margin-left:auto;padding-left:12px;border-left:1px solid var(--shell-line)}
+#sig-map .sig-local-tools button{padding:5px 7px;min-width:32px;min-height:32px}
+#sig-map .sig-local-tools button[aria-pressed=true]{background:var(--sig-accent);color:#10253c}
+#sig-map .sig-local-tools span{font-size:12px}
+.sig-measure-panel{position:absolute;right:16px;top:48px;width:min(300px,calc(100% - 90px));z-index:8;background:var(--sig-chrome,#132b46);color:var(--sig-ink,#f6f8fc);border:1px solid var(--shell-line,#36536c);border-radius:6px;padding:12px;box-shadow:0 5px 20px #0004}
+.sig-measure-heading,.sig-command-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sig-measure-panel output{display:block;font-size:23px;font-weight:600;color:var(--sig-accent,#80d8c3);padding:10px 0;overflow-wrap:anywhere}
+.sig-measure-panel p{font-size:12px;line-height:1.5;margin:0 0 8px}.sig-measure-panel small{display:block;font-size:11px;line-height:1.5;color:var(--shell-muted,#b9c9d7)}
+#sig-map .sig-command-dialog{color:var(--sig-ink,#f6f8fc);background:var(--sig-chrome,#132b46);border:1px solid var(--shell-line,#36536c);border-radius:8px;width:min(580px,calc(100% - 24px));max-height:min(650px,80dvh);padding:16px;box-shadow:0 16px 60px #0006}
+.sig-command-dialog::backdrop{background:#07172966}
+.sig-command-dialog label{display:block;margin:12px 0;font-size:12px}
+#sig-map .sig-command-dialog input{display:block;box-sizing:border-box;width:100%;min-height:42px;padding:8px 12px;margin-top:6px;background:var(--sig-input,#10253c);color:inherit;border:1px solid var(--shell-line,#36536c);border-radius:5px}
+.sig-command-list{max-height:48dvh;overflow:auto;overscroll-behavior:contain;margin:8px 0}
+#sig-map .sig-command-list button{display:flex;justify-content:space-between;width:100%;padding:10px;text-align:left;white-space:normal}
+.sig-command-list small,.sig-command-dialog>small{font-size:11px;color:var(--shell-muted,#b9c9d7)}
+.sig-command-list p{padding:12px;font-size:13px}
+@media(max-width:900px){.sig-local-tools{margin-left:0;padding-left:6px}#sig-map .sig-local-tools span{display:none}.sig-measure-panel{top:16px}}

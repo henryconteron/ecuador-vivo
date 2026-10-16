@@ -75,72 +75,50 @@ class WorkspaceTests(unittest.TestCase):
 
 
 class WorkspaceUiTests(map_tests.SigMapUiTests):
-    # Inherit the five existing integration regressions and add shell behaviors.
-    def test_collapsing_panels_preserves_payload_and_document(self):
+    # Native panel/search interactions are measured by dev/editor_sig_journey.py;
+    # AppTest exercises the canonical callback boundary and scientific invariants.
+    def test_shell_payload_preserves_attributes_document_and_layout(self):
         from studio_sig_layers import add_geojson_layer
-        from studio_project import workspace_key
         project,_=add_geojson_layer(self.project,self.content,'regions.geojson',self.provenance)
         app=self.app(project)
         with self.patches():
-            app.run();before=copy.deepcopy(app.session_state['project_document']);payload=copy.deepcopy(self.payload)
-            for key in ('sig_toggle_left','sig_toggle_right','sig_toggle_dock'):
-                app.button(key=key).click().run();self.assert_clean(app)
-            self.assertEqual(app.session_state['project_document'],before)
-            self.assertEqual(self.payload['version'],payload['version'])
+            app.run();self.assert_clean(app)
+            self.assertEqual(app.session_state['project_document'],project)
             self.assertTrue(self.payload['workspace_layout']['dock_open'])
-            self.assertTrue(app.dataframe)
-            app.button(key='sig_toggle_right').click().run();self.assert_clean(app)
-            self.assertEqual(app.session_state[workspace_key(project)+'_sig_ui']['tool'],'Propiedades')
-
+            self.assertEqual(len(self.payload['workspace']['attributes']['rows']),3)
+            self.assertEqual(self.payload['workspace']['source']['provenance'],self.provenance)
     def test_topbar_data_opens_existing_import_after_properties(self):
         from studio_sig_layers import add_geojson_layer
-        project,_=add_geojson_layer(self.project,self.content,'regions.geojson',self.provenance)
-        app=self.app(project)
+        project,_=add_geojson_layer(self.project,self.content,'regions.geojson',self.provenance);app=self.app(project)
         with self.patches():
-            app.run();app.button(key='sig_add_data').click().run();self.assert_clean(app)
+            app.run();self.event(app,'import')
             self.assertTrue(app.text_input(key='sig_u1_citation'))
-
     def test_unavailable_job_does_not_block_map_and_running_map_has_actual_status(self):
         from studio_project import workspace_key
-        app=self.app();key=workspace_key(self.project)
-        app.session_state['science_job']='missing-test-job'
+        app=self.app();key=workspace_key(self.project);app.session_state['science_job']='missing-test-job'
         app.session_state[key+'_sig_preparation_sequence_map_job']='test-private-job'
         with self.patches(),patch('studio_map_jobs.map_status',return_value={'state':'running','message':'1/2 · componiendo 2025-01-01'}):
             app.run();self.assert_clean(app)
-            self.assertTrue(any('Mapa: 1/2' in c.value for c in app.caption))
+            self.assertTrue(any('1/2' in job['message'] for job in self.payload['workspace']['jobs']))
             self.assertEqual(app.session_state['project_document'],self.project)
             self.assertTrue(app.session_state[key+'_sig_messages'])
-
     def test_closed_preparation_cannot_reopen_on_rerun_or_leak_studio_dialog(self):
-        # Load consumers before patching: their module-level from-imports must
-        # never retain this deliberately minimal UI snapshot in later tests.
         import studio_map_ui,studio_sig,studio_preparation
         from studio_project import workspace_key
         app=self.app();key=workspace_key(self.project);calls=[]
         snapshot={'source_records':[{'date':'2024-01-01'}]}
         def close(session,prep_key,**kwargs):
-            calls.append(prep_key)
-            session.state.pop(prep_key+'_dialog',None)
+            calls.append(prep_key);session.state.pop(prep_key+'_dialog',None)
             import streamlit as st
             st.rerun()
         with self.patches(),patch('studio_science.restored_snapshot',return_value=snapshot),patch('studio_map_ui.show_map_dialog',close):
-            app.run();app.button(key='sig_toggle_time').click().run()
-            app.button(key='sig_prepare_layers').click().run();self.assert_clean(app)
+            app.run();self.event(app,'tool',tool='Mapa observado')
             self.assertEqual(len(calls),1)
             app.run();self.assert_clean(app);self.assertEqual(len(calls),1)
             self.assertNotIn(key+'_dialog',app.session_state)
             self.assertEqual(app.session_state[key+'_sig_ui']['tool'],'Propiedades')
-            app.button(key='sig_prepare_layers').click().run();self.assertEqual(len(calls),2)
+            self.event(app,'tool',tool='Mapa observado');self.assertEqual(len(calls),2)
 
-    def test_search_filters_list_without_mutating_visibility_or_sources(self):
-        from studio_sig_layers import add_geojson_layer
-        project,lid=add_geojson_layer(self.project,self.content,'regions.geojson',self.provenance)
-        app=self.app(project)
-        with self.patches():
-            app.run();before=copy.deepcopy(app.session_state['project_document'])
-            app.text_input(key=__import__('studio_project').workspace_key(project)+'_sig_layer_search').input('missing').run()
-            self.assert_clean(app);self.assertEqual(app.session_state['project_document'],before)
-            self.assertFalse(any(b.key=='sig_active_'+lid for b in app.button))
 
 
 class PresentationTests(unittest.TestCase):

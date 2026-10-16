@@ -13,6 +13,10 @@ TOTAL_PIXEL_BUDGET=80_000_000
 
 
 def import_asset(content, name):
+    from pathlib import Path
+    from studio_voice import AUDIO_SUFFIXES,import_audio
+    if Path(str(name)).suffix.lower() in AUDIO_SUFFIXES:
+        return import_audio(content,name)
     record = store_media(content, name)
     path = media_path(record['path'])
     if record['kind'] == 'image':
@@ -34,6 +38,7 @@ class AssetFrames:
         if not isinstance(records, dict) or len(records) > 600:
             raise ValueError('Biblioteca multimedia inválida.')
         self.records, self.images, self.videos, self.cursors = {}, {}, {}, {}
+        self.audios = {}
         from studio_cache import MediaCache
         if type(tile_cache_bytes) is not int or not 0<=tile_cache_bytes<=320_000_000:
             raise ValueError('Presupuesto de tiles fuera de 0–320 MB.')
@@ -53,7 +58,11 @@ class AssetFrames:
                     if bundle_metadata_bytes>MANIFEST_LIMIT:raise ValueError('Metadata de bundles superior a 8 MiB por sesión.')
                     self.records[aid]=copy.deepcopy(record)
                     continue
-                path = media_path(record.get('path'))
+                if record.get('kind')=='audio':
+                    from studio_voice import audio_media_path
+                    path=audio_media_path(record.get('path'))
+                else:
+                    path = media_path(record.get('path'))
                 if path.stat().st_size > 100*1024*1024:
                     raise ValueError('Recurso superior a 100 MB.')
                 content=path.read_bytes()
@@ -63,7 +72,13 @@ class AssetFrames:
                     raise ValueError('El recurso multimedia cambió; vuelve a importarlo.')
                 kind = record.get('kind')
                 cache_key=(str(path.resolve()),digest)
-                if kind == 'image' and path.suffix.lower() in IMAGE_SUFFIXES:
+                if kind == 'audio':
+                    from studio_voice import probe_audio
+                    metadata=probe_audio(path,content_hash=digest)
+                    if not isinstance(record.get('duration'),(int,float)) or isinstance(record.get('duration'),bool) or not math.isfinite(record['duration']) or abs(record['duration']-metadata['duration'])>1/30:
+                        raise ValueError('La duración del audio cambió; vuelve a importarlo.')
+                    self.audios[aid]=(path,metadata)
+                elif kind == 'image' and path.suffix.lower() in IMAGE_SUFFIXES:
                     cached=cache.image(cache_key) if cache is not None else None
                     if cached is not None:
                         self.images[aid]=cached
@@ -186,13 +201,14 @@ class AssetFrames:
                 for image in self.map_products.pop(key)['images'].values():image.close()
         for iid,instance in map_instances.items():
             bound=[e for e in elements if e.get('temporal_binding',{}).get('instance_id')==iid]
-            channels=tuple(sorted({e['temporal_binding']['channel'] for e in bound}-{'date'}))
+            channels=tuple(sorted({e['temporal_binding']['channel'] for e in bound}-{'date','counter'}))
             if not channels:raise ValueError('Instancia sin consumidores cartográficos.')
             aid=instance['asset_id'];product=self.map_at(aid,instance_frame(self.records[aid],instance,frame),channels,cursor_id=iid)
             for e in bound:
                 channel=e['temporal_binding']['channel']
                 result['temporal.'+e['id']]=dict(product['observation'])
-                if channel!='date':result['map.'+e['id']]=product['images'][channel]
+                result['temporal.'+e['id']]['observation_count']=len(self.bundles[aid].manifest['observations'])
+                if channel not in ('date','counter'):result['map.'+e['id']]=product['images'][channel]
         return result
 
     def close(self):

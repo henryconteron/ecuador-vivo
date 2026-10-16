@@ -1,6 +1,44 @@
 # Ecuador Vivo Studio
 
-## ESTADO VIGENTE · PAUSA SOLICITADA · cierre visual y estabilidad NO validados · 2026-10-09
+> El estado vigente está en `documentation/ESTADO.md`; las secciones inferiores son histórico.
+
+## Recursos científico · 13 octubre · implementación aprobada, aceptación visual pendiente
+
+El usuario aprobó «Hazlo tal cual, una sola instala los candidatos o referencias».
+Mesa Recursos independiente y puente a Studio implementados; cuatro motores
+conectados, cinco Bioicons CC0 y Manim aislado instalados. Estado y límites en
+`documentation/RECURSOS-CIENTIFICOS-IMPLEMENTACION-20261013.md`.
+No dar por terminados RC1–RC7: falta navegador real, 3D mejorado, keyframes y
+video revisado. SIG y cálculos intactos. La propuesta inferior queda como histórico.
+
+## Revisión del mismo creador Recursos · 13 octubre · propuesta original
+
+Solicitud: investigación, ilustración y plan de un Canva científico. Diagnóstico,
+referencias/licencias, arquitectura y aceptación en
+`documentation/RECURSOS-CANVAS-CIENTIFICO-20261013.md`.
+Replantea el mismo trabajo 2D/3D del 12 octubre sin retirar pendientes.
+Primero flujo editable completo; después objetos/conectores; 3D/animación y
+ampliación temática. SIG intacto. Tareas RC1–RC7 en tasks/todo.md, no ejecutadas.
+
+## Propuesta pendiente de aprobación · creador Recursos 2D/3D · 12 octubre
+
+El usuario rechaza el acabado básico de la galería y solicita un creador similar a Canva con recursos variados/3D. Revisión del código y referencias abiertas completada; **no se implementó el cambio ni se instaló nada**. La web ya contiene Three.js local y modelos conceptuales que se pueden reutilizar, pero falta su autoría/exportación a Studio. Plan y criterios: `documentation/RECURSOS-CREADOR-2D-3D-20261012.md`.
+
+Orden propuesto: (1) un recurso orográfico 3D editable → Studio → MP4 vertical/horizontal y revisión visual; (2) biblioteca/lienzo/inspector integrados como modo del mismo editor; (3) fotogramas clave y tres recursos nuevos. No reemplazar todo con Konva, instalar Blender o copiar el editor de Theatre sin necesidad/verificación/licencia. Priorización propuesta del puente 3D por el usuario; ASR y demás pendientes se conservan, no se marcan resueltos. La guía de planificación requiere aprobación humana antes de implementar esta arquitectura.
+
+## Incremento cerrado · Inicio y creador de Recursos · 12 octubre
+
+Tres portadas decorativas originales ligeras; Crear/Abrir antes de los espacios; SIG directo a borrador con referencias. Recursos comparte lienzo, editor, reloj y exportador con Studio; biblioteca de seis plantillas y diseños propios, guardado/inserción explícitos, 21 formas/símbolos. Importaciones diferidas y opacidad de serie agrupada; datos/cálculos intactos. 137 regresiones finales verdes, compilación y guard de ocho pilotos correctos. Mediana de Inicio 4,632 → 2,430 s medida en AppTest, no navegador. Diez JSON activos preservados; navegador sigue denegado. Guía `documentation/INICIO-RECURSOS-SIG-20261012.md`.
+
+## ESTADO VIGENTE · limpieza e Inicio · 2026-10-11/12
+
+Limpieza solicitada y catálogo corregidos; evidencia y recuperación en `documentation/LIMPIEZA-STUDIO-20261011.md`. 22,84 → 7,28 GB lógicos. Solo ocho pilotos activos; los anteriores en ZIP verificado, fuentes compartidas intactas. Puerto y launcher 8534, 19 instancias Studio antiguas cerradas. Arranque vacío, búsqueda, páginas y abrir sin depender de miniatura. Pruebas internas aprobadas; revisión visual pendiente por permiso de navegador denegado. No eludir con otro navegador/CDP. Dos selectores SIG antiguos y retirada adicional bloqueada registrados. No commit/push/publicación.
+
+Entrega del 12 octubre: Recursos 2D + voz y subtítulos implementados dentro del editor y exportador existentes; 115 regresiones focalizadas aprobadas. Galería, superposiciones, audio independiente y SRT/VTT; MP4 real comprobado, guardado/recuperación/Undo reales y ocho pilotos intactos. Guía `documentation/STUDIO-RECURSOS-VOZ-SUBTITULOS.md`. No otro laboratorio ni nuevo entorno. Revisión de navegador sigue pendiente por denegación, sin eludir.
+
+Próximo incremento: transcripción con el ASR local y luego puente 3D determinista usando recursos existentes. No empezar recreando mapas/cálculos ni borrando fuentes del ZIP recuperable. Un autoguardado nuevo del usuario se conserva además de los ocho pilotos.
+
+## HISTORIAL · PAUSA SOLICITADA · cierre visual y estabilidad NO validados · 2026-10-09
 
 Detenido por petición del usuario; no continuar hasta nueva solicitud. Dirección: SIG propio funcional + Studio, diseño y herramientas juntos, único proyecto; trabajo previo preservado. Detalle vigente único en tmp/ecuador-vivo-studio-2-checkpoint.md e informe tmp/ecuador-vivo-visual-stability-report.md.
 

@@ -23,7 +23,7 @@ TTL=3600
 
 def register_job_status(job):
     job=Path(job).resolve();root=(STORE/'jobs').resolve()
-    if job.parent!=root or not job.name.startswith('studio-') or not (job/'request.json').is_file():raise ValueError('Trabajo de Studio desconocido.')
+    if job.parent!=root or not job.name.startswith(('studio-','preview-')) or not (job/'request.json').is_file():raise ValueError('Trabajo de Studio desconocido.')
     with _lock:
         now=time.monotonic()
         for token,(existing,expires) in list(_jobs.items()):
@@ -49,18 +49,22 @@ async def job_response(request):
     return JSONResponse(result,headers={'Cache-Control':'private, no-store'})
 
 
-def register_raster_display(source,scale):
+def register_raster_display(source,scale,*,box=None,presentation=None):
     """Expiring presentation capability, not another source or time registry."""
-    identity=hashlib.sha256(json.dumps([source,scale],sort_keys=True,allow_nan=False).encode()).hexdigest()
+    from studio_sig_raster import MAX_OBSERVATIONS
+    identity=hashlib.sha256(json.dumps([source,scale,box,presentation],sort_keys=True,allow_nan=False).encode()).hexdigest()
     with _lock:
         now=time.monotonic()
         for token,record in list(_rasters.items()):
             if record['expires']<=now:_rasters.pop(token)
             elif record['identity']==identity:
                 record['expires']=now+TTL;return '/sig-display/'+token
-        while len(_rasters)>=128:_rasters.popitem(last=False)
+        # Both mainland and island channels for a supported series must remain
+        # addressable. The old 128-token cap invalidated early dates of a year.
+        while len(_rasters)>=2*MAX_OBSERVATIONS+16:_rasters.popitem(last=False)
         token=uuid.uuid4().hex
-        _rasters[token]={'identity':identity,'source':copy.deepcopy(source),'scale':copy.deepcopy(scale),'expires':now+TTL}
+        _rasters[token]={'identity':identity,'source':copy.deepcopy(source),'scale':copy.deepcopy(scale),
+            'box':copy.deepcopy(box),'presentation':copy.deepcopy(presentation),'expires':now+TTL}
         return '/sig-display/'+token
 
 
@@ -70,11 +74,12 @@ async def raster_response(request):
         record=_rasters.get(request.path_params.get('token',''))
         if not record or record['expires']<=time.monotonic():return Response(status_code=404)
         source,scale=record['source'],record['scale']
+        box,presentation=record['box'],record['presentation']
     def render():
         from studio_sig_raster import representation
         # Authorisation and content hash are checked on every request, including
         # warm render-cache hits. Native values/NoData remain in the original.
-        image,_=representation(source,scale)
+        image,_=representation(source,scale,size=1000,box=box,presentation=presentation)
         try:
             buffer=io.BytesIO();image.save(buffer,format='PNG');return buffer.getvalue()
         finally:image.close()
@@ -85,7 +90,7 @@ async def raster_response(request):
 
 def register_movie(job):
     job=Path(job).resolve();root=(STORE/'jobs').resolve()
-    if job.parent!=root or not job.name.startswith('studio-'):raise ValueError('Producto fuera de jobs Studio.')
+    if job.parent!=root or not job.name.startswith(('studio-','preview-')):raise ValueError('Producto fuera de jobs Studio.')
     path=job/'video.mp4'
     if not path.is_file() or not (job/'receipt.json').is_file():raise ValueError('Producto incompleto.')
     with _lock:
@@ -98,6 +103,23 @@ def register_movie(job):
         token=uuid.uuid4().hex;_files[token]=(path,now+TTL)
         return '/studio-media/'+token
 
+def register_publication(path):
+    """Serve only an explicitly prepared public ZIP inside a completed local job."""
+    import re
+    path=Path(path).resolve();job=path.parent
+    if (job.parent!=(STORE/'jobs').resolve() or not job.name.startswith('studio-')
+            or not re.fullmatch(r'andes-pulso-publico-[0-9a-f]{24}\.zip',path.name)
+            or not path.is_file() or not (job/'receipt.json').is_file()):
+        raise ValueError('Paquete público fuera del trabajo final autorizado.')
+    with _lock:
+        now=time.monotonic()
+        for token,(existing,expiry) in list(_files.items()):
+            if expiry<=now:_files.pop(token)
+            elif existing==path:_files[token]=(path,now+TTL);return '/studio-media/'+token+'?download=1'
+        while len(_files)>=64:_files.popitem(last=False)
+        token=uuid.uuid4().hex;_files[token]=(path,now+TTL)
+        return '/studio-media/'+token+'?download=1'
+
 async def movie_response(request):
     token=request.path_params.get('token','')
     with _lock:
@@ -106,6 +128,7 @@ async def movie_response(request):
             _files.pop(token,None);return Response(status_code=404)
         path=record[0]
     if not path.is_file():return Response(status_code=404)
-    return FileResponse(path,media_type='video/mp4',filename='ecuador-vivo.mp4',
-        content_disposition_type='attachment' if request.query_params.get('download') else 'inline',
+    package=path.suffix=='.zip'
+    return FileResponse(path,media_type='application/zip' if package else 'video/mp4',filename=path.name if package else 'ecuador-vivo.mp4',
+        content_disposition_type='attachment' if package or request.query_params.get('download') else 'inline',
         headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'})

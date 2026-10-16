@@ -1,0 +1,6 @@
+Copyright (c) 2026 Henry P. Conteron Moreta. All rights reserved.
+
+This project follows the proprietary license at the repository root.
+Third-party engines, fonts and artwork retain their separately identified
+licenses. See resource_engines/package-lock.json and the corresponding LICENSE
+files in the installed packages; their licenses do not apply to this wrapper.

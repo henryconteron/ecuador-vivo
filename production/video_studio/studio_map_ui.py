@@ -31,6 +31,8 @@ def show_layer_review(session,key,record,*,publish_label='Insertar capas',publis
         st.caption(f'Revisión {manifest["scientific_revision"][:12]} · perfil {profile.name} · {profile.width} × {profile.height} · 30 FPS')
         from maqueta import MAIN_BOX
         universal=manifest.get('source_scope')=='canonical_geography'
+        if manifest.get('geographic_binding',{}).get('presentation',{}).get('territory')=='ecuador':
+            universal=False
         if universal:st.info('Región geográfica SIG, con valores nativos consultables y encuadre revisado. El inset de Ecuador está desactivado y el mapa base se excluye.')
         elif manifest['region']!=list(MAIN_BOX):st.warning('Dominio continental parcial: se conserva el encuadre preparado; no representa todo Ecuador continental. Consulta los límites en los detalles.')
         st.image(str(Path(record['manifest_path']).parent/manifest['thumbnail']['path']),

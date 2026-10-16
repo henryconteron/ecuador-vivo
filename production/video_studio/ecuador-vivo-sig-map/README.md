@@ -8,7 +8,7 @@ From the repository root, install this local package into the existing environme
 & '_local/video-studio/.venv/Scripts/python.exe' -m pip install --no-deps -e 'production/video_studio/ecuador-vivo-sig-map'
 ```
 
-Compiled assets ship with the package. Node is only required to rebuild. In `ecuador_vivo_sig_map/frontend`, use `npm ci --ignore-scripts`, `npm run typecheck` and `npm run build`. Exact versions and the transitive tree are locked. Builds preserve existing assets (`emptyOutDir=false`); do not run the template's optional clean command on resources you need to preserve.
+Compiled assets ship with the package. Node is only required to rebuild. In `ecuador_vivo_sig_map/frontend`, use `npm ci --ignore-scripts`, `npm run typecheck` and `npm run build`. Exact versions and the transitive tree are locked. A build replaces its own `frontend/build/` directory and writes the single `sig-workbench.js/css` entry plus current worker and dependency inventories. Do not put projects, source data or manually maintained files in that generated directory.
 
 OpenLayers 10.11.0 WebGLVector is encapsulated because its API is unstable. Initialization failure/context loss explicitly switches to Canvas; equivalent performance is not claimed. Originals remain OGC:CRS84, display EPSG:4326 with x=longitude/y=latitude. Other projections and raster imports are future increments.
 

@@ -47,26 +47,29 @@ def import_general(session):
     return True
 
 
-def analysis_panel(session):
+def analysis_panel(session,*,show_heading=True):
     from studio_sig_workspace import choose_tool,notify
     state=workspace_for(session.project);lid=state['active_layer']
     if lid is None:st.info('Incorpora y selecciona una capa para analizar.');return
     if state['layers'][lid]['type']=='raster':st.info('Selecciona una capa vectorial o abre Ráster y tiempo.');return
     source,features=layer_features(session.project,lid)
     fields=list(dict.fromkeys(k for f in features for k in (f.get('properties') or {})))
-    st.markdown('**Análisis vectorial**');st.caption(state['layers'][lid]['name'])
-    tools={'Buffer':'buffer','Recortar':'clip','Intersección':'intersection','Disolver':'dissolve',
-           'Superficie y longitud':'measure','Calcular campo':'calculate','Filtrar entidades':'filter'}
+    if show_heading:st.markdown('**Análisis vectorial**')
+    st.caption(state['layers'][lid]['name'])
+    from studio_sig_tool_catalog import VECTOR_TOOLS
+    tools={tool['label']:tool['id'] for tool in VECTOR_TOOLS}
     selected=st.selectbox('Operación',list(tools),key=session.key+'_vector_operation',persist_state='session');tool=tools[selected]
     st.caption('Se crea una capa derivada; no se alteran los datos de entrada.')
-    with st.form('sig_vector_operation'):
+    with st.form('sig_vector_operation',border=False):
         params={};other=None
-        if tool in ('buffer','measure'):
+        if tool in ('buffer','measure','centroid','point_on_surface','convex_hull'):
             params['crs']=st.text_input('CRS de cálculo en metros',placeholder='Proyección adecuada al territorio',key='sig_analysis_crs')
             st.caption('Comprueba el área de uso. No se miden grados ni se usa Mercator para estas métricas.')
+        if tool in ('centroid','point_on_surface','convex_hull','boundary'):
+            st.caption(next(item['summary'] for item in VECTOR_TOOLS if item['id']==tool))
         if tool=='buffer':params['distance']=st.number_input('Distancia (m)',min_value=.01,max_value=1_000_000.,value=1000.,key='sig_buffer_distance')
         if tool in ('clip','intersection'):
-            candidates=[k for k in state['order'] if k!=lid]
+            candidates=[k for k in state['order'] if k!=lid and state['layers'][k]['type']=='vector']
             if not candidates:st.info('Añade una capa poligonal para el recorte/intersección.');return
             other=st.selectbox('Capa poligonal',candidates,format_func=lambda k:state['layers'][k]['name'],key='sig_analysis_other')
         if tool=='dissolve':params['field']=st.selectbox('Disolver por campo',[None]+fields,format_func=lambda f:'Todas las entidades' if f is None else f,key='sig_dissolve_field')
@@ -83,11 +86,11 @@ def analysis_panel(session):
             params['operator']=st.selectbox('Condición',['equals','contains','greater','less','missing'],format_func=lambda v:{'equals':'Igual a','contains':'Contiene texto','greater':'Mayor que','less':'Menor que','missing':'Dato ausente'}[v],key='sig_filter_operator')
             params['value']=st.text_input('Valor de comparación',key='sig_filter_value')
         name=st.text_input('Nombre de la nueva capa',value=selected,key='sig_analysis_name')
-        accepted=st.form_submit_button('Ejecutar y añadir resultado',key='sig_analysis_run')
+        accepted=st.form_submit_button('Calcular en segundo plano',key='sig_analysis_run')
     if accepted:
         try:
-            candidate,new_lid=run_operation(session.project,lid,tool,params,other=other,name=name)
-            session.commit(candidate);choose_tool(session,'Propiedades');notify(session,selected+' completado: '+candidate['studio']['geography']['map_workspace']['layers'][new_lid]['name']);st.rerun()
+            from studio_sig_analysis_ui import queue
+            queue(session,{'kind':'vector','layer':lid,'tool':tool,'parameters':params,'other':other,'name':name});st.rerun()
         except (ValueError,TypeError,KeyError,OSError,GEOSException,ProjError) as error:notify(session,error,'error');st.error('No se añadió ningún resultado: '+str(error))
 
 

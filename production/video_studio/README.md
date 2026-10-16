@@ -2,15 +2,15 @@
 
 Editor audiovisual y científico de Ecuador Vivo sobre Streamlit. Inicio de usuario: doble clic en `Abrir editor de videos.vbs` en la raíz del repositorio.
 
-`5 · Estudio` abre un workspace audiovisual con canvas, recursos/capas, inspector
-y timeline en el mismo viewport. `launch.ps1` utiliza `streamlit run studio_server.py`
-para reproducción central y descarga del mismo MP4 del worker. El arranque directo
-`streamlit run app.py` conserva el editor y ofrece preview/descarga nativos alternativos.
-Ver [contrato y sistema UX](../../documentation/ECUADOR-VIVO-STUDIO-UX.md).
+La aplicación actual reúne **Inicio, SIG, Studio y Recursos**. `launch.ps1`
+arranca `studio_server.py` en **127.0.0.1:8534**. Esta es la entrada única del
+editor; sus módulos y motores comparten proyectos, datos y medios.
+Ver [ubicación y organización vigentes](../../documentation/VERSION-ACTUAL.md)
+y [estado del desarrollo](../../documentation/ESTADO.md).
 
 La [guía de uso](../../documentation/GUIA-EDITOR-VIDEOS.md) explica datos, diseño, créditos, exportación y límites científicos.
 
-El flujo anterior de los tres tipos de video conserva **Datos → Maqueta → Montaje → Exportar**.
+Los motores compatibles conservan **Datos → Maqueta → Montaje → Exportar**.
 Maqueta muestra un único lienzo editable, sin una vista previa paralela. Eliminar
 un elemento se guarda en el proyecto y se respeta al exportar; puede recuperarse.
 Cada **OK** actualiza un borrador de trabajo, sin sobrescribir el proyecto original.
@@ -31,7 +31,30 @@ descargadores y caché local que el editor; ya no tiene un lanzador independient
 
 ## Desarrollo
 
-Python 3.13 probado en Windows. Instalar `requirements.txt` en un entorno virtual. Desde esta carpeta, ejecutar `python -m streamlit run studio_server.py`; la configuración liga el servidor únicamente a 127.0.0.1:8510. La interfaz usa Segoe UI y el renderer conserva las familias locales del proyecto. No desplegar este editor como servicio público sin autenticación, aislamiento y revisión de seguridad.
+### Recuperar esta versión desde GitHub
+
+Trabajar desde la única raíz del repositorio; no copiar carpetas de versiones
+anteriores sobre ella. Los componentes compilados actuales están incluidos
+con sus fuentes y avisos de terceros. Los videos, voces, proyectos privados,
+datos pesados y programas instalados permanecen locales y no forman parte
+de este respaldo Git.
+
+En una instalación nueva, desde la raíz (Python 3.13):
+
+```powershell
+python -m venv _local/video-studio/.venv
+& './_local/video-studio/.venv/Scripts/python.exe' -m pip install -r production/video_studio/requirements.txt
+& './_local/video-studio/.venv/Scripts/python.exe' -m pip install --no-deps -e './production/video_studio/ecuador-vivo-sig-map' -e './production/video_studio/ecuador-vivo-scientific-tools'
+& './production/video_studio/launch.ps1' -NoBrowser
+```
+
+La instalación editable registra los componentes SIG y Recursos ante Streamlit;
+no basta con instalar únicamente `requirements.txt`. No requiere copiar
+`node_modules` ni compilar para abrir las versiones incluidas. Para modificar
+los motores se instalan las dependencias fijadas en sus respectivos archivos
+de bloqueo; Blender y Manim siguen siendo herramientas opcionales locales.
+
+Python 3.13 probado en Windows. El entorno actual vive en `_local/video-studio/.venv/` desde la raíz del repositorio; `launch.ps1` lo reutiliza. Para instalar en otro equipo, usar `requirements.txt` en un entorno virtual. El lanzador liga el servidor únicamente a 127.0.0.1:8534. El renderer conserva las familias locales del proyecto. No desplegar este editor como servicio público sin autenticación, aislamiento y revisión de seguridad.
 
 Pruebas desde la raíz: `python -m unittest discover -s production/video_studio -p 'test_*.py' -v`, usando el entorno del editor. La prueba de lluvia usa la caché de 2024 o requiere red para descargar una fecha y los límites.
 

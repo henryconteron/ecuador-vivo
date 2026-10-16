@@ -46,7 +46,11 @@ def workspace_command(project, scene_id, message):
     if action=='add_element':
         kind=message['kind'];profile=profile_for(studio['output_profile']);style={};binding=None
         if kind=='text':style={'text':'Tu texto','font_size':min(40,round(profile.width*.1)),'color':'#f0f5f8'}
-        elif kind=='shape':style={'shape':'rounded_rectangle','fill':'#13bfd1'}
+        elif kind=='shape':
+            from studio_resource_actions import GRAPHIC_ELEMENTS
+            shape=message.get('shape','rounded_rectangle')
+            if shape not in GRAPHIC_ELEMENTS:raise ValueError('Forma o símbolo desconocido.')
+            style={'shape':shape,'fill':'#13bfd1'}
         elif kind in ('image','map','video'):
             aid=message['asset_id'];asset=studio['media'][aid]
             if asset['kind']=='temporal_map':raise ValueError('El recurso estructurado requiere una instancia con fecha y leyenda; inserción guiada pendiente de 4b.4a.')
@@ -66,6 +70,9 @@ def workspace_command(project, scene_id, message):
         region=adaptive_regions(profile)['metric' if binding else 'map']
         transform={k:round(v) for k,v in region.items()}
         if kind in ('text','shape'):transform={'x':20,'y':20,'width':min(500,profile.width-40),'height':min(180,profile.height-40)}
+        if kind=='shape' and (style['shape'].startswith('icon.') or style['shape'] in ('circle','marker','play')):
+            side=min(160,profile.width-40,profile.height-40)
+            transform={'x':20,'y':20,'width':side,'height':side}
         element=Element(id='element.'+uuid.uuid4().hex,type=kind,name=message.get('name',{'text':'Texto','shape':'Forma'}.get(kind,kind)),
             transform=transform,style=style,data_binding=binding,z_index=max((e.get('z_index',0) for e in scene['elements']),default=0)+1).to_dict()
         return edit_scene(result,'update',scene_id,elements=scene['elements']+[element])

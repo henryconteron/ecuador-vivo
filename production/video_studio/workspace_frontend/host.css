@@ -1,0 +1,11 @@
+/* The editor reports its own save state; keep its host visible on reruns. */
+div[data-testid="stElementContainer"][class*="st-key-free_studio_"][class*="_workspace"] {
+  opacity: 1 !important;
+  transition: none !important;
+}
+/* Native Studio dialogs (voice, media, recovery) share the editor's visual scale.
+   The SIG component has a different key and does not match this boundary. */
+body:has([data-testid="stElementContainer"][class*="st-key-free_studio_"][class*="_workspace"]) [data-testid="stDialog"] [role="dialog"]{background:#132b37;border:1px solid #7895a3;border-radius:8px;color:#edf3f5}
+body:has([data-testid="stElementContainer"][class*="st-key-free_studio_"][class*="_workspace"]) [data-testid="stDialog"] h2{font:600 22px/1.4 'Bahnschrift','Segoe UI',sans-serif;letter-spacing:-.3px}
+body:has([data-testid="stElementContainer"][class*="st-key-free_studio_"][class*="_workspace"]) [data-testid="stDialog"] :is(p,label,input,select){font-size:14px;line-height:1.5}
+body:has([data-testid="stElementContainer"][class*="st-key-free_studio_"][class*="_workspace"]) [data-testid="stDialog"] button{min-height:36px;font-size:14px;border-radius:4px}

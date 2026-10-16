@@ -8,6 +8,7 @@ import ImageLayer from 'ol/layer/Image.js';
 import ImageStatic from 'ol/source/ImageStatic.js';
 import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
+import ScaleLine from 'ol/control/ScaleLine.js';
 import {getRenderPixel} from 'ol/render.js';
 import WebGLVector from 'ol/layer/WebGLVector.js';
 import {defaults as interactions} from 'ol/interaction/defaults.js';
@@ -16,12 +17,21 @@ import {Fill, Stroke, Style, Circle as CircleStyle} from 'ol/style.js';
 import {asArray} from 'ol/color.js';
 import 'ol/ol.css';
 import './map.css';
+import './workbench.css';
+import {workspace} from './workspace';
+import {ObservationCache} from './observation-cache';
+import {temporalWindow} from './workbench-model';
+import {icon} from './workbench';
+import {MapActions} from './map-actions';
+import './map-actions.css';
+import {DeferredView} from './deferred-view';
+import {rebuildLayer,rasterImageKey} from './layer-refresh';
 
 // SDK objects are transient presentation resources, never a project document.
 const instances = new WeakMap<object, Adapter>();
 type Intent = {sequence: number; action: string; [key: string]: unknown};
 type Data = {version:number; layers:any[]; view:{bbox:number[]}; active_layer:string;
- selection:string[]; confirmation?:any; error?:string; project_id:string;basemap?:string;raster_time?:any;pixel_result?:any;output_frame?:any;
+ selection:string[]; confirmation?:any; error?:string; project_id:string;basemap?:string;raster_time?:any;pixel_result?:any;output_frame?:any;workspace?:any;
  workspace_layout?:{dock_open:boolean;dock_height?:number;time_height?:number;top_height?:number;temporal_preview:boolean};temporal_preview?:{image:string;caption:string}};
 type Args = FrontendRendererArgs<any,Data>;
 const constrained = (box:number[]) => {
@@ -38,8 +48,26 @@ class Adapter {
  basemap?:TileLayer; playTimer?:ReturnType<typeof setInterval>; swipe=.5;
  displayedIndex?:number;
  playbackIndex?:number; playbackBusy=false; playbackGeneration=0;
+ displayCache=new ObservationCache<{url:string;insetImage?:string}>();
+ displayIdentity='';
  viewportObserver:ResizeObserver; lastSize=''; layoutFitPending=false;
- resize=()=>{const compact=window.innerWidth<=1000;if(compact!==this.compact){this.compact=compact;this.args.setTriggerValue('ui_event',{action:'viewport',width:window.innerWidth})}};
+ workbenchCleanup?:()=>void;
+ mapActions?:MapActions;
+ temporalSpan=Infinity;temporalHidden=false;
+ cameraBuffer=new DeferredView((box,force)=>{
+  if(this.pending.length&&!force)return false;
+  this.root.dataset.cameraCommits=String(Number(this.root.dataset.cameraCommits||0)+1);
+  this.intent('view',{bbox:box},!force);return true;
+ });
+ resize=()=>{this.updateMapHeight();const compact=window.innerWidth<=1000;if(compact!==this.compact){this.compact=compact;this.uiEvent({action:'viewport',width:window.innerWidth})}};
+ updateMapHeight(){
+  const hostSpace=this.data.workspace?40:106;
+  const height=(selector:string)=>this.root.querySelector(selector)?.getBoundingClientRect().height||0;
+  const top=height('.sig-shell-header')+height('.sig-ribbon');
+  // Floating windows and temporal controls do not reserve map columns/rows.
+  const footer=height('.sig-status')+height('#sig-notice');
+  this.root.style.setProperty('--sig-map-height',`max(180px, calc(100dvh - ${top+footer+hostSpace}px))`);
+ }
  constructor(args:Args) {
   this.args=args;this.data=args.data;this.version=args.data.version;
   this.root=args.parentElement.querySelector('#sig-map') as HTMLElement;
@@ -53,6 +81,7 @@ class Adapter {
    view:new View({projection:'EPSG:4326',center:[-78,-2],zoom:5,enableRotation:false,
     extent:[-180,-89.999,180,89.999],showFullExtent:true,multiWorld:false,constrainResolution:false,
     minResolution:.0000001,maxResolution:3})});
+  this.map.addControl(new ScaleLine({units:'metric',target:this.q('sig-scale'),minWidth:80}));
   // Read-only inspection seam for real Chrome tests; it does not publish state.
   Object.defineProperty(this.root,'sigAdapter',{value:this,configurable:true});
   this.map.on('pointerdrag',()=>{this.cameraDirty=true});
@@ -67,13 +96,14 @@ class Adapter {
   // remote basemap tiles. Draw it even when a tile is slow or unavailable.
   this.map.on('postrender',()=>this.paintFrame());
   this.map.on('click',event=>{
+   if(this.mapActions?.measuring)return;
    let selected=this.active;
    const time=this.data.raster_time;
    if(time&&!time.compare&&this.displayedIndex!==undefined)selected=time.layers[this.displayedIndex];
    if(time?.compare)selected=time.layers[event.pixel[0]<(this.map.getSize()?.[0]||1)*this.swipe?0:1];
    const layer=this.layers.get(selected);
    if(layer?.record.type==='raster'){
-    if(layer.record.visible){this.q('sig-raster-query').textContent='Consultando celda nativa…';this.args.setTriggerValue('ui_event',{action:'query_raster',version:this.version,layer_id:selected,lon:event.coordinate[0],lat:event.coordinate[1]})}
+    if(layer.record.visible){this.q('sig-raster-query').textContent='Consultando celda nativa…';this.uiEvent({action:'query_raster',layer_id:selected,lon:event.coordinate[0],lat:event.coordinate[1]})}
     return;
    }
    const feature=layer?.record.visible?this.map.forEachFeatureAtPixel(event.pixel,f=>f,
@@ -88,11 +118,12 @@ class Adapter {
   this.q('sig-fit-all').onclick=()=>this.fitVisible();
   this.q('sig-fit-layer').onclick=()=>this.fitVisible(this.active);
   this.q('sig-clear').onclick=()=>{this.selection=[];this.paintSelection();this.intent('clear_selection',{})};
-  this.q('sig-empty-import').onclick=()=>this.args.setTriggerValue('ui_event',{action:'import'});
+  this.q('sig-empty-import').onclick=()=>this.uiEvent({action:'import'});
   this.q('sig-raster-play').onclick=()=>{
    if(this.playTimer){this.pausePlayback();return}
+   if(!this.data.raster_time?.layers.length||this.data.raster_time.compare)return;
    this.playbackIndex=this.displayedIndex??this.data.raster_time.index;
-   this.q('sig-raster-play').textContent='Pausar';this.playTimer=setInterval(()=>{
+   this.playLabel(true);this.playTimer=setInterval(()=>{
     if(!this.data.raster_time||this.pending.length)return;
     const index=((this.playbackIndex??this.data.raster_time.index)+1)%this.data.raster_time.layers.length;
     // Keep the confirmed observation visible while the next native source is
@@ -101,20 +132,35 @@ class Adapter {
    },Math.max(100,(this.data.raster_time?.duration??3)*1000/(this.data.raster_time?.layers.length??2)));
   };
   (this.q('sig-raster-date') as HTMLInputElement).onchange=event=>{this.pausePlayback(false);this.intent('raster_date',{index:Number((event.target as HTMLInputElement).value)})};
-  this.q('sig-raster-configure').onclick=()=>{this.pausePlayback();this.args.setTriggerValue('ui_event',{action:'timelapse'})};
+  (this.q('sig-raster-pick') as HTMLSelectElement).onchange=event=>{this.pausePlayback(false);this.intent('raster_date',{index:Number((event.target as HTMLSelectElement).value)})};
+  this.q('sig-time-settings').onclick=()=>this.q('sig-prepare').click();
+  const showTime=(visible:boolean)=>{this.temporalHidden=!visible;this.q('sig-raster-controls').hidden=!visible||!this.data.raster_time;this.q('sig-time-view').setAttribute('aria-expanded',String(visible&&Boolean(this.data.raster_time)))};
+  this.q('sig-time-close').onclick=()=>{this.pausePlayback();showTime(false);this.q('sig-time-view').focus()};
+  this.q('sig-time-view').onclick=()=>{if(this.temporalHidden){showTime(true);this.q('sig-time-close').focus()}else this.q('sig-time-close').click()};
+  this.q('sig-raster-controls').onkeydown=event=>{if(event.key==='Escape'){event.stopPropagation();this.q('sig-time-close').click()}};
+  for(const [id,offset] of [['sig-time-prev',-1],['sig-time-next',1]] as const)this.q(id).onclick=()=>{
+   const time=this.data.raster_time;if(!time?.layers.length||this.pending.length)return;
+   const index=Math.max(0,Math.min(time.layers.length-1,(this.displayedIndex??time.index)+offset));this.pausePlayback(false);this.intent('raster_date',{index});
+  };
+  for(const [id,ratio] of [['sig-time-zoom-in',.5],['sig-time-zoom-out',2]] as const)this.q(id).onclick=()=>{
+   const count=this.data.raster_time?.layers.length??0;if(count<2)return;
+   this.temporalSpan=Math.max(2,Math.min(count,Math.ceil((Number.isFinite(this.temporalSpan)?this.temporalSpan:count)*ratio)));this.paintRasters();
+  };
   (this.q('sig-raster-compare') as HTMLInputElement).onchange=event=>{
    const index=this.displayedIndex??this.data.raster_time.index;this.pausePlayback(false);
-   this.args.setTriggerValue('ui_event',{action:'compare_series',version:this.version,index,compare:(event.target as HTMLInputElement).checked});
+   this.uiEvent({action:'compare_series',index,compare:(event.target as HTMLInputElement).checked});
   };
-  this.q('sig-raster-send').onclick=()=>{this.pausePlayback();this.args.setTriggerValue('ui_event',{action:'send_series'})};
+  this.q('sig-raster-send').onclick=()=>{this.pausePlayback();this.uiEvent({action:'send_series'})};
+  this.q('sig-island-inset').onclick=event=>{event.stopPropagation();this.notice='Galápagos está reubicado solo para presentación. Elige Solo Galápagos para consultar sus celdas geográficas.';this.paintStatus()};
   (this.q('sig-raster-swipe') as unknown as HTMLInputElement).oninput=event=>{this.swipe=Number((event.target as HTMLInputElement).value)/100;this.map.render()};
   window.addEventListener('resize',this.resize);
   this.q('sig-retry').onclick=()=>{if(this.pending.length)this.transmit()};
-  this.q('sig-discard').onclick=()=>{this.pending=[];this.sequence=this.confirmed;
+  this.q('sig-discard').onclick=()=>{this.cameraBuffer.cancel();this.pending=[];this.sequence=this.confirmed;
    this.data={...this.data,confirmation:undefined,error:''};this.hydrate(this.data,true)};
   this.hydrate(args.data,true);
   this.bootLayout();
   this.resize();
+  this.mapActions=new MapActions(this);
   this.viewportObserver=new ResizeObserver(()=>{
    const element=this.q('sig-geographic-map'),size=`${element.clientWidth}:${element.clientHeight}`;
    if(size===this.lastSize)return;this.lastSize=size;this.layoutFitPending=true;
@@ -123,9 +169,10 @@ class Adapter {
   this.viewportObserver.observe(this.q('sig-geographic-map'));
  }
  q(id:string){return this.root.querySelector('#'+id) as HTMLElement & {disabled?:boolean}}
+ playLabel(playing:boolean){const button=this.q('sig-raster-play');button.replaceChildren(icon(playing?'pause':'play'));button.setAttribute('aria-label',playing?'Pausar':'Reproducir fechas');button.setAttribute('aria-pressed',String(playing));button.title=playing?'Pausar':'Reproducir fechas'}
  pausePlayback(persist=true){
   clearInterval(this.playTimer);this.playTimer=undefined;this.playbackGeneration++;this.playbackBusy=false;
-  const index=this.displayedIndex;this.playbackIndex=undefined;this.q('sig-raster-play').textContent='Reproducir fechas';
+  const index=this.displayedIndex;this.playbackIndex=undefined;this.playLabel(false);
   if(persist&&index!==undefined&&index!==this.data.raster_time?.index)this.intent('raster_date',{index});
   this.paintStatus();
  }
@@ -135,23 +182,52 @@ class Adapter {
   const requestedUrl=entry.record.playback_url;
   const generation=++this.playbackGeneration;this.playbackBusy=true;
   try{
-   const response=await fetch(requestedUrl,{cache:'no-store'});if(!response.ok)throw new Error('Fuente no disponible o modificada');
-   if(response.headers.get('X-Ecuador-Observation-Date')!==entry.record.date)throw new Error('Fecha de representación incompatible');
-   const blob=await response.blob();const url=URL.createObjectURL(blob),image=new Image();image.src=url;
-   try{
-    await image.decode();
+   const {value:{url,insetImage}}=await this.loadObservation(entry.record);
     if(this.disposed||generation!==this.playbackGeneration||entry.record.playback_url!==requestedUrl||!this.layers.has(entry.record.id))return;
     // Source loading/decoding completes while the old layer remains visible.
-    const source=new ImageStatic({url,imageExtent:entry.record.bbox,projection:'EPSG:4326',interpolate:false});
+    const source=new ImageStatic({url,imageExtent:entry.record.bbox,projection:'EPSG:4326',interpolate:entry.record.presentation?.resampling==='bilinear'});
     const wrapper=source.getImage(entry.record.bbox,this.map.getView().getResolution()||1,1,this.map.getView().getProjection())!;
     await new Promise<void>((resolve,reject)=>{wrapper.addEventListener('change',()=>{if(wrapper.getState()===2)resolve();if(wrapper.getState()===3)reject(new Error('Imagen no decodificada'))});wrapper.load()});
-    if(generation!==this.playbackGeneration){source.dispose();return}
+    if(this.disposed||generation!==this.playbackGeneration){source.dispose();return}
     const previous=entry.source;entry.source=source;entry.layer.setSource(source);previous?.dispose();
+    entry.record.inset_image=insetImage;
     this.playbackIndex=this.displayedIndex=index;this.paintRasters();this.map.render();
+    this.root.dataset.cacheHits=String(this.displayCache.hits);
+    this.root.dataset.cacheMisses=String(this.displayCache.misses);
     this.status('Reproducción local · la fecha se confirma al pausar','playing');
-   }finally{URL.revokeObjectURL(url)}
-  }catch(error){this.notice='No se cargó la observación; se conserva el último cuadro válido. '+String(error);this.pausePlayback(false);this.paintStatus()}
+    // A short look-ahead, not an entire year in memory. All fields remain dated.
+    for(const offset of [1,2]){
+     const next=this.data.raster_time.layers[(index+offset)%this.data.raster_time.layers.length];
+     const record=this.layers.get(next)?.record;
+     if(record?.playback_url)void this.loadObservation(record).catch(()=>{});
+    }
+  }catch(error){if(!this.disposed&&generation===this.playbackGeneration){this.notice='No se cargó la observación; se conserva el último cuadro válido.';this.pausePlayback(false);this.paintStatus()}}
   finally{if(generation===this.playbackGeneration)this.playbackBusy=false}
+ }
+ loadObservation(record:any){
+  const key=JSON.stringify([this.data.project_id,record.representation_revision,record.date,record.playback_url,record.playback_inset_url]);
+  return this.displayCache.get(key,async()=>{
+   let url='';
+   const fetchImage=async(address:string)=>{
+    const response=await fetch(address,{cache:'no-store'});
+    if(!response.ok)throw Error('Fuente no disponible o modificada');
+    if(response.headers.get('X-Ecuador-Observation-Date')!==record.date||
+      response.headers.get('X-Ecuador-Source-SHA256')!==record.source_sha256)throw Error('Fecha o fuente de representación incompatible');
+    return response.blob();
+   };
+   try{
+    url=URL.createObjectURL(await fetchImage(record.playback_url));
+    const image=new Image();image.src=url;await image.decode();
+    let bytes=image.naturalWidth*image.naturalHeight*4,insetImage:string|undefined;
+    if(record.playback_inset_url){
+     const blob=await fetchImage(record.playback_inset_url);
+     insetImage=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=reject;reader.readAsDataURL(blob)});
+     const inset=new Image();inset.src=insetImage;await inset.decode();
+     bytes+=inset.naturalWidth*inset.naturalHeight*4+insetImage.length*2;
+    }
+    return {value:{url,insetImage},bytes,dispose:()=>URL.revokeObjectURL(url)};
+   }catch(error){if(url)URL.revokeObjectURL(url);throw error}
+  });
  }
  status(text:string,state:string){this.q('sig-map-status').textContent=text;this.root.dataset.state=state}
  makeLayer(source:VectorSource,style:any) {
@@ -180,18 +256,28 @@ class Adapter {
  };
  hydrate(data:Data,force=false) {
   if(data.version<this.version)return; // Ignore late responses, including their camera.
+  if(data.project_id!==this.data.project_id)this.cameraBuffer.cancel();
+  this.cameraBuffer.reconcile(data.view.bbox);
+  const identity=JSON.stringify([data.project_id,data.layers.map(l=>[l.id,l.representation_revision,l.playback_url,l.playback_inset_url])]);
+  if(identity!==this.displayIdentity){this.displayCache.clear();this.displayIdentity=identity;this.pausePlayback(false)}
   if(this.playTimer&&JSON.stringify(data.raster_time?.layers)!==JSON.stringify(this.data.raster_time?.layers))this.pausePlayback(false);
+  if(data.project_id!==this.data.project_id||JSON.stringify(data.raster_time?.layers)!==JSON.stringify(this.data.raster_time?.layers)){this.temporalHidden=false;this.temporalSpan=Infinity;this.displayedIndex=undefined}
   this.data=data;this.version=data.version;
+  this.mapActions?.sync();
   this.root.classList.toggle('sig-has-raster-time',Boolean(data.raster_time));
   if(data.basemap==='osm'&&!this.basemap){this.basemap=new TileLayer({source:new OSM({crossOrigin:'anonymous',maxZoom:16}),zIndex:-100});this.map.addLayer(this.basemap)}
   this.basemap?.setVisible(data.basemap==='osm');this.q('sig-basemap-credit').hidden=data.basemap!=='osm';
-  this.q('sig-raster-controls').hidden=!data.raster_time;
-  if(!data.raster_time&&this.playTimer){clearInterval(this.playTimer);this.playTimer=undefined;this.q('sig-raster-play').textContent='Reproducir fechas'}
+  const hasTime=Boolean(data.raster_time?.layers.length);
+  this.q('sig-raster-controls').hidden=!hasTime||this.temporalHidden;
+  this.q('sig-time-view').hidden=!hasTime;
+  this.q('sig-time-view').setAttribute('aria-expanded',String(hasTime&&!this.temporalHidden));
+  if(!hasTime&&this.playTimer){clearInterval(this.playTimer);this.playTimer=undefined;this.playLabel(false)}
   const pixel=data.pixel_result;
   if(pixel)this.q('sig-raster-query').textContent=`${pixel.date||'Resultado'} · ${pixel.value===null?'Sin dato':pixel.value+' '+pixel.units} · fila ${pixel.row}, col ${pixel.column}`;
   this.root.classList.toggle('sig-workspace',Boolean(data.workspace_layout));
-  const layout=data.workspace_layout;
-  this.root.style.setProperty('--sig-map-height',`max(140px, calc(100dvh - ${(layout?.top_height??56)+(layout?.time_height??36)+(layout?.dock_height??0)+106}px))`);
+  // The integrated shell needs only its status row and outer inset. The old
+  // Streamlit toolbar allowance otherwise wastes 66 px of the map at 768 h.
+  this.updateMapHeight();
   const preview=this.q('sig-temporal-preview');preview.hidden=!data.temporal_preview;
   if(data.temporal_preview){
    const img=preview.querySelector('img')!;
@@ -212,7 +298,7 @@ class Adapter {
   for(const [id,entry] of this.layers)if(!wanted.has(id)){this.map.removeLayer(entry.layer);entry.layer.dispose();this.layers.delete(id)}
   data.layers.forEach((record,order)=>{
    let entry=this.layers.get(record.id);
-   if(!entry||entry.revision!==record.representation_revision) {
+   if(rebuildLayer(entry?.record,record)) {
     this.root.dataset.rendered='0';
     if(entry){this.map.removeLayer(entry.layer);entry.layer.dispose()}
     if(record.type==='raster') {
@@ -237,7 +323,7 @@ class Adapter {
     }
     this.layers.set(record.id,entry);this.map.addLayer(entry.layer);this.builds++;
    }
-   if(record.type==='raster'&&record.image&&entry.loadedImage!==record.image&&entry.loadingImage!==record.image)this.prepareRaster(entry,record);
+   if(record.type==='raster'&&record.image&&entry.loadedImage!==rasterImageKey(record)&&entry.loadingImage!==rasterImageKey(record))this.prepareRaster(entry,record);
    if(JSON.stringify(entry.record.style)!==JSON.stringify(record.style)) {
     if(record.type==='raster')entry.layer.setOpacity(record.style.opacity);
     else if(entry.layer instanceof WebGLVector)entry.layer.updateStyleVariables(this.variables(record.style));
@@ -248,9 +334,10 @@ class Adapter {
   if(!this.pending.length||force) {
    this.active=data.active_layer;this.selection=[...data.selection];
    // A confirmed local camera already has the desired view. Avoid reset during a new gesture.
-   if(force||!this.cameraDirty&&(ack?.client!==this.client||ack?.version!==data.version))this.fit(data.view.bbox);
+   if(force||!this.cameraDirty&&!this.cameraBuffer.pending&&(ack?.client!==this.client||ack?.version!==data.version))this.fit(data.view.bbox);
   }
-  this.paintRasters();this.paintSelection();this.paintStatus();
+    if(!this.pending.length&&!this.cameraDirty&&this.cameraBuffer.ready)this.cameraBuffer.flush();
+  this.paintRasters();this.paintSelection();this.paintStatus();workspace(this);
   this.root.dataset.version=String(this.version);this.root.dataset.builds=String(this.builds);
   this.root.dataset.features=String([...this.layers.values()].reduce((n,e)=>n+(e.source?.getFeatures?.().length||0),0));
   this.root.dataset.selection=JSON.stringify(this.selection);this.root.dataset.active=this.active||'';
@@ -260,21 +347,24 @@ class Adapter {
   this.fitLayout();
  }
  prepareRaster(entry:any,record:any){
-  const token=entry.loadToken=(entry.loadToken||0)+1;entry.loadingImage=record.image;
-  const source=new ImageStatic({url:record.image,imageExtent:record.bbox,projection:'EPSG:4326',interpolate:false});
+  const token=entry.loadToken=(entry.loadToken||0)+1,key=rasterImageKey(record);entry.loadingImage=key;
+  const source=new ImageStatic({url:record.image,imageExtent:record.bbox,projection:'EPSG:4326',interpolate:record.presentation?.resampling==='bilinear'});
   const image=source.getImage(record.bbox,this.map.getView().getResolution()||1,1,this.map.getView().getProjection())!;
+  let settled=false;
   const finish=()=>{
+   if(settled)return;
    if(image.getState()!==2&&image.getState()!==3)return;
-   if(this.disposed||entry.loadToken!==token||!this.layers.has(record.id)){source.dispose();return}
+   settled=true;image.removeEventListener('change',finish);
+   if(this.disposed||entry.loadToken!==token||this.layers.get(record.id)!==entry){source.dispose();return}
    entry.loadingImage=null;
    if(image.getState()===3){source.dispose();this.notice='No se pudo cargar la observación. Se conserva el último cuadro válido.';this.paintStatus();return}
-   const previous=entry.source;entry.source=source;entry.loadedImage=record.image;entry.layer.setSource(source);previous?.dispose();
+   const previous=entry.source;entry.source=source;entry.loadedImage=key;entry.layer.setSource(source);previous?.dispose();
    this.paintRasters();this.map.render();
   };
   image.addEventListener('change',finish);image.load();finish();
  }
  fitLayout(){
-  if(this.disposed||!this.initialized||!this.layoutFitPending||this.cameraDirty||this.pending.length)return;
+  if(this.disposed||!this.initialized||!this.layoutFitPending||this.cameraDirty||this.cameraBuffer.pending||this.pending.length)return;
   this.map.updateSize();this.fit(this.data.view.bbox);this.layoutFitPending=false;
  }
  paintStatus() {
@@ -285,6 +375,7 @@ class Adapter {
   if(!this.initialized)this.status('Cargando mapa…','loading');
   else if(rejected)this.status(this.data.confirmation.error+' · Gestos conservados: reintentar o descartar.','error');
   else if(this.pending.length)this.status('Guardando vista… puedes seguir navegando','pending');
+  else if(this.cameraBuffer.pending)this.status('Vista local · guardado al terminar de navegar','local');
   else this.status(this.data.error||'Guardado',this.data.error?'error':'saved');
  }
  paintRasters(){const time=this.data.raster_time;
@@ -299,7 +390,17 @@ class Adapter {
   }
   if(time){const records=time.layers.map((id:string)=>this.layers.get(id)?.record);
    this.q('sig-raster-calendar').textContent=time.compare?`${records[0]?.date} | ${records[1]?.date}`:records[this.displayedIndex??time.index]?.date;
-   const slider=this.q('sig-raster-date') as HTMLInputElement;slider.max=String(time.layers.length-1);slider.value=String(this.displayedIndex??time.index);
+   const current=this.displayedIndex??time.index,count=time.layers.length;
+   const range=temporalWindow(count,current,Number.isFinite(this.temporalSpan)?this.temporalSpan:count);
+   const slider=this.q('sig-raster-date') as HTMLInputElement;slider.min=String(range.start);slider.max=String(range.end);slider.value=String(current);slider.disabled=this.pending.length>0||Boolean(time.compare);
+   slider.setAttribute('aria-valuetext',records[current]?.date||'Observación sin fecha');
+   const picker=this.q('sig-raster-pick') as HTMLSelectElement,key=JSON.stringify(records.map((r:any)=>[r?.id,r?.date]));
+   if(picker.dataset.key!==key){picker.replaceChildren();records.forEach((record:any,index:number)=>{const option=document.createElement('option');option.value=String(index);option.textContent=record?.date??'Sin fecha';picker.append(option)});picker.dataset.key=key}
+   picker.value=String(current);picker.disabled=slider.disabled;
+   this.q('sig-time-start').textContent=records[range.start]?.date??'';this.q('sig-time-end').textContent=records[range.end]?.date??'';
+   this.q('sig-time-prev').disabled=current<=0||this.pending.length>0||Boolean(time.compare);this.q('sig-time-next').disabled=current>=count-1||this.pending.length>0||Boolean(time.compare);
+   this.q('sig-time-zoom-in').disabled=range.end-range.start<2;this.q('sig-time-zoom-out').disabled=range.end-range.start+1>=count;
+   this.q('sig-raster-play').disabled=count<2||Boolean(time.compare)||this.pending.length>0;this.playLabel(Boolean(this.playTimer));
    this.q('sig-raster-summary').textContent=`${time.layers.length} observaciones · ${time.duration??3} s de video · sin interpolación`;
    const compare=this.q('sig-raster-compare') as HTMLInputElement;compare.closest('label')!.hidden=time.layers.length!==2;compare.checked=Boolean(time.compare);compare.disabled=this.pending.length>0;
    (this.q('sig-raster-swipe') as unknown as HTMLInputElement).disabled=!time.compare;
@@ -308,15 +409,20 @@ class Adapter {
   // Keep only the displayed and requested observations: bounded decoded cache.
   if(time&&!time.compare)for(const [id,e] of this.layers){if(time.layers.includes(id)&&!([time.layers[time.index],time.layers[this.displayedIndex??time.index]]).includes(id)&&e.source){e.layer.setSource(undefined);e.source.dispose();e.source=undefined;e.loadedImage=null}}
   this.paintLegend();
+  const island=this.q('sig-island-inset'),current=time&&!time.compare?this.layers.get(time.layers[this.displayedIndex??time.index])?.record:undefined;
+  island.hidden=!current?.inset_image;
+  if(current?.inset_image){const image=island.querySelector('img')!;if(image.src!==current.inset_image)image.src=current.inset_image;image.style.opacity=String(current.style.opacity)}
  }
  paintLegend(){
   const data=this.data,time=data.raster_time,legend=this.q('sig-legend');legend.replaceChildren();
   for(const record of data.layers.filter(l=>l.visible&&(!time?.layers.includes(l.id)||time.compare||l.id===time.layers[this.displayedIndex??time.index]))){
-   const row=document.createElement('div'),swatch=document.createElement('span'),label=document.createElement('span');
+   const row=document.createElement('div'),swatch=document.createElement('span'),label=document.createElement(record.type==='raster'?'button':'span');
    swatch.style.backgroundColor=record.style.fill;swatch.style.borderColor=record.style.stroke;swatch.style.opacity=String(record.style.opacity);
-   label.textContent=record.name;label.title=record.name;
+   label.textContent=record.type==='raster'?(record.variable||record.name)+(record.date?' · '+record.date:''):record.name;label.title=record.name;
    if(record.type==='raster'){
-    const scale=record.scale;label.textContent+=scale?` · ${Number(scale.stops[0]).toPrecision(5)} — ${Number(scale.stops.at(-1)).toPrecision(5)} ${record.units}`:' · Sin cobertura';
+    (label as HTMLButtonElement).disabled=this.pending.length>0;label.setAttribute('aria-label','Ver observación '+(record.date||record.name));
+    label.onclick=()=>{this.pausePlayback(false);this.uiEvent({action:'layer',command:{action:'active',layer_id:record.id}})};
+    const scale=record.scale;const tick=(value:number)=>Number(value.toPrecision(3)).toString();label.textContent+=scale?` · ${tick(scale.stops[0])} — ${tick(scale.stops.at(-1))}${scale.saturation?'+':''} ${record.units}`:' · Sin cobertura';
     if(scale){swatch.style.backgroundImage=`linear-gradient(90deg, ${scale.palette.join(',')})`;swatch.style.width='48px'}
    }
    row.append(swatch,label);legend.append(row);
@@ -353,12 +459,19 @@ class Adapter {
  }
  zoom(factor:number){this.cameraDirty=true;const view=this.map.getView();view.setResolution((view.getResolution()||1)*factor)}
  cameraIntent(){const box=constrained(this.map.getView().calculateExtent(this.map.getSize()));
-  this.root.dataset.bbox=JSON.stringify(box);this.intent('view',{bbox:box})}
- intent(action:string,values:object){this.pending.push({sequence:++this.sequence,action,...values});
-  this.paintStatus();this.transmit();}
+  this.root.dataset.cameraGestures=String(Number(this.root.dataset.cameraGestures||0)+1);
+  this.root.dataset.bbox=JSON.stringify(box);this.mapActions?.record(box);this.cameraBuffer.update(box);this.paintStatus()}
+ intent(action:string,values:object,send=true){this.pending.push({sequence:++this.sequence,action,...values});
+  this.paintStatus();if(send)this.transmit();}
+ uiEvent(event:Record<string,unknown>){
+  if(this.cameraDirty){this.cameraDirty=false;this.cameraIntent()}
+  this.cameraBuffer.flush(true);
+  this.args.setTriggerValue('ui_event',{...event,version:this.version,
+   ...(this.pending.length?{map_intents:{client:this.client,sequence:this.sequence,version:this.version,commands:[...this.pending]}}:{})});
+ }
  transmit(){if(!this.pending.length)return;
   this.args.setTriggerValue('command',{client:this.client,sequence:this.sequence,version:this.version,commands:this.pending});}
- dispose(){this.disposed=true;clearInterval(this.playTimer);cancelAnimationFrame(this.timer);this.viewportObserver.disconnect();window.removeEventListener('resize',this.resize);this.root.removeEventListener('webglcontextlost',this.contextLost,true);
+ dispose(){this.disposed=true;this.cameraBuffer.dispose();this.mapActions?.dispose();this.workbenchCleanup?.();this.playbackGeneration++;this.displayCache.clear();clearInterval(this.playTimer);cancelAnimationFrame(this.timer);this.viewportObserver.disconnect();window.removeEventListener('resize',this.resize);this.root.removeEventListener('webglcontextlost',this.contextLost,true);
   this.map.setTarget(undefined);for(const entry of this.layers.values())entry.layer.dispose();this.map.dispose();}
 }
 export default function(args:Args) {

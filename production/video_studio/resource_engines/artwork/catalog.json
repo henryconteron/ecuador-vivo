@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "commit": "d29e766ea7580b8063c4f47b29e872db40a4d979",
+  "items": [
+    {
+      "id": "bioicons.f5b4b70089ba",
+      "name": "Alpaca",
+      "category": "Biología",
+      "type": "asset",
+      "author": "Ben-Murrell",
+      "license": "CC0",
+      "source": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Animals/Ben-Murrell/Alpaca.svg",
+      "original": "bioicons.f5b4b70089ba.svg",
+      "image": "bioicons.f5b4b70089ba.png",
+      "sha256": "e050e44d7c321a3dd8666e7738816cccedc698fcc1e46c1754cb5769341c825d",
+      "summary": "Ilustración conceptual de Bioicons · no prueba presencia de una especie en Ecuador."
+    },
+    {
+      "id": "bioicons.1c1fedfa57ec",
+      "name": "Avoceta",
+      "category": "Biología",
+      "type": "asset",
+      "author": "EwaOz",
+      "license": "CC0",
+      "source": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Animals/EwaOz/avocet.svg",
+      "original": "bioicons.1c1fedfa57ec.svg",
+      "image": "bioicons.1c1fedfa57ec.png",
+      "sha256": "84c5a4a3d7f88b428da82358e8d68e67386178a8a79ad471639282e0ff048ee6",
+      "summary": "Ilustración conceptual de Bioicons · no prueba presencia de una especie en Ecuador."
+    },
+    {
+      "id": "bioicons.02bea2076174",
+      "name": "Ratón",
+      "category": "Biología",
+      "type": "asset",
+      "author": "Ben-Murrell",
+      "license": "CC0",
+      "source": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Animals/Ben-Murrell/Mouse.svg",
+      "original": "bioicons.02bea2076174.svg",
+      "image": "bioicons.02bea2076174.png",
+      "sha256": "6b2f72e787f1947d0bbeaed0bbe3574aef29d7cf1911de61e5fafb10e98454ea",
+      "summary": "Ilustración conceptual de Bioicons · no prueba presencia de una especie en Ecuador."
+    },
+    {
+      "id": "bioicons.09aabbc23a65",
+      "name": "Lemna",
+      "category": "Biología",
+      "type": "asset",
+      "author": "Gina-Vong",
+      "license": "CC0",
+      "source": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Plants_Algae/Gina-Vong/Lemna.svg",
+      "original": "bioicons.09aabbc23a65.svg",
+      "image": "bioicons.09aabbc23a65.png",
+      "sha256": "22b25bcfb48275c667ffdb4534b06caa1cd3e02d98a33a6ce07a9316a4fd1c4e",
+      "summary": "Ilustración conceptual de Bioicons · no prueba presencia de una especie en Ecuador."
+    },
+    {
+      "id": "bioicons.0470f3a017bf",
+      "name": "cell balance",
+      "category": "Biología",
+      "type": "asset",
+      "author": "ASE",
+      "license": "CC0",
+      "source": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Cell_types/ASE/cell_balance.svg",
+      "original": "bioicons.0470f3a017bf.svg",
+      "image": "bioicons.0470f3a017bf.png",
+      "sha256": "aef5f3b97ce76493dd3afc75923343372070c5fe83d8b90a9cf8978d8ca03ecb",
+      "summary": "Ilustración conceptual de Bioicons · no prueba presencia de una especie en Ecuador."
+    }
+  ]
+}

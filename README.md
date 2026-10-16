@@ -2,6 +2,10 @@
 
 **Un país vivo. Historias que puedes comprobar.** Atlas, repositorio de datos, casos audiovisuales y biblioteca de estudios sobre Ecuador en un mismo proyecto.
 
+La [guía de la versión actual](documentation/VERSION-ACTUAL.md) indica dónde abrir
+la web, Inicio, SIG, Studio y Recursos, y dónde se conservan los proyectos,
+videos y datos. Para continuar el desarrollo, usar [ESTADO.md](documentation/ESTADO.md).
+
 ## Entradas del proyecto unificado
 
 - [Inicio](https://henryconteron.github.io/ecuador-vivo/): presentación del proyecto.

@@ -9,6 +9,8 @@ from dataclasses import asdict
 import hashlib
 import io
 import json
+from concurrent.futures import ThreadPoolExecutor
+import threading
 from layout_engine import _png
 
 
@@ -73,6 +75,58 @@ class StudioPreviewCache:
     """Reuse independent scene products after complete document/file validation."""
     def __init__(self, *, max_bytes=32*1024*1024,media_max_bytes=32*1024*1024):
         self.media=MediaCache(media_max_bytes);self._products=_MemoryLRU(max_bytes)
+        from studio_validation_cache import ResourceProofs
+        self.proofs=ResourceProofs()
+        self._lock=threading.RLock();self._executor=None;self._future=None
+        self._requested=None;self._last_workspace=None;self._last_scene=None;self.visual_error=None
+        self._render_proofs=set()
+
+    def prepare(self,project):
+        from studio_timeline import PreparedTimeline
+        with self._lock:return PreparedTimeline(project,resource_proofs=self.proofs)
+
+    def validate_presentation(self,prepared,assets):
+        """Same renderer checks before save; no canvas compositing or thumbnails."""
+        from studio_render import _render_validated_scene
+        view=self.for_timeline(prepared,assets)
+        for row in view.rows:
+            key=view.keys[row['id']]
+            if key in self._render_proofs:continue
+            scene=view.scenes[row['id']]
+            _render_validated_scene(scene,prepared.profile,prepared.project['studio']['calculations'],
+                assets=assets.at(0,scene['elements'],map_instances=scene.get('map_instances')),check_only=True)
+            self._render_proofs.add(key)
+        if len(self._render_proofs)>512:self._render_proofs=set(view.keys.values())
+
+    def workspace_products(self,project,sid,frame,builder):
+        """Save/ack first; retain the last verified pixels while rendering later."""
+        identity=hashlib.sha256(json.dumps([project,sid,frame],sort_keys=True,allow_nan=False).encode()).hexdigest()
+        if self._future and self._future.done():
+            try:
+                result=self._future.result()
+                self._last_workspace=result;self._last_scene=result['scene'];self.visual_error=None
+            except Exception as error:self.visual_error=str(error) or type(error).__name__
+            finally:self._future=None
+        if self._requested!=identity and self._future is None:
+            self._requested=identity
+            self.visual_error=None
+            def build():
+                from studio_media import AssetFrames
+                from studio_temporal import calendar_receipt
+                prepared=self.prepare(copy.deepcopy(project))
+                with AssetFrames(project['studio']['media'],cache=self.media) as assets:
+                    view=self.for_timeline(prepared,assets)
+                    payload=view.canvas(sid,builder,frame=frame)
+                    payload.update(rows=view.thumbnails(),frame=frame,preview=view.preview(frame),
+                        scientific_calendar=calendar_receipt(project,prepared.rows),identity=identity)
+                    return payload
+            if self._last_workspace is None:
+                self._last_workspace=build();self._last_scene=sid
+            else:
+                if self._executor is None:self._executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='studio-visual')
+                self._future=self._executor.submit(build)
+        pending=self._last_workspace['identity']!=identity and not self.visual_error
+        return copy.deepcopy(self._last_workspace),pending
 
     @property
     def bytes_used(self): return self._products.bytes_used
@@ -80,6 +134,7 @@ class StudioPreviewCache:
     def for_timeline(self,prepared,assets): return _PreviewSession(self,prepared,assets)
 
     def clear(self):
+        if self._executor:self._executor.shutdown(wait=True,cancel_futures=True)
         self._products.clear();self.media.clear()
 
 
@@ -96,6 +151,8 @@ class _PreviewSession:
             media={e.get('style',{}).get('asset_id') for e in scene['elements'] if e['type'] in ('map','image','logo','video')}
             media.update(i['asset_id'] for i in scene.get('map_instances',{}).values())
             signature={'renderer':'studio_preview_v2','scene':scene,'profile':asdict(prepared.profile),
+                'captions':studio.get('captions',{}),'global_start_frame':row['start_frame']
+                    if studio.get('captions',{}).get('enabled') and studio['captions'].get('cues') else None,
                 'calculations':{rid:studio['calculations'][rid] for rid in bindings},
                 'media':{aid:assets.records.get(aid) for aid in media if aid is not None}}
             self.keys[row['id']]=hashlib.sha256(json.dumps(signature,sort_keys=True,allow_nan=False).encode()).hexdigest()
@@ -114,15 +171,17 @@ class _PreviewSession:
         key=(self.keys[sid],'thumbnail');value=self.cache._products.get(key)
         if value is None:
             if image is None: image=self.prepared.frame_at(self._row(sid)['start_frame'],assets=self.assets,authoring=True)
+            self.cache._render_proofs.add(self.keys[sid])
             thumbnail=image.copy();thumbnail.thumbnail((160,100));value=_png(thumbnail)
             self.cache._products.put(key,value,len(value.encode())+256)
         return value
 
-    def canvas(self,sid,payload_builder):
-        self._verify_maps(sid)
-        key=(self.keys[sid],'canvas');value=self.cache._products.get(key)
+    def canvas(self,sid,payload_builder,frame=None):
+        frame=self._row(sid)['start_frame'] if frame is None else frame
+        self._verify_maps(sid,frame)
+        key=(self.keys[sid],'canvas',frame-self._row(sid)['start_frame']);value=self.cache._products.get(key)
         if value is None:
-            image=self.prepared.frame_at(self._row(sid)['start_frame'],assets=self.assets,authoring=True)
+            image=self.prepared.frame_at(frame,assets=self.assets,authoring=True)
             value=payload_builder(image,self.scenes[sid],self.prepared.profile)
             self._thumbnail(sid,image)
             self.cache._products.put(key,copy.deepcopy(value),len(json.dumps(value).encode())+256)

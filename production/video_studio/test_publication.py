@@ -105,7 +105,7 @@ class PublicationDraft(unittest.TestCase):
         receipt_path = self.job / 'receipt.json'
         receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
         receipt['render_type'] = 'climate_comparison'
-        receipt['project'].update(source='local', cadence='Mensual', start='2020-01-01', end='2024-03-31')
+        receipt['project'].update(source='local', cadence='Mensual', variable='Temperatura', units='°C', start='2020-01-01', end='2024-03-31')
         receipt['source_records'] = [{'provider': 'NASA POWER', 'period': {'start': '2024-01-01', 'end': '2024-03-31'},
             'archive_sha256': 'c'*64, 'source_url': 'https://example.org/power', 'manifest_path_local': 'C:/private/data.json'}]
         receipt['comparison'] = {'aggregation': 'day-weighted temporal mean', 'years': [2020, 2024]}

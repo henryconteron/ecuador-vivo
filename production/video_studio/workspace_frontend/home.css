@@ -1,23 +1,38 @@
-/* Owned launch surface, shared Ecuador Vivo typography and colors. */
-[data-testid=stMainBlockContainer]:has(.st-key-ev_home_entries){max-width:1320px;padding:20px 40px 32px}
-body:has(.st-key-ev_home_entries) [data-testid=stHeader]{height:0;min-height:0}
-.st-key-ev_home_nav{padding:8px 0 18px;border-bottom:1px solid #334b56;gap:12px;flex-wrap:nowrap!important}
-.st-key-ev_home_nav>*{flex:0 0 auto!important;width:auto!important}
-.home-brand{display:flex;align-items:center;gap:12px;font:600 20px/1.4 'Segoe UI',sans-serif;margin-right:28px}
-.home-brand span{color:#71dcc8;border:1px solid #71dcc8;border-radius:8px;padding:8px;font-size:14px}
-.home-project{display:block;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#b8cbd1;margin-left:24px}
-.home-hero{text-align:center;padding:20px 0 18px}.home-hero h1{font:650 36px/1.2 'Segoe UI',sans-serif;letter-spacing:-1px;margin:0 0 12px;color:#edf5f7}.home-hero p{color:#b8cbd1;font-size:15px;margin:0}
-.st-key-ev_home_sig,.st-key-ev_home_studio{position:relative;min-height:232px;padding:24px!important;background:#152730;border:1px solid #41616d;border-radius:12px;overflow:hidden}
-.st-key-ev_home_entries h2{font-size:26px;margin:0}.home-entry-copy{max-width:65%;color:#b8cbd1;font-size:15px;line-height:1.5;margin:0 0 16px}
-.home-entry-icon{color:#71dcc8;font-size:26px}.st-key-ev_home_entries button{position:relative;z-index:1;min-width:145px}
-.home-map-art,.home-film-art{position:absolute;right:18px;top:40px;width:29%;height:145px;opacity:.8;pointer-events:none}
-.home-map-art img{width:100%;height:125px}.home-map-art small{display:block;font-size:9px;text-align:right;color:#b8cbd1}
-.home-map-art i{position:absolute;inset:20% 0;border:2px solid #71dcc8;transform:skewY(-18deg);background:#1e5360}.home-map-art i:nth-child(2){top:35%;bottom:5%}.home-map-art i:nth-child(3){top:50%;bottom:-10%}
-.home-film-art{transform:none;border:1px solid #71dcc8;border-radius:6px;background:#0c1e26}.home-film-art i{position:absolute;left:8%;right:8%;height:24%;background:#326572;border-radius:3px}.home-film-art i:nth-child(1){top:10%}.home-film-art i:nth-child(2){top:40%}.home-film-art i:nth-child(3){top:70%}
-.home-recent-image{width:100%;height:100px;object-fit:contain;background:#08191f;border-radius:6px}
-.home-film-art:has(img){width:35%;height:145px;background:#08191f;overflow:hidden}.home-film-art img{width:100%;height:100%;object-fit:contain}
-.st-key-ev_home_entries button[kind=primary]{background:#71dcc8;border-color:#71dcc8;color:#08242b;font-weight:600}
-[class*=st-key-ev_home_choice_]{padding:12px!important;gap:6px!important;background:#13252d;border-color:#334e5b}
-[class*=st-key-ev_home_recent_]{padding:12px!important;background:#13252d;border-color:#334e5b}
-[class*=st-key-ev_home_recent_] p{overflow-wrap:anywhere}
-@media(max-width:800px){[data-testid=stMainBlockContainer]:has(.st-key-ev_home_entries){padding:12px 16px}.home-project{display:none}.home-brand{margin-right:0;font-size:16px}.home-hero{padding:24px 0 16px}.home-hero h1{font-size:28px}.st-key-ev_home_entries [data-testid=stHorizontalBlock]{flex-wrap:wrap}.st-key-ev_home_entries [data-testid=stColumn]{width:100%;flex:1 1 100%}.st-key-ev_home_sig,.st-key-ev_home_studio{min-height:210px}}
+/* Approved expedition desk: static art and native project actions. */
+.home-hero.expedition-desk{position:relative;isolation:isolate;overflow:hidden;min-height:360px;margin:20px 0 24px;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:32px;border-radius:8px;background:#132b46;color:#fff5df}
+.desk-landscape{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 55%;z-index:-2}
+.expedition-desk::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#0b233deb,#0b233d70 45%,#0b233d00 80%),linear-gradient(0deg,#0b233d70,transparent 40%)}
+.desk-eyebrow{font:600 10px/1.5 'Segoe UI',sans-serif;letter-spacing:.16em;color:#fff5df}
+.expedition-desk h1{font:600 clamp(36px,4vw,60px)/1.08 EVLora,Georgia,serif;letter-spacing:-2px;color:#fff9ec;margin:16px 0;max-width:22ch}
+.expedition-desk p{font:15px/1.65 'Segoe UI',sans-serif;color:#fff9ec;margin:0;max-width:45ch}
+.expedition-desk aside{font:12px/1.6 'Segoe UI',sans-serif;color:#fff9ec;min-width:200px;align-self:flex-end;border-left:1px solid #fff5df80;padding-left:20px;text-shadow:0 1px 5px #132b46}
+.expedition-desk aside strong{display:block;font:500 22px/1.4 EVLora,Georgia,serif;margin-bottom:8px}
+.expedition-desk>small{position:absolute;bottom:12px;left:48px;font:10px/1.5 'Segoe UI',sans-serif;color:#fff5df}
+.st-key-ev_home_actions{padding:0 0 24px;gap:8px}
+.st-key-ev_home_entries{padding-bottom:24px}
+.st-key-ev_home_studio{padding:0 24px 20px!important;border:1px solid #d6cdb9;border-radius:8px;overflow:hidden;background:#fffaf0;gap:12px}
+.st-key-ev_home_studio [data-testid="stImage"]{margin-inline:-24px;width:calc(100% + 48px)!important;max-width:none!important}
+.st-key-ev_home_studio [data-testid="stImage"] img{display:block;width:100%;height:240px;object-fit:cover;object-position:center 40%}
+.st-key-ev_home_sig,.st-key-ev_home_resources{padding:20px!important;border:1px solid #d6cdb9;border-radius:8px;overflow:hidden;background:#fffaf0;gap:12px}
+.st-key-ev_home_sig [data-testid="stImage"] img,.st-key-ev_home_resources [data-testid="stImage"] img{width:100%;height:156px;object-fit:cover;border-radius:4px;object-position:70% center;background:#efe4cb}
+.st-key-ev_home_resources [data-testid="stImage"] img{object-fit:contain}
+.home-entry-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.home-entry-title h2{font:600 30px/1.2 EVLora,Georgia,serif;color:#132b46;margin:0;letter-spacing:-.8px}
+.home-entry-title span{font:12px/1.5 'Segoe UI',sans-serif;color:#526174}
+.st-key-ev_home_sig .home-entry-title,.st-key-ev_home_resources .home-entry-title{display:block}
+.st-key-ev_home_sig .home-entry-title h2,.st-key-ev_home_resources .home-entry-title h2{font-size:25px}
+.st-key-ev_home_sig .home-entry-title span,.st-key-ev_home_resources .home-entry-title span{display:block;margin-top:4px}
+.st-key-ev_home_entries [data-testid="stCaptionContainer"] p{font-size:13px;line-height:1.6;color:#526174;max-width:65ch}
+.st-key-ev_home_entries button[kind="primary"]{background:#176f5c;color:#fff9ec;border:1px solid #176f5c;border-radius:5px;justify-content:flex-start;font-weight:600;min-height:40px}
+.st-key-ev_home_entries button:hover{border-color:#238e77!important}
+.st-key-ev_home_entries button:focus-visible{outline:2px solid #176f5c;outline-offset:3px}
+.home-catalog-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:12px 0 16px;padding-top:24px;border-top:1px solid #d6cdb9}
+.home-catalog-heading h2{font:600 25px/1.3 EVLora,Georgia,serif;color:#132b46;margin:0}
+.home-catalog-heading span{color:#526174;font:13px/1.5 'Segoe UI',sans-serif}
+[class*="st-key-ev_home_recent_"]{padding:16px!important;border:1px solid #d6cdb9;border-radius:6px;background:#fffaf0;gap:6px}
+[class*="st-key-ev_home_recent_"] p{overflow-wrap:anywhere;font-size:14px;line-height:1.5;color:#132b46}
+[class*="st-key-ev_home_recent_"] [data-testid="stCaptionContainer"] p{font-size:12px;color:#526174}
+[class*="st-key-ev_home_recent_"] button{margin-top:8px;min-height:36px;font-size:13px;background:transparent;border-color:#8e9e98;color:#176f5c;justify-content:flex-start}
+.home-recent-image{width:100%;height:120px;object-fit:contain;background:#132b46;border-radius:4px}
+@media(max-width:1100px){.expedition-desk aside{display:none}.st-key-ev_home_studio [data-testid="stImage"] img{height:260px}.st-key-ev_home_sig,.st-key-ev_home_resources{padding:16px!important}.st-key-ev_home_sig [data-testid="stColumn"]:first-child,.st-key-ev_home_resources [data-testid="stColumn"]:first-child{display:none}.st-key-ev_home_sig [data-testid="stColumn"]:last-child,.st-key-ev_home_resources [data-testid="stColumn"]:last-child{width:100%;flex:1 1 100%}}
+@media(max-width:760px){.home-hero.expedition-desk{padding:32px 24px 48px;min-height:320px;margin:12px 0 20px}.expedition-desk h1{font-size:36px;letter-spacing:-1px}.expedition-desk p{font-size:13px}.expedition-desk>small{left:24px;max-width:80%;font-size:9px}.st-key-ev_home_entries>[data-testid="stHorizontalBlock"]{flex-wrap:wrap}.st-key-ev_home_entries>[data-testid="stHorizontalBlock"]>[data-testid="stColumn"]{flex:1 1 100%;min-width:0}.st-key-ev_home_studio [data-testid="stImage"] img{height:220px}.home-catalog-heading{display:block}.home-catalog-heading span{display:block;margin-top:4px}}

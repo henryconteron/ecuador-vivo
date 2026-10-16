@@ -11,22 +11,28 @@ from studio_media import AssetFrames
 from studio_render import render_scene, _render_validated_scene
 from output_profiles import profile_for
 from calculation_results import CalculationResult
-from studio_audio import audio_settings, video_sources, mux_audio
+from studio_audio import audio_settings, combined_sources, mux_audio
+from studio_captions import prepare_captions, render_captions, validate_caption_layout
 
 
-def validate_export(project):
+def validate_export(project, *, resource_proofs=None):
     check_schema(project)
     try: json.dumps(project,allow_nan=False)
     except (TypeError,ValueError) as error:
         raise ValueError('El proyecto completo debe ser JSON finito y serializable.') from error
     studio=validate_studio(project['studio'])
+    from studio_sig_transfer import validate_transfer
+    validate_transfer(project)
     if any(not isinstance(record,dict) for record in studio['media'].values()):
         raise ValueError('Registro multimedia inválido.')
-    from studio_temporal import validate_maps
-    validate_maps(project)
-    if 'geography' in studio:
-        from studio_geography import validate_geography
-        validate_geography(studio)
+    def verify_resources():
+        from studio_temporal import validate_maps
+        validate_maps(project)
+        if 'geography' in studio:
+            from studio_geography import validate_geography
+            validate_geography(studio)
+    if resource_proofs is None:verify_resources()
+    else:resource_proofs.verify(project,verify_resources)
     profile=profile_for(studio['output_profile'])
     active=set(studio['timeline'])
     for scene in studio['scenes']:
@@ -60,10 +66,12 @@ def frame_at(project,frame, *, assets=None, authoring=False):
     profile=profile_for(studio['output_profile'])
     if assets is None:
         with AssetFrames(studio['media']) as source:
-            return render_scene(scene,profile,studio['calculations'],assets=_scene_assets(source,time,scene),
-                                time=None if authoring else time)
-    return render_scene(scene,profile,studio['calculations'],assets=_scene_assets(assets,time,scene),
+            image = render_scene(scene,profile,studio['calculations'],assets=_scene_assets(source,time,scene),
+                                 time=None if authoring else time)
+    else:
+        image = render_scene(scene,profile,studio['calculations'],assets=_scene_assets(assets,time,scene),
                         time=None if authoring else time)
+    return render_captions(image, studio.get('captions', {}), frame, authoring=authoring)
 
 
 class PreparedTimeline:
@@ -72,12 +80,31 @@ class PreparedTimeline:
     No cache of external files: AssetFrames still verifies media for each
     preview/export session. Public accessors return copies of the snapshot.
     """
-    def __init__(self,project):
+    def __init__(self,project, *, resource_proofs=None,preview_max_side=None):
         self._project=copy.deepcopy(project)
-        self.profile=validate_export(self._project)
+        self.profile=validate_export(self._project,resource_proofs=resource_proofs)
+        self._preview_scale=1
         self._rows=_timeline_rows_validated(self._project['studio'])
+        self._captions=prepare_captions(self._project['studio'].get('captions',{}),self._rows[-1]['end_frame'])
         self._scenes={s['id']:copy.deepcopy(s) for s in self._project['studio']['scenes']}
         for row in self._rows: self._scenes[row['id']]['duration']=row['seconds']
+        if preview_max_side is not None:
+            from output_profiles import OutputProfile
+            factor=min(1,preview_max_side/max(self.profile.width,self.profile.height))
+            width=max(2,round(self.profile.width*factor/2)*2)
+            height=max(2,round(self.profile.height*factor/2)*2)
+            sx,sy=width/self.profile.width,height/self.profile.height
+            self._preview_scale=min(sx,sy)
+            self.profile=OutputProfile('preview','Previsualización',width,height,self.profile.margin*min(sx,sy))
+            for scene in self._scenes.values():
+                for element in scene['elements']:
+                    t=element['transform']
+                    for key in ('x','width'):t[key]*=sx
+                    for key in ('y','height'):t[key]*=sy
+                    style=element.get('style',{})
+                    for key in ('stroke_width','radius','padding'):
+                        if isinstance(style.get(key),(int,float)):style[key]*=min(sx,sy)
+        validate_caption_layout(self._captions,self.profile.width,self.profile.height)
 
     @property
     def project(self): return copy.deepcopy(self._project)
@@ -97,8 +124,9 @@ class PreparedTimeline:
         if assets is None:
             with AssetFrames(self._project['studio']['media']) as source:
                 return self.frame_at(frame,assets=source,authoring=authoring)
-        return _render_validated_scene(scene,self.profile,self._project['studio']['calculations'],
-            assets=_scene_assets(assets,time,scene),time=None if authoring else time)
+        image = _render_validated_scene(scene,self.profile,self._project['studio']['calculations'],
+            assets=_scene_assets(assets,time,scene),time=None if authoring else time,preview_scale=self._preview_scale)
+        return render_captions(image,self._captions,frame,authoring=authoring)
 
 
 def _write_staged_json(path,value):
@@ -121,9 +149,9 @@ def _publication_guard():
         raise
 
 
-def export_movie(project,target, *, progress=None, cancelled=None):
+def export_movie(project,target, *, progress=None, cancelled=None,preview_max_side=None):
     """Preflight every active scene before creating files; receipt only on success."""
-    prepared=PreparedTimeline(project)
+    prepared=PreparedTimeline(project,preview_max_side=preview_max_side)
     project=prepared.project
     profile=prepared.profile
     rows=prepared.rows
@@ -142,7 +170,7 @@ def export_movie(project,target, *, progress=None, cancelled=None):
     reservation=target.parent/'.studio-export.lock'
     with _publication_guard() as published, AssetFrames(project['studio']['media']) as assets:
         for row in rows: prepared.frame_at(row['start_frame'],assets=assets,authoring=True)
-        audio=video_sources(project,rows,assets)
+        audio=combined_sources(project,rows,assets)
         target.parent.mkdir(parents=True,exist_ok=True)
         owned_staging=[];lock_owned=False
         try:
@@ -175,6 +203,16 @@ def export_movie(project,target, *, progress=None, cancelled=None):
                 'video_sha256':hashlib.sha256(partial.read_bytes()).hexdigest(),
                 'audio':audio_receipt,'preview_method':'frame_at / render_scene; audiovisual worker MP4',
                  'scientific_computation':'none; stored CalculationResult registry'}
+            receipt['captions']={'enabled':project['studio'].get('captions',{}).get('enabled',False),
+                'cue_count':len(project['studio'].get('captions',{}).get('cues',[])),
+                'method':'plain text burned in; shared global 30 fps half-open intervals'}
+            if preview_max_side is not None:
+                final_profile=profile_for(project['studio']['output_profile'])
+                receipt['delivery_kind']='preview'
+                receipt['preview']={'max_side':preview_max_side,'final_dimensions':[final_profile.width,final_profile.height],
+                    'method':'same validated timeline and native resources; display geometry and typography scaled',
+                    'scientific_resolution_changed':False}
+            else:receipt['delivery_kind']='final'
             from studio_temporal import calendar_receipt
             receipt['scientific_calendar'] = calendar_receipt(project,rows)
             if 'geography' in project['studio']:

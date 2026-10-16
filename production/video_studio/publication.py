@@ -10,7 +10,7 @@ from pathlib import Path
 
 from model import ROOT, STORE
 from jobs import read_json, write_json
-from variables import endcard_copy, resolve_aggregation
+from variables import detect_profile, endcard_copy, resolve_aggregation
 
 REGISTRY = ROOT / 'data' / 'cases' / 'registry.json'
 MAX_INLINE_VIDEO_BYTES = 90 * 1024 * 1024
@@ -146,7 +146,9 @@ def prepare_case(job, case_id):
             raise ValueError('El recibo no contiene métricas del cierre.')
         public_receipt = _public_receipt(receipt)
         public_receipt['case_id'] = case_id
-        profile = resolve_aggregation(project)[1]
+        # Geographic records use the summary's declared CSV/counting method,
+        # not a weather-rate contract inferred from a free-form column label.
+        profile = detect_profile(project) if geographic else resolve_aggregation(project)[1]
         copy = endcard_copy(project, summary, profile)
         copy.update(summary.get('comparison_copy', {}))
 

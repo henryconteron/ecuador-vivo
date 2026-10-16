@@ -6,6 +6,7 @@ from output_profiles import adaptive_regions
 
 THEMES = {
     'Ecuador Vivo': ('#04151e', '#f0f5f8', '#13bfd1'),
+    'Ecuador Vivo Social': ('#04151e', '#f3f7f9', '#58e4ce'),
     'Andes Pulso': ('#121722', '#f6f4eb', '#e9af43'),
     'Scientific': ('#f5f7fa', '#152536', '#247ba0'),
     'Editorial': ('#faf7f0', '#222222', '#aa4634'),
@@ -21,6 +22,19 @@ TEMPLATES = {'blank': 'Lienzo vacío', 'cover': 'Portada', 'map_metric': 'Mapa +
              'metric_focus':'Métrica destacada','ranking_focus':'Ranking',
              'comparison':'Comparación','quote':'Cita','image_caption':'Imagen + créditos',
              'methodology':'Metodología / fuentes'}
+
+
+def rain_regions(profile):
+    """Shared reference-led geometry, also used when changing output format."""
+    from studio_social_template import regions
+    return regions(profile)
+
+
+def rainfall_scenes(project,record,manifest,snapshot,*,endcard_duration=5.):
+    """Editable editorial scenes over the existing scientific snapshot."""
+    from studio_social_template import scenes
+    return scenes(project,record,manifest,snapshot,endcard_duration=endcard_duration)
+
 TEMPLATE_BINDINGS={'map_metric':('metric','value'),'metric_focus':('metric','value'),
                    'map_ranking':('ranking','rows'),'ranking_focus':('ranking','rows'),
                    'comparison':('comparison','rows')}
@@ -63,6 +77,12 @@ def template_scene(template, profile, *, theme='Ecuador Vivo', typography='Profe
     elements = []
 
     def add(identifier, kind, region, style, binding=None,role=None,sizes=None):
+        if theme=='Ecuador Vivo Social' and kind in ('text','source'):
+            style={**style,'font_family':'Barlow Condensed Display' if style.get('bold') else 'Barlow Condensed'}
+        if theme=='Ecuador Vivo Social' and kind in ('metric','ranking'):
+            settings=style.get('visualization',{})
+            style={**style,'visualization':{**settings,'style':{**settings.get('style',{}),
+                'presentation':'editorial_metric' if kind=='metric' else 'editorial_ranking'}}}
         transform = {k: round(v) for k, v in region.items()}
         elements.append(Element(id=identifier, type=kind, name=identifier,
             transform=transform, style=style, data_binding=binding, z_index=len(elements)).to_dict())

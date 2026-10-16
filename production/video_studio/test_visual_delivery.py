@@ -25,7 +25,7 @@ class RasterDeliveryTests(unittest.TestCase):
         self.assertEqual(response.headers['x-ecuador-observation-date'],'2024-01-01')
         self.assertEqual(response.headers['x-ecuador-source-sha256'],'a'*64)
         self.assertEqual(response.headers['cache-control'],'private, no-store')
-        render.assert_called_once_with(self.source,{'stops':[0,10]})
+        render.assert_called_once_with(self.source,{'stops':[0,10]},size=1000,box=None,presentation=None)
 
     def test_warm_capability_still_verifies_source(self):
         url=delivery.register_raster_display(self.source,None)
@@ -48,6 +48,30 @@ class RasterDeliveryTests(unittest.TestCase):
 
 
 class JobProgressTests(unittest.IsolatedAsyncioTestCase):
+    async def test_reduced_preview_progress_and_movie_use_authorized_routes(self):
+        from starlette.testclient import TestClient
+        from starlette.applications import Starlette
+        from starlette.routing import Route
+        with tempfile.TemporaryDirectory() as folder,patch.object(delivery,'STORE',Path(folder)):
+            job=Path(folder)/'jobs'/'preview-test';job.mkdir(parents=True)
+            (job/'request.json').write_text('{}')
+            (job/'status.json').write_text('{"state":"running"}')
+            url=delivery.register_job_status(job)
+            with TestClient(Starlette(routes=[Route('/studio-status/{token}',delivery.job_response),
+                    Route('/studio-media/{token}',delivery.movie_response)])) as client:
+                self.assertEqual(client.get(url).json(),{'job':{'state':'running'}})
+                (job/'status.json').write_text('{"state":"complete"}')
+                self.assertEqual(client.get(url).status_code,409)
+                (job/'video.mp4').write_bytes(b'0123456789')
+                (job/'receipt.json').write_text('{"delivery_kind":"preview","dimensions":[360,640]}')
+                result=client.get(url);self.assertEqual(result.status_code,200)
+                self.assertEqual(result.json()['receipt']['delivery_kind'],'preview')
+                movie=client.get(result.json()['movie_url'],headers={'Range':'bytes=2-5'})
+                self.assertEqual(movie.status_code,206);self.assertEqual(movie.content,b'2345')
+            for forbidden in [Path(folder)/'preview-outside',Path(folder)/'jobs'/'unrecognized']:
+                with self.assertRaises(ValueError):delivery.register_job_status(forbidden)
+                with self.assertRaises(ValueError):delivery.register_movie(forbidden)
+
     async def test_capability_checks_path_and_does_not_publish_partial_movie(self):
         from starlette.testclient import TestClient
         from starlette.applications import Starlette

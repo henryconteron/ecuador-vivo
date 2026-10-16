@@ -1,0 +1,191 @@
+/* Expedición andina: quiet navy chrome and a cream field-notebook inspector.
+   Brand colors belong to controls only; scientific map palettes are untouched. */
+#sig-map.sig-workspace{
+ --shell-line:#36536c;--shell-muted:#b9c9d7;--sig-panel:#132b46;--sig-raised:#203e59;--sig-ink:#f6f8fc;--sig-accent:#80d8c3;
+ --sig-chrome:#132b46;--sig-control:#1b3652;--sig-input:#10253c;--sig-jade:#176f5f;--sig-jade-hover:#125b4e;--sig-paper:#fff5df;
+ padding:0;border:1px solid var(--shell-line);border-radius:8px;background:#0b2239;color:var(--sig-ink);font:13px/1.45 'Segoe UI',system-ui,sans-serif;position:relative;overflow:hidden;color-scheme:dark;
+}
+#sig-map.sig-workspace *{box-sizing:border-box}
+#sig-map button,#sig-map select,#sig-map input{font:inherit}
+#sig-map button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:32px;padding:6px 10px;border:1px solid transparent;border-radius:5px;color:var(--sig-ink);background:transparent;cursor:pointer;white-space:nowrap}
+#sig-map button:hover{background:var(--sig-raised);border-color:var(--shell-line)}
+#sig-map button:disabled{cursor:default;opacity:.5}#sig-map button:disabled:hover{background:transparent}
+#sig-map :is(button,input,select,summary,[data-drag-window]):focus-visible{outline:2px solid var(--sig-accent);outline-offset:-2px}
+#sig-map [hidden]{display:none!important}
+.sig-icon{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.sig-palette-swatch{height:14px;border:1px solid var(--shell-line);border-radius:4px;margin:0 0 12px}
+.sig-shell-header{height:48px;display:flex;gap:12px;align-items:center;padding:0 14px;background:var(--sig-chrome);border-bottom:1px solid var(--shell-line);min-width:0}
+.sig-shell-brand{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:14px;font-weight:600;letter-spacing:-.2px}
+.sig-shell-brand b{font-size:20px;letter-spacing:-1.4px;color:var(--sig-accent)}
+.sig-app-nav{display:flex;align-self:stretch;align-items:center;gap:2px;border-right:1px solid var(--shell-line);padding-right:12px}
+#sig-map .sig-app-nav button{border-radius:0;height:100%;border:0;border-bottom:2px solid transparent;font-size:12px}
+#sig-map .sig-app-nav .is-active{opacity:1;border-bottom-color:var(--sig-accent);color:var(--sig-accent);background:#193950}
+#sig-project-title{min-width:40px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+#sig-save-label{font-size:11px;color:var(--shell-muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sig-document-actions{display:flex;border-left:1px solid var(--shell-line);padding-left:8px;gap:2px}
+#sig-map #sig-undo span,#sig-map #sig-redo span{display:none}
+#sig-map .sig-primary{background:var(--sig-jade);color:#fff;font-weight:650;border-color:var(--sig-jade)}
+#sig-map .sig-primary:hover{background:var(--sig-jade-hover);border-color:var(--sig-jade-hover)}
+.sig-ribbon{background:var(--sig-panel);border-bottom:1px solid var(--shell-line)}
+.sig-ribbon-navigation{display:flex;align-items:center;min-height:40px;gap:12px;overflow-x:auto;scrollbar-width:thin}
+.sig-window-tools{display:flex;align-items:center;gap:2px;padding:0 12px 0 16px;border-left:1px solid var(--shell-line);flex-shrink:0}
+#sig-map .sig-window-tools button{font-size:12px;padding:4px 8px;min-height:32px;gap:6px}
+#sig-map .sig-window-tools [aria-expanded=true]{background:#1d4652;color:var(--sig-accent);border-color:#3f716f}
+.sig-task-tabs{display:flex;gap:16px;height:32px;padding-inline:12px;align-items:stretch;overflow-x:auto;scrollbar-width:thin;flex-shrink:0}
+#sig-map .sig-task-tabs button{height:32px;min-height:32px;border:0;border-bottom:2px solid transparent;border-radius:0;padding:0 6px;font-weight:600;font-size:12px}
+#sig-map .sig-task-tabs [aria-pressed=true]{color:var(--sig-accent);border-bottom-color:var(--sig-accent)}
+.sig-taskbar{height:44px;display:flex;align-items:center;gap:24px;padding:4px 12px;background:#17314c;overflow-x:auto;scrollbar-width:thin}
+.sig-task-group{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sig-task-group small{font-size:10px;color:var(--shell-muted);padding-inline:8px}
+#sig-map .sig-task-group button{grid-row:1;border-color:var(--shell-line);background:var(--sig-control);min-height:34px;font-size:12px}
+#sig-map .sig-task-group button:hover{border-color:var(--sig-accent);background:var(--sig-raised)}
+#sig-series-context{margin-left:auto;min-width:160px;max-width:330px;font-size:11px;line-height:1.55;color:var(--shell-muted);border-left:1px solid var(--shell-line);padding-left:16px}
+.sig-shell-body{display:block;position:relative;min-width:0;height:var(--sig-map-height);overflow:hidden}
+.sig-floating-window{position:absolute;display:flex;flex-direction:column;left:16px;top:16px;width:320px;height:400px;min-width:220px;min-height:110px;max-width:100%;max-height:100%;resize:both;overflow:hidden;z-index:12;background:var(--sig-panel);border:1px solid var(--shell-line);border-radius:8px;box-shadow:0 10px 28px #06172750}
+.sig-floating-window:not([hidden])::after{content:'';position:absolute;right:2px;bottom:2px;width:8px;height:8px;border-right:1px solid #99bbc9;border-bottom:1px solid #99bbc9;pointer-events:none}
+.sig-floating-window .sig-panel-heading{height:40px;padding-inline:10px}
+.sig-floating-window [data-drag-window]{cursor:move;touch-action:none;user-select:none;flex:1;align-self:stretch;display:flex;align-items:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sig-map .sig-floating-window .sig-panel-heading button{margin-left:0;min-width:28px;min-height:28px;padding:4px}
+#sig-map .sig-floating-window .sig-panel-heading button span{display:none}
+#sig-map #sig-layers-window{height:min(440px,85%)}
+#sig-map #sig-properties-window{height:min(560px,92%)}
+#sig-map #sig-reference-window{width:300px;height:166px}
+#sig-map #sig-table-window{width:min(820px,90%);height:min(310px,75%);min-width:260px;min-height:140px}
+#sig-map #sig-table-window.sig-window-maximized{inset:12px!important;width:calc(100% - 24px)!important;height:calc(100% - 24px)!important;resize:none}
+.sig-panel-heading{height:40px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:4px 12px;border-bottom:1px solid var(--shell-line);background:var(--sig-panel);font-size:13px}
+.sig-panel-heading strong{font-weight:600}.sig-panel-heading button{margin-left:auto}
+#sig-layer-count{font-size:10px;color:var(--shell-muted);border:1px solid var(--shell-line);border-radius:3px;padding:0 5px;font-variant-numeric:tabular-nums}
+#sig-map :is(#sig-add-data,#sig-toggle-layers,#sig-toggle-inspector){padding:4px;min-width:28px;min-height:28px;gap:0}
+#sig-map :is(#sig-add-data,#sig-toggle-layers,#sig-toggle-inspector) span{display:none}
+#sig-map #sig-add-data{margin-left:auto}#sig-map #sig-toggle-layers{margin-left:0}
+.sig-search-wrap{padding:8px 10px;border-bottom:1px solid var(--shell-line)}
+#sig-layer-search{width:100%;padding:6px 8px;color:var(--sig-ink);background:var(--sig-input);border:1px solid var(--shell-line);border-radius:5px;font-size:12px;min-height:32px}
+#sig-layer-tree{flex:1;min-height:0;overflow:auto;padding:4px 0 8px;scrollbar-width:thin;scrollbar-color:#496572 transparent}
+#sig-layer-tree details{margin:0;padding:0}
+#sig-layer-tree summary{font-size:11px;font-weight:600;padding:10px 12px 6px;color:var(--shell-muted);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sig-layer-row{display:flex;align-items:center;gap:6px;padding:2px 10px 2px 16px;border-left:3px solid transparent;min-height:42px}
+.sig-layer-row:hover{background:var(--sig-raised)}.sig-layer-row.is-active{border-left-color:var(--sig-accent);background:#1d4652}
+.sig-layer-row input[type=checkbox]{width:14px;height:14px;flex-shrink:0;margin:0;accent-color:var(--sig-accent)}
+.sig-layer-swatch{width:14px;height:14px;flex-shrink:0;border:1px solid #9fb9c5;border-radius:2px;align-self:center}
+#sig-map .sig-layer-row button{flex:1;min-width:0;display:block;text-align:left;padding:4px 3px;border:0;background:transparent;white-space:normal;min-height:38px}
+.sig-layer-row button span{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.sig-layer-row button small{display:block;color:var(--shell-muted);font-size:10px;margin-top:3px;font-variant-numeric:tabular-nums}
+.sig-series-layer{margin:6px;border:1px solid var(--shell-line);border-radius:6px;overflow:hidden;background:var(--sig-panel)}
+.sig-series-layer .sig-logical-series{min-height:58px;padding:6px 8px;border-left:3px solid var(--sig-accent)}
+.sig-series-layer .sig-layer-swatch{width:20px;height:28px;border-radius:3px}
+.sig-series-layer .sig-series-dates>summary{padding:8px 12px;font-size:10px;letter-spacing:.03em;color:var(--shell-muted);border-top:1px solid var(--shell-line)}
+.sig-series-dates .sig-layer-row{padding-left:12px}.sig-series-dates .sig-layer-swatch{width:10px;height:16px}
+.sig-basemap-control{padding:12px;flex-shrink:0;border-top:1px solid var(--shell-line);background:var(--sig-panel)}
+.sig-basemap-control label{display:flex;flex-direction:column;gap:6px;font-size:11px}
+#sig-map select{color:var(--sig-ink);padding:7px 8px;background:var(--sig-control);border:1px solid var(--shell-line);border-radius:5px;min-height:32px;max-width:100%;min-width:0}
+.sig-basemap-control small,.sig-output-control small{display:block;margin-top:6px;font-size:10px;line-height:1.45;color:var(--shell-muted)}
+.sig-shell-map{position:relative;min-width:0;min-height:0}
+#sig-map .sig-shell-map .sig-toolbar{position:absolute;top:44px;left:12px;z-index:4;display:flex;flex-direction:column;gap:2px;margin:0;padding:4px;background:#132b46f5;border:1px solid var(--shell-line);border-radius:7px;box-shadow:0 4px 14px #06172730}
+#sig-map .sig-toolbar button{width:30px;min-height:30px;height:30px;padding:2px;font-size:19px;border:0;background:transparent}
+#sig-map .sig-toolbar button:has(.sig-icon) span{display:none}
+#sig-map .sig-toolbar :is(#sig-retry,#sig-discard){width:auto;max-width:170px;font-size:11px;padding:4px}
+.sig-map-heading{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;min-height:32px;padding:3px 10px;background:#132b46ee;border-bottom:1px solid #36536caa;z-index:3;font-size:11px;color:var(--shell-muted)}
+.sig-north{position:absolute;right:14px;top:46px;z-index:3;color:#d0e3ec;text-align:center;pointer-events:none;font-size:10px}
+.sig-north svg{display:block;width:22px;height:27px;fill:#0a202a;stroke:#c2dce8;stroke-width:1.5}
+#sig-scale{position:absolute;left:12px;bottom:36px;z-index:3;pointer-events:none}
+#sig-scale .ol-scale-line{position:static;background:#0d222ddd;padding:3px;border-radius:2px}
+#sig-scale .ol-scale-line-inner{color:#e2eef4;border-color:#bed3dd;font:10px 'Segoe UI',sans-serif}
+#sig-map .sig-viewport #sig-legend{border-color:var(--shell-line);background:#132b46f5;max-width:min(250px,45%);font-size:11px;border-radius:7px}
+#sig-map #sig-geographic-map{height:var(--sig-map-height);background:#0b2239}
+#sig-map #sig-island-inset{top:180px;left:64px;width:min(110px,25%);background:#0d222df0;padding:5px;border-radius:2px}
+#sig-map #sig-raster-query{top:174px;left:64px;max-width:calc(100% - 106px);font-size:11px}
+#sig-map :is(#sig-properties-window,#sig-reference-window){--sig-panel:#fff5df;--sig-raised:#eee1c8;--sig-control:#fff9ec;--sig-input:#fff9ec;--sig-ink:#132b46;--shell-muted:#536274;--shell-line:#d5c8b1;--sig-accent:#176f5f;background:var(--sig-panel);color:var(--sig-ink);color-scheme:light}
+.sig-shell-inspector{background:var(--sig-panel)}
+#sig-selected-layer{display:grid;grid-template-columns:32px minmax(0,1fr);gap:3px 10px;padding:14px;min-height:68px;border-bottom:1px solid var(--shell-line)}
+#sig-selected-layer svg{grid-row:1/3;margin-top:2px;color:var(--sig-accent);width:32px;height:32px;padding:6px;background:#f4e6c9;border-radius:6px}
+#sig-selected-layer strong{font-weight:600;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+#sig-selected-layer small{font-size:10px;color:var(--shell-muted)}
+#sig-selected-layer p{grid-column:1/3;margin:0;font-size:12px}
+#sig-inspector-tabs{display:flex;gap:0;padding:0 10px;border-bottom:1px solid var(--shell-line);background:var(--sig-panel);flex-shrink:0}
+#sig-map #sig-inspector-tabs button{font-size:11px;flex:1;min-height:34px;padding:4px 6px;border:0;border-bottom:2px solid transparent;border-radius:0}
+#sig-map #sig-inspector-tabs .is-active{border-bottom-color:var(--sig-accent);color:var(--sig-accent)}
+#sig-inspector-content{flex:1;min-height:0;overflow:auto;padding:14px;scrollbar-width:thin;scrollbar-color:#a9a797 transparent}
+.sig-muted{font-size:11px;line-height:1.6;color:var(--shell-muted);margin:0 0 12px}
+#sig-inspector-content form{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+#sig-inspector-content label{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;margin:6px 0}
+#sig-inspector-content form label{justify-content:space-between}
+#sig-inspector-content input[type=range]{width:65%;accent-color:var(--sig-accent)}
+#sig-inspector-content input[type=color]{height:26px;width:40px;border:1px solid var(--shell-line);padding:1px;background:transparent}
+#sig-inspector-content input[type=checkbox]{width:14px;height:14px;accent-color:var(--sig-accent);margin:0}
+#sig-inspector-content input:not([type=color],[type=range],[type=checkbox]){width:100%;min-width:0;padding:7px;color:var(--sig-ink);background:var(--sig-input);border:1px solid var(--shell-line);border-radius:5px}
+#sig-map #sig-inspector-content button{font-size:11px;border-color:var(--shell-line);background:var(--sig-control);margin-block:2px}
+#sig-map #sig-inspector-content button:hover{background:var(--sig-raised);border-color:var(--sig-accent)}
+#sig-map #sig-inspector-content .sig-primary{color:#fff;background:var(--sig-jade);border-color:var(--sig-jade)}
+#sig-map #sig-inspector-content .sig-primary:hover{background:var(--sig-jade-hover);border-color:var(--sig-jade-hover)}
+.sig-tool-actions{display:flex;gap:4px;margin-block:12px}
+.sig-data-row{padding:8px 0;border-bottom:1px solid var(--shell-line);display:grid;gap:4px;overflow-wrap:anywhere;min-width:0}
+.sig-data-row small{font-size:10px;color:var(--shell-muted)}.sig-data-row span{font-size:11px;line-height:1.55}
+.sig-output-control{padding:12px 14px;background:var(--sig-panel);border-top:1px solid var(--shell-line);display:flex;flex-direction:column;gap:6px;flex-shrink:0;font-size:11px}
+#sig-format-dimensions{font-size:11px;color:var(--sig-accent);font-variant-numeric:tabular-nums}
+#sig-map #sig-raster-controls{position:absolute;top:44px;left:64px;right:auto;bottom:auto;width:min(460px,calc(100% - 112px));max-height:calc(100% - 60px);overflow:auto;min-height:0;margin:0;border:1px solid var(--shell-line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;align-items:stretch;gap:3px;background:#132b46f5;z-index:7;box-shadow:0 5px 18px #06172740;font:12px/1.4 'Segoe UI',sans-serif}
+.sig-time-heading{display:flex;align-items:center;gap:8px;min-height:24px}.sig-time-heading strong{font-size:10px;font-weight:500;color:var(--shell-muted)}
+.sig-sr-only{position:absolute!important;width:1px;height:1px;padding:0!important;margin:-1px!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0!important}
+#sig-map #sig-raster-pick{margin-left:auto;min-height:28px;height:28px;padding:2px 6px;font-size:12px;color:var(--sig-ink);background:var(--sig-control);border-color:var(--shell-line);width:140px;max-width:70%}
+#sig-map #sig-legend button{white-space:normal;text-align:left;justify-content:flex-start;font-size:11px;line-height:1.4;min-height:24px;padding:2px;max-width:100%;color:var(--sig-ink)}
+#sig-map #sig-raster-calendar{margin-left:auto;color:#9eeade;font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap;padding:0;border:0}
+#sig-map .sig-time-heading button{width:24px;height:24px;min-height:24px;padding:3px;border:0;background:transparent}
+#sig-map .sig-time-heading button span,#sig-map .sig-time-transport button span{display:none}
+.sig-time-transport{display:flex;align-items:center;gap:2px}
+#sig-map .sig-time-transport button{min-width:26px;width:26px;min-height:28px;height:28px;padding:3px;border:0;background:transparent}
+#sig-map .sig-time-transport button:hover{background:var(--sig-raised)}
+#sig-map #sig-raster-play{min-width:26px;border:0;background:transparent}
+#sig-map #sig-raster-date{appearance:none;flex:1;min-width:24px;height:10px;margin:0 6px;border-radius:5px;border:1px solid #7fa59d;background:repeating-linear-gradient(90deg,transparent 0 8px,#b9c9d744 8px 9px),linear-gradient(90deg,#238e77,#80d8c3);padding:0;cursor:pointer}
+#sig-raster-date::-webkit-slider-thumb{appearance:none;width:10px;height:20px;border:1px solid #e1fbf5;border-radius:2px;background:#edf4f7;box-shadow:0 0 0 2px #0a202a80}
+#sig-raster-date::-moz-range-thumb{width:10px;height:18px;border:1px solid #e1fbf5;border-radius:2px;background:#edf4f7}
+.sig-time-extents{display:flex;justify-content:space-between;padding:0 4px;color:#c1d7e1;font-size:10px;font-variant-numeric:tabular-nums}
+.sig-time-options{display:flex;align-items:center;gap:12px}.sig-time-options:has(label:not([hidden])){margin-top:6px;border-top:1px solid #355363;padding-top:6px}
+#sig-raster-controls label{display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap}
+#sig-raster-controls input[type=checkbox]{width:14px;accent-color:var(--sig-accent);margin:0}
+#sig-raster-controls #sig-raster-swipe{width:80px;accent-color:var(--sig-accent)}
+#sig-map #sig-raster-send{display:none}
+#sig-raster-summary{font-size:10px;color:var(--shell-muted)}
+.sig-shell-dock{background:var(--sig-panel)}
+#sig-dock-tabs{display:flex;align-items:center;gap:4px;min-height:34px;padding:0 12px;border-bottom:1px solid var(--shell-line);flex-shrink:0}
+#sig-map #sig-dock-tabs button{font-size:11px;min-height:34px;border:0;border-bottom:2px solid transparent;border-radius:0}
+#sig-map #sig-dock-tabs .is-active{color:var(--sig-accent);border-bottom-color:var(--sig-accent)}
+#sig-science-note{font-size:10px;line-height:1.4;color:var(--shell-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:6px 12px;border-top:1px solid var(--shell-line);flex-shrink:0}
+#sig-dock-content{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;padding:0 12px 8px}
+#sig-dock-content .sig-muted{padding-top:12px}
+#sig-dock-content table{width:100%;border-collapse:collapse;text-align:left;font-size:11px}
+#sig-dock-content th{position:sticky;top:0;background:var(--sig-control);color:#d2e1ec;z-index:1;font-weight:600;white-space:nowrap}
+#sig-dock-content th,#sig-dock-content td{padding:6px 10px;border-bottom:1px solid var(--shell-line);max-width:320px;overflow-wrap:anywhere;vertical-align:top}
+#sig-dock-content tr:hover td{background:var(--sig-raised)}
+#sig-map #sig-dock-content td button{font-size:11px;color:#9ae5d9;text-decoration:underline;min-height:24px;padding:0 2px}
+#sig-map .sig-status{display:flex;align-items:center;min-height:26px;margin:0;padding:3px 12px;gap:20px;background:var(--sig-chrome);border-top:1px solid var(--shell-line);font-size:10px;color:var(--shell-muted)}
+#sig-map.sig-workspace #sig-engine{display:block;white-space:nowrap;font-size:10px;margin:0}
+#sig-coordinate{white-space:nowrap;font-variant-numeric:tabular-nums}#sig-map-status{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+#sig-notice:not(:empty){margin:0;padding:6px 12px;background:#493b25;font-size:11px;color:#f3d59f}
+@media(max-width:1250px){.sig-shell-brand span{display:none}.sig-shell-header{gap:6px}.sig-app-nav{padding-right:6px}#sig-save-label{display:none}#sig-series-context{font-size:10px;max-width:220px}.sig-document-actions{padding-left:4px}}
+.sig-narrow .sig-shell-header{height:auto;min-height:80px;flex-wrap:wrap;padding:6px 8px;gap:4px}
+.sig-narrow .sig-shell-brand span{display:none}.sig-narrow .sig-app-nav{border:0;flex:1;gap:0;justify-content:flex-end;padding:0}
+.sig-narrow #sig-project-title{order:2;flex-basis:100%;padding:3px 4px;font-size:12px}
+.sig-narrow .sig-document-actions{padding:0;border:0;margin-right:auto}.sig-narrow .sig-document-actions button{min-width:28px}
+.sig-narrow .sig-taskbar{height:44px;padding-inline:6px;gap:8px}.sig-narrow #sig-series-context{display:none}
+.sig-narrow .sig-ribbon-navigation{display:block;overflow:visible}.sig-narrow .sig-window-tools{overflow-x:auto;border-left:0;border-top:1px solid var(--shell-line);padding:4px 6px;min-height:40px;scrollbar-width:thin}
+.sig-narrow .sig-task-tabs{gap:8px;padding-inline:6px}.sig-narrow .sig-task-group{gap:4px}.sig-narrow .sig-task-group small{display:none}
+.sig-narrow .sig-task-group button{font-size:11px;padding:4px 6px;gap:4px}
+.sig-narrow .sig-floating-window{max-width:calc(100% - 8px);min-width:220px;max-height:calc(100% - 8px)}
+.sig-narrow #sig-map-heading{font-size:10px}.sig-narrow #sig-raster-controls{left:54px;width:calc(100% - 94px)}
+.sig-narrow .sig-time-heading strong{display:none}.sig-narrow #sig-raster-calendar{font-size:10px}.sig-narrow #sig-raster-summary{font-size:9px}
+.sig-narrow #sig-dock-tabs{padding-inline:6px;gap:0}.sig-narrow #sig-dock-tabs button{padding:4px 6px}
+.sig-narrow #sig-coordinate{display:none}.sig-narrow #sig-map-status{text-align:left}
+#sig-map .sig-shell-inspector{overflow:auto}#sig-inspector-content{flex:none;overflow:visible}
+#sig-map .sig-shell-brand svg{width:32px;height:32px;flex:none}
+#sig-map #sig-toolbox-window{width:352px;height:min(520px,94%);background:var(--sig-paper);color:#132b46;--shell-line:#d5c8b1;--shell-muted:#536274;--sig-ink:#132b46;--sig-panel:#fff5df;--sig-control:#fff9ec;--sig-raised:#eee1c8;--sig-accent:#176f5f;color-scheme:light}
+.sig-processing-search{display:grid;grid-template-columns:1fr 104px;gap:8px;padding:12px;border-bottom:1px solid var(--shell-line);flex-shrink:0}
+#sig-map .sig-processing-search input,#sig-map .sig-processing-search select{width:100%;min-width:0;min-height:34px;border:1px solid #b7b4a9;border-radius:5px;background:#fff9ec;color:#132b46;padding:6px 8px;font-size:12px}
+#sig-toolbox-count{grid-column:1/-1;font-size:11px;color:var(--shell-muted)}
+#sig-toolbox-list{min-height:0;flex:1;overflow:auto;scrollbar-width:thin;padding:0 12px 12px}
+#sig-toolbox-list h3{font-size:12px;font-weight:650;margin:16px 0 4px;color:#176f5f}
+.sig-processing-tool{padding:6px 0;border-bottom:1px solid var(--shell-line)}
+#sig-map .sig-processing-tool button{display:flex;width:100%;justify-content:flex-start;text-align:left;white-space:normal;padding:5px 6px;font-size:13px;font-weight:600;min-height:32px}
+#sig-map .sig-processing-tool button:disabled{opacity:1;color:#6c6a65}
+.sig-processing-tool small{display:block;font-size:11px;line-height:1.5;color:#536274;padding:0 6px 5px}
+.sig-processing-footnote{font-size:11px;line-height:1.5;padding:10px 12px;border-top:1px solid var(--shell-line);flex-shrink:0;color:var(--shell-muted)}
+#sig-toolbox-list>p{font-size:12px;line-height:1.6}
+@media(prefers-reduced-motion:reduce){#sig-map *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}

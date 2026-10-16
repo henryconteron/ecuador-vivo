@@ -179,6 +179,8 @@ class RasterUiTests(unittest.TestCase):
         from studio_sig_workspace import presentation_event
         app=self.app();bad=SimpleNamespace(name='unknown.tif',getvalue=lambda:raster_bytes([[0,-9999]],crs=None))
         with self.patches(),patch('studio_sig_map_ui._OL_COMPONENT',self.component),patch('studio_sig_raster_ui.st.file_uploader',return_value=bad) as uploaded:
+            app.run()
+            app.session_state['test_ui_event']={'action':'import','version':self.payload['version']}
             app.run();app.selectbox(key='sig_import_format').select('GeoTIFF').run()
             for key,value in [('sig_raster_date','2024-01-01'),('sig_raster_variable','Control'),('sig_raster_units','unidad'),
                               ('sig_raster_citation','Fixture controlada'),('sig_raster_license','CC0 fixture')]:app.text_input(key=key).input(value)
@@ -200,7 +202,10 @@ class RasterUiTests(unittest.TestCase):
         app=self.app()
         with self.patches():
             app.run();before=copy.deepcopy(app.session_state['project_document'])
-            app.button(key='sig_open_copy').click().run()
+            app.session_state['test_ui_event']={'action':'open','version':self.payload['version']}
+            app.run()
+            next(button for button in app.button if button.label=='Abrir copia en SIG').click().run()
             self.assertFalse(app.exception);self.assertEqual(app.session_state['project_document'],before)
+            self.assertTrue(app.error)
 
 if __name__=='__main__':unittest.main()

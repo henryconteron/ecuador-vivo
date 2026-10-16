@@ -198,6 +198,7 @@ def calendar_receipt(project, rows):
             result.append({'scene_id':row['id'],'instance_id':iid,'asset_id':instance['asset_id'],'fps':30,
                 'manifest_sha256':record['manifest_sha256'],'scientific_identity':manifest['scientific_identity'],
                 'scientific_revision':manifest['scientific_revision'],'clock':copy.deepcopy(instance),
+                'geographic_presentation':copy.deepcopy(manifest.get('geographic_binding',{})),
                 'bindings':[{'element_id':e['id'],'temporal_binding':copy.deepcopy(e['temporal_binding']),
                     'transform':copy.deepcopy(e.get('transform',{})),'visible':e.get('visible',True),
                     'editor_deleted':e.get('editor_deleted',False),'fit':e.get('style',{}).get('fit','contain')}
@@ -297,12 +298,20 @@ def attach_map_layers(project, record, *, base_sha256=None):
         raise ValueError('No se puede sustituir un recurso científico inmutable.')
     studio['media'][aid]=copy.deepcopy(record)
     profile=profile_for(studio['output_profile']);regions=adaptive_regions(profile)
+    territorial=manifest.get('geographic_binding',{}).get('presentation',{}).get('territory')=='ecuador'
+    if territorial:
+        from studio_territory import composition_regions
+        regions=composition_regions(profile)
     map_box=regions['map'];side=regions['metric'];gap=max(2,min(profile.width,profile.height)*.015)
     mainland={**map_box,'width':map_box['width']*.72}
     if manifest.get('source_scope')=='canonical_geography':mainland=map_box.copy()
     inset={'x':map_box['x']+mainland['width']+gap,'y':map_box['y'],
            'width':max(1,map_box['width']-mainland['width']-gap),'height':map_box['height']*.4}
+    if territorial:
+        inset={'x':map_box['x']+map_box['width']*.015,'y':map_box['y']+map_box['height']*.69,
+               'width':map_box['width']*.26,'height':map_box['height']*.28}
     date_h=min(60,max(20,side['height']*.18))
+    if territorial:date_h=60
     legend={'x':side['x'],'y':side['y']+date_h+gap,'width':side['width'],
             'height':max(1,side['height']-date_h-gap)}
     iid='instance.'+uuid.uuid4().hex;elements=[]
@@ -314,10 +323,10 @@ def attach_map_layers(project, record, *, base_sha256=None):
     map_style={'fit':'contain'}
     if manifest.get('source_scope')=='canonical_geography':map_style['opacity']=manifest['geographic_binding'].get('opacity',1.)
     add('map',record['layers']['continent']['name'],contain_bounds(record['layers']['continent']['size'],mainland),map_style,'continent')
-    if manifest.get('source_scope')!='canonical_geography':
+    if manifest.get('source_scope')!='canonical_geography' or territorial:
         add('map','Galápagos',contain_bounds(record['layers']['galapagos']['size'],inset),{'fit':'contain'},'galapagos')
     add('text','Fecha observada',{**side,'height':date_h},
-        {'font_size':max(8,min(40,round(date_h*.5))),'color':ink},'date')
+        {'font_size':40 if territorial else max(8,min(40,round(date_h*.5))),'color':ink},'date')
     add('shape','Fondo de leyenda',legend,{'fill':'#04151e','shape':'rectangle'})
     add('legend','Leyenda verificada',legend,{'fit':'contain'},'legend_static')
     add('text','Variable y unidades',regions['title'],
@@ -330,9 +339,31 @@ def attach_map_layers(project, record, *, base_sha256=None):
         citations=[studio['geography']['sources'][entry['id']]['provenance']['citation']
                    for entry in manifest['geographic_binding']['sources']]
         credit=' | '.join(dict.fromkeys(c.split(' · original gzip SHA256 ')[0] for c in citations))
+    if territorial:
+        from studio_territory import NOTE
+        credit+='. Límites: geoBoundaries (CC BY 4.0). Galápagos reubicado, distinta escala.'
+        if manifest['geographic_binding']['presentation']['resampling']=='bilinear':credit+='\n'+NOTE+'.'
+    # Display a compact attributed credit at small custom sizes; the complete
+    # citation, license, native hashes and requests remain in the sealed bundle.
+    from studio_render import _text_layer
+    credit_style={'font_size':max(8,min(24,round(regions['source']['height']*.4))),'color':ink}
+    credit_size=(max(1,round(regions['source']['width'])),max(1,round(regions['source']['height'])))
+    try:_text_layer(credit_style,credit_size,credit,check_only=True)
+    except ValueError:
+        compact=manifest['citation'].split(' · original gzip SHA256 ')[0]
+        for limit in (90,60,40,20,8):
+            credit=compact[:limit]+('…' if len(compact)>limit else '')
+            try:_text_layer(credit_style,credit_size,credit,check_only=True);break
+            except ValueError:continue
     add('source','Fuente',regions['source'],
-        {'text':credit,
-         'font_size':max(8,min(24,round(regions['source']['height']*.4))),'color':ink})
+        {'text':credit,**credit_style})
+    if territorial:
+        from studio_territory import element_regions
+        slots=element_regions(profile,record['layers'])
+        for element in elements:
+            channel=(element.get('temporal_binding') or {}).get('channel')
+            role=channel or {'Fuente':'source','Variable y unidades':'title','Fondo de leyenda':'legend_background'}.get(element['name'])
+            if role in slots:element['transform'].update(slots[role])
     scene=Scene(id='scene.'+uuid.uuid4().hex,name=record['name'][:180],duration=record['duration'],
         background=background,elements=elements,map_instances={iid:{'asset_id':aid,
             'trim_in_frame':0,'trim_out_frame':record['total_frames'],'loop':False}}).to_dict()

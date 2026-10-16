@@ -24,14 +24,14 @@ import layout_editor
 
 ASSETS=Path(__file__).with_name('workspace_frontend')
 SOURCE_MTIME=Path(__file__).stat().st_mtime_ns
-SOURCE_ASSET_MTIMES=tuple((ASSETS/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','workspace.js'))
+SOURCE_ASSET_MTIMES=tuple((ASSETS/name).stat().st_mtime_ns for name in ('workspace.html','workspace.css','resource_workspace.css','workspace_windows.js','resource_workspace.js','workspace.js'))
 
 def _register():
     """Register presentation assets once; normal progress updates reuse the root."""
     return st.components.v2.component('ecuador_vivo_workspace',
         html=(ASSETS/'workspace.html').read_text(encoding='utf-8'),
-        css=layout_editor.CSS+'\n'+(ASSETS/'workspace.css').read_text(encoding='utf-8-sig'),
-        js=layout_editor.JS.replace('export default function(component)','function mountCanvas(component)',1)+'\n'+(ASSETS/'workspace.js').read_text(encoding='utf-8'))
+        css=layout_editor.CSS+'\n'+(ASSETS/'workspace.css').read_text(encoding='utf-8-sig')+'\n'+(ASSETS/'resource_workspace.css').read_text(encoding='utf-8'),
+        js=layout_editor.JS.replace('export default function(component)','function mountCanvas(component)',1)+'\n'+(ASSETS/'workspace_windows.js').read_text(encoding='utf-8')+'\n'+(ASSETS/'resource_workspace.js').read_text(encoding='utf-8')+'\n'+(ASSETS/'workspace.js').read_text(encoding='utf-8'))
 
 _COMPONENT=None
 
@@ -69,8 +69,12 @@ class WorkspaceSession:
         if self.canonical:
             from studio_project import prepare_commit
             candidate=prepare_commit(candidate,self.project)
-        prepared=PreparedTimeline(candidate)
-        with AssetFrames(candidate['studio']['media'],cache=self.cache.media) as assets:self.cache.for_timeline(prepared,assets).thumbnails()
+        prepared=self.cache.prepare(candidate)
+        # Structural/scientific integrity and budgets precede the durable save.
+        # Miniatures and preview pixels are presentation work, prepared later.
+        with AssetFrames(candidate['studio']['media']) as assets:
+            assets.check_budget([e for s in candidate['studio']['scenes'] for e in s['elements']])
+            self.cache.validate_presentation(prepared,assets)
         path=self.new_draft() if new_draft else Path(self.state[self.key+'_draft'])
         save_snapshot(path,candidate)
         if record:
@@ -123,25 +127,83 @@ class WorkspaceSession:
 @st.fragment
 def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=False):
     global _COMPONENT
+    # Fragment reruns retain their original arguments. Use the current canonical
+    # compatibility view, otherwise a committed rename is overwritten by it.
+    if canonical:source_project=st.session_state.get('project',source_project)
     try:session=WorkspaceSession(st.session_state,key,source_project,canonical=canonical)
     except (ValueError,TypeError,KeyError,OSError) as error:st.error('No se pudo abrir el workspace: '+str(error));return
     if st.session_state.pop(key+'_navigate_app',False):st.rerun(scope='app')
     component_key=key+'_workspace'
+    st.html(ASSETS/'host.css')
     def changed():
         message=st.session_state.get(component_key,{}).get('command')
         if not message:return
         try:
             action=message['action']
-            if action=='navigate':
-                if message['phase'] not in ('Inicio','SIG','Datos','Maqueta','Montaje','Exportar'):raise ValueError('Ruta desconocida.')
+            if action!='status':st.session_state.pop(key+'_error',None)
+            if action=='resource_asset':
+                from studio_scientific_library import scientific_objects,insert_bioicon
+                if not any(r['id']==message.get('resource_id') and r['type']=='asset' for r in scientific_objects()):raise ValueError('Ilustración desconocida.')
                 session.dispatch({**message,'action':'save'})
-                if message['phase'] in ('Inicio','SIG'):st.session_state['section']=message['phase']
+                session.commit(insert_bioicon(session.project,session.selected,message['resource_id']));return
+            if action=='resource_tool':
+                from studio_resource_tool_import import TOOLS
+                if message.get('tool') not in TOOLS:raise ValueError('Herramienta desconocida.')
+                session.dispatch({**message,'action':'save'})
+                st.session_state[key+'_tool']=message['tool'];st.session_state[key+'_tool_element']=message.get('element_id')
+                st.session_state[key+'_dialog']='resource_tool';return
+            if action in ('resource_open','resource_blank','resource_send'):
+                from studio_resource_workbench import resource_command
+                target=resource_command(session,message)
+                if target is not None:
+                    from studio_project import replace_document,workspace_key
+                    published=replace_document(st.session_state,target)
+                    st.session_state[workspace_key(published)+'_selected']=published['studio']['timeline'][-1]
+                    st.session_state.pop('_pending_studio_navigation',None)
+                    st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio'
+                    st.session_state[key+'_navigate_app']=True
+                return
+            if action=='navigate':
+                if message['phase'] not in ('Inicio','SIG','Studio','Recursos','Datos','Maqueta','Montaje','Exportar'):raise ValueError('Ruta desconocida.')
+                session.dispatch({**message,'action':'save'})
+                if message['phase']=='Studio':st.session_state['section']='Editor';st.session_state['studio_phase']='Estudio'
+                elif message['phase'] in ('Inicio','SIG','Recursos'):st.session_state['section']=message['phase']
                 else:st.session_state['studio_phase']=message['phase']
                 st.session_state[key+'_navigate_app']=True
                 return
             if action=='status':return
+            if action=='publication':
+                if message.get('version')!=session.version:raise ValueError('El proyecto cambió; revisa el video final actualizado.')
+                from studio_publication import prepare_publication
+                job=st.session_state.get(key+'_job')
+                if not job or read_json(Path(job)/'status.json',{}).get('state')!='complete':raise ValueError('Exporta primero el MP4 final.')
+                with st.spinner('Comprobando video, mapas y evidencia pública…'):
+                    path=prepare_publication(job,session.project)
+                st.session_state[key+'_publication']={'path':str(path),'project_hash':document_hash(session.project)}
+                st.session_state[key+'_notice']='Paquete público preparado. No se publicó ni se subió a GitHub.'
+                return
             if action=='upload':
                 session.dispatch({**message,'action':'save'});st.session_state[key+'_dialog']='upload';return
+            if action=='voice_captions':
+                session.dispatch({**message,'action':'save'});st.session_state[key+'_dialog']='voice_captions';return
+            if action=='save_resource':
+                session.dispatch({**message,'action':'save'});st.session_state[key+'_dialog']='save_resource';return
+            if action=='edit_blender':
+                session.dispatch({**message,'action':'save'})
+                if not session.canonical:
+                    st.session_state[key+'_dialog']='resource_3d';return
+                st.session_state['resource_3d_scene']=session.selected
+                st.session_state['resource_library_view']='3d'
+                st.session_state['section']='Recursos'
+                st.session_state[key+'_navigate_app']=True
+                return
+            if action=='resource_insert':
+                from studio_resources import insert_resource
+                session.dispatch({**message,'action':'save'})
+                candidate=insert_resource(session.project,message.get('resource_id'))
+                session.commit(candidate)
+                st.session_state[key+'_selected']=candidate['studio']['timeline'][-1]
+                return
             if action=='attach':
                 from visualization_ui import scientific_identity
                 if not snapshot or scientific_identity(source_project)!=snapshot['scientific_identity']:raise ValueError('Carga una revisión vigente en Maqueta → Visualizaciones.')
@@ -171,15 +233,20 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
                 st.session_state[key+'_dialog']=action;return
             if action=='paste':message={**message,'elements':st.session_state.get(key+'_clipboard',[]),'map_instances':st.session_state.get(key+'_clipboard_maps',{})}
             if action=='cancel':
-                job=st.session_state.get(key+'_job')
+                suffix='_preview_job' if st.session_state.get(key+'_active_job_kind')=='preview' else '_job'
+                job=st.session_state.get(key+suffix)
                 if job: (Path(job)/'cancel.request').touch()
                 return
             session.dispatch(message)
             if action in ('play','export'):
-                from studio_jobs import start_studio_job
-                job=st.session_state.get(key+'_job');status=read_json(Path(job)/'status.json',{}) if job else {}
-                if job and st.session_state.get(key+'_job_hash')==document_hash(session.project) and status.get('state') in ('queued','running','complete'):return
-                st.session_state[key+'_job']=str(start_studio_job(session.project));st.session_state[key+'_job_hash']=document_hash(session.project)
+                from studio_jobs import start_studio_job,preview_identity
+                mode='preview' if action=='play' else 'final'
+                suffix='_preview_job' if mode=='preview' else '_job'
+                identity=preview_identity(session.project) if mode=='preview' else document_hash(session.project)
+                st.session_state[key+'_active_job_kind']=mode
+                job=st.session_state.get(key+suffix);status=read_json(Path(job)/'status.json',{}) if job else {}
+                if job and st.session_state.get(key+suffix+'_hash')==identity and status.get('state') in ('queued','running','complete'):return
+                st.session_state[key+suffix]=str(start_studio_job(session.project,mode=mode));st.session_state[key+suffix+'_hash']=identity
         except (ValueError,TypeError,KeyError,OSError) as error:st.session_state[key+'_error']=str(error)
         finally:
             # Acknowledge non-document actions too. Their controlled render must
@@ -193,42 +260,60 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
             session.commit(workspace_command(project,session.selected,{'action':'separate_timeline'}));st.rerun()
         return
     try:
-        prepared=PreparedTimeline(project)
-        with AssetFrames(studio['media'],cache=session.cache.media) as assets:
-            view=session.cache.for_timeline(prepared,assets);payload=view.canvas(session.selected,canvas_payload)
-            rows=view.thumbnails();row=next(r for r in rows if r['id']==session.selected)
-            frame=st.session_state.get(key+'_frame',row['start_frame'])
-            if not row['start_frame']<=frame<row['end_frame']:frame=row['start_frame']
-            payload.update(rows=rows,frame=frame,preview='data:image/png;base64,'+base64.b64encode(view.preview(frame)).decode())
+        rows=timeline_rows(studio);row=next(r for r in rows if r['id']==session.selected)
+        frame=st.session_state.get(key+'_frame',row['start_frame'])
+        if not row['start_frame']<=frame<row['end_frame']:frame=row['start_frame']
+        payload,visual_pending=session.cache.workspace_products(project,session.selected,frame,canvas_payload)
+        canvas_frame=payload['frame']
+        payload.update(visual_pending=visual_pending,canvas_frame=canvas_frame,
+            preview='data:image/png;base64,'+base64.b64encode(payload['preview']).decode())
+        # Geometry is immediately authoritative; retained tiles keep their last
+        # valid pixels until an affected scene finishes. No new date is claimed.
+        if payload['scene']==session.selected:
+            elements={e['id']:e for e in scene['elements']}
+            for layer in payload['layers']:
+                element=elements.get(layer['id'])
+                if not element:continue
+                t=element['transform']
+                layer.update(x=t['x'],y=t['y'],w=t['width'],h=t['height'],
+                    label=element.get('name',layer['label']),hidden=not element.get('visible',True),
+                    deleted=element.get('editor_deleted',False),locked=element.get('locked',False))
+                layer['original'].update(x=t['x'],y=t['y'],w=t['width'],h=t['height'])
+        thumbnails={r['id']:r['thumbnail'] for r in payload['rows']}
+        payload['rows']=[{**r,'thumbnail':thumbnails.get(r['id'],'')} for r in rows]
         digest=document_hash(project)
-        payload.update(workspace_mode=True,version=session.version,scene_data=scene,project=project,
+        payload.update(workspace_mode=True,version=session.version,scene=session.selected,scene_data=scene,project=project,
             command_ack=st.session_state.get(key+'_command_ack',0),
             recovery_key='ecuador-vivo-canvas:'+digest+':'+session.selected,ui_key='ecuador-vivo-workspace:'+key,
             can_undo=bool(st.session_state[key+'_workspace_history']),can_redo=bool(st.session_state[key+'_workspace_future']),
-            saved_at=st.session_state.get(key+'_saved_at',''),error=st.session_state.pop(key+'_error',''),notice=st.session_state.pop(key+'_notice',''),
+            saved_at=st.session_state.get(key+'_saved_at',''),error=st.session_state.get(key+'_error',''),visual_error=session.cache.visual_error or '',notice=st.session_state.pop(key+'_notice',''),
             templates=TEMPLATES,themes=list(THEMES),typography=list(TYPOGRAPHY),palettes=PALETTES,
             font_families=list(FONT_FAMILIES),font_roles=FONT_ROLES,profiles={pid:label for pid,(label,_,_) in PRESETS.items()},
             template_bindings=TEMPLATE_BINDINGS,template_results={t:template_result_ids(t,studio['calculations']) for t in TEMPLATE_BINDINGS},
             recovery=[{'path':str(p),'name':p.name} for p in list_snapshots(session.store/'projects')],
             can_attach=snapshot is not None)
-        from studio_temporal import calendar_receipt
-        payload['scientific_calendar'] = calendar_receipt(project,prepared.rows)
         payload['map_thumbnails'] = {}
-        # The same verified decoder/cache supplies thumbnails; no extra image assets.
-        with AssetFrames(studio['media'],cache=session.cache.media) as assets:
-            for aid,record in studio['media'].items():
-                if 'temporal_map' not in record: continue
-                element = {'id':'thumbnail.'+aid,'type':'video','style':{'asset_id':aid}}
-                image = assets.at(0,[element])['video.'+element['id']].copy()
-                image.thumbnail((160,284))
-                import io
-                buffer=io.BytesIO(); image.save(buffer,format='PNG'); image.close()
-                payload['map_thumbnails'][aid]='data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode()
-                cursor=assets.cursors.pop((element['id'],aid))
-                cursor['reader'].close()
-                if cursor['frame'] is not None: cursor['frame'].close()
-        job=st.session_state.get(key+'_job');payload['job']=read_json(Path(job)/'status.json',{}) if job else {}
-        payload['job_stale']=bool(job and st.session_state.get(key+'_job_hash')!=digest)
+        from studio_resources import RESOURCE_CATALOG
+        from studio_resource_projects import is_resource
+        from studio_resource_actions import GRAPHIC_ELEMENTS
+        payload['resource_mode']=is_resource(project)
+        if payload['resource_mode']:
+            from studio_scientific_library import scientific_objects,installed_engines
+            from studio_resource_projects import resource_files
+            payload['scientific_objects']=scientific_objects()
+            payload['resource_engines']=installed_engines()
+            payload['saved_resources']=[{'path':str(r['path']),'name':r['name'],'category':r['category']} for r in resource_files(session.store)]
+            from studio_scientific_library import scientific_templates
+            payload['explanation_catalog']=scientific_templates(studio['output_profile'])
+        payload['graphic_elements']=GRAPHIC_ELEMENTS
+        payload['explanation_resources']=[{'id':r['id'],'name':r['name'],'summary':r['summary']} for r in RESOURCE_CATALOG]
+        from studio_jobs import preview_identity
+        mode=st.session_state.get(key+'_active_job_kind','preview')
+        suffix='_preview_job' if mode=='preview' else '_job'
+        job=st.session_state.get(key+suffix);payload['job']=read_json(Path(job)/'status.json',{}) if job else {}
+        identity=preview_identity(project) if mode=='preview' else digest
+        payload['job_stale']=bool(job and st.session_state.get(key+suffix+'_hash')!=identity)
+        payload['delivery_kind']=mode
         if job and not payload['job_stale']:
             from studio_delivery import register_job_status
             payload['job_status_url']=register_job_status(job)
@@ -236,6 +321,10 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
             from studio_delivery import register_movie
             payload['movie_url']=register_movie(job)
             payload['receipt']=read_json(Path(job)/'receipt.json')
+        publication=st.session_state.get(key+'_publication')
+        if publication and publication['project_hash']==digest and Path(publication['path']).is_file():
+            from studio_delivery import register_publication
+            payload['publication_url']=register_publication(publication['path'])
         if _COMPONENT is None:_COMPONENT=_register()
         try:_COMPONENT(key=component_key,data=payload,on_command_change=changed,width='stretch',height='content')
         except StreamlitAPIException as error:
@@ -247,10 +336,45 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
         def dismiss_map_dialog():
             from studio_map_ui import clear_review_state
             clear_review_state(st.session_state,key)
-        @st.dialog({'upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico','temporal_layers':'Preparar capas cartográficas','observation_layers':'Preparar observación cartográfica','map_layers':'Revisar e insertar capas'}[st.session_state[key+'_dialog']],width='medium',
+        @st.dialog({'resource_tool':'Editor especializado · recurso compuesto','resource_3d':'Cámara y materiales 3D','save_resource':'Guardar recurso reutilizable','voice_captions':'Voz y subtítulos','upload':'Importar multimedia','project':'Abrir proyecto JSON','preview':'Preview audiovisual','regenerate':'Propuesta de escena','regenerate_structure':'Propuesta de estructura científica','temporal_map':'Mapa temporal y calendario científico','temporal_layers':'Preparar capas cartográficas','observation_layers':'Preparar observación cartográfica','map_layers':'Revisar e insertar capas'}[st.session_state[key+'_dialog']],width='large' if st.session_state[key+'_dialog'] in ('resource_3d','resource_tool') else 'medium',
                    on_dismiss=dismiss_map_dialog)
         def upload_dialog():
+            if st.session_state.pop(key+'_tool_imported',False):
+                st.session_state.pop(key+'_dialog',None);st.rerun(scope='app')
             mode=st.session_state[key+'_dialog']
+            if mode=='resource_tool':
+                from ecuador_vivo_scientific_tools import scientific_tool
+                from studio_resource_tool_import import import_tool_artifact
+                element=next((e for e in scene['elements'] if e['id']==st.session_state.get(key+'_tool_element')),None)
+                saved=(element or {}).get('source_document',{})
+                def accept_tool():
+                    artifact=st.session_state.get(key+'_specialized',{}).get('artifact')
+                    if artifact:
+                        try:
+                            artifact={**artifact,'element_id':element['id'] if element else None}
+                            candidate=import_tool_artifact(session.project,session.selected,artifact)
+                            session.commit(candidate);st.session_state[key+'_tool_imported']=True
+                        except (ValueError,OSError,TypeError,KeyError) as error:st.session_state[key+'_error']=str(error)
+                scientific_tool(st.session_state[key+'_tool'],recipe=saved.get('recipe'),key=key+'_specialized',on_artifact_change=accept_tool)
+                st.caption('Se conserva el documento original. El recurso se incorpora como objeto compuesto; puedes reabrir este editor desde sus Propiedades.')
+                if st.button('Cerrar y volver al lienzo',key=key+'_close_tool'):
+                    st.session_state.pop(key+'_dialog',None);st.rerun(scope='app')
+                return
+            if mode=='resource_3d':
+                from studio_blender_ui import show_blender_ui
+                def accept_3d(candidate):
+                    session.commit(candidate,new_draft=True)
+                    st.session_state.pop(key+'_dialog',None);st.rerun(scope='app')
+                show_blender_ui(session.project,accept_3d,key=key+'_blender',store=session.store)
+                return
+            if mode=='save_resource':
+                from studio_resource_actions import show_save_resource
+                show_save_resource(session,key=key+'_resource_save')
+                return
+            if mode=='voice_captions':
+                from studio_voice_ui import show_voice_captions
+                show_voice_captions(session,key=key+'_voice')
+                return
             if mode=='map_layers':
                 from studio_map_ui import show_layer_review
                 show_layer_review(session,key,session.project['studio']['media'].get(st.session_state.get(key+'_layer_review_asset'),{}))
@@ -323,7 +447,8 @@ def show_workspace(source_project,*,key='free_studio',snapshot=None,canonical=Fa
                     st.session_state.pop(key+'_proposal',None);st.session_state.pop(key+'_dialog',None);st.rerun()
                 return
             if mode=='preview':
-                job=Path(st.session_state[key+'_job']);movie=job/'video.mp4'
+                suffix='_preview_job' if st.session_state.get(key+'_active_job_kind')=='preview' else '_job'
+                job=Path(st.session_state[key+suffix]);movie=job/'video.mp4'
                 if movie.is_file():
                     st.video(str(movie))
                     st.download_button('Descargar MP4',movie.read_bytes(),file_name='ecuador-vivo.mp4',mime='video/mp4')

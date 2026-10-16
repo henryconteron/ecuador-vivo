@@ -75,6 +75,13 @@ class SigTests(unittest.TestCase):
             from studio_sig import show_sig
             from studio_project import consume_studio_navigation, source_projection
             consume_studio_navigation(st.session_state)
+            event=st.session_state.pop('test_shell_event',None)
+            if event:
+                from studio_workspace import WorkspaceSession
+                from studio_project import workspace_key
+                from studio_sig_shell import shell_event
+                doc=st.session_state['project_document']
+                shell_event(WorkspaceSession(st.session_state,workspace_key(doc),source_projection(doc),canonical=True),event)
             if st.session_state.get('section') == 'SIG':
                 show_sig(source_projection(st.session_state['project_document']))
         with tempfile.TemporaryDirectory() as root, patch('studio_workspace.STORE', Path(root)):
@@ -84,7 +91,8 @@ class SigTests(unittest.TestCase):
             app.session_state['section'] = 'SIG'
             with patch('data.load_values', side_effect=AssertionError('Navigation requested raster')):
                 app.run(); self.assertFalse(app.exception)
-                app.button(key='sig_studio').click().run()
+                app.session_state['test_shell_event']={'action':'navigate','section':'Studio'}
+                app.run()
             self.assertFalse(app.exception)
             self.assertEqual(app.session_state['section'], 'Editor')
             self.assertEqual(app.session_state['studio_phase'], 'Estudio')
@@ -110,7 +118,8 @@ class SigTests(unittest.TestCase):
             app.session_state['project_document'] = old
             app.session_state['science_job'] = str(job)
             app.run(); self.assertFalse(app.exception)
-            app.selectbox(key=workspace_key(old)+'_sig_tool').select('Ciencia').run()
+            from test_entry_helpers import open_sig_tool
+            open_sig_tool(app,old,'Ciencia')
             self.assertTrue(app.selectbox(key='science_profile_'+job.name).disabled)
             self.assertEqual(app.selectbox(key='science_profile_'+job.name).value, 'youtube')
             with patch('studio_preparation.verify_sources'), patch('data.load_values', side_effect=AssertionError('UI recalculated')):

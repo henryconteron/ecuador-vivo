@@ -1,0 +1,17 @@
+@import "../../../../resource_engines/node_modules/@excalidraw/excalidraw/dist/prod/index.css";
+@import "../../../../resource_engines/node_modules/@xyflow/react/dist/style.css";
+@import "../../../../resource_engines/node_modules/ketcher-react/dist/index.css";
+.scientific-tool{font:14px/1.5 'Segoe UI',sans-serif;color:#edf3f5;background:#132b37;min-height:570px;max-width:100%;overflow:hidden}
+.scientific-tool>header{display:flex;justify-content:space-between;gap:16px;padding:10px 12px;border-bottom:1px solid #547483}
+.scientific-tool>header span{font-size:12px;color:#b1c3cd}
+.scientific-tool .actions{display:flex;gap:8px;padding:10px 8px;align-items:center;flex-wrap:wrap}
+.scientific-tool .actions>span{flex:1;font-size:12px;color:#b1c3cd}
+.scientific-tool button{background:#203b49;color:#edf3f5;border:1px solid #7895a3;border-radius:4px;min-height:34px;padding:6px 12px;cursor:pointer}
+.scientific-tool .actions>button:last-child{background:#70d9c5;color:#092a32;border-color:#70d9c5}
+.scientific-tool .actions input{background:#0b1821;border:1px solid #7895a3;color:#edf3f5;border-radius:4px;padding:6px}
+.scientific-tool p{padding:8px 12px;font-size:12px;color:#b1c3cd;margin:0}
+.scientific-tool [role=alert]{color:#ffd3ca}
+.scientific-tool :is(button,input):focus-visible{outline:2px solid #70d9c5;outline-offset:2px}
+.scientific-tool .tool-canvas{height:455px;width:100%;position:relative;background:#0b1821}
+.scientific-tool .vector-canvas{overflow:auto;max-height:470px}
+.scientific-tool .molecule{background:white}

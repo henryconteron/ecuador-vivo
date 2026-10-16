@@ -7,8 +7,8 @@ Regla física que aplica todo el cierre de métricas:
 * direcciones (grados de viento) → no admiten promedio aritmético.
 
 ``detect_profile`` lee unidades y nombre científico de la variable del
-proyecto. Si no reconoce nada devuelve el perfil ``generic`` con promedio (la
-opción segura) y una advertencia visible en el recibo.
+proyecto. Las variables desconocidas y las tasas sin intervalos explícitos
+requieren configuración; no reciben una operación genérica silenciosa.
 """
 
 import re
@@ -75,7 +75,7 @@ def detect_profile(project):
     is_rain_word = bool(re.search(r'lluvia|precip|rain|pluvio', text))
     if units.startswith('mm') or (is_rain_word and units in ('', 'mm')):
         if re.search(r'/h|/hr|/s|/min|h-1|s-1|min-1', units):
-            return _profile('precipitation_rate', 'mean',
+            return _profile('precipitation_rate', None, supported=False,
                             unit=project.get('units', ''), decimals=1,
                             intensive=True,
                             warnings=['Tasa de precipitación: no se acumula sin '
@@ -83,12 +83,12 @@ def detect_profile(project):
         per = _PER_INTERVAL.get(cadence, ())
         if units == 'mm' or any(units.endswith(tag) for tag in per):
             return _profile('precipitation', 'sum', unit='mm', decimals=1)
-        return _profile('precipitation_rate', 'mean',
+        return _profile('precipitation_rate', None, supported=False,
                         unit=project.get('units', ''), decimals=1,
                         intensive=True,
                         warnings=[f'Las unidades «{project.get("units")}» no '
                                   f'coinciden con la cadencia «{cadence}»; se '
-                                  'promedia en vez de acumular.'])
+                                  'requiere configurar intervalos e integración.'])
     if re.search(r'mj/m2|j/m2', units) and any(
             units.endswith(t) for t in _PER_INTERVAL.get(cadence, ())):
         return _profile('energy', 'sum', unit=units.split('/')[0] + '/m²',
@@ -119,10 +119,10 @@ def detect_profile(project):
         return _profile('flux', 'mean', unit=project.get('units', ''),
                         decimals=1, intensive=True)
 
-    return _profile('generic', 'mean', unit=project.get('units', ''),
-                    decimals=1, signed=True, intensive=True,
-                    warnings=['Variable no reconocida: se usa promedio temporal, '
-                              'la opción segura. Revisa el cálculo antes de publicar.'])
+    return _profile('generic', None, unit=project.get('units', ''),
+                    decimals=1, signed=True, intensive=True, supported=False,
+                    warnings=['Variable no reconocida: configura variable, unidad, soporte espacial, '
+                              'tipo de medición e intervalos antes de calcular.'])
 
 
 def resolve_aggregation(project):
@@ -134,8 +134,7 @@ def resolve_aggregation(project):
     profile = detect_profile(project)
     if not profile['supported']:
         raise ValueError(
-            'El cierre numérico no admite direcciones: prepara componentes '
-            'u/v o una media circular antes de importar la serie.'
+            ' '.join(profile['warnings'])
         )
     mode = project.get('endcard_aggregation_mode', 'auto')
     if mode == 'auto':
@@ -147,6 +146,49 @@ def resolve_aggregation(project):
             f'({project.get("units", "sin unidades")}): usa «Promediar».'
         )
     return chosen, profile
+
+
+def aggregate_intervals(observations, contract):
+    """Explicit physical contract. Half-open intervals; no editorial inference."""
+    import datetime as dt
+    import math
+    required={'variable','units','spatial_support','measurement','operation'}
+    if not isinstance(contract,dict) or not required<=set(contract) or any(not contract[k] for k in required):
+        raise ValueError('Faltan variable, unidad, soporte, medición u operación.')
+    measurement=contract['measurement'];operation=contract['operation'];unit=_unit_key(contract['units'])
+    allowed={'interval_amount':('sum',),'rate':('integral',),
+             'interval_mean':('duration_weighted_mean',)}
+    if measurement not in allowed or operation not in allowed[measurement]:
+        raise ValueError('Medición/operación no implementada; categorías y direcciones requieren un método específico.')
+    if measurement=='interval_amount' and unit not in ('mm','mm/dia','mm/day'):
+        raise ValueError('Acumulación verificada únicamente para precipitación en mm por intervalo.')
+    rate_seconds={'mm/h':3600,'mm/hr':3600,'mm/s':1,'mm/dia':86400,'mm/day':86400}
+    if measurement=='rate' and unit not in rate_seconds:raise ValueError('Unidad de tasa incompatible.')
+    if measurement=='interval_mean' and contract.get('family') not in ('temperature','wind_speed','index','scalar_configured'):
+        raise ValueError('Configura la familia escalar; direcciones y categorías no admiten esta media.')
+    rows=[]
+    for observation in observations:
+        try:
+            start=dt.datetime.fromisoformat(observation['start']);end=dt.datetime.fromisoformat(observation['end'])
+            seconds=(end-start).total_seconds()
+        except (KeyError,TypeError,ValueError) as error:raise ValueError('Declara inicio y fin de cada intervalo.') from error
+        if seconds<=0:raise ValueError('Intervalo sin duración positiva.')
+        if observation.get('units',contract['units'])!=contract['units']:raise ValueError('Unidades incompatibles entre intervalos.')
+        value=observation.get('value')
+        if value is not None and (type(value) not in (float,int) or not math.isfinite(value)):raise ValueError('Observación no finita.')
+        rows.append((start,end,seconds,value))
+    rows.sort(key=lambda row:row[0])
+    if any(a[1]>b[0] for a,b in zip(rows,rows[1:])):raise ValueError('Intervalos duplicados o superpuestos; no se sumaron.')
+    valid=[r for r in rows if r[3] is not None];duration=sum(r[2] for r in rows)
+    value=None
+    if valid:
+        value=(sum(r[3] for r in valid) if operation=='sum' else
+               sum(r[3]*r[2]/rate_seconds[unit] for r in valid) if operation=='integral' else
+               sum(r[3]*r[2] for r in valid)/sum(r[2] for r in valid))
+    return {'value':value,'units':'mm' if operation in ('sum','integral') else contract['units'],
+            'operation':operation,'valid_intervals':len(valid),'intervals':len(rows),
+            'duration_coverage':sum(r[2] for r in valid)/duration if duration else 0.,
+            'gaps':sum(a[1]<b[0] for a,b in zip(rows,rows[1:]))}
 
 
 RAIN_SECTION_2 = '¿DÓNDE LLOVIÓ MÁS?'

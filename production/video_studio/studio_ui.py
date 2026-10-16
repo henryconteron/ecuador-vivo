@@ -61,6 +61,10 @@ def canvas_payload(image, scene, profile):
             row['original']['font_size']=row['font_size']
     payload.update(scene=scene['id'],entries={},icons=[],free_scene=True,
                    frame_width=profile.width,frame_height=profile.height,safe_area=profile.safe_area)
+    overlay=image.info.get('caption_overlay')
+    payload['caption_overlay']=None if overlay is None else {
+        'src':_png(overlay['image']),'x':overlay['x'],'y':overlay['y'],
+        'width':overlay['image'].width,'height':overlay['image'].height}
     return payload
 
 
@@ -234,8 +238,9 @@ def show_studio(source_project, *, key='free_studio', snapshot=None):
                 candidate=copy.deepcopy(project);candidate['studio']['media']['asset.'+asset['sha256']]=asset
                 accept(candidate)
             except (ValueError,OSError) as error: st.error(str(error))
-        if studio['media']:
-            aid=st.selectbox('Recurso del proyecto',list(studio['media']),format_func=lambda value:studio['media'][value]['name'],key=key+'_asset')
+        visual_media=[aid for aid,record in studio['media'].items() if record.get('kind') in ('image','video')]
+        if visual_media:
+            aid=st.selectbox('Recurso del proyecto',visual_media,format_func=lambda value:studio['media'][value]['name'],key=key+'_asset')
             record=studio['media'][aid]
             size=record.get('size',[])
             st.caption(f'{record["name"]} · {size} px · {record.get("duration",0):g} s · {record.get("bytes",0)/1048576:.2f} MB')
