@@ -1,0 +1,418 @@
+{
+  "title": "Qué puede ver un satélite en una parcela de media hectárea",
+  "published": "2026-10-19",
+  "author": "Henry P. Conteron Moreta",
+  "status": "observations_not_validated_deforestation",
+  "plan_sha256": "42d17aa2759021ae460e57ad6a7351672c6974c6d61023ed15f9384f150878d7",
+  "study_reference": "https://zenodo.org/records/6813783",
+  "boundary_license": "ReforesTree, CC BY 4.0; original valid research polygons, not cadastral boundaries",
+  "satellite_credit": "Contains modified Copernicus Sentinel data (2020, 2025)",
+  "plots": [
+    {
+      "plot_id": "RF05",
+      "selected": [
+        {
+          "plot_id": "RF05",
+          "period": "2020",
+          "optical": "RF05-optical-2020-10-13",
+          "radar": "RF05-radar-2020-10-12",
+          "separation_days": 1
+        },
+        {
+          "plot_id": "RF05",
+          "period": "2025",
+          "optical": "RF05-optical-2025-12-06",
+          "radar": "RF05-radar-2025-12-09",
+          "separation_days": 3
+        }
+      ],
+      "common_valid_support": {
+        "optical_centres": 0,
+        "optical_full_cells": 0,
+        "radar_centres": 10,
+        "radar_full_cells": 3
+      },
+      "measurements": [
+        {
+          "period": "2020",
+          "sensor": "optical",
+          "support": "centres",
+          "value": null,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2025",
+          "sensor": "optical",
+          "support": "centres",
+          "value": null,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2020",
+          "sensor": "optical",
+          "support": "full_cells",
+          "value": null,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2025",
+          "sensor": "optical",
+          "support": "full_cells",
+          "value": null,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2020",
+          "sensor": "radar",
+          "support": "centres",
+          "value": -13.071888503425255,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2025",
+          "sensor": "radar",
+          "support": "centres",
+          "value": -14.184868895208249,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2020",
+          "sensor": "radar",
+          "support": "full_cells",
+          "value": -12.549888325476395,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2025",
+          "sensor": "radar",
+          "support": "full_cells",
+          "value": -15.484200155354603,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        }
+      ]
+    },
+    {
+      "plot_id": "RF06",
+      "selected": [
+        {
+          "plot_id": "RF06",
+          "period": "2020",
+          "optical": "RF06-optical-2020-10-13",
+          "radar": "RF06-radar-2020-10-12",
+          "separation_days": 1
+        },
+        {
+          "plot_id": "RF06",
+          "period": "2025",
+          "optical": "RF06-optical-2025-12-26",
+          "radar": "RF06-radar-2025-12-21",
+          "separation_days": 5
+        }
+      ],
+      "common_valid_support": {
+        "optical_centres": 48,
+        "optical_full_cells": 30,
+        "radar_centres": 10,
+        "radar_full_cells": 5
+      },
+      "measurements": [
+        {
+          "period": "2020",
+          "sensor": "optical",
+          "support": "centres",
+          "value": 0.523489265392224,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2025",
+          "sensor": "optical",
+          "support": "centres",
+          "value": 0.745361956457297,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2020",
+          "sensor": "optical",
+          "support": "full_cells",
+          "value": 0.5043002396821976,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2025",
+          "sensor": "optical",
+          "support": "full_cells",
+          "value": 0.7437942763169606,
+          "unit": "NDVI"
+        },
+        {
+          "period": "2020",
+          "sensor": "radar",
+          "support": "centres",
+          "value": -14.577741915305392,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2025",
+          "sensor": "radar",
+          "support": "centres",
+          "value": -14.3837438636702,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2020",
+          "sensor": "radar",
+          "support": "full_cells",
+          "value": -13.883037951940304,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        },
+        {
+          "period": "2025",
+          "sensor": "radar",
+          "support": "full_cells",
+          "value": -14.021225906440957,
+          "unit": "VH gamma0 terrain dB of mean linear"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "key": "RF05-optical-2020-10-13",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2020-10-13",
+      "product": "S2B_MSIL2A_20201013T153619_N0500_R068_T17MPT_20230309T205029",
+      "sha256": "e41bd3f4020ad4bfe2f8f6bd89516a27d27737f8eba9528ba720ccf03963f798",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "1a54d340306c2a2c7d2a81102e574bf0eb9f22a4fb621fa546e998e137247509"
+    },
+    {
+      "key": "RF05-radar-2020-10-12",
+      "plot_id": "RF05",
+      "sensor": "radar",
+      "date": "2020-10-12",
+      "product": "S1A_IW_GRDH_1SDV_20201012T110119_20201012T110148_034762_040CEB_512C_COG",
+      "sha256": "18a8995861dc60bf68d44083bfa7050822477b39ace28105ec46372f3f15730c",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "04b239a67cbd1ea4388fc9eada607c53b86f0a09c0d044b0f2968d2fb1aaee71"
+    },
+    {
+      "key": "RF05-optical-2020-10-18",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2020-10-18",
+      "product": "S2A_MSIL2A_20201018T153621_N0500_R068_T17MPT_20230310T235603",
+      "sha256": "46b040198d64cd38b7df703e11430d82d12ef57da6ad49b20b86220a024a92a0",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "cfd9848649f70ea9cef1fe5a686d73fcbf0814b854557bc935811905526e3b6d"
+    },
+    {
+      "key": "RF05-optical-2020-10-28",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2020-10-28",
+      "product": "S2A_MSIL2A_20201028T153621_N0500_R068_T17MPT_20230327T225526",
+      "sha256": "55adf3682f1b155a253357bb17f1e13838a6da46b81a26281b6621c9712e785f",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "3ddc68cf7e2f4288409f537582592b97545b797f7124a1e837b41e37e3c89e58"
+    },
+    {
+      "key": "RF05-radar-2020-10-24",
+      "plot_id": "RF05",
+      "sensor": "radar",
+      "date": "2020-10-24",
+      "product": "S1A_IW_GRDH_1SDV_20201024T110119_20201024T110148_034937_041300_9D79_COG",
+      "sha256": "370b4cc361fd0f1a47114d40968320ebcdd33a64c69764be5fed9e80017517cc",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "afb5de0bd299542a126b25537505750ebf99ad0ec7a03738022e27a46d3e5141"
+    },
+    {
+      "key": "RF05-optical-2025-12-26",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2025-12-26",
+      "product": "S2B_MSIL2A_20251226T153629_N0511_R068_T17MPT_20251226T204954",
+      "sha256": "a00e11f4da04f7b1cfc3a4eec46791ef53ec5b9ff060f14759f13a24102a653d",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "3d92d583c19bf1c0bee8b5c7508b5f8c4533c6f23a508604d13e75f6f2471b94"
+    },
+    {
+      "key": "RF05-radar-2025-12-21",
+      "plot_id": "RF05",
+      "sensor": "radar",
+      "date": "2025-12-21",
+      "product": "S1A_IW_GRDH_1SDV_20251221T110118_20251221T110143_062412_07D170_8369_COG",
+      "sha256": "850ba7353dcbaca317c699e196bc3391b7a214f201e44f3c38b609d551d0fa82",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "0d7f9ef25f6b978c37453860a7af1a11d73653eef7c9e6277f7b0453a02e76fe"
+    },
+    {
+      "key": "RF05-optical-2025-12-11",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2025-12-11",
+      "product": "S2C_MSIL2A_20251211T153631_N0511_R068_T17MPT_20251211T185311",
+      "sha256": "1abdbba76cf830ca12211b567593efa82e0e057ec2b036b27b2a7ac24676c987",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "9aae5b4b1c7e4ac00c9e6c706490ceb4c3b994a27396272cf5f88a3e5aa27c52"
+    },
+    {
+      "key": "RF05-radar-2025-12-09",
+      "plot_id": "RF05",
+      "sensor": "radar",
+      "date": "2025-12-09",
+      "product": "S1A_IW_GRDH_1SDV_20251209T110120_20251209T110145_062237_07CAAB_F816_COG",
+      "sha256": "fd89ae2c0b584a24556607c4f05c8f96a580fda595f26b225c6b77463937854d",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "6b6b6710afb4d75c014b40c45a7378dc36ec96a5c5bc2dd375b77e568cba9289"
+    },
+    {
+      "key": "RF05-optical-2025-12-06",
+      "plot_id": "RF05",
+      "sensor": "optical",
+      "date": "2025-12-06",
+      "product": "S2B_MSIL2A_20251206T153619_N0511_R068_T17MPT_20251206T201825",
+      "sha256": "0b48e882d896d2929ba20252bf59cca2f43caa16203f0c7cf4c98b6ac0c608fb",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "6879694d5c0478573e6b00374f28e8a0f7757f531827875c2fd098a75bace34c"
+    },
+    {
+      "key": "RF06-optical-2020-10-13",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2020-10-13",
+      "product": "S2B_MSIL2A_20201013T153619_N0500_R068_T17MPU_20230309T205029",
+      "sha256": "f0a5f76cfdedc3efbf3a969538c7913f642f2013b77c26a88124f0bd5ecc858f",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "effebe4d04f6dc8e37d4e24a95eb913ace87a18e9f03ac446d3083a91bda11c5"
+    },
+    {
+      "key": "RF06-radar-2020-10-12",
+      "plot_id": "RF06",
+      "sensor": "radar",
+      "date": "2020-10-12",
+      "product": "S1A_IW_GRDH_1SDV_20201012T110119_20201012T110148_034762_040CEB_512C_COG",
+      "sha256": "508b77ec63be0e00f1bf01e2e6abd22b831db04693d2e2c4e58d4e61e71c6a88",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "a0f1d7d4f55019cfc1b373db2f42457d1a733eb80a841d62f25830e2df1388d8"
+    },
+    {
+      "key": "RF06-optical-2020-10-28",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2020-10-28",
+      "product": "S2A_MSIL2A_20201028T153621_N0500_R068_T17MPU_20230327T225526",
+      "sha256": "06be7c9de8ea08b7a8fd7aaf08a93f9b1508d16c8164adfed38e545a6f3e69df",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "3c8cf7c2677bfcf89b64693f5f115ee201c8ba8dba6c092b626a618774a4af1b"
+    },
+    {
+      "key": "RF06-radar-2020-10-24",
+      "plot_id": "RF06",
+      "sensor": "radar",
+      "date": "2020-10-24",
+      "product": "S1A_IW_GRDH_1SDV_20201024T110119_20201024T110148_034937_041300_9D79_COG",
+      "sha256": "bde210db0950a79b6d6039fa2d23d83f22b6bc39c6a799444059116a4de18202",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "3b4291459113da301d0b7e6e81a7ebea77531e02db82473a5c79e29e3d604dd0"
+    },
+    {
+      "key": "RF06-optical-2020-11-17",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2020-11-17",
+      "product": "S2A_MSIL2A_20201117T153621_N0500_R068_T17MPU_20230303T125029",
+      "sha256": "7605b96be498b5bbd8606d1b0485e2514e929f040303146ab6be870e33e32fd3",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "b17b25b161163e7e60204a5ea6b67dcd916a7744e18a1314588b778dd8d7a9ad"
+    },
+    {
+      "key": "RF06-radar-2020-11-17",
+      "plot_id": "RF06",
+      "sensor": "radar",
+      "date": "2020-11-17",
+      "product": "S1A_IW_GRDH_1SDV_20201117T110119_20201117T110147_035287_041F22_8F72_COG",
+      "sha256": "ca1733da1d43ce813dd646547c15c647ca6906042adc7908d871a5159b8abff0",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "cc4bfa84bae6452c052d99119bc57a569d514cf64ab361676bcdbb491cb536eb"
+    },
+    {
+      "key": "RF06-optical-2025-12-26",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2025-12-26",
+      "product": "S2B_MSIL2A_20251226T153629_N0511_R068_T17MPU_20251226T204954",
+      "sha256": "ba267a0fc26396bd76549b7bb38daeb81226bdcd006f2a5a65edf3c14978107f",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "1e0acdfda9b3ec51e69a638e745498a09196685b7c6fffbbfe1a605eb3a5e464"
+    },
+    {
+      "key": "RF06-radar-2025-12-21",
+      "plot_id": "RF06",
+      "sensor": "radar",
+      "date": "2025-12-21",
+      "product": "S1A_IW_GRDH_1SDV_20251221T110118_20251221T110143_062412_07D170_8369_COG",
+      "sha256": "09df993fc71316052926335aee6de2cf8e2dc71ad9efa459672196bb54088223",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "81e190ba54ed131a2631b6f290545c44a65cd534a9a673300847eef0dff8d3e6"
+    },
+    {
+      "key": "RF06-optical-2025-12-11",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2025-12-11",
+      "product": "S2C_MSIL2A_20251211T153631_N0511_R068_T17MPU_20251211T185311",
+      "sha256": "22f759989f770a96c061f1ce27932d953e262aab0f83c7cb8e5df763c85e661b",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "e90aafdef1f192ec14e675bc3aa723077cd37960384b2b4fa17f8b8c4fdb33a0"
+    },
+    {
+      "key": "RF06-radar-2025-12-09",
+      "plot_id": "RF06",
+      "sensor": "radar",
+      "date": "2025-12-09",
+      "product": "S1A_IW_GRDH_1SDV_20251209T110120_20251209T110145_062237_07CAAB_F816_COG",
+      "sha256": "010dc76ce1c8acaa5d1666601cc29c58a094d2569380a486c45cb354e3a22388",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "fd3f1f2be2f8206e4078c7d0b284d8166442922e57a1c422ce153dbc71581100"
+    },
+    {
+      "key": "RF06-optical-2025-12-31",
+      "plot_id": "RF06",
+      "sensor": "optical",
+      "date": "2025-12-31",
+      "product": "S2C_MSIL2A_20251231T153631_N0511_R068_T17MPU_20251231T184111",
+      "sha256": "2033593c8e3128c8acd5ff9ae42c14e370aab0527588147717cdcca100d94fdc",
+      "lineage_status": "product_id_matched_catalog",
+      "request_sha256": "3d2a04efe1c77967055584796f124fbb438d3a7c605a87e1d0f85c6ed1c04c78"
+    }
+  ],
+  "processing": {
+    "epsg": 32717,
+    "context_m": [
+      200,
+      200
+    ],
+    "optical_step_m": 10,
+    "radar_step_m": 20,
+    "radar_platform": "Sentinel-1A",
+    "relative_orbit": 40,
+    "direction": "DESCENDING",
+    "backscatter": "GAMMA0_TERRAIN",
+    "optical_valid_SCL": [
+      4,
+      5,
+      6
+    ],
+    "resampling": "NEAREST",
+    "speckle_filter": "NONE",
+    "dem": "COPERNICUS_30"
+  },
+  "limits": [
+    "No observations before 2020 in this experiment",
+    "No independent validation of forest loss or conversion date",
+    "Two periods are not a continuous time series",
+    "Centres and fully contained cells are not independent samples",
+    "No EUDR compliance conclusion; no area declared deforested"
+  ]
+}

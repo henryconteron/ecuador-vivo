@@ -1,0 +1,17 @@
+plot_id,period,sensor,support,value,unit
+RF05,2020,optical,centres,,NDVI
+RF05,2025,optical,centres,,NDVI
+RF05,2020,optical,full_cells,,NDVI
+RF05,2025,optical,full_cells,,NDVI
+RF05,2020,radar,centres,-13.071888503425255,VH gamma0 terrain dB of mean linear
+RF05,2025,radar,centres,-14.184868895208249,VH gamma0 terrain dB of mean linear
+RF05,2020,radar,full_cells,-12.549888325476395,VH gamma0 terrain dB of mean linear
+RF05,2025,radar,full_cells,-15.484200155354603,VH gamma0 terrain dB of mean linear
+RF06,2020,optical,centres,0.523489265392224,NDVI
+RF06,2025,optical,centres,0.745361956457297,NDVI
+RF06,2020,optical,full_cells,0.5043002396821976,NDVI
+RF06,2025,optical,full_cells,0.7437942763169606,NDVI
+RF06,2020,radar,centres,-14.577741915305392,VH gamma0 terrain dB of mean linear
+RF06,2025,radar,centres,-14.3837438636702,VH gamma0 terrain dB of mean linear
+RF06,2020,radar,full_cells,-13.883037951940304,VH gamma0 terrain dB of mean linear
+RF06,2025,radar,full_cells,-14.021225906440957,VH gamma0 terrain dB of mean linear
