@@ -1,4 +1,140 @@
-# Ecuador Vivo — estado vigente (2026-10-16)
+# Ecuador Vivo — estado vigente (2026-10-19)
+
+## Piloto de parcelas · trabajo aditivo, no publicado
+
+PUBLICACIÓN AUTORIZADA 19oct: artículo `parcelas-sentinel.html`, enlazado desde
+Inicio y Laboratorio. Commit/push `c4a47a3` en origin/main. Solo 13 archivos de
+publicación; herramientas/expedientes privados y videos no subidos. Paquete mínimo
+`data/casos/parcelas-sentinel/`: dos PNG, informe, métricas CSV,21 productos/huellas
+CSV, JSON de evidencia seleccionada y manifiesto SHA256. Sin nombres de titulares,
+coordenadas, credenciales ni inventario crudo. 62 pruebas de parcelas aprobadas;
+check:portal aprobado. Huellas verificadas también sobre bytes en índice Git para
+evitar discrepancias CRLF. Página explica falta de datos antes de2020 y ausencia
+de validación de deforestación/EUDR. GitHub Pages deployment run39286638257 iniciado.
+
+CONTINUACIÓN EJECUTADA 19oct: `tools/parcelas/completar-piloto.ps1 -ParcelasCampo`.
+21 recortes reales Sentinel-2/Sentinel-1, 124.928 bytes nuevos, credencial DPAPI
+existente y token solo en memoria. Salida canónica:
+`_local/parcelas/parcelas-campo-ecuador/observaciones/resultado/INFORME.md`,
+`RF05.png`, `RF06.png`, `evidencia.json` y `huellas.json`.
+Ambas parcelas EPSG32717, contexto200×200m, polígonos originales válidos;
+S1A IW VV/VH misma órbita40 DESCENDING, grillas10m óptico/20m radar separadas.
+ID de producto devuelto coincide con catálogo, solicitudes/grillas/máscaras y
+huellas verificadas offline. Figuras inspeccionadas. RF05 carece de soporte óptico
+común en los seis candidatos: NO se infiere cambio óptico. Radar10centros/3celdas
+completas. RF06 tiene48centros/30celdas ópticas completas comunes y10/5 radar.
+Óptico RF06:13oct2020/26dic2025; radar12oct2020/21dic2025. Diferencias de mes,
+humedad, manejo y registro impiden atribución automática a deforestación.
+58 pruebas focalizadas aprobadas. Nueva entrada `tools.parcelas.field_observations`;
+helpers existentes generalizados sin cambiar payloads antiguos. Verificación sin
+red: `completar-piloto.ps1 -ParcelasCampo -SoloInforme`.
+Siguiente: ampliar búsqueda óptica RF05 dentro de presupuesto explícito y añadir
+serie radar multifecha/validación histórica independiente; dos épocas no son
+demostración de tala. Sin cambios SIG/Studio, sin publicación ni certificación.
+
+Preparación anterior (superada por la ejecución descrita arriba):
+
+CHECKPOINT CUOTA: continuar desde
+`_local/parcelas/parcelas-campo-ecuador/CONTINUAR-AQUI.md`.
+`tools.parcelas.field_cases` preparó RF05/RF06, las dos geometrías originales
+válidas. GeoJSON individuales, grillas UTM locales, soporte espacial y catálogos
+completos para oct-dic2020 y oct-dic2025 guardados; sin nuevas imágenes/APIcuota.
+RF05:0,3976ha,39centros10m/24celdascompletas;10centros20m/3completas.
+RF06:0,4757ha,48centros10m/30completas;10centros20m/5completas.
+Escenas con huella de cobertura RF05:2020 S1=19/S2=16;2025 S1=31/S2=20.
+RF06:2020 S1=19/S2=15;2025 S1=31/S2=20. No confundir huella con píxeles válidos.
+55pruebas focalizadas pasan. Siguiente: escoger misma órbita entre épocas y óptico
+despejado DENTRO de esas parcelas, parametrizar descarga sin reutilizar UTM18S,
+órbita120 ni contexto1km de caso2435. Pocos píxeles plenamente contenidos: medir
+mezcla de bordes y alineación antes de conclusiones. No hay validación de tala.
+
+FINCAS DOCUMENTADAS RECUPERADAS: seis polígonos de parcelas de estudio de
+ReforesTree Ecuador (Zenodo6813783 CC BY4.0), inventario GPS/especies/años de
+plantación y componentes SHP/DBF/SHX/PRJ originales. Solo 891.379 bytes retenidos;
+el archivo7,5GB NO se descargó entero: índice y miembros por rangos206, CRC.
+Entrega `_local/parcelas/referencias/reforestree-6813783/FINCAS-DOCUMENTADAS.md`
+y `parcelas-estudio.geojson`. Áreas0,3976–0,5297ha; no linderos catastrales.
+Dos polígonos originales válidos y cuatro autointersectados: derivados make_valid
+marcados para revisión, originales conservados. Inventario asociado espacialmente
+a seis sitios distintos; paper informa dron2020 a2cm/px y plantaciones2016–2019.
+No confundir tamaño de píxel con exactitud GPS; revisión v2 corrige alineación.
+Otra fuente: El Deseo/Yaguachi,15SAF establecidos2016–2017, polígonos aún no recuperados.
+
+Persistencia experimental APLICADA a caso2435: `tools.parcelas.persistence`,
+3fechas base2020 y3posteriores2022, mismaórbita120; descenso VH>=3dB en todas
+las posteriores respecto a mediana lineal inicial. Umbral heurístico NO validado.
+34centros/27polígonos de señal candidatos, NO deforestación ni área deforestada.
+Salida `_local/parcelas/ecuador-2435/persistencia-experimental/INFORME.md` yGeoJSON.
+52pruebas focalizadas pasan. Sigue pendiente validar detector y fecha de cambio;
+ahora existen referencias parcelarias ecuatorianas reales, no solo puntos1km.
+
+Ensayo Ecuador radar+óptico EJECUTADO: `completar-piloto.ps1 -CasoEcuador`;
+verificación offline con `-CasoEcuador -SoloInforme`. Entrega en
+`_local/parcelas/ecuador-2435/resultado/INFORME.md`, figura y JSON de evidencia.
+12 productos reales (6 Sentinel-2, 6 Sentinel-1), 867.328 bytes. IDs de ambos
+sensores coinciden con catálogo. Óptico seleccionado 10oct2020 y 5oct2022, válido
+58,72%/100%; radar 5oct2020 y 7oct2022, mismo S1A/órbita120/ascendente, datos
+válidos100% según máscaras. 5.872 centros ópticos comunes y 2.500 radar.
+Grillas separadas 10 m/20 m; QA SCL nativa20m, sin superresolución generativa.
+Área de contexto1km×1km, NO lindero de finca ni fecha de evento verificada.
+47 pruebas pasan y figura revisada. No se declara deforestación ni validez EUDR.
+
+Validación independiente: se auditó el CSV público WRI/Google DeepMind de
+VALIDACIÓN (Zenodo 15224684 v3, CC BY 4.0), MD5 publicado coincidente.
+3.574 muestras globales, 12 centros dentro de geoBoundaries Ecuador existente.
+Salida `_local/parcelas/validacion/referencias-wri-ecuador/AUDITORIA.md`,
+GeoJSON de candidatos y recibo JSON. Son interpretaciones humanas a ~1 km para
+2001–2022, no fincas ni fechas exactas: NO sirven aún como validación parcelaria
+post-2020. `tools/parcelas/reference_gate.py` rechaza aceptación sin evidencia
+humana independiente, perímetro y fecha de cambio verificados; no decide EUDR.
+42 pruebas focalizadas pasan. La validación científica sigue pendiente, no falló
+ni se completó por descargar estos datos. No se transmitieron parcelas privadas.
+
+Entrega técnica vigente completada: `tools/parcelas/completar-piloto.ps1` ejecuta
+descubrimiento, selección trimestral, caché, API y reporte; `-SoloInforme` verifica
+offline. 25 fechas reales (2020–marzo2025), 124 centros comunes; mayor intervalo
+96 días, sin interpolación. Informe principal:
+`_local/parcelas/piloto-352/expediente/resultado/INFORME.md`;
+ZIP completo `expediente/ecuador-vivo-piloto-352.zip` dentro del mismo piloto.
+38 pruebas focalizadas pasan y paquete/figuras verificados. Sin credenciales en
+entregables. No se publicó ni cambió SIG/Studio. El piloto técnico está ejecutado;
+validación de cambios independientes y transferencia a Ecuador NO completadas.
+Estado científico: evidencia insuficiente, revisión humana pendiente; no dictamen.
+
+Antecedente: serie mínima de cuatro fechas (superada por el expediente de 25):
+
+Actualización vigente: OAuth local cifrado y verificado; descargas Process API
+reales ejecutadas. Serie actual en
+`_local/parcelas/piloto-352/serie-api-trazable/INFORME.md` y `serie.json`.
+Cuatro escenas con ID de servicio contrastado con catálogo, misma órbita/grilla,
+124 centros válidos comunes, máscaras de disponibilidad/sombra e incidencia.
+30 pruebas focalizadas aprobadas. Falta ampliar el vacío de 1.524 días y validar
+cambios con evidencia independiente. No hay conclusión de deforestación ni EUDR.
+SIG y Studio no modificados. La respuesta inicial API del 20mar2025 sin procedencia
+se excluye; se usa la carpeta `api-rtc-20250320-trazable`.
+
+Antecedentes del diagnóstico (no confundir la grilla Browser con la API vigente):
+
+Continuar desde `PILOTO-PARCELAS.md` y `tools/parcelas/README.md`.
+Parcela pública de referencia CERSGIS 352 (Ghana, porción de cacao, no lindero
+legal). Inventarios CDSE, verificación de operadores SNAP 13 y control SCL real
+de dos fechas guardados bajo `_local/parcelas/`. Quince pruebas focalizadas
+aprobadas. Sin ejecución SAR ni conclusiones de deforestación/cumplimiento.
+Acceso anónimo al producto radar devuelve 401. El usuario abrió su cuenta y se
+recuperó por Copernicus Browser un recorte real VV/VH + dataMask (84 KB), con
+georreferenciación verificada. Recibo en `radar-browser-20250320/procedencia.json`.
+Se obtuvieron después dos recortes NUEVOS con gamma0 terreno, DEM Copernicus30,
+sin speckle y NEAREST explícitos (8 y 20 marzo2025). Comparación local de 125
+centros válidos comunes: `comparacion-radar-20250308-20250320/INFORME.md` dentro
+del expediente privado; manifiesto `radar-pair-manifest.json`. Diecinueve pruebas
+del par verdes. Continuación: cuatro fechas al incorporar 23dic2020 y 4ene2021,
+grillas idénticas y 125 centros válidos comunes. Informe vigente de la serie:
+`_local/parcelas/piloto-352/serie-radar-historica/INFORME.md`; manifiesto
+`radar-series-manifest.json` en el expediente. Veintitrés pruebas focalizadas
+verdes. Vacío de 1.524 días explícito, sin interpolación; falta trazabilidad
+exacta de exportación y una línea base validada. No inferir deforestación ni ejecutar calibración
+de GRD original sobre los recortes ya procesados. No hay descargas grandes,
+cuentas creadas, servicios contratados, cambios al SIG/Studio ni push de este piloto.
 
 ## Consolidación y entrega a GitHub · 16 octubre 2026
 
